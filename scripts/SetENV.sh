@@ -13,14 +13,15 @@ release_tag="$mcversion-$commitid"
 jarName="$project_id-$mcversion-paperclip.jar"
 jarName_dir="lophine-server/build/libs/$jarName"
 
+flag_release=false
 pre=false
-make_latest=false
 
 if [ "$release" = "1" ]; then
   pre=true
-  make_latest=false
+  flag_release=true
+  make_latest=true
 elif [ "$release" = "2" ]; then
-  pre=false
+  flag_release=true
   make_latest=true
 fi
 
@@ -35,4 +36,5 @@ echo "pre=$pre" >> $GITHUB_ENV
 echo "tag=$release_tag" >> $GITHUB_ENV
 echo "jar=$jarName" >> $GITHUB_ENV
 echo "jar_dir=$jarName_dir" >> $GITHUB_ENV
+echo "flag_release=$flag_release" >> $GITHUB_ENV
 echo "make_latest=$make_latest" >> $GITHUB_ENV

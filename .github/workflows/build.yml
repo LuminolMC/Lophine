@@ -39,14 +39,6 @@ jobs:
       - name: CreateMojmapPaperclipJar
         run: ./gradlew --refresh-dependencies createMojmapPaperclipJar
 
-      - name: Publish to repo
-        if: github.event_name != 'pull_request' && false # do not push to any repo
-        continue-on-error: true
-        run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
-        env:
-          PRIVATE_MAVEN_REPO_PASSWORD: ${{ secrets.PRIVATE_MAVEN_REPO_PASSWORD }}
-          PRIVATE_MAVEN_REPO_USERNAME: ${{ secrets.PRIVATE_MAVEN_REPO_USERNAME }}
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -57,8 +49,16 @@ jobs:
         if: github.event_name != 'pull_request'
         run: sh scripts/SetENV.sh
 
+      - name: Publish to repo
+        if: github.event_name != 'pull_request' && env.flag_release == 'true' && false # do not push to any repo
+        continue-on-error: true
+        run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
+        env:
+          PRIVATE_MAVEN_REPO_PASSWORD: ${{ secrets.PRIVATE_MAVEN_REPO_PASSWORD }}
+          PRIVATE_MAVEN_REPO_USERNAME: ${{ secrets.PRIVATE_MAVEN_REPO_USERNAME }}
+
       - name: Create Release
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.flag_release == 'true'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.tag }}
