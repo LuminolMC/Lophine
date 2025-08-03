@@ -6,7 +6,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 
 public class DisableEndCrystalCheckConfig implements IConfigModule {
-    @TransformedConfig(name = "disable_end_crystal_check", category = {"misc"})
+    @TransformedConfig(name = "disable_end_crystal_check", category = {"misc", "end_crystal"})
     @ConfigInfo(baseName = "disable_end_crystal_check", comments =
             """
                     Disable paper's End Crystal position check.
