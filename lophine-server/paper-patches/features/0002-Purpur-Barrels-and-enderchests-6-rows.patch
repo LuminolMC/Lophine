@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Suisuroru <qwertyuiop14077@qq.com>
 Date: Thu, 20 Feb 2025 01:00:29 +0800
-Subject: [PATCH] Purpur-Barrels-and-enderchests-6-rows
+Subject: [PATCH] Purpur: Barrels and enderchests 6 rows
 
+Co-authored by: William Blake Galbreath <Blake.Galbreath@GMail.com>
+As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/purpur-server/paper-patches/features/0003-Barrels-and-enderchests-6-rows.patch)
+Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
 index 2f41a92465b9da28e026297cc3528898bb1c8412..fb5300ec1bd19b3dfd6a2b4106440b9f73c48205 100644
