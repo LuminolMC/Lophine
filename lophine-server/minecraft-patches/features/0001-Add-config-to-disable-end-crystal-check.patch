@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to disable end crystal check
 
 
 diff --git a/net/minecraft/world/level/dimension/end/EndDragonFight.java b/net/minecraft/world/level/dimension/end/EndDragonFight.java
-index 4fa8371c212dcc02b8cf5fd267b736e1cf3f50c1..4fb9244172b74c3c5fed984d5d3b968f76dd12be 100644
+index 4fa8371c212dcc02b8cf5fd267b736e1cf3f50c1..3f1520bdd5ef708824712ea62974fedb35067f23 100644
 --- a/net/minecraft/world/level/dimension/end/EndDragonFight.java
 +++ b/net/minecraft/world/level/dimension/end/EndDragonFight.java
 @@ -547,6 +547,8 @@ public class EndDragonFight {
@@ -13,7 +13,7 @@ index 4fa8371c212dcc02b8cf5fd267b736e1cf3f50c1..4fb9244172b74c3c5fed984d5d3b968f
                  blockPos = this.portalLocation;
              }
 +            // Luminol start - Disable end crystal check
-+            if (!fun.bm.lophine.config.modules.misc.DisableEndCrystalCheckConfig.disableCheck) {
++            if (!fun.bm.lophine.config.modules.fixes.DisableEndCrystalCheckConfig.disableCheck) {
              // Paper start - Perf: Do crystal-portal proximity check before entity lookup
              if (placedEndCrystalPos != null) {
                  // The end crystal must be 0 or 1 higher than the portal origin
