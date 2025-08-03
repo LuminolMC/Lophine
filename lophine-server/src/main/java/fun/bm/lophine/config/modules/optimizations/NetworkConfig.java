@@ -6,7 +6,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 
 public class NetworkConfig implements IConfigModule {
     @ConfigInfo(baseName = "unlimit-packet", comments = """
-                    Disable packet limit""")
+            Disable packet limit""")
     public static boolean disablePacketLimit = false;
 
     @Override
