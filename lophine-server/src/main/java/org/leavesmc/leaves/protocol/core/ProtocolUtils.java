@@ -25,7 +25,7 @@ public class ProtocolUtils {
     private static final byte[] EMPTY = new byte[0];
 
     public static String buildProtocolVersion(String protocol) {
-        return protocol + "-leaves-" + ServerBuildInfo.buildInfo().asString(ServerBuildInfo.StringRepresentation.VERSION_SIMPLE);
+        return protocol + "-lophine-" + ServerBuildInfo.buildInfo().asString(ServerBuildInfo.StringRepresentation.VERSION_SIMPLE);
     }
 
     public static void sendEmptyPacket(ServerPlayer player, ResourceLocation id) {
