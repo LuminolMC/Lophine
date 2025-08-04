@@ -237,19 +237,23 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
             long timeStart = System.currentTimeMillis();
             SchematicPlacement placement = SchematicPlacement.createFromNbt(tags);
             ReplaceBehavior replaceMode = ReplaceBehavior.fromStringStatic(tags.getStringOr("ReplaceMode", ReplaceBehavior.NONE.name()));
-            MinecraftServer.getServer().scheduleOnMain(() -> {
-                placement.pasteTo(serverLevel, replaceMode);
-                long timeElapsed = System.currentTimeMillis() - timeStart;
-                player.getBukkitEntity().sendActionBar(
-                        Component.text("Pasted ")
-                                .append(Component.text(placement.getName(), NamedTextColor.AQUA))
-                                .append(Component.text(" to world "))
-                                .append(Component.text(serverLevel.serverLevelData.getLevelName(), NamedTextColor.LIGHT_PURPLE))
-                                .append(Component.text(" in "))
-                                .append(Component.text(timeElapsed, NamedTextColor.GREEN))
-                                .append(Component.text("ms"))
-                );
-            });
+            io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                    player.level(),
+                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                    () -> {
+                        placement.pasteTo(serverLevel, replaceMode);
+                        long timeElapsed = System.currentTimeMillis() - timeStart;
+                        player.getBukkitEntity().sendActionBar(
+                                Component.text("Pasted ")
+                                        .append(Component.text(placement.getName(), NamedTextColor.AQUA))
+                                        .append(Component.text(" to world "))
+                                        .append(Component.text(serverLevel.serverLevelData.getLevelName(), NamedTextColor.LIGHT_PURPLE))
+                                        .append(Component.text(" in "))
+                                        .append(Component.text(timeElapsed, NamedTextColor.GREEN))
+                                        .append(Component.text("ms"))
+                        );
+                    });
         }
     }
 
