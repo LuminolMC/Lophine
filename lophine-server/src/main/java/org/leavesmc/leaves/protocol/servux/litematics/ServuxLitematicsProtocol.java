@@ -132,7 +132,7 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
                 }
                 playerSession.remove(uuid);
                 fullPacket.readVarInt();
-                Tag tag = FriendlyByteBuf.readNbt(fullPacket, new NbtAccounter(fun.bm.lophine.config.modules.misc.SurvuxProtocolConfig.litematicsMaxNbtSize, 512));
+                Tag tag = FriendlyByteBuf.readNbt(fullPacket, new NbtAccounter(fun.bm.lophine.config.modules.misc.SurvuxProtocolConfig.litematicsMaxNbtSize == -1 ? Long.MAX_VALUE : fun.bm.lophine.config.modules.misc.SurvuxProtocolConfig.litematicsMaxNbtSize, 512));
                 if (!(tag instanceof CompoundTag)) {
                     ServuxProtocol.LOGGER.error("cannot read nbt tag from packet");
                     return;
