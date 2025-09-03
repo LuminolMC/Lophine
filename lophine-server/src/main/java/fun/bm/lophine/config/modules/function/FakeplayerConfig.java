@@ -5,14 +5,10 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
-import net.minecraft.server.MinecraftServer;
-import org.bukkit.Bukkit;
-import org.leavesmc.leaves.bot.BotCommand;
 import org.leavesmc.leaves.bot.ServerBot;
-import org.leavesmc.leaves.bot.agent.Actions;
+import org.leavesmc.leaves.command.bot.BotCommand;
 
 import java.util.List;
-import java.util.Locale;
 
 @ConfigClassInfo(configAttribution = EnumConfigCategory.FUNCTION, mainName = "fakeplayer")
 public class FakeplayerConfig implements IConfigModule {
@@ -86,23 +82,28 @@ public class FakeplayerConfig implements IConfigModule {
 
     public static ServerBot.TickType tickType = ServerBot.TickType.ENTITY_LIST;
 
-    public static void unregisterCommand(String name) {
-        name = name.toLowerCase(Locale.ENGLISH).trim();
-        MinecraftServer.getServer().server.getCommandMap().getKnownCommands().remove(name);
-        MinecraftServer.getServer().server.getCommandMap().getKnownCommands().remove("leaves:" + name);
-        MinecraftServer.getServer().server.syncCommands();
-    }
+    private BotCommand command = null;
+
+    private boolean registered = false;
 
     public static int getSimulationDistance(ServerBot bot) {
         return simulationDistance == -1 ? bot.getBukkitEntity().getSimulationDistance() : simulationDistance;
     }
 
+    @Override
     public void onLoaded(CommentedFileConfig configInstance) {
         if (enable) {
-            Bukkit.getCommandMap().register("bot", "lophine", new BotCommand());
-            Actions.registerAll();
-        } else {
-            unregisterCommand("bot");
+            command = new BotCommand();
+            command.register();
+            registered = true;
+        }
+    }
+
+    @Override
+    public void onUnloaded(CommentedFileConfig configInstance) {
+        if (registered) {
+            command.unregister();
+            command = null;
         }
     }
 }

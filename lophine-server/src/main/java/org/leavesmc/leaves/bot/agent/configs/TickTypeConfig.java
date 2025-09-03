@@ -17,26 +17,37 @@
 
 package org.leavesmc.leaves.bot.agent.configs;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
-import org.leavesmc.leaves.bot.agent.AbstractBotConfig;
-import org.leavesmc.leaves.command.CommandArgument;
-import org.leavesmc.leaves.command.CommandArgumentType;
+import org.leavesmc.leaves.command.CommandContext;
 
-import java.util.List;
-
-public class TickTypeConfig extends AbstractBotConfig<ServerBot.TickType> {
-
-    private static final String NAME = "tick_type";
-    private static final CommandArgumentType<ServerBot.TickType> TICK_TYPE_ARGUMENT = CommandArgumentType.ofEnum(ServerBot.TickType.class);
-
+public class TickTypeConfig extends AbstractBotConfig<ServerBot.TickType, String, TickTypeConfig> {
     private ServerBot.TickType value;
 
     public TickTypeConfig() {
-        super(NAME, CommandArgument.of(TICK_TYPE_ARGUMENT).setSuggestion(0, List.of("network", "entity_list")));
+        super("tick_type", StringArgumentType.word(), TickTypeConfig::new);
         this.value = FakeplayerConfig.tickType;
+    }
+
+    @Override
+    public void applySuggestions(CommandContext context, @NotNull SuggestionsBuilder builder) {
+        builder.suggest("network");
+        builder.suggest("entity_list");
+    }
+
+    @Override
+    public ServerBot.TickType loadFromCommand(@NotNull CommandContext context) throws CommandSyntaxException {
+        String raw = context.getString(getName());
+        return switch (raw) {
+            case "network" -> ServerBot.TickType.NETWORK;
+            case "entity_list" -> ServerBot.TickType.ENTITY_LIST;
+            default -> throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().create();
+        };
     }
 
     @Override
@@ -53,12 +64,17 @@ public class TickTypeConfig extends AbstractBotConfig<ServerBot.TickType> {
     @NotNull
     public CompoundTag save(@NotNull CompoundTag nbt) {
         super.save(nbt);
-        nbt.putString(NAME, this.getValue().toString());
+        nbt.putString(getName(), this.getValue().toString());
         return nbt;
     }
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
-        this.setValue(TICK_TYPE_ARGUMENT.parse(nbt.getStringOr(NAME, FakeplayerConfig.tickType.name())));
+        String raw = nbt.getStringOr(getName(), FakeplayerConfig.tickType.name());
+        this.setValue(switch (raw) {
+            case "network" -> ServerBot.TickType.NETWORK;
+            case "entity_list" -> ServerBot.TickType.ENTITY_LIST;
+            default -> throw new IllegalStateException("Unexpected bot tick type value: " + raw);
+        });
     }
 }

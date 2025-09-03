@@ -15,16 +15,20 @@
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.leavesmc.leaves.bot.agent.actions;
+package org.leavesmc.leaves.command.bot;
 
-import org.leavesmc.leaves.command.CommandArgument;
+import net.minecraft.commands.CommandSourceStack;
+import org.jetbrains.annotations.NotNull;
+import org.leavesmc.leaves.command.LiteralNode;
 
-import java.util.function.Supplier;
+public abstract class BotSubcommand extends LiteralNode {
 
-public abstract class ServerStateBotAction<E extends ServerStateBotAction<E>> extends ServerBotAction<E> {
+    protected BotSubcommand(String name) {
+        super(name);
+    }
 
-    public ServerStateBotAction(String name, CommandArgument argument, Supplier<E> creator) {
-        super(name, argument, creator);
-        this.setDoNumber(-1);
+    @Override
+    public boolean requires(@NotNull CommandSourceStack source) {
+        return BotCommand.hasPermission(source.getSender(), this.name);
     }
 }

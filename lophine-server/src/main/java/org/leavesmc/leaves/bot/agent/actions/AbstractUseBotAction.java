@@ -18,33 +18,37 @@
 package org.leavesmc.leaves.bot.agent.actions;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
-import org.leavesmc.leaves.command.CommandArgument;
-import org.leavesmc.leaves.command.CommandArgumentResult;
-import org.leavesmc.leaves.command.CommandArgumentType;
+import org.leavesmc.leaves.command.CommandContext;
 import org.leavesmc.leaves.event.bot.BotActionStopEvent;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class ServerUseBotAction<T extends ServerUseBotAction<T>> extends ServerTimerBotAction<T> {
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+
+public abstract class AbstractUseBotAction<T extends AbstractUseBotAction<T>> extends AbstractTimerBotAction<T> {
     private int useTickTimeout = -1;
     private int alreadyUsedTick = 0;
     private int useItemRemainingTicks = 0;
 
-    public ServerUseBotAction(String name, Supplier<T> supplier) {
-        super(name, CommandArgument.of(CommandArgumentType.INTEGER, CommandArgumentType.INTEGER, CommandArgumentType.INTEGER, CommandArgumentType.INTEGER), supplier);
-        this.setSuggestion(3, Pair.of(List.of("-1"), "[UseTickTimeout]"));
+    public AbstractUseBotAction(String name, Supplier<T> supplier) {
+        super(name, supplier);
+        this.addArgument("use_timeout", integer(-1))
+                .suggests((context, builder) -> {
+                    builder.suggest("-1", Component.literal("no use timeout"));
+                    builder.suggest("3", Component.literal("minimum bow shoot time"));
+                    builder.suggest("10", Component.literal("minimum trident shoot time"));
+                })
+                .setOptional(true);
     }
 
     @Override
-    public void loadCommand(ServerPlayer player, @NotNull CommandArgumentResult result) {
-        super.loadCommand(player, result);
-        this.useTickTimeout = result.readInt(-1);
+    public void loadCommand(@NotNull CommandContext context) {
+        super.loadCommand(context);
+        this.useTickTimeout = context.getIntegerOrDefault("use_timeout", -1);
     }
 
     @Override
@@ -108,6 +112,13 @@ public abstract class ServerUseBotAction<T extends ServerUseBotAction<T>> extend
 
     private void increaseAlreadyUsedTick() {
         this.alreadyUsedTick++;
+    }
+
+    @Override
+    public void provideActionData(@NotNull ActionData data) {
+        super.provideActionData(data);
+        data.add("use_timeout", String.valueOf(this.useTickTimeout));
+        data.add("already_used_tick", String.valueOf(this.alreadyUsedTick));
     }
 
     @Override

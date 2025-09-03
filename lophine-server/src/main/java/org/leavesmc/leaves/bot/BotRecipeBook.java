@@ -68,6 +68,6 @@ public class BotRecipeBook extends ServerRecipeBook {
 
     @Override
     public @NotNull Packed pack() {
-        return new ServerRecipeBook.Packed(this.bookSettings.copy(), List.of(), List.of());
+        return new Packed(this.bookSettings.copy(), List.of(), List.of());
     }
 }
