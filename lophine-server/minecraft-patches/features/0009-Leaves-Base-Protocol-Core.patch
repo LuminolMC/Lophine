@@ -58,7 +58,7 @@ index fb263fa1f30a7dfcb7ec2656abfb38e5fe88eac9..56fd1ed7ccaf96e7eedea60fbdbf7f93
          };
      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index a0f1db50adf5163a671d3d9e9df7adb7de4250c6..af13707933af14171447d5ab6faacb64ddf194a7 100644
+index b156b5c635f931a3d4abc0584591f90476d011a6..0b7c014114f1f8648824fe7c9b75fde3ea79162a 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -305,6 +305,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -69,7 +69,7 @@ index a0f1db50adf5163a671d3d9e9df7adb7de4250c6..af13707933af14171447d5ab6faacb64
  
      @Override
      public <V> CompletableFuture<V> submit(java.util.function.Supplier<V> task) {
-@@ -2226,9 +2227,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2227,9 +2228,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return false;
      }
  

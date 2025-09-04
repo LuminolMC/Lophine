@@ -66,6 +66,8 @@ jobs:
           body: |
             📦Version: `${{ env.mcversion }}` | Commit ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
             This release is automatically compiled by GitHub Actions
+            ### Branch Info
+            > ${{ github.ref_name }}
             ### Commit Message
             ${{ env.commit_msg }}
           artifacts: ${{ env.jar_dir }}
