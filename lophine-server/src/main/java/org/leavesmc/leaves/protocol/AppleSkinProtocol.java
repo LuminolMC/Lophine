@@ -1,6 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
-import fun.bm.lophine.config.modules.function.AppleSkinConfig;
+import fun.bm.lophine.config.modules.function.AppleSkinProtocolConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -118,11 +118,11 @@ public class AppleSkinProtocol implements LeavesProtocol {
 
     @Override
     public int tickerInterval(String tickerID) {
-        return AppleSkinConfig.syncTickInterval;
+        return AppleSkinProtocolConfig.syncTickInterval;
     }
 
     @Override
     public boolean isActive() {
-        return AppleSkinConfig.enabled;
+        return AppleSkinProtocolConfig.enabled;
     }
 }

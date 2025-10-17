@@ -5,7 +5,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "appleskin-protocol")
-public class AppleSkinConfig {
+public class AppleSkinProtocolConfig {
     @ConfigInfo(name = "enabled", comments = """
             Enable AppleSkin protocol support""")
     public static boolean enabled = false;

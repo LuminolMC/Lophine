@@ -1,6 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
-import fun.bm.lophine.config.modules.function.BBORConfig;
+import fun.bm.lophine.config.modules.function.BBORProtocolConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -57,7 +57,7 @@ public class BBORProtocol implements LeavesProtocol {
 
     @ProtocolHandler.ReloadServer
     public static void onServerReload() {
-        if (BBORConfig.enabled) {
+        if (BBORProtocolConfig.enabled) {
             initAllPlayer();
         } else {
             loggedOutAllPlayer();
@@ -193,7 +193,7 @@ public class BBORProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        boolean active = BBORConfig.enabled;
+        boolean active = BBORProtocolConfig.enabled;
         if (!active && initialized) {
             initialized = false;
             loggedOutAllPlayer();

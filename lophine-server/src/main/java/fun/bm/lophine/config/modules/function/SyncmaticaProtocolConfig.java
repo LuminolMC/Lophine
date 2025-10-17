@@ -7,7 +7,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 import org.leavesmc.leaves.protocol.syncmatica.SyncmaticaProtocol;
 
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "syncmatica-protocol")
-public class SyncmaticaConfig {
+public class SyncmaticaProtocolConfig {
     @ConfigInfo(name = "enabled", comments = """
             Enable Syncmatica protocol support""")
     public static boolean enabled = false;
