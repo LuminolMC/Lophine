@@ -1,6 +1,7 @@
 package org.leavesmc.leaves.protocol.syncmatica;
 
 import com.mojang.authlib.GameProfile;
+import fun.bm.lophine.config.modules.function.SyncmaticaConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -383,6 +384,6 @@ public class CommunicationManager implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return fun.bm.lophine.config.modules.function.SyncmaticaConfig.enabled;
+        return SyncmaticaConfig.enabled;
     }
 }

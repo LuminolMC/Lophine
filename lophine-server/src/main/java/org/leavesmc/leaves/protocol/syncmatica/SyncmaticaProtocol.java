@@ -1,5 +1,6 @@
 package org.leavesmc.leaves.protocol.syncmatica;
 
+import fun.bm.lophine.config.modules.function.SyncmaticaConfig;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,7 +104,7 @@ public class SyncmaticaProtocol {
     }
 
     public static boolean isOverQuota(int sent) {
-        return fun.bm.lophine.config.modules.function.SyncmaticaConfig.useQuota && sent > fun.bm.lophine.config.modules.function.SyncmaticaConfig.quotaLimit;
+        return SyncmaticaConfig.useQuota && sent > SyncmaticaConfig.quotaLimit;
     }
 
     public static void backupAndReplace(final Path backup, final Path current, final Path incoming) {
