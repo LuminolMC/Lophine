@@ -1,0 +1,12 @@
+package fun.bm.lophine.config.modules.function;
+
+import me.earthme.luminol.config.flags.ConfigClassInfo;
+import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.enums.EnumConfigCategory;
+
+@ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "rei-server-protocol")
+public class REIServerProtocolConfig {
+    @ConfigInfo(name = "enabled", comments = """
+            Enable Roughly Enough Items protocol support""")
+    public static boolean enabled = false;
+}
