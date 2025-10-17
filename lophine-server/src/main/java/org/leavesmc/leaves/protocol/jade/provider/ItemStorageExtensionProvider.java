@@ -61,9 +61,9 @@ public enum ItemStorageExtensionProvider implements IServerExtensionProvider<Ite
                             Container compound = null;
                             if (blockEntity.getLevel() != null) {
                                 compound = ChestBlock.getContainer(
-                                    chestBlock, blockEntity.getBlockState(),
-                                    blockEntity.getLevel(), blockEntity.getBlockPos(),
-                                    true // Bypass lock check
+                                        chestBlock, blockEntity.getBlockState(),
+                                        blockEntity.getLevel(), blockEntity.getBlockPos(),
+                                        true // Bypass lock check
                                 );
                             }
                             if (compound != null) {
@@ -84,7 +84,7 @@ public enum ItemStorageExtensionProvider implements IServerExtensionProvider<Ite
     public static @Nullable Container findContainer(@NotNull Accessor<?> accessor) {
         Object target = accessor.getTarget();
         if (target == null && accessor instanceof BlockAccessor blockAccessor &&
-            blockAccessor.getBlock() instanceof WorldlyContainerHolder holder) {
+                blockAccessor.getBlock() instanceof WorldlyContainerHolder holder) {
             return holder.getContainer(blockAccessor.getBlockState(), accessor.getLevel(), blockAccessor.getPosition());
         } else if (target instanceof Container container) {
             return container;

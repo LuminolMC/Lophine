@@ -17,17 +17,17 @@ import java.util.Optional;
 
 public abstract class CookingDisplay extends Display {
     private static final StreamCodec<RegistryFriendlyByteBuf, CookingDisplay> CODEC = StreamCodec.composite(
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CookingDisplay::getInputEntries,
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CookingDisplay::getOutputEntries,
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-        CookingDisplay::getOptionalLocation,
-        ByteBufCodecs.FLOAT,
-        CookingDisplay::getXp,
-        ByteBufCodecs.DOUBLE,
-        CookingDisplay::getCookTime,
-        CookingDisplay::of
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CookingDisplay::getInputEntries,
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CookingDisplay::getOutputEntries,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            CookingDisplay::getOptionalLocation,
+            ByteBufCodecs.FLOAT,
+            CookingDisplay::getXp,
+            ByteBufCodecs.DOUBLE,
+            CookingDisplay::getCookTime,
+            CookingDisplay::of
     );
     protected float xp;
     protected double cookTime;
@@ -40,11 +40,11 @@ public abstract class CookingDisplay extends Display {
 
     public CookingDisplay(RecipeHolder<? extends AbstractCookingRecipe> recipe) {
         this(
-            List.of(EntryIngredient.ofIngredient(recipe.value().input())),
-            List.of(EntryIngredient.of(recipe.value().assemble(new SingleRecipeInput(ItemStack.EMPTY), CraftRegistry.getMinecraftRegistry()))),
-            recipe.id().location(),
-            recipe.value().experience(),
-            recipe.value().cookingTime()
+                List.of(EntryIngredient.ofIngredient(recipe.value().input())),
+                List.of(EntryIngredient.of(recipe.value().assemble(new SingleRecipeInput(ItemStack.EMPTY), CraftRegistry.getMinecraftRegistry()))),
+                recipe.id().location(),
+                recipe.value().experience(),
+                recipe.value().cookingTime()
         );
     }
 

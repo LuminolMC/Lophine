@@ -3,7 +3,7 @@ package org.leavesmc.leaves.protocol.rei;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.function.REIServerProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.REIServerProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -33,14 +33,7 @@ import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
-import org.leavesmc.leaves.protocol.rei.display.BlastingDisplay;
-import org.leavesmc.leaves.protocol.rei.display.CampfireDisplay;
-import org.leavesmc.leaves.protocol.rei.display.Display;
-import org.leavesmc.leaves.protocol.rei.display.ShapedDisplay;
-import org.leavesmc.leaves.protocol.rei.display.ShapelessDisplay;
-import org.leavesmc.leaves.protocol.rei.display.SmeltingDisplay;
-import org.leavesmc.leaves.protocol.rei.display.SmokingDisplay;
-import org.leavesmc.leaves.protocol.rei.display.StoneCuttingDisplay;
+import org.leavesmc.leaves.protocol.rei.display.*;
 import org.leavesmc.leaves.protocol.rei.payload.DisplaySyncPayload;
 import org.leavesmc.leaves.protocol.rei.transfer.InputSlotCrafter;
 import org.leavesmc.leaves.protocol.rei.transfer.NewInputSlotCrafter;
@@ -49,11 +42,7 @@ import org.leavesmc.leaves.protocol.rei.transfer.slot.SlotAccessor;
 import org.leavesmc.leaves.protocol.rei.transfer.slot.VanillaSlotAccessor;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -88,9 +77,9 @@ public class REIServerProtocol implements LeavesProtocol {
     });
     private static final Set<ServerPlayer> enabledPlayers = new HashSet<>();
     private static final Executor executor = new ThreadPoolExecutor(
-        1, 1, 0L, TimeUnit.MILLISECONDS,
-        new ArrayBlockingQueue<>(1),
-        new ThreadPoolExecutor.DiscardOldestPolicy()
+            1, 1, 0L, TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<>(1),
+            new ThreadPoolExecutor.DiscardOldestPolicy()
     );
     private static int minecraftRecipeVer = 0;
     private static int nextReiRecipeVer = -1;
@@ -142,7 +131,8 @@ public class REIServerProtocol implements LeavesProtocol {
                 case ShapelessRecipe ignored -> builder.add(new ShapelessDisplay((RecipeHolder) holder));
                 case TransmuteRecipe ignored -> builder.addAll(Display.ofTransmuteRecipe((RecipeHolder) holder));
                 case TippedArrowRecipe ignored -> builder.addAll(Display.ofTippedArrowRecipe((RecipeHolder) holder));
-                case FireworkRocketRecipe ignored -> builder.addAll(Display.ofFireworkRocketRecipe((RecipeHolder) holder));
+                case FireworkRocketRecipe ignored ->
+                        builder.addAll(Display.ofFireworkRocketRecipe((RecipeHolder) holder));
                 case MapCloningRecipe ignored -> builder.addAll(Display.ofMapCloningRecipe((RecipeHolder) holder));
                 // ignore ArmorDyeRecipe, BannerDuplicateRecipe, BookCloningRecipe, ShieldDecorationRecipe
                 default -> {
@@ -164,16 +154,16 @@ public class REIServerProtocol implements LeavesProtocol {
         });
 
         DisplaySyncPayload displaySyncPayload = new DisplaySyncPayload(
-            DisplaySyncPayload.SyncType.SET,
-            builder.build(),
-            reiRecipeVer
+                DisplaySyncPayload.SyncType.SET,
+                builder.build(),
+                reiRecipeVer
         );
 
         RegistryFriendlyByteBuf s2cBuf = ProtocolUtils.decorate(Unpooled.buffer());
         DisplaySyncPayload.STREAM_CODEC.encode(s2cBuf, displaySyncPayload);
         ImmutableList.Builder<CustomPacketPayload> listBuilder = ImmutableList.builder();
         outboundTransform(s2cBuf, (id, splitBuf) ->
-            listBuilder.add(PacketTransformer.wrapRei(id, splitBuf))
+                listBuilder.add(PacketTransformer.wrapRei(id, splitBuf))
         );
 
         cachedPayloads = listBuilder.build();
@@ -393,8 +383,8 @@ public class REIServerProtocol implements LeavesProtocol {
             for (Tag ingredient : ingredientList) {
                 CompoundTag ingredientTag = (CompoundTag) ingredient;
                 ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(
-                    registryAccess.createSerializationContext(NbtOps.INSTANCE),
-                    ingredientTag.get("value")
+                        registryAccess.createSerializationContext(NbtOps.INSTANCE),
+                        ingredientTag.get("value")
                 ).getOrThrow();
                 slotItems.add(stack);
             }

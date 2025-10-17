@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.protocol.servux;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;

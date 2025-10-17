@@ -52,7 +52,8 @@ public class JadeCodec {
                     ByteBufCodecs.STRING_UTF8.encode(buf, anEnum.name());
                 }
                 case null -> throw new NullPointerException();
-                default -> throw new IllegalArgumentException("Unknown primitive type: %s (%s)".formatted(o, o.getClass()));
+                default ->
+                        throw new IllegalArgumentException("Unknown primitive type: %s (%s)".formatted(o, o.getClass()));
             }
         }
     };

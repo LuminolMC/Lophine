@@ -7,11 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.syncmatica.PacketType;
 import org.leavesmc.leaves.protocol.syncmatica.ServerPlacement;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class UploadExchange extends AbstractExchange {
 
@@ -30,7 +26,7 @@ public class UploadExchange extends AbstractExchange {
     @Override
     public boolean checkPacket(final @NotNull ResourceLocation id, final FriendlyByteBuf packetBuf) {
         if (id.equals(PacketType.RECEIVED_LITEMATIC.identifier)
-            || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
+                || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
             return checkUUID(packetBuf, toUpload.getId());
         }
         return false;

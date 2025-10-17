@@ -15,6 +15,6 @@ public record ReceiveDataPayload(CompoundTag tag) implements LeavesCustomPayload
 
     @Codec
     private static final StreamCodec<FriendlyByteBuf, ReceiveDataPayload> CODEC = StreamCodec.composite(
-        ByteBufCodecs.COMPOUND_TAG, ReceiveDataPayload::tag, ReceiveDataPayload::new
+            ByteBufCodecs.COMPOUND_TAG, ReceiveDataPayload::tag, ReceiveDataPayload::new
     );
 }

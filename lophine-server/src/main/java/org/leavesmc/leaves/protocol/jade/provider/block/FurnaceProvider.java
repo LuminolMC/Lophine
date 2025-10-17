@@ -22,9 +22,9 @@ public enum FurnaceProvider implements StreamServerDataProvider<BlockAccessor, F
     public @NotNull Data streamData(@NotNull BlockAccessor accessor) {
         AbstractFurnaceBlockEntity furnace = (AbstractFurnaceBlockEntity) accessor.getBlockEntity();
         return new Data(
-            furnace.cookingTimer,
-            furnace.cookingTotalTime,
-            List.of(furnace.getItem(0), furnace.getItem(1), furnace.getItem(2))
+                furnace.cookingTimer,
+                furnace.cookingTotalTime,
+                List.of(furnace.getItem(0), furnace.getItem(1), furnace.getItem(2))
         );
     }
 
@@ -40,12 +40,12 @@ public enum FurnaceProvider implements StreamServerDataProvider<BlockAccessor, F
 
     public record Data(int progress, int total, List<ItemStack> inventory) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            Data::progress,
-            ByteBufCodecs.VAR_INT,
-            Data::total,
-            ItemStack.OPTIONAL_LIST_STREAM_CODEC,
-            Data::inventory,
-            Data::new);
+                ByteBufCodecs.VAR_INT,
+                Data::progress,
+                ByteBufCodecs.VAR_INT,
+                Data::total,
+                ItemStack.OPTIONAL_LIST_STREAM_CODEC,
+                Data::inventory,
+                Data::new);
     }
 }

@@ -1,6 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
-import fun.bm.lophine.config.modules.function.AppleSkinProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.AppleSkinProtocolConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,11 +13,7 @@ import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @LeavesProtocol.Register(namespace = "appleskin")
 public class AppleSkinProtocol implements LeavesProtocol {

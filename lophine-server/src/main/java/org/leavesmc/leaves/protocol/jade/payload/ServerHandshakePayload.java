@@ -18,10 +18,10 @@ import java.util.Map;
 import static org.leavesmc.leaves.protocol.jade.util.JadeCodec.PRIMITIVE_STREAM_CODEC;
 
 public record ServerHandshakePayload(
-    Map<ResourceLocation, Object> serverConfig,
-    List<Block> shearableBlocks,
-    List<ResourceLocation> blockProviderIds,
-    List<ResourceLocation> entityProviderIds
+        Map<ResourceLocation, Object> serverConfig,
+        List<Block> shearableBlocks,
+        List<ResourceLocation> blockProviderIds,
+        List<ResourceLocation> entityProviderIds
 ) implements LeavesCustomPayload {
 
     @ID
@@ -29,14 +29,14 @@ public record ServerHandshakePayload(
 
     @Codec
     private static final StreamCodec<RegistryFriendlyByteBuf, ServerHandshakePayload> CODEC = StreamCodec.composite(
-        ByteBufCodecs.map(Maps::newHashMapWithExpectedSize, ResourceLocation.STREAM_CODEC, PRIMITIVE_STREAM_CODEC),
-        ServerHandshakePayload::serverConfig,
-        ByteBufCodecs.registry(Registries.BLOCK).apply(ByteBufCodecs.list()),
-        ServerHandshakePayload::shearableBlocks,
-        ByteBufCodecs.<ByteBuf, ResourceLocation>list().apply(ResourceLocation.STREAM_CODEC),
-        ServerHandshakePayload::blockProviderIds,
-        ByteBufCodecs.<ByteBuf, ResourceLocation>list().apply(ResourceLocation.STREAM_CODEC),
-        ServerHandshakePayload::entityProviderIds,
-        ServerHandshakePayload::new
+            ByteBufCodecs.map(Maps::newHashMapWithExpectedSize, ResourceLocation.STREAM_CODEC, PRIMITIVE_STREAM_CODEC),
+            ServerHandshakePayload::serverConfig,
+            ByteBufCodecs.registry(Registries.BLOCK).apply(ByteBufCodecs.list()),
+            ServerHandshakePayload::shearableBlocks,
+            ByteBufCodecs.<ByteBuf, ResourceLocation>list().apply(ResourceLocation.STREAM_CODEC),
+            ServerHandshakePayload::blockProviderIds,
+            ByteBufCodecs.<ByteBuf, ResourceLocation>list().apply(ResourceLocation.STREAM_CODEC),
+            ServerHandshakePayload::entityProviderIds,
+            ServerHandshakePayload::new
     );
 }

@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.protocol.servux.litematics.placement;
 
 import com.google.common.collect.ImmutableMap;
-import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.papermc.paper.threadedregions.RegionizedServer;
 import me.earthme.luminol.utils.NullPlugin;
 import net.kyori.adventure.text.Component;

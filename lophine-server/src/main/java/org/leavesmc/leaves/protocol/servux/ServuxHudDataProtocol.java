@@ -20,7 +20,7 @@ package org.leavesmc.leaves.protocol.servux;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.serialization.DataResult;
-import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

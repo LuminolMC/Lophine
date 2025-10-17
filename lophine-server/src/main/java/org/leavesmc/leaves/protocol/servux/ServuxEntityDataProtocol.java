@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.protocol.servux;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;

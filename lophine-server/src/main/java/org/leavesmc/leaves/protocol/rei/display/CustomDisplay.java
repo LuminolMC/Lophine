@@ -13,13 +13,13 @@ import java.util.Optional;
 
 public class CustomDisplay extends CraftingDisplay {
     private static final StreamCodec<RegistryFriendlyByteBuf, CustomDisplay> CODEC = StreamCodec.composite(
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CustomDisplay::getInputEntries,
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CustomDisplay::getOutputEntries,
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-        CustomDisplay::getOptionalLocation,
-        CustomDisplay::of
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CustomDisplay::getInputEntries,
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CustomDisplay::getOutputEntries,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            CustomDisplay::getOptionalLocation,
+            CustomDisplay::of
     );
     private static final ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild("minecraft", "default/crafting/custom");
     private final int width;

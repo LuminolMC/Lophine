@@ -17,7 +17,7 @@ public abstract class FeatureExchange extends AbstractExchange {
     @Override
     public boolean checkPacket(final @NotNull ResourceLocation id, final FriendlyByteBuf packetBuf) {
         return id.equals(PacketType.FEATURE_REQUEST.identifier)
-            || id.equals(PacketType.FEATURE.identifier);
+                || id.equals(PacketType.FEATURE.identifier);
     }
 
     @Override

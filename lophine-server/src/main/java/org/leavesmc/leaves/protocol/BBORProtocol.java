@@ -1,6 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
-import fun.bm.lophine.config.modules.function.BBORProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.BBORProtocolConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -136,7 +136,7 @@ public class BBORProtocol implements LeavesProtocol {
     private static void sendStructureList(@NotNull ServerPlayer player) {
         final Registry<Structure> structureRegistry = MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.STRUCTURE);
         final Set<String> structureIds = structureRegistry.entrySet().stream()
-            .map(e -> e.getKey().location().toString()).collect(Collectors.toSet());
+                .map(e -> e.getKey().location().toString()).collect(Collectors.toSet());
         ProtocolUtils.sendBytebufPacket(player, STRUCTURE_LIST_SYNC, buf -> {
             buf.writeVarInt(structureIds.size());
             structureIds.forEach(buf::writeUtf);

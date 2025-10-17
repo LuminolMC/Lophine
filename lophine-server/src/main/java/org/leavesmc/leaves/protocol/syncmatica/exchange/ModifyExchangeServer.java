@@ -4,11 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.leavesmc.leaves.protocol.syncmatica.CommunicationManager;
-import org.leavesmc.leaves.protocol.syncmatica.PacketType;
-import org.leavesmc.leaves.protocol.syncmatica.PlayerIdentifier;
-import org.leavesmc.leaves.protocol.syncmatica.ServerPlacement;
-import org.leavesmc.leaves.protocol.syncmatica.SyncmaticaProtocol;
+import org.leavesmc.leaves.protocol.syncmatica.*;
 
 import java.util.UUID;
 
@@ -34,7 +30,7 @@ public class ModifyExchangeServer extends AbstractExchange {
         if (id.equals(PacketType.MODIFY_FINISH.identifier)) {
             CommunicationManager.receivePositionData(placement, packetBuf, getPartner());
             final PlayerIdentifier identifier = SyncmaticaProtocol.getPlayerIdentifierProvider().createOrGet(
-                getPartner()
+                    getPartner()
             );
             placement.setLastModifiedBy(identifier);
             SyncmaticaProtocol.getSyncmaticManager().updateServerPlacement();

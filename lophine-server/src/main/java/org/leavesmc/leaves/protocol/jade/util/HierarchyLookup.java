@@ -3,12 +3,7 @@ package org.leavesmc.leaves.protocol.jade.util;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.IdMapper;
 import net.minecraft.resources.ResourceLocation;
@@ -17,12 +12,7 @@ import org.leavesmc.leaves.protocol.jade.JadeProtocol;
 import org.leavesmc.leaves.protocol.jade.provider.IJadeProvider;
 import org.slf4j.Logger;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
@@ -119,9 +109,9 @@ public class HierarchyLookup<T extends IJadeProvider> implements IHierarchyLooku
             for (T provider : list) {
                 if (set.contains(provider.getUid())) {
                     throw new IllegalStateException("Duplicate UID: %s for %s".formatted(provider.getUid(), list.stream()
-                        .filter(p -> p.getUid().equals(provider.getUid()))
-                        .map(p -> p.getClass().getName())
-                        .toList()
+                            .filter(p -> p.getUid().equals(provider.getUid()))
+                            .map(p -> p.getClass().getName())
+                            .toList()
                     ));
                 }
                 set.add(provider.getUid());
@@ -129,9 +119,9 @@ public class HierarchyLookup<T extends IJadeProvider> implements IHierarchyLooku
         });
 
         objects = ImmutableListMultimap.<Class<?>, T>builder()
-            .orderValuesBy(Comparator.comparingInt(priorityStore::byValue))
-            .putAll(objects)
-            .build();
+                .orderValuesBy(Comparator.comparingInt(priorityStore::byValue))
+                .putAll(objects)
+                .build();
 
         if (idMapped) {
             idMapper = createIdMapper();

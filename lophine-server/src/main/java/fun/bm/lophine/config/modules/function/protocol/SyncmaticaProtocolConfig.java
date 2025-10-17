@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function;
+package fun.bm.lophine.config.modules.function.protocol;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import me.earthme.luminol.config.IConfigModule;
@@ -7,7 +7,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 import org.leavesmc.leaves.protocol.syncmatica.SyncmaticaProtocol;
 
-@ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "syncmatica-protocol")
+@ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "syncmatica", directory = {"protocol"})
 public class SyncmaticaProtocolConfig implements IConfigModule {
     @ConfigInfo(name = "enabled", comments = """
             Enable Syncmatica protocol support""")

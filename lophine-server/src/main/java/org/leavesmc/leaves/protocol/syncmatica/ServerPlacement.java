@@ -45,11 +45,11 @@ public class ServerPlacement {
     @Nullable
     public static ServerPlacement fromJson(final @NotNull JsonObject obj) {
         if (obj.has("id")
-            && obj.has("file_name")
-            && obj.has("hash")
-            && obj.has("origin")
-            && obj.has("rotation")
-            && obj.has("mirror")) {
+                && obj.has("file_name")
+                && obj.has("hash")
+                && obj.has("origin")
+                && obj.has("rotation")
+                && obj.has("mirror")) {
             final UUID id = UUID.fromString(obj.get("id").getAsString());
             final String name = obj.get("file_name").getAsString();
             final UUID hashValue = UUID.fromString(obj.get("hash").getAsString());
@@ -70,7 +70,7 @@ public class ServerPlacement {
 
             if (obj.has("lastModifiedBy")) {
                 newPlacement.lastModifiedBy = SyncmaticaProtocol.getPlayerIdentifierProvider()
-                    .fromJson(obj.get("lastModifiedBy").getAsJsonObject());
+                        .fromJson(obj.get("lastModifiedBy").getAsJsonObject());
             } else {
                 newPlacement.lastModifiedBy = owner;
             }

@@ -1,6 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
-import fun.bm.lophine.config.modules.function.XaeroMapProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.XaeroMapProtocolConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Contract;

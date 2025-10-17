@@ -7,11 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.protocol.jade.JadeProtocol;
 import org.leavesmc.leaves.protocol.jade.provider.IJadeProvider;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 public interface IHierarchyLookup<T extends IJadeProvider> {
@@ -29,8 +25,8 @@ public interface IHierarchyLookup<T extends IJadeProvider> {
 
     default List<ResourceLocation> mappedIds() {
         return Streams.stream(Objects.requireNonNull(idMapper()))
-            .map(IJadeProvider::getUid)
-            .toList();
+                .map(IJadeProvider::getUid)
+                .toList();
     }
 
     void register(Class<?> clazz, T provider);

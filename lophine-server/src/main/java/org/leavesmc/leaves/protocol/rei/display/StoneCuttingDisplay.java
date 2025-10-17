@@ -20,13 +20,13 @@ import java.util.Optional;
  */
 public class StoneCuttingDisplay extends Display {
     private static final StreamCodec<RegistryFriendlyByteBuf, StoneCuttingDisplay> CODEC = StreamCodec.composite(
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        StoneCuttingDisplay::getInputEntries,
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        StoneCuttingDisplay::getOutputEntries,
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-        StoneCuttingDisplay::getOptionalLocation,
-        StoneCuttingDisplay::of
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            StoneCuttingDisplay::getInputEntries,
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            StoneCuttingDisplay::getOutputEntries,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            StoneCuttingDisplay::getOptionalLocation,
+            StoneCuttingDisplay::of
     );
 
     private static final ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild("minecraft", "default/stone_cutting");
@@ -37,9 +37,9 @@ public class StoneCuttingDisplay extends Display {
 
     public StoneCuttingDisplay(RecipeHolder<StonecutterRecipe> recipeHolder) {
         this(
-            List.of(EntryIngredient.ofIngredient(recipeHolder.value().input())),
-            List.of(EntryIngredient.of(recipeHolder.value().assemble(new SingleRecipeInput(ItemStack.EMPTY), CraftRegistry.getMinecraftRegistry()))),
-            recipeHolder.id().location()
+                List.of(EntryIngredient.ofIngredient(recipeHolder.value().input())),
+                List.of(EntryIngredient.of(recipeHolder.value().assemble(new SingleRecipeInput(ItemStack.EMPTY), CraftRegistry.getMinecraftRegistry()))),
+                recipeHolder.id().location()
         );
     }
 

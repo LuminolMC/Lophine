@@ -18,15 +18,15 @@ import java.util.function.IntFunction;
 
 public class SmithingDisplay extends Display {
     private static final StreamCodec<RegistryFriendlyByteBuf, SmithingDisplay> CODEC = StreamCodec.composite(
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        SmithingDisplay::getInputEntries,
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        SmithingDisplay::getOutputEntries,
-        ByteBufCodecs.optional(SmithingRecipeType.STREAM_CODEC),
-        SmithingDisplay::getOptionalType,
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-        SmithingDisplay::getOptionalLocation,
-        SmithingDisplay::of
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            SmithingDisplay::getInputEntries,
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            SmithingDisplay::getOutputEntries,
+            ByteBufCodecs.optional(SmithingRecipeType.STREAM_CODEC),
+            SmithingDisplay::getOptionalType,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            SmithingDisplay::getOptionalLocation,
+            SmithingDisplay::of
     );
 
     private static final ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild("minecraft", "default/smithing");
@@ -34,10 +34,10 @@ public class SmithingDisplay extends Display {
     private final SmithingRecipeType type;
 
     public SmithingDisplay(
-        @NotNull List<EntryIngredient> inputs,
-        @NotNull List<EntryIngredient> outputs,
-        @NotNull SmithingRecipeType type,
-        @NotNull ResourceLocation location
+            @NotNull List<EntryIngredient> inputs,
+            @NotNull List<EntryIngredient> outputs,
+            @NotNull SmithingRecipeType type,
+            @NotNull ResourceLocation location
     ) {
         super(inputs, outputs, location);
         this.type = type;
@@ -74,17 +74,17 @@ public class SmithingDisplay extends Display {
 
     public static class Trimming extends SmithingDisplay {
         private static final StreamCodec<RegistryFriendlyByteBuf, SmithingDisplay.Trimming> CODEC = StreamCodec.composite(
-            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-            SmithingDisplay.Trimming::getInputEntries,
-            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-            SmithingDisplay.Trimming::getOutputEntries,
-            ByteBufCodecs.optional(SmithingRecipeType.STREAM_CODEC),
-            SmithingDisplay.Trimming::getOptionalType,
-            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-            SmithingDisplay.Trimming::getOptionalLocation,
-            TrimPattern.STREAM_CODEC,
-            SmithingDisplay.Trimming::pattern,
-            SmithingDisplay.Trimming::of
+                EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+                SmithingDisplay.Trimming::getInputEntries,
+                EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+                SmithingDisplay.Trimming::getOutputEntries,
+                ByteBufCodecs.optional(SmithingRecipeType.STREAM_CODEC),
+                SmithingDisplay.Trimming::getOptionalType,
+                ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+                SmithingDisplay.Trimming::getOptionalLocation,
+                TrimPattern.STREAM_CODEC,
+                SmithingDisplay.Trimming::pattern,
+                SmithingDisplay.Trimming::of
         );
 
         private static final ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild("minecraft", "default/smithing/trimming");
@@ -92,11 +92,11 @@ public class SmithingDisplay extends Display {
         private final Holder<TrimPattern> pattern;
 
         public Trimming(
-            @NotNull List<EntryIngredient> inputs,
-            @NotNull List<EntryIngredient> outputs,
-            @NotNull SmithingRecipeType type,
-            @NotNull ResourceLocation location,
-            @NotNull Holder<TrimPattern> pattern
+                @NotNull List<EntryIngredient> inputs,
+                @NotNull List<EntryIngredient> outputs,
+                @NotNull SmithingRecipeType type,
+                @NotNull ResourceLocation location,
+                @NotNull Holder<TrimPattern> pattern
         ) {
             super(inputs, outputs, type, location);
             this.pattern = pattern;

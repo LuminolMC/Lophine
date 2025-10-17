@@ -12,7 +12,7 @@ public record SyncmaticaPayload(ResourceLocation packetType, FriendlyByteBuf dat
 
     @Codec
     private static final StreamCodec<FriendlyByteBuf, SyncmaticaPayload> CODEC = StreamCodec.of(
-        (buf, payload) -> buf.writeResourceLocation(payload.packetType()).writeBytes(payload.data()),
-        buf -> new SyncmaticaPayload(buf.readResourceLocation(), new FriendlyByteBuf(buf.readBytes(buf.readableBytes())))
+            (buf, payload) -> buf.writeResourceLocation(payload.packetType()).writeBytes(payload.data()),
+            buf -> new SyncmaticaPayload(buf.readResourceLocation(), new FriendlyByteBuf(buf.readBytes(buf.readableBytes())))
     );
 }

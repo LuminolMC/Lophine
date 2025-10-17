@@ -76,8 +76,8 @@ public class EntryIngredient {
             return EntryIngredient.empty();
         }
         ItemStack[] itemStacks = ingredient.items()
-            .map(itemHolder -> itemHolder.value().getDefaultInstance())
-            .toArray(ItemStack[]::new);
+                .map(itemHolder -> itemHolder.value().getDefaultInstance())
+                .toArray(ItemStack[]::new);
         return EntryIngredient.of(itemStacks);
     }
 

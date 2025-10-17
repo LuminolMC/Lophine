@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.protocol.servux.litematics;
 
-import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -40,7 +40,7 @@ public class PlayerIdentifierProvider {
 
         final UUID jsonUUID = UUID.fromString(obj.get("uuid").getAsString());
         return identifiers.computeIfAbsent(jsonUUID,
-            key -> new PlayerIdentifier(jsonUUID, obj.get("name").getAsString())
+                key -> new PlayerIdentifier(jsonUUID, obj.get("name").getAsString())
         );
     }
 }

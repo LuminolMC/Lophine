@@ -4,11 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.leavesmc.leaves.protocol.syncmatica.CommunicationManager;
-import org.leavesmc.leaves.protocol.syncmatica.MessageType;
-import org.leavesmc.leaves.protocol.syncmatica.PacketType;
-import org.leavesmc.leaves.protocol.syncmatica.ServerPlacement;
-import org.leavesmc.leaves.protocol.syncmatica.SyncmaticaProtocol;
+import org.leavesmc.leaves.protocol.syncmatica.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,8 +35,8 @@ public class DownloadExchange extends AbstractExchange {
     @Override
     public boolean checkPacket(final @NotNull ResourceLocation id, final FriendlyByteBuf packetBuf) {
         if (id.equals(PacketType.SEND_LITEMATIC.identifier)
-            || id.equals(PacketType.FINISHED_LITEMATIC.identifier)
-            || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
+                || id.equals(PacketType.FINISHED_LITEMATIC.identifier)
+                || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
             return checkUUID(packetBuf, toDownload.getId());
         }
         return false;
@@ -55,9 +51,9 @@ public class DownloadExchange extends AbstractExchange {
             if (SyncmaticaProtocol.isOverQuota(bytesSent)) {
                 close(true);
                 SyncmaticaProtocol.getCommunicationManager().sendMessage(
-                    getPartner(),
-                    MessageType.ERROR,
-                    "syncmatica.error.cancelled_transmit_exceed_quota"
+                        getPartner(),
+                        MessageType.ERROR,
+                        "syncmatica.error.cancelled_transmit_exceed_quota"
                 );
                 return;
             }

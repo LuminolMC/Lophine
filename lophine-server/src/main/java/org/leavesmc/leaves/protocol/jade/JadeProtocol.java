@@ -1,7 +1,7 @@
 package org.leavesmc.leaves.protocol.jade;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.function.JadeProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.JadeProtocolConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -36,29 +36,11 @@ import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
 import org.leavesmc.leaves.protocol.jade.accessor.BlockAccessor;
 import org.leavesmc.leaves.protocol.jade.accessor.EntityAccessor;
-import org.leavesmc.leaves.protocol.jade.payload.ClientHandshakePayload;
-import org.leavesmc.leaves.protocol.jade.payload.ReceiveDataPayload;
-import org.leavesmc.leaves.protocol.jade.payload.RequestBlockPayload;
-import org.leavesmc.leaves.protocol.jade.payload.RequestEntityPayload;
-import org.leavesmc.leaves.protocol.jade.payload.ServerHandshakePayload;
-import org.leavesmc.leaves.protocol.jade.provider.IJadeProvider;
-import org.leavesmc.leaves.protocol.jade.provider.IServerDataProvider;
-import org.leavesmc.leaves.protocol.jade.provider.IServerExtensionProvider;
-import org.leavesmc.leaves.protocol.jade.provider.ItemStorageExtensionProvider;
-import org.leavesmc.leaves.protocol.jade.provider.ItemStorageProvider;
+import org.leavesmc.leaves.protocol.jade.payload.*;
+import org.leavesmc.leaves.protocol.jade.provider.*;
 import org.leavesmc.leaves.protocol.jade.provider.block.*;
-import org.leavesmc.leaves.protocol.jade.provider.entity.AnimalOwnerProvider;
-import org.leavesmc.leaves.protocol.jade.provider.entity.MobBreedingProvider;
-import org.leavesmc.leaves.protocol.jade.provider.entity.MobGrowthProvider;
-import org.leavesmc.leaves.protocol.jade.provider.entity.NextEntityDropProvider;
-import org.leavesmc.leaves.protocol.jade.provider.entity.PetArmorProvider;
-import org.leavesmc.leaves.protocol.jade.provider.entity.StatusEffectsProvider;
-import org.leavesmc.leaves.protocol.jade.provider.entity.ZombieVillagerProvider;
-import org.leavesmc.leaves.protocol.jade.util.HierarchyLookup;
-import org.leavesmc.leaves.protocol.jade.util.LootTableMineableCollector;
-import org.leavesmc.leaves.protocol.jade.util.PairHierarchyLookup;
-import org.leavesmc.leaves.protocol.jade.util.PriorityStore;
-import org.leavesmc.leaves.protocol.jade.util.WrappedHierarchyLookup;
+import org.leavesmc.leaves.protocol.jade.provider.entity.*;
+import org.leavesmc.leaves.protocol.jade.util.*;
 import org.leavesmc.leaves.protocol.servux.litematics.utils.NbtUtils;
 import org.slf4j.Logger;
 
@@ -253,8 +235,8 @@ public class JadeProtocol implements LeavesProtocol {
     private static void rebuildShearableBlocks() {
         try {
             shearableBlocks = Collections.unmodifiableList(LootTableMineableCollector.execute(
-                MinecraftServer.getServer().reloadableRegistries().lookup().lookupOrThrow(Registries.LOOT_TABLE),
-                Items.SHEARS.getDefaultInstance()
+                    MinecraftServer.getServer().reloadableRegistries().lookup().lookupOrThrow(Registries.LOOT_TABLE),
+                    Items.SHEARS.getDefaultInstance()
             ));
         } catch (Throwable ignore) {
             shearableBlocks = List.of();

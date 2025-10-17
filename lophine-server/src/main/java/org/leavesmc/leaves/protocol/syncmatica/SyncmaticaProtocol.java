@@ -1,6 +1,6 @@
 package org.leavesmc.leaves.protocol.syncmatica;
 
-import fun.bm.lophine.config.modules.function.SyncmaticaProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.SyncmaticaProtocolConfig;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 

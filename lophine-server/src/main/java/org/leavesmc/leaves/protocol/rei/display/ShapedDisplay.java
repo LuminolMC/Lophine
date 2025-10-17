@@ -21,17 +21,17 @@ import java.util.Optional;
  */
 public class ShapedDisplay extends CraftingDisplay {
     private static final StreamCodec<RegistryFriendlyByteBuf, CraftingDisplay> CODEC = StreamCodec.composite(
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CraftingDisplay::getInputEntries,
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CraftingDisplay::getOutputEntries,
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-        CraftingDisplay::getOptionalLocation,
-        ByteBufCodecs.INT,
-        CraftingDisplay::getWidth,
-        ByteBufCodecs.INT,
-        CraftingDisplay::getHeight,
-        ShapedDisplay::of
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CraftingDisplay::getInputEntries,
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CraftingDisplay::getOutputEntries,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            CraftingDisplay::getOptionalLocation,
+            ByteBufCodecs.INT,
+            CraftingDisplay::getWidth,
+            ByteBufCodecs.INT,
+            CraftingDisplay::getHeight,
+            ShapedDisplay::of
     );
     private static final ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild("minecraft", "default/crafting/shaped");
     private final int width;
@@ -39,9 +39,9 @@ public class ShapedDisplay extends CraftingDisplay {
 
     public ShapedDisplay(@NotNull RecipeHolder<ShapedRecipe> recipeHolder) {
         super(
-            ofIngredient(recipeHolder.value()),
-            List.of(EntryIngredient.of(recipeHolder.value().assemble(CraftingInput.EMPTY, CraftRegistry.getMinecraftRegistry()))),
-            recipeHolder.id().location()
+                ofIngredient(recipeHolder.value()),
+                List.of(EntryIngredient.of(recipeHolder.value().assemble(CraftingInput.EMPTY, CraftRegistry.getMinecraftRegistry()))),
+                recipeHolder.id().location()
         );
         this.width = recipeHolder.value().getWidth();
         this.height = recipeHolder.value().getHeight();
@@ -49,9 +49,9 @@ public class ShapedDisplay extends CraftingDisplay {
 
     public ShapedDisplay(@NotNull ShapedCraftingRecipeDisplay recipeDisplay, ResourceLocation id) {
         super(
-            Display.ofSlotDisplays(recipeDisplay.ingredients()),
-            List.of(ofSlotDisplay(recipeDisplay.result())),
-            id
+                Display.ofSlotDisplays(recipeDisplay.ingredients()),
+                List.of(ofSlotDisplay(recipeDisplay.result())),
+                id
         );
         this.width = recipeDisplay.width();
         this.height = recipeDisplay.height();
@@ -68,8 +68,8 @@ public class ShapedDisplay extends CraftingDisplay {
                 return EntryIngredient.empty();
             }
             ItemStack[] itemStacks = ingredient.get().items()
-                .map(itemHolder -> new ItemStack(itemHolder, 1))
-                .toArray(ItemStack[]::new);
+                    .map(itemHolder -> new ItemStack(itemHolder, 1))
+                    .toArray(ItemStack[]::new);
             return EntryIngredient.of(itemStacks);
         }).toList();
     }

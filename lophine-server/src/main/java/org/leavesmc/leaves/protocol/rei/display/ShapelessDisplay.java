@@ -18,13 +18,13 @@ import java.util.Optional;
 
 public class ShapelessDisplay extends CraftingDisplay {
     private static final StreamCodec<RegistryFriendlyByteBuf, CraftingDisplay> CODEC = StreamCodec.composite(
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CraftingDisplay::getInputEntries,
-        EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
-        CraftingDisplay::getOutputEntries,
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
-        CraftingDisplay::getOptionalLocation,
-        ShapelessDisplay::of
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CraftingDisplay::getInputEntries,
+            EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
+            CraftingDisplay::getOutputEntries,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC),
+            CraftingDisplay::getOptionalLocation,
+            ShapelessDisplay::of
     );
 
     private static final ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild("minecraft", "default/crafting/shapeless");
@@ -37,17 +37,17 @@ public class ShapelessDisplay extends CraftingDisplay {
 
     public ShapelessDisplay(@NotNull RecipeHolder<ShapelessRecipe> recipeHolder) {
         this(
-            recipeHolder.value().placementInfo().ingredients().stream().map(EntryIngredient::ofIngredient).toList(),
-            List.of(EntryIngredient.of(recipeHolder.value().assemble(CraftingInput.EMPTY, CraftRegistry.getMinecraftRegistry()))),
-            recipeHolder.id().location()
+                recipeHolder.value().placementInfo().ingredients().stream().map(EntryIngredient::ofIngredient).toList(),
+                List.of(EntryIngredient.of(recipeHolder.value().assemble(CraftingInput.EMPTY, CraftRegistry.getMinecraftRegistry()))),
+                recipeHolder.id().location()
         );
     }
 
     public ShapelessDisplay(@NotNull ShapelessCraftingRecipeDisplay recipeDisplay, ResourceLocation id) {
         this(
-            ofSlotDisplays(recipeDisplay.ingredients()),
-            List.of(ofSlotDisplay(recipeDisplay.result())),
-            id
+                ofSlotDisplays(recipeDisplay.ingredients()),
+                List.of(ofSlotDisplay(recipeDisplay.result())),
+                id
         );
     }
 

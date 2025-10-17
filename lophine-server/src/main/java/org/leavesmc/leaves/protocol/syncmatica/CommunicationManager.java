@@ -1,7 +1,7 @@
 package org.leavesmc.leaves.protocol.syncmatica;
 
 import com.mojang.authlib.GameProfile;
-import fun.bm.lophine.config.modules.function.SyncmaticaProtocolConfig;
+import fun.bm.lophine.config.modules.function.protocol.SyncmaticaProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,23 +13,13 @@ import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
-import org.leavesmc.leaves.protocol.syncmatica.exchange.DownloadExchange;
-import org.leavesmc.leaves.protocol.syncmatica.exchange.Exchange;
-import org.leavesmc.leaves.protocol.syncmatica.exchange.ExchangeTarget;
-import org.leavesmc.leaves.protocol.syncmatica.exchange.ModifyExchangeServer;
-import org.leavesmc.leaves.protocol.syncmatica.exchange.UploadExchange;
-import org.leavesmc.leaves.protocol.syncmatica.exchange.VersionHandshakeServer;
+import org.leavesmc.leaves.protocol.syncmatica.exchange.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @LeavesProtocol.Register(namespace = "syncmatica")
 public class CommunicationManager implements LeavesProtocol {
