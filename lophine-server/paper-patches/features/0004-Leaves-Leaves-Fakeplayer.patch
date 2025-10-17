@@ -161,7 +161,7 @@ index 852e1ffef6a022caad7c8eff34091e50112a2290..8eb5d014d9ed688ffebaffb4ce0bb408
          if (entity instanceof EnderDragonPart complexPart) {
              if (complexPart.parentMob instanceof EnderDragon) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index e040f9a7c9451fbe547dda56952410047a99ddc0..05753de195bd7f4ac2952183662a8cc9ec8f4ba0 100644
+index 317837a2a9b3b511b5cac4df4db248d4652816dc..a8253d1a3129c8258e9ead7c430e1bcf82f735d7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -897,7 +897,11 @@ public class CraftEventFactory {
