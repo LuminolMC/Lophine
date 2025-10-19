@@ -5,7 +5,7 @@ Subject: [PATCH] Transformed Configs
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
-index 66ae993896ba38a7fa5302d4ff88a52e4a0bb72c..c6d53d720437f43a713469049de3d90d1082cd2e 100644
+index ba360d57fd9ee2363c73863bc01b6592e59be4e5..86e6cc4c024ece5f45fb53b4cd341b1df2e8f0c7 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 @@ -11,6 +11,7 @@ public class CommandConfig implements IConfigModule {
@@ -14,8 +14,8 @@ index 66ae993896ba38a7fa5302d4ff88a52e4a0bb72c..c6d53d720437f43a713469049de3d90d
      public static boolean data = false;
 +    @TransformedConfig(name = "command_block_enabled", directory = {"experiment", "command"}, originInstance = "lophine")
      @TransformedConfig(name = "enabled", directory = {"experiment", "force_enable_command_block_command_execution"})
-     @ConfigInfo(name = "enable_command_block")
-     public static boolean commandBlock = false;
+     @ConfigInfo(name = "enable_command_block", comments = """
+            Force to enable command blocks.
 diff --git a/src/main/java/me/earthme/luminol/config/modules/optimizations/PaperPacketLimiterConfig.java b/src/main/java/me/earthme/luminol/config/modules/optimizations/PaperPacketLimiterConfig.java
 index 35e6014f04093050a9a62b895b43e5c5d8c6a28e..11abfb884f972fd73ca4c13a6e309de1bcd23fd5 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/optimizations/PaperPacketLimiterConfig.java
