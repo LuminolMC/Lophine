@@ -330,7 +330,7 @@ public class REIServerProtocol implements LeavesProtocol {
                     List<SlotAccessor> input = readSlots(container, player, nbt.getListOrEmpty("InputSlots"));
                     List<SlotAccessor> inventory = readSlots(container, player, nbt.getListOrEmpty("InventorySlots"));
                     NewInputSlotCrafter<AbstractContainerMenu> crafter = new NewInputSlotCrafter<>(container, input, inventory, recipes);
-                    Bukkit.getScheduler().runTask(MinecraftInternalPlugin.INSTANCE, () -> {
+                    Bukkit.getGlobalRegionScheduler().run(MinecraftInternalPlugin.INSTANCE, (task) -> {
                         try {
                             crafter.fillInputSlots(player, shift);
                         } catch (InputSlotCrafter.NotEnoughMaterialsException ignored1) {
