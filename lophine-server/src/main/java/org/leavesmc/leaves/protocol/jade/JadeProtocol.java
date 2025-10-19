@@ -44,10 +44,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.*;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
@@ -162,7 +160,7 @@ public class JadeProtocol implements LeavesProtocol {
 
     @ProtocolHandler.PayloadReceiver(payload = RequestEntityPayload.class)
     public static void requestEntityData(ServerPlayer player, RequestEntityPayload payload) {
-        Bukkit.getGlobalRegionScheduler().run(MinecraftInternalPlugin.INSTANCE, (task) -> {
+        player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
             EntityAccessor accessor = payload.data().unpack(player);
             if (accessor == null) {
                 return;
@@ -193,12 +191,12 @@ public class JadeProtocol implements LeavesProtocol {
             tag.putInt("EntityId", entity.getId());
 
             ProtocolUtils.sendPayloadPacket(player, new ReceiveDataPayload(tag));
-        });
+        }, null, 1L);
     }
 
     @ProtocolHandler.PayloadReceiver(payload = RequestBlockPayload.class)
     public static void requestBlockData(ServerPlayer player, RequestBlockPayload payload) {
-        Bukkit.getGlobalRegionScheduler().run(MinecraftInternalPlugin.INSTANCE, (task) -> {
+        player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
             BlockAccessor accessor = payload.data().unpack(player);
             if (accessor == null) {
                 return;
@@ -238,7 +236,7 @@ public class JadeProtocol implements LeavesProtocol {
             tag.putString("BlockId", BuiltInRegistries.BLOCK.getKey(block).toString());
 
             ProtocolUtils.sendPayloadPacket(player, new ReceiveDataPayload(tag));
-        });
+        }, null, 1L);
     }
 
     @ProtocolHandler.ReloadServer
