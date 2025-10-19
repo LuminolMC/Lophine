@@ -18,7 +18,7 @@ index b957585cf7cf7f845e20f59c7b355722880f3b4e..9b279d003eb9f780ed2723c98b28d9f4
                  if (!this.cancelled.get()) {
                      throw new IllegalStateException("Scheduled region should be acquirable");
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index b156b5c635f931a3d4abc0584591f90476d011a6..ef0b401affa58077e8dd32b52063202a1c7e0bb6 100644
+index b156b5c635f931a3d4abc0584591f90476d011a6..0c2b7aafa8ddee36d38fabd3561e6f97fce828f9 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -305,6 +305,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -26,32 +26,36 @@ index b156b5c635f931a3d4abc0584591f90476d011a6..ef0b401affa58077e8dd32b52063202a
      // Folia start - regionised ticking
      public final io.papermc.paper.threadedregions.RegionizedServer regionizedServer = new io.papermc.paper.threadedregions.RegionizedServer();
 +    private int tickCount; // Lophine - reuse tick count
-+    private int lastTickCount;
++    private final ThreadLocal<Integer> lastTickCount = ThreadLocal.withInitial(() -> 0); // Lophine - reuse tick count
  
      @Override
      public <V> CompletableFuture<V> submit(java.util.function.Supplier<V> task) {
-@@ -2227,9 +2229,25 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2227,9 +2229,29 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return false;
      }
  
 +    // Lophine start - reuse tick count
      public int getTickCount() {
 -        throw new UnsupportedOperationException(); // Folia - region threading
-+        return tickCount;
++        return this.tickCount;
 +    }
 +
 +    public boolean checkTickCount(int period) {
-+        if (tickCount % period == 0) {
++        return this.checkTickCount(period, this.lastTickCount.get());
++    }
++
++    public boolean checkTickCount(int period, int lastTickCount) {
++        if (this.tickCount % period == 0) {
 +            return true;
 +        }
 +
 +        int nextPeriodTick = ((lastTickCount / period) + 1) * period;
-+        return nextPeriodTick < tickCount;
++        return nextPeriodTick < this.tickCount;
 +    }
 +
-+    public void handleTickCount(int tickCount) {
-+        this.lastTickCount = this.tickCount;
-+        this.tickCount += tickCount;
++    public void handleTickCount(int deltaTicks) {
++        this.lastTickCount.set(this.getTickCount());
++        this.tickCount += deltaTicks;
      }
 +    // Lophine end - reuse tick count
  

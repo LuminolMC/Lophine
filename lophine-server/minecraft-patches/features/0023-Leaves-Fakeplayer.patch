@@ -33,7 +33,7 @@ index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..04ae8de63af0a8abe578f14c8ef85fd4
      private DisconnectionDetails disconnectionDetails;
      private boolean encrypted;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index ef0b401affa58077e8dd32b52063202a1c7e0bb6..c461ab6c6ab21008be893f84913f0e6f9cf6d336 100644
+index 0c2b7aafa8ddee36d38fabd3561e6f97fce828f9..e5fc1969b8af692d785214731b3f8cc47df2aa78 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -349,6 +349,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -74,7 +74,7 @@ index ef0b401affa58077e8dd32b52063202a1c7e0bb6..c461ab6c6ab21008be893f84913f0e6f
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -3001,6 +3009,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3005,6 +3013,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return 0;
      }
  
@@ -548,7 +548,7 @@ index 52fd730998535ea071bfc99b7cc2c254b9b656d7..0abf6f0265fcb916f2c2c76fb1313bd1
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index a720d8db40ca56c997a4eeae14ebbc6fe764892c..118a21e7ba82832560fb0d8fb8d6b21beeb14000 100644
+index 47ef63061737f3efdb0ce7ec71a8d9c920385bb0..674c4cc7443545f7e333d2bcec9e5fc98000ecae 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1225,7 +1225,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
