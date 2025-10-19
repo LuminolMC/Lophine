@@ -21,6 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.BotList;
@@ -55,8 +56,24 @@ public class SaveCommand extends BotSubcommand {
 
         @Override
         protected boolean execute(@NotNull CommandContext context) throws CommandSyntaxException {
-            ServerBot bot = context.getCustomArgument(BotArgument.class);
-            CommandSender sender = context.getSender();
+            save(context.getCustomArgument(BotArgument.class), context.getSender());
+            return true;
+        }
+
+        private boolean save(ServerBot bot, CommandSender sender) {
+            return save(bot, sender, true);
+        }
+
+        private boolean save(ServerBot bot, CommandSender sender, boolean taskQueue) {
+            if (taskQueue) {
+                bot.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> saveOrigin(bot, sender), null, 1L);
+            } else {
+                saveOrigin(bot, sender);
+            }
+            return true;
+        }
+
+        private boolean saveOrigin(ServerBot bot, CommandSender sender) {
             BotList botList = BotList.INSTANCE;
 
             boolean success = botList.removeBot(bot, BotRemoveEvent.RemoveReason.COMMAND, sender, true);

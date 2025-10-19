@@ -56,9 +56,7 @@ public class RemoveCommand extends BotSubcommand {
 
     private static boolean removeBot(@NotNull ServerBot bot, @Nullable CommandSender sender, boolean taskQueue) {
         if (taskQueue) {
-            bot.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
-                removeBotOrigin(bot, sender);
-            }, null, 1L);
+            bot.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> removeBotOrigin(bot, sender), null, 1L);
         } else {
             return removeBotOrigin(bot, sender);
         }
