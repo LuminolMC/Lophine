@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index d8066afd5f3f2ea9a5dff87d853562e22268785c..f8b2364fa162a41304a99a4993354e33528ab801 100644
+index a5208f5426ea2e5d8f50c51fe17718ea1d63eef5..c80c578f1a3786bd7413c9a7af8ae125fe7975bb 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
 @@ -21,6 +21,7 @@ public class ConfigManager {
