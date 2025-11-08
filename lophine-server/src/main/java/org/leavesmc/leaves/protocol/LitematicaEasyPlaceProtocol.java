@@ -18,6 +18,7 @@
 package org.leavesmc.leaves.protocol;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -34,7 +35,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.leavesmc.leaves.LeavesLogger;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -43,28 +44,30 @@ import java.util.List;
 
 public class LitematicaEasyPlaceProtocol {
 
+    private static final Logger LOGGER = LogUtils.getClassLogger();
+
     public static final ImmutableSet<Property<?>> WHITELISTED_PROPERTIES = ImmutableSet.of(
-        BlockStateProperties.INVERTED,
-        BlockStateProperties.OPEN,
-        BlockStateProperties.BELL_ATTACHMENT,
-        BlockStateProperties.AXIS,
-        BlockStateProperties.HALF,
-        BlockStateProperties.ATTACH_FACE,
-        BlockStateProperties.CHEST_TYPE,
-        BlockStateProperties.MODE_COMPARATOR,
-        BlockStateProperties.DOOR_HINGE,
-        BlockStateProperties.FACING,
-        BlockStateProperties.FACING_HOPPER,
-        BlockStateProperties.HORIZONTAL_FACING,
-        BlockStateProperties.ORIENTATION,
-        BlockStateProperties.RAIL_SHAPE,
-        BlockStateProperties.RAIL_SHAPE_STRAIGHT,
-        BlockStateProperties.SLAB_TYPE,
-        BlockStateProperties.STAIRS_SHAPE,
-        BlockStateProperties.BITES,
-        BlockStateProperties.DELAY,
-        BlockStateProperties.NOTE,
-        BlockStateProperties.ROTATION_16
+            BlockStateProperties.INVERTED,
+            BlockStateProperties.OPEN,
+            BlockStateProperties.BELL_ATTACHMENT,
+            BlockStateProperties.AXIS,
+            BlockStateProperties.HALF,
+            BlockStateProperties.ATTACH_FACE,
+            BlockStateProperties.CHEST_TYPE,
+            BlockStateProperties.MODE_COMPARATOR,
+            BlockStateProperties.DOOR_HINGE,
+            BlockStateProperties.FACING,
+            BlockStateProperties.FACING_HOPPER,
+            BlockStateProperties.HORIZONTAL_FACING,
+            BlockStateProperties.ORIENTATION,
+            BlockStateProperties.RAIL_SHAPE,
+            BlockStateProperties.RAIL_SHAPE_STRAIGHT,
+            BlockStateProperties.SLAB_TYPE,
+            BlockStateProperties.STAIRS_SHAPE,
+            BlockStateProperties.BITES,
+            BlockStateProperties.DELAY,
+            BlockStateProperties.NOTE,
+            BlockStateProperties.ROTATION_16
     );
 
     public static BlockState applyPlacementProtocol(BlockState state, BlockPlaceContext context) {
@@ -136,7 +139,7 @@ public class LitematicaEasyPlaceProtocol {
                 }
             }
         } catch (Exception e) {
-            LeavesLogger.LOGGER.warning("Exception trying to apply placement protocol value", e);
+            LOGGER.warn("Exception trying to apply placement protocol value", e);
         }
 
         if (state.getBlock() instanceof RepeaterBlock repeaterBlock) {
