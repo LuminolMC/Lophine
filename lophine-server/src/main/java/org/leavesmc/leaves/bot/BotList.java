@@ -214,10 +214,10 @@ public class BotList {
     }
 
     /*
-    * return true if async
-    */
+     * return true if async
+     */
     public boolean removeBot(@NotNull ServerBot bot, @NotNull BotRemoveEvent.RemoveReason reason, @Nullable CommandSender remover, boolean saved, boolean async) {
-        if (async && !TickThread.isTickThreadFor(bot.level(), bot.getX(),bot.getZ())) {
+        if (async && !TickThread.isTickThreadFor(bot.level(), bot.getX(), bot.getZ())) {
             bot.getBukkitEntity().taskScheduler.schedule((Entity unused) -> this.removeBot(bot, reason, remover, saved), null, 1L);
             return true;
         }
