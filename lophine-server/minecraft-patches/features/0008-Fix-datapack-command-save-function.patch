@@ -71,20 +71,24 @@ index a5032b34752061d61fd9ddb4db828d35e403f5e7..3eaa9c85d06f6ecc8ed639d8befa8614
          if (selectedPacks.isEmpty()) {
              source.sendSuccess(() -> Component.translatable("commands.datapack.list.enabled.none"), false);
 diff --git a/net/minecraft/server/commands/ReloadCommand.java b/net/minecraft/server/commands/ReloadCommand.java
-index b540a3c3a02f7242578a63477e34b9063e86f1d2..b7e5f0c3d0d9ab74d39b593417b21cf2ee3eca5a 100644
+index b540a3c3a02f7242578a63477e34b9063e86f1d2..bc999de32931558d0d8dc26264653dd63c1cad19 100644
 --- a/net/minecraft/server/commands/ReloadCommand.java
 +++ b/net/minecraft/server/commands/ReloadCommand.java
-@@ -16,6 +16,13 @@ public class ReloadCommand {
+@@ -16,11 +16,17 @@ public class ReloadCommand {
      private static final Logger LOGGER = LogUtils.getLogger();
  
      public static void reloadPacks(Collection<String> selectedIds, CommandSourceStack source) {
 +        // Lophine start - region thread skip reload // TODO - add reload support
-+        if (true) {
-+            source.getServer().saveDatapacks(selectedIds);
-+            source.getSender().sendMessage("You need to restart server to load datapacks update.");
-+            return;
-+        }
-+        // Lophine end - region thread skip reload // TODO - add reload support
++        source.getServer().saveDatapacks(selectedIds);
++        source.getSender().sendMessage("You need to restart server to load datapacks update.");
++        if (false) {
          source.getServer().reloadResources(selectedIds, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause.COMMAND).exceptionally(throwable -> { // Paper - Add ServerResourcesReloadedEvent
              LOGGER.warn("Failed to execute reload", throwable);
              source.sendFailure(Component.translatable("commands.reload.failure"));
+             return null;
+         });
++        }
++        // Lophine end - region thread skip reload // TODO - add reload support
+     }
+ 
+     private static Collection<String> discoverNewPacks(PackRepository packRepository, WorldData worldData, Collection<String> selectedIds) {
