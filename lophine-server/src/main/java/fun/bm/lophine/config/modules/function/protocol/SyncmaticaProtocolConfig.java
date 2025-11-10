@@ -5,7 +5,10 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
+import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.protocol.syncmatica.SyncmaticaProtocol;
+
+import java.util.Set;
 
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "syncmatica", directory = {"protocol"})
 public class SyncmaticaProtocolConfig implements IConfigModule {
@@ -19,7 +22,7 @@ public class SyncmaticaProtocolConfig implements IConfigModule {
             Maximum Projection File Size (in bytes)""")
     public static int quotaLimit = 40000000;
 
-    public void onLoaded(CommentedFileConfig configInstance) {
+    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
         SyncmaticaProtocol.init(enabled);
     }
 }

@@ -5,10 +5,12 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
+import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.command.bot.BotCommand;
 
 import java.util.List;
+import java.util.Set;
 
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "fakeplayer")
 public class FakeplayerConfig implements IConfigModule {
@@ -91,7 +93,7 @@ public class FakeplayerConfig implements IConfigModule {
     }
 
     @Override
-    public void onLoaded(CommentedFileConfig configInstance) {
+    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
         if (enable) {
             command = new BotCommand();
             command.register();

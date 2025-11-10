@@ -47,7 +47,7 @@ index 12c6c8aeec89a0a55633c62fe98f5a3aa75fd476..1f0e7c391d02b18e2c89700025713ec3
                      blockState = blockState1;
                      break;
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index 644b9fab1d6729bf3964ebee0d6e9c46f89b8c46..6a9ab19039de55289936862fcb489e75f04db82e 100644
+index 644b9fab1d6729bf3964ebee0d6e9c46f89b8c46..634bdb554dfe757c3c9f13a79c3f644d8be4e3ea 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
 @@ -439,6 +439,33 @@ public class Block extends BlockBehaviour implements ItemLike {
@@ -58,20 +58,20 @@ index 644b9fab1d6729bf3964ebee0d6e9c46f89b8c46..6a9ab19039de55289936862fcb489e75
 +    @Nullable
 +    public BlockState getRealStateForPlacement(BlockPlaceContext ctx) {
 +        BlockState vanillaState = this.getStateForPlacement(ctx);
-+        switch (fun.bm.lophine.config.modules.function.protocol.AlternativeBlockPlacementProtocolConfig.getAlternativePlaceType()) {
-+            case CARPET -> {
++        switch (fun.bm.lophine.config.modules.function.protocol.AlternativeBlockPlacementProtocolConfig.alternativeBlockPlacement) {
++            case fun.bm.lophine.enums.EnumAlternativePlaceType.CARPET -> {
 +                BlockState tryState = org.leavesmc.leaves.protocol.CarpetAlternativeBlockPlacement.alternativeBlockPlacement(this, ctx);
 +                if (tryState != null) {
 +                    return tryState;
 +                }
 +            }
-+            case CARPET_FIX -> {
++            case fun.bm.lophine.enums.EnumAlternativePlaceType.CARPET_FIX -> {
 +                BlockState tryState = org.leavesmc.leaves.protocol.CarpetAlternativeBlockPlacement.alternativeBlockPlacementFix(this, ctx);
 +                if (tryState != null) {
 +                    return tryState;
 +                }
 +            }
-+            case LITEMATICA -> {
++            case fun.bm.lophine.enums.EnumAlternativePlaceType.LITEMATICA -> {
 +                if (vanillaState != null) {
 +                    return org.leavesmc.leaves.protocol.LitematicaEasyPlaceProtocol.applyPlacementProtocol(vanillaState, ctx);
 +                }

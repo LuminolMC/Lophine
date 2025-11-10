@@ -7,6 +7,9 @@ import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "wool-hopper-counter")
 public class WoolHopperCounterConfig implements IConfigModule {
@@ -17,7 +20,7 @@ public class WoolHopperCounterConfig implements IConfigModule {
     public static boolean unlimitedSpeed = false;
 
     @Override
-    public void onLoaded(CommentedFileConfig configInstance) {
+    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
         if (enabled) new CounterCommand().register();
     }
 

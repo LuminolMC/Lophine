@@ -1,5 +1,6 @@
 package fun.bm.lophine.config.modules.function.protocol;
 
+import fun.bm.lophine.enums.EnumAlternativePlaceType;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
@@ -13,18 +14,6 @@ public class AlternativeBlockPlacementProtocolConfig implements IConfigModule {
             CARPET Precise placement protocol version 2
             CARPET_FIX Enhanced precise placement protocol version 2 (requires MasaGadget installed on client)
             LITEMATICA Precise placement protocol version 3""")
-    public static String alternativeBlockPlacement = "NONE";
-
-    public enum AlternativePlaceType {
-        NONE, CARPET, CARPET_FIX, LITEMATICA
-    }
-
-    public static AlternativePlaceType getAlternativePlaceType() {
-        try {
-            return AlternativePlaceType.valueOf(alternativeBlockPlacement);
-        } catch (Exception e) {
-            return AlternativePlaceType.NONE;
-        }
-    }
+    public static EnumAlternativePlaceType alternativeBlockPlacement = EnumAlternativePlaceType.NONE;
 }
 
