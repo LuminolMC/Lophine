@@ -15,5 +15,9 @@ public class AlternativeBlockPlacementProtocolConfig implements IConfigModule {
             CARPET_FIX Enhanced precise placement protocol version 2 (requires MasaGadget installed on client)
             LITEMATICA Precise placement protocol version 3""")
     public static EnumAlternativePlaceType alternativeBlockPlacement = EnumAlternativePlaceType.NONE;
+
+    public static boolean needIgnoreDistance() {
+        return alternativeBlockPlacement != EnumAlternativePlaceType.NONE;
+    }
 }
 

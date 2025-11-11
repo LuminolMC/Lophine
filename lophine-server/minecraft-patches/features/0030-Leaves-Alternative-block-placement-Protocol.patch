@@ -12,6 +12,19 @@ carpet-extra(https://github.com/gnembon/carpet-extra)
 MasaGadget(https://github.com/plusls/MasaGadget)
 litematica(https://github.com/maruohon/litematica)
 
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 9be4bc9e78c22c12ba594b16dac6901023f0fd47..3d9c26bc8cc14e98310f557f351871b082e5023e 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2087,7 +2087,7 @@ public class ServerGamePacketListenerImpl
+                 if (ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(this.player.level(), blockPos.getX() >> 4, blockPos.getZ() >> 4, 8) && this.player.canInteractWithBlock(blockPos, 1.0)) { // Folia - do not allow players to interact with blocks outside the current region
+                     Vec3 vec3 = location.subtract(Vec3.atCenterOf(blockPos));
+                     double d = 1.0000001;
+-                    if (Math.abs(vec3.x()) < 1.0000001 && Math.abs(vec3.y()) < 1.0000001 && Math.abs(vec3.z()) < 1.0000001) {
++                    if (fun.bm.lophine.config.modules.function.protocol.AlternativeBlockPlacementProtocolConfig.needIgnoreDistance() ||Math.abs(vec3.x()) < 1.0000001 && Math.abs(vec3.y()) < 1.0000001 && Math.abs(vec3.z()) < 1.0000001) { // Leaves - disableDistanceCheckForUseItem
+                         Direction direction = hitResult.getDirection();
+                         this.player.resetLastActionTime();
+                         int maxY = this.player.level().getMaxY();
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
 index 6db566adf2d0df1d26221eda04aa01738df6d3d2..8f112f382190d606a87f38da8bcdf8dd5f31d1c5 100644
 --- a/net/minecraft/world/item/BlockItem.java
