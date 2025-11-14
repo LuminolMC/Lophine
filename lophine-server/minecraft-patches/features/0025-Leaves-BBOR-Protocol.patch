@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 29788fedd54b8411c9c8872b4d83b037874fb5f0..24af6821694768058dc0146220877ab70066b5f9 100644
+index f8bc2679d9eeaa5d179ab70a4cc5c97522bcc674..a536dc4e09b22b69bcdf59871a9cccfcf8129395 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -754,6 +754,11 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p
