@@ -266,7 +266,7 @@ index 70740381c6501c1a518c52b24381edd16792507f..5e31b499a894113b4be1982a1071348f
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 4f1976c47a087bf4f36687124ef29ca7b664f682..96aafe4d63446b3d212f21f14091858f72bb081f 100644
+index d1a799199a68771ae3130a30a59625587c11b0b0..edf29b1a8a6cbadff6a65f0483e28ec72a78594d 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -207,6 +207,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -548,10 +548,10 @@ index 52fd730998535ea071bfc99b7cc2c254b9b656d7..0abf6f0265fcb916f2c2c76fb1313bd1
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 1258591aae1b926ee8085b1984d553b8d3a1df7e..365cb2aed3d0f428ba33d4debdf3c3a3c494882d 100644
+index 861684a36e3277c31842f30c82ffd9d85e2fe3f8..da1b004c1f66437534f3180b6d3f3a054b7c6945 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1225,7 +1225,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -1224,7 +1224,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
              BlockPos onPosLegacy = this.getOnPosLegacy();
              BlockState blockState = this.level().getBlockState(onPosLegacy);
@@ -560,7 +560,7 @@ index 1258591aae1b926ee8085b1984d553b8d3a1df7e..365cb2aed3d0f428ba33d4debdf3c3a3
                  this.checkFallDamage(vec3.y, this.onGround(), blockState, onPosLegacy);
              }
  
-@@ -1539,7 +1539,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -1538,7 +1538,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      }
  
      // Paper start - optimise collisions

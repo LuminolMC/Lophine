@@ -446,10 +446,10 @@ index 10b2cc20bbf3b70e4e09dbbe14b90506e6366158..1535bb8cec8692e8d26eaff090288f1b
      }
  
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 699bb3cc2b680a4ee438a88c05854e5ab05ea910..d4fe03fd766caca1d7693a5317460ca1a9b9fa4f 100644
+index 3fd172f82216fa35c36e5f563819a6f01ffd4ea4..419bc939e19a306b33d4d387007c6acbae73fba3 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -148,7 +148,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -144,7 +144,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      public void setItem(int index, ItemStack stack) {
          this.unpackLootTable(null);
          this.getItems().set(index, stack);
@@ -458,7 +458,7 @@ index 699bb3cc2b680a4ee438a88c05854e5ab05ea910..d4fe03fd766caca1d7693a5317460ca1
      }
  
      @Override
-@@ -743,9 +743,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -740,9 +740,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
              if (item.isEmpty()) {
                  // Spigot start - SPIGOT-6693, SimpleContainer#setItem
                  ItemStack leftover = ItemStack.EMPTY; // Paper - Make hoppers respect inventory max stack size
@@ -469,4 +469,4 @@ index 699bb3cc2b680a4ee438a88c05854e5ab05ea910..d4fe03fd766caca1d7693a5317460ca1
 +                    stack = stack.split(Math.min(destination.getMaxStackSize(), stack.getMaxStackSize())); // Leaves - item over-stack util
                  }
                  // Spigot end
-                 //IGNORE_TILE_UPDATES.set(Boolean.TRUE); // Paper - Perf: Optimize Hoppers // Folia - region threading // Luminol - Use vanilla hopper logic
+                 //IGNORE_TILE_UPDATES.set(Boolean.TRUE); // Paper - Perf: Optimize Hoppers // Folia - region threading // Luminol - vanilla hopper
