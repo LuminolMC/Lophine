@@ -5,7 +5,7 @@ Subject: [PATCH] Leaves: Redstone ignore upwards update
 
 Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
 As a part of : Leaves (https://github.com/LeavesMC/Leaves)
-Licensed under: MIT
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/block/ComparatorBlock.java b/net/minecraft/world/level/block/ComparatorBlock.java
 index afecf6bb6152b4d9dfee4cd8c5b1d798cbf723b3..fa3b53ec0c07d55fa932706a70e0954bfcbb01b2 100644

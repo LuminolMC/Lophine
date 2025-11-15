@@ -5,7 +5,7 @@ Subject: [PATCH] Leaves: CCE update suppression
 
 Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
 As a part of : Leaves (https://github.com/LeavesMC/Leaves)
-Licensed under: MIT
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 index a26cd86aedcaf7ab606f8543e08360cbe9f2d1e6..a52394483494dbcd54308bb3d34c032ca7512974 100644

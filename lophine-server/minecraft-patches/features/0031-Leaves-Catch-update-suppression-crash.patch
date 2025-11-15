@@ -5,7 +5,7 @@ Subject: [PATCH] Leaves: Catch update suppression crash
 
 Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
 As a part of : Leaves (https://github.com/LeavesMC/Leaves)
-Licensed under: MIT
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/network/protocol/PacketUtils.java b/net/minecraft/network/protocol/PacketUtils.java
 index 7280ca2250ade4166a1a883b205bbc89f4e00d1a..06268ac3420fc03a798a20bb617ba89a032df527 100644
