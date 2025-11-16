@@ -17,7 +17,9 @@
 
 package org.leavesmc.leaves.replay;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.authlib.GameProfile;
+import io.papermc.paper.threadedregions.RegionizedServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -78,16 +80,28 @@ public class ServerPhotographer extends ServerPlayer {
         photographer.createState = state;
 
         photographer.recorder.start();
-        server.getPlayerList().placeNewPhotographer(photographer.recorder, photographer, world);
-        photographer.level().chunkSource.move(photographer);
-        photographer.setInvisible(true);
-        photographers.add(photographer);
+        if (TickThread.isTickThreadFor(world, state.loc.x(), state.loc.z())) {
+            placePhotographer(server, photographer, world, state);
+        } else {
+            RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                    world, net.minecraft.util.Mth.floor(state.loc.getX()) >> 4, net.minecraft.util.Mth.floor(state.loc.getZ()) >> 4,
+                    () -> placePhotographer(server, photographer, world, state),
+                    ca.spottedleaf.concurrentutil.util.Priority.HIGHER);
+        }
 
-        LOGGER.info("Photographer {} created", state.id);
+        photographers.add(photographer);
 
         // TODO record distance
 
         return photographer;
+    }
+
+    private static void placePhotographer(MinecraftServer server, ServerPhotographer photographer, ServerLevel world, @NotNull PhotographerCreateState state) {
+        server.getPlayerList().placeNewPhotographer(photographer.recorder, photographer, world);
+        photographer.level().chunkSource.move(photographer);
+        photographer.setInvisible(true);
+
+        LOGGER.info("Photographer {} created", state.id);
     }
 
     @Override
