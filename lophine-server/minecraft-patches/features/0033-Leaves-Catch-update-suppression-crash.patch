@@ -98,10 +98,10 @@ index afd607df83fda3de6f53f55ad305c8f69fe6ddb6..e2f4b35c88c64a68cf7ef9fadf977e7b
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index da1b004c1f66437534f3180b6d3f3a054b7c6945..d8086f08c7a8110eeaf30ff8869defe298896be4 100644
+index 477241699752567df7695d33fa629fb1d5109e0a..f63252c580c313ccf89304866cfc6503f4b26052 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1402,9 +1402,19 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -1403,9 +1403,19 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
                      this.walkingStepSound(pos, state);
                  }
  
