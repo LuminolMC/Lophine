@@ -539,10 +539,10 @@ index 52fd730998535ea071bfc99b7cc2c254b9b656d7..0abf6f0265fcb916f2c2c76fb1313bd1
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 861684a36e3277c31842f30c82ffd9d85e2fe3f8..da1b004c1f66437534f3180b6d3f3a054b7c6945 100644
+index a8b6e89035579557b59a20ddbe9b32943e6b7164..477241699752567df7695d33fa629fb1d5109e0a 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1224,7 +1224,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -1225,7 +1225,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
  
              BlockPos onPosLegacy = this.getOnPosLegacy();
              BlockState blockState = this.level().getBlockState(onPosLegacy);
@@ -551,7 +551,7 @@ index 861684a36e3277c31842f30c82ffd9d85e2fe3f8..da1b004c1f66437534f3180b6d3f3a05
                  this.checkFallDamage(vec3.y, this.onGround(), blockState, onPosLegacy);
              }
  
-@@ -1538,7 +1538,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -1539,7 +1539,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      }
  
      // Paper start - optimise collisions
