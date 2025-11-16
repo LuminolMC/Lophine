@@ -33,7 +33,7 @@ index 7280ca2250ade4166a1a883b205bbc89f4e00d1a..06268ac3420fc03a798a20bb617ba89a
                              throw makeReportedException(var4, packet, processor);
                          }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 81726e5782d25ff35a2bea8820a62786e46148b1..33861492bcbfde7361e47beee8730bbfc922c8f9 100644
+index 3c94631f468f4ee1b46de9981c17171e5901d745..f7a2a19c0832ca90536d09de23f4ec9a7d4a1521 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1878,8 +1878,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -55,7 +55,7 @@ index 81726e5782d25ff35a2bea8820a62786e46148b1..33861492bcbfde7361e47beee8730bbf
                  serverLevel.fillReportDetails(crashReport);
                  throw new ReportedException(crashReport);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index edf29b1a8a6cbadff6a65f0483e28ec72a78594d..71716dff7068fd0c126b6a6a450d1a385f84a4f7 100644
+index a4ee2bcdb31f889c7edbbc422636782c0d5d0af6..42bf4f0430a232a10cffb47d0d33f586afdc2a4d 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -840,7 +840,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -81,7 +81,7 @@ index edf29b1a8a6cbadff6a65f0483e28ec72a78594d..71716dff7068fd0c126b6a6a450d1a38
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 4b2dba8b30b72fb3acc00957b3e19d6fc178c99e..0ea5b30ce0b44e75f659099288a7dcadcce7b8c1 100644
+index afd607df83fda3de6f53f55ad305c8f69fe6ddb6..e2f4b35c88c64a68cf7ef9fadf977e7b99e17c6e 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1123,6 +1123,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc

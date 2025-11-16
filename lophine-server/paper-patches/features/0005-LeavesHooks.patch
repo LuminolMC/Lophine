@@ -1,0 +1,13 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Sun, 16 Nov 2025 17:47:42 +0800
+Subject: [PATCH] LeavesHooks
+
+
+diff --git a/src/main/resources/META-INF/services/ca.spottedleaf.moonrise.common.PlatformHooks b/src/main/resources/META-INF/services/ca.spottedleaf.moonrise.common.PlatformHooks
+index e57c3ca79677b1dfe7cf3db36f0406de7ea5bd0a..86edd824ec42e550dd1419fd57d93a21fe2d648d 100644
+--- a/src/main/resources/META-INF/services/ca.spottedleaf.moonrise.common.PlatformHooks
++++ b/src/main/resources/META-INF/services/ca.spottedleaf.moonrise.common.PlatformHooks
+@@ -1 +1 @@
+-ca.spottedleaf.moonrise.paper.PaperHooks
++org.leavesmc.leaves.region.LeavesHooks
