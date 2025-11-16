@@ -239,18 +239,9 @@ index 0e278f7b9ed85ce8c3cedd9154f817b30ff1e48a..09d4b1d68c3f046ef304016a1afe7a30
          // Paper start - fix converting txt to json file; convert old users earlier after PlayerList creation but before file load/save
          if (this.convertOldUsers()) {
 diff --git a/net/minecraft/server/level/ChunkMap.java b/net/minecraft/server/level/ChunkMap.java
-index 70740381c6501c1a518c52b24381edd16792507f..5e31b499a894113b4be1982a1071348fcbaf9ded 100644
+index 70740381c6501c1a518c52b24381edd16792507f..8ad6d5a2522cfbe316fec2c3b918e2e1b9af3d1b 100644
 --- a/net/minecraft/server/level/ChunkMap.java
 +++ b/net/minecraft/server/level/ChunkMap.java
-@@ -134,7 +134,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
-     public final AtomicInteger tickingGenerated = new AtomicInteger();  // Paper - public
-     private final String storageName;
-     //private final PlayerMap playerMap = new PlayerMap(); // Folia - region threading
--    //public final Int2ObjectMap<ChunkMap.TrackedEntity> entityMap = new Int2ObjectOpenHashMap<>(); // Folia - region threading
-+    public final Int2ObjectMap<ChunkMap.TrackedEntity> entityMap = new Int2ObjectOpenHashMap<>(); // Folia - region threading
-     private final Long2ByteMap chunkTypeCache = new Long2ByteOpenHashMap();
-     // Paper - rewrite chunk system
-     public int serverViewDistance;
 @@ -1309,6 +1309,13 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
                      }
                  } else if (this.seenBy.remove(player.connection)) {
