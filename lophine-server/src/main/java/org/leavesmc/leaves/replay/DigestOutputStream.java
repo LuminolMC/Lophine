@@ -1,5 +1,3 @@
-package org.leavesmc.leaves.replay;
-
 /*
  * This file is part of Leaves (https://github.com/LeavesMC/Leaves)
  *
@@ -16,6 +14,8 @@ package org.leavesmc.leaves.replay;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
+
+package org.leavesmc.leaves.replay;
 
 import org.jetbrains.annotations.NotNull;
 

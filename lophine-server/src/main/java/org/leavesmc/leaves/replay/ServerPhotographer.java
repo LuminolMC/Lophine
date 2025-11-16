@@ -161,7 +161,7 @@ public class ServerPhotographer extends ServerPlayer {
         super.remove(RemovalReason.KILLED);
         photographers.remove(this);
         this.recorder.stop();
-        getServer().getPlayerList().removePhotographer(this);
+        this.getServer().getPlayerList().removePhotographer(this);
 
         LOGGER.info("Photographer {} removed", createState.id);
 
