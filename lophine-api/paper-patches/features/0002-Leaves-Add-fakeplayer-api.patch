@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Bacteriawa <A3167717663@hotmail.com>
 Date: Sat, 30 Aug 2025 16:51:26 +0800
-Subject: [PATCH] Add fakeplayer api
+Subject: [PATCH] Leaves: Add fakeplayer api
 
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
 index 85b778980e762835ac278528087e91b2e3effb43..89f00f4b6ff64305fa44ebb71f22a113c1296d26 100644
