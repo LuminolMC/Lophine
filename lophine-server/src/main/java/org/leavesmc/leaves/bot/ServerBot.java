@@ -464,10 +464,10 @@ public class ServerBot extends ServerPlayer {
     }
 
     public void sendFakeData(ServerPlayerConnection playerConnection, boolean login) {
-        ChunkMap.TrackedEntity entityTracker = this.level().getChunkSource().chunkMap.entityMap.get(this.getId());
+        ChunkMap.TrackedEntity entityTracker = this.moonrise$getTrackedEntity();
 
         if (entityTracker == null) {
-            LOGGER.warn("Fakeplayer cant get entity tracker for " + this.getId());
+            LOGGER.warn("Fakeplayer cant get entity tracker for {}", this.getId());
             return;
         }
 
