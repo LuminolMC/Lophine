@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.util;
 
-import com.mojang.logging.LogUtils;
+import fun.bm.lophine.LophineLogger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.event.player.UpdateSuppressionEvent;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,6 @@ public class UpdateSuppressionException extends RuntimeException {
     private @Nullable Block source;
     private @Nullable ServerPlayer player;
     private final @NotNull Throwable throwable;
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     public UpdateSuppressionException(
             @Nullable BlockPos pos,
@@ -87,7 +85,7 @@ public class UpdateSuppressionException extends RuntimeException {
 
     public void consume() {
         submitEvent();
-        LOGGER.info(getMessage());
+        LophineLogger.LOGGER.info(getMessage());
     }
 
     private void submitEvent() {
