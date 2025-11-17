@@ -3,6 +3,7 @@ package fun.bm.lophine.config.modules.experiment;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.HotReloadUnsupported;
 import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
 /*
@@ -22,4 +23,8 @@ public class RedStoneConfig implements IConfigModule {
     @ConfigInfo(name = "cce-update-suppression", comments = """
             Is it permissible to use ClassCastException for update suppression?""")
     public static boolean cce = false;
+
+    @HotReloadUnsupported
+    @ConfigInfo(name = "instant-block-updater")
+    public static boolean instantBlockUpdater = false;
 }
