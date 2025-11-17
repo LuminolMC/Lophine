@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index a26cd86aedcaf7ab606f8543e08360cbe9f2d1e6..a52394483494dbcd54308bb3d34c032ca7512974 100644
+index a26cd86aedcaf7ab606f8543e08360cbe9f2d1e6..27ccce4b4d8b4cb8be48bfe5d55366abe4ea3a38 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 @@ -185,7 +185,9 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
@@ -16,7 +16,7 @@ index a26cd86aedcaf7ab606f8543e08360cbe9f2d1e6..a52394483494dbcd54308bb3d34c032c
          // Leaves start - update suppression crash fix
          try {
 -            return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
-+            return fun.bm.lophine.config.modules.experiment.CCEUpdateSuppressionConfig.enabled ?
++            return fun.bm.lophine.config.modules.experiment.RedStoneConfig.cce ?
 +                    AbstractContainerMenu.getRedstoneSignalFromContainer((net.minecraft.world.Container) level.getBlockEntity(pos)) : // Leaves - make cce happy(?)
 +                    AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
          } catch (ClassCastException ex) {
