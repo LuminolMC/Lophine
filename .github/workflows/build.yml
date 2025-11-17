@@ -84,8 +84,19 @@ jobs:
           fi
           echo "release_exists=${release_exists}" >> $GITHUB_ENV
 
+      - name: Check If Branch In Expectations
+        if: github.event_name != 'pull_request'
+        run: |
+          if [[ "$GITHUB_REF_NAME" == ver/* ]] || [[ "$GITHUB_REF_NAME" == exp/* ]] || [[ "$GITHUB_REF_NAME" == dev/* ]]; then
+            echo "Branch is in expected prefixes"
+            echo "unexpect=false" >> $GITHUB_ENV
+          else
+            echo "Branch is NOT in expected prefixes"
+            echo "unexpect=true" >> $GITHUB_ENV
+          fi
+
       - name: Publish To Repo
-        if: (( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-push == '2')) || inputs.force-push == '1') && false # do not push to any repo
+        if: (( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !( inputs.force-release == '2' )) || inputs.force-push == '1') && false # do not push to any repo
         continue-on-error: true
         run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
         env:
@@ -93,7 +104,7 @@ jobs:
           PRIVATE_MAVEN_REPO_USERNAME: ${{ secrets.PRIVATE_MAVEN_REPO_USERNAME }}
 
       - name: Create Release - Pre Process
-        if: ( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == '2')) || inputs.force-release == '1'
+        if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == '2')) || inputs.force-release == '1'
         run: |
           if [ ${{ inputs.comments }} == "" ]; then
           echo "No comments provided"
