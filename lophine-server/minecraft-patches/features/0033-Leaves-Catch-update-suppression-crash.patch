@@ -1,0 +1,217 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Sat, 15 Nov 2025 01:06:20 +0800
+Subject: [PATCH] Leaves: Catch update suppression crash
+
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+diff --git a/net/minecraft/network/protocol/PacketUtils.java b/net/minecraft/network/protocol/PacketUtils.java
+index 7280ca2250ade4166a1a883b205bbc89f4e00d1a..06268ac3420fc03a798a20bb617ba89a032df527 100644
+--- a/net/minecraft/network/protocol/PacketUtils.java
++++ b/net/minecraft/network/protocol/PacketUtils.java
+@@ -30,7 +30,20 @@ public class PacketUtils {
+                         final int packetTimerId = profiler.getOrCreateTimerAndStart(() -> "Packet Handler: ".concat(io.papermc.paper.util.ObfHelper.INSTANCE.deobfClassName(packet.getClass().getName()))); try { // Folia - profiler
+                         packet.handle(processor);
+                         } finally { profiler.stopTimer(packetTimerId); } // Folia - profiler
++                    // Leaves start - update suppression crash fix
++                    } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                        if (processor instanceof net.minecraft.server.network.ServerGamePacketListenerImpl gamePacketListener) {
++                            exception.providePlayer(gamePacketListener.player);
++                        }
++                        exception.consume();
+                     } catch (Exception var4) {
++                        if (var4.getCause() instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                            if (processor instanceof net.minecraft.server.network.ServerGamePacketListenerImpl gamePacketListener) {
++                                exception.providePlayer(gamePacketListener.player);
++                            }
++                            exception.consume();
++                        }
++                        // Leaves end - update suppression crash fix
+                         if (var4 instanceof ReportedException reportedException && reportedException.getCause() instanceof OutOfMemoryError) {
+                             throw makeReportedException(var4, packet, processor);
+                         }
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index 3c94631f468f4ee1b46de9981c17171e5901d745..f7a2a19c0832ca90536d09de23f4ec9a7d4a1521 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1878,8 +1878,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             try {
+                 profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
+                 serverLevel.tick(hasTimeLeft, region); // Folia - region threading
++                    // Leaves start - update suppression crash fix
++                } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                    exception.provideLevel(serverLevel);
++                    exception.consume();
+                 } finally { profiler.stopTimer(serverLevel.tickTimerId); } // Folia - profiler
+             } catch (Throwable var7) {
++                if (var7.getCause() instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                    exception.provideLevel(serverLevel);
++                    exception.consume();
++                }
++                // Leaves end - update suppression crash fix
+                 CrashReport crashReport = CrashReport.forThrowable(var7, "Exception ticking world");
+                 serverLevel.fillReportDetails(crashReport);
+                 throw new ReportedException(crashReport);
+diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
+index a4ee2bcdb31f889c7edbbc422636782c0d5d0af6..42bf4f0430a232a10cffb47d0d33f586afdc2a4d 100644
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -840,7 +840,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+                                     // Kaiiju end
+ 
+                                     profilerFiller.push("tick");
+-                                    this.guardEntityTick(this::tickNonPassenger, entity);
++                                    // Lophine start - update suppression crash fix
++                                    if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
++                                        try {
++                                            this.tickNonPassenger(entity); // Lophine changed
++                                            // Leaves start - update suppression crash fix - for dragon dupe
++                                        } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                                            exception.provideLevel(this);
++                                            exception.consume();
++                                            // Leaves end - update suppression crash fix - for dragon dupe
++                                        }
++                                    } else {
++                                        this.guardEntityTick(this::tickNonPassenger, entity);
++                                    }
++                                    // Lophine end - update suppression crash fix
+                                     profilerFiller.pop();
+                                 }
+                             }
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index afd607df83fda3de6f53f55ad305c8f69fe6ddb6..e2f4b35c88c64a68cf7ef9fadf977e7b99e17c6e 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -1123,6 +1123,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 ((org.bukkit.craftbukkit.CraftWorldBorder) this.getBukkitEntity().getWorldBorder()).getHandle().tick();
+             }
+             // CraftBukkit end
++        // Leaves start - update suppression crash fix
++        } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++            exception.providePlayer(this);
++            exception.provideLevel(this.level());
++            exception.consume();
++        // Leaves start - update suppression crash fix
+         } catch (Throwable var4) {
+             CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
+             CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
+diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
+index 477241699752567df7695d33fa629fb1d5109e0a..f63252c580c313ccf89304866cfc6503f4b26052 100644
+--- a/net/minecraft/world/entity/Entity.java
++++ b/net/minecraft/world/entity/Entity.java
+@@ -1403,9 +1403,19 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+                     this.walkingStepSound(pos, state);
+                 }
+ 
++                // Leaves start - update suppression crash fix
+                 if (broadcastGameEvent) {
+-                    this.level().gameEvent(GameEvent.STEP, this.position(), GameEvent.Context.of(this, state));
++                    try {
++                        this.level().gameEvent(net.minecraft.world.level.gameevent.GameEvent.STEP, this.position(), net.minecraft.world.level.gameevent.GameEvent.Context.of(this, state));
++                    } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                        exception.provideBlock(level, pos, state.getBlock());
++                        if (this instanceof net.minecraft.server.level.ServerPlayer player) {
++                            exception.providePlayer(player);
++                        }
++                        exception.consume();
++                    }
+                 }
++                // Leaves end - update suppression crash fix
+ 
+                 return true;
+             } else {
+diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
+index 49bac7af90b0a7c490141be6357563447783c6ca..a26cd86aedcaf7ab606f8543e08360cbe9f2d1e6 100644
+--- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
++++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
+@@ -183,7 +183,17 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+ 
+     @Override
+     protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
+-        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
++        // Leaves start - update suppression crash fix
++        try {
++            return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
++        } catch (ClassCastException ex) {
++            if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
++                throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, null, this, null, ex);
++            } else {
++                throw ex;
++            }
++        }
++        // Leaves end - update suppression crash fix
+     }
+ 
+     public static Block getBlockByColor(@Nullable DyeColor color) {
+diff --git a/net/minecraft/world/level/block/state/StateHolder.java b/net/minecraft/world/level/block/state/StateHolder.java
+index 9b9842462b210b0407279ee8a8e9ccecf3ead005..1057f3bd32ff4c8f93f09251341c243915593e4d 100644
+--- a/net/minecraft/world/level/block/state/StateHolder.java
++++ b/net/minecraft/world/level/block/state/StateHolder.java
+@@ -104,7 +104,16 @@ public abstract class StateHolder<O, S> implements ca.spottedleaf.moonrise.patch
+         if (ret != null) {
+             return ret;
+         }
+-        throw new IllegalArgumentException("Cannot get property " + property + " as it does not exist in " + this.owner);
++        // Leaves start - update suppression crash fix
++        IllegalArgumentException iae = new IllegalArgumentException("Cannot get property " + property + " as it does not exist in " + this.owner);
++        if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
++            org.leavesmc.leaves.util.UpdateSuppressionException exception = new org.leavesmc.leaves.util.UpdateSuppressionException(null, null, null, null, iae);
++            if (exception.getStackTrace()[1].getClassName().startsWith("net.minecraft")) {
++                throw exception;
++            }
++        }
++        throw iae;
++        // Leaves end - update suppression crash fix
+         // Paper end - optimise blockstate property access
+     }
+ 
+diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
+index a536dc4e09b22b69bcdf59871a9cccfcf8129395..a557045888b153bb046a25d276d811b9146a7874 100644
+--- a/net/minecraft/world/level/chunk/LevelChunk.java
++++ b/net/minecraft/world/level/chunk/LevelChunk.java
+@@ -378,7 +378,7 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p
+             if (blockState == state) {
+                 return null;
+             } else {
+-                Block block = state.getBlock();
++                Block block = state.getBlock(); try { // Leaves start - update suppression crash fix
+                 this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING).update(i, y, i2, state);
+                 this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES).update(i, y, i2, state);
+                 this.heightmaps.get(Heightmap.Types.OCEAN_FLOOR).update(i, y, i2, state);
+@@ -450,6 +450,7 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p
+                     this.markUnsaved();
+                     return blockState;
+                 }
++                } catch (org.leavesmc.leaves.util.UpdateSuppressionException e) { e.provideBlock(level, pos, block); throw e; } // Leaves - update suppression crash fix
+             }
+         }
+     }
+diff --git a/net/minecraft/world/level/redstone/NeighborUpdater.java b/net/minecraft/world/level/redstone/NeighborUpdater.java
+index 714e291b17856aacdac7db992fc18e6ae662f659..01285691a2e0bf72b94969e9045f7ab42a9161bf 100644
+--- a/net/minecraft/world/level/redstone/NeighborUpdater.java
++++ b/net/minecraft/world/level/redstone/NeighborUpdater.java
+@@ -63,9 +63,22 @@ public interface NeighborUpdater {
+             } finally { if (levelChunk != null) levelChunk.getChunkHot().stopTickingAndCount(); } // KioCG
+             // Spigot start
+         } catch (StackOverflowError ex) {
++            // Leaves start - update suppression crash fix
++            if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
++                throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, level, neighborBlock, null, ex);
++            }
+             level.lastPhysicsProblem = pos.immutable();
+             // Spigot end
+         } catch (Throwable var9) {
++            if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
++                if (var9 instanceof org.leavesmc.leaves.util.UpdateSuppressionException ue) {
++                    ue.provideBlock(level, pos, neighborBlock);
++                    throw ue;
++                } else {
++                    throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, level, neighborBlock, null, var9);
++                }
++            }
++            // Leaves end - update suppression crash fix
+             CrashReport crashReport = CrashReport.forThrowable(var9, "Exception while updating neighbours");
+             CrashReportCategory crashReportCategory = crashReport.addCategory("Block being updated");
+             crashReportCategory.setDetail(
