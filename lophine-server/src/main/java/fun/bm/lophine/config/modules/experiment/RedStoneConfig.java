@@ -27,4 +27,7 @@ public class RedStoneConfig implements IConfigModule {
     @HotReloadUnsupported
     @ConfigInfo(name = "instant-block-updater")
     public static boolean instantBlockUpdater = false;
+
+    @ConfigInfo(name = "old-block-remove-behaviour")
+    public static boolean oldBlockRemoveBehaviour = false;
 }
