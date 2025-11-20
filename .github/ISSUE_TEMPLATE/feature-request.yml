@@ -28,7 +28,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: othre
+    id: other
     attributes:
       label: 其他 Other
       description: 添加其他的信息。 Add any other context or screenshots about the feature request below.

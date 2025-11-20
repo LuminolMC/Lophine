@@ -1,7 +1,7 @@
 name: Bug反馈 Bug report
 description:
   报告Bug，插件不兼容情况，以及其他相关问题。
-  Report issues with plugin incompatbility or other behavior related issues.
+  Report issues with plugin incompatibility or other behavior related issues.
 labels:
   - bug
   - pending
@@ -41,7 +41,7 @@ body:
     attributes:
       label: 观测到的实际行为 Observed/Actual behavior
       description: 你实际看到的。 What you actually saw.
-      placeholder: e.g. 使用 /tpsbar [NAME] 命令切换不了TPSBAR
+      placeholder: e.g. 使用 /tpsbar 命令切换不了TPSBAR
     validations:
       required: true
   - type: textarea
