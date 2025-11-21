@@ -6,10 +6,11 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.HotReloadUnsupported;
 import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
+
 /*
-* This is a config module for redstone in experimental level
-* If we think configs from here is stable for future, we will move them to function module directory
-*/
+ * This is a config module for redstone in experimental level
+ * If we think configs from here is stable for future, we will move them to function module directory
+ */
 @ConfigClassInfo(category = EnumConfigCategory.EXPERIMENT, name = "redstone")
 public class RedStoneConfig implements IConfigModule {
     @TransformedConfig(name = "enabled", directory = {"experiment", "redstone-ignore-upwards-update"})

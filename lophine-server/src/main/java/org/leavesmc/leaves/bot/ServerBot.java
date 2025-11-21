@@ -473,7 +473,7 @@ public class ServerBot extends ServerPlayer {
 
         playerConnection.send(this.getAddEntityPacket(entityTracker.serverEntity));
         if (login) {
-            Bukkit.getScheduler().runTaskLater(MinecraftInternalPlugin.INSTANCE, () -> playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f))), 10);
+            Bukkit.getGlobalRegionScheduler().runDelayed(MinecraftInternalPlugin.INSTANCE, (unused) -> playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f))), 10);
         } else {
             playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f)));
         }
@@ -499,7 +499,7 @@ public class ServerBot extends ServerPlayer {
         Component defaultMessage = this.getCombatTracker().getDeathMessage();
 
         BotDeathEvent event = new BotDeathEvent(this.getBukkitEntity(), PaperAdventure.asAdventure(defaultMessage), flag);
-        this.getServer().server.getPluginManager().callEvent(event);
+        MinecraftServer.getServer().server.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             if (this.getHealth() <= 0) {

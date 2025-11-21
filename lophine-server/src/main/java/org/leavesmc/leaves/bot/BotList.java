@@ -25,6 +25,7 @@ import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.threadedregions.RegionizedServer;
+import io.papermc.paper.threadedregions.scheduler.FoliaGlobalRegionScheduler;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.minecraft.nbt.CompoundTag;
@@ -238,7 +239,7 @@ public class BotList {
         }
 
         if (bot.removeTaskId != -1) {
-            Bukkit.getScheduler().cancelTask(bot.removeTaskId);
+            ((FoliaGlobalRegionScheduler) Bukkit.getGlobalRegionScheduler()).cancelTask(bot.removeTaskId);
             bot.removeTaskId = -1;
         }
 

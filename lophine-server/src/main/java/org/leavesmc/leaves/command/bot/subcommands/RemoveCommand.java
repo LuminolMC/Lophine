@@ -20,6 +20,7 @@ package org.leavesmc.leaves.command.bot.subcommands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.threadedregions.scheduler.FoliaGlobalRegionScheduler;
 import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -102,12 +103,12 @@ public class RemoveCommand extends BotSubcommand {
             boolean isReschedule = bot.removeTaskId != -1;
 
             if (isReschedule) {
-                Bukkit.getScheduler().cancelTask(bot.removeTaskId);
+                ((FoliaGlobalRegionScheduler) Bukkit.getGlobalRegionScheduler()).cancelTask(bot.removeTaskId);
             }
-            bot.removeTaskId = Bukkit.getScheduler().runTaskLater(MinecraftInternalPlugin.INSTANCE, () -> {
+            bot.removeTaskId = ((FoliaGlobalRegionScheduler.GlobalScheduledTask) Bukkit.getGlobalRegionScheduler().runDelayed(MinecraftInternalPlugin.INSTANCE, (unused) -> {
                 bot.removeTaskId = -1;
                 removeBot(bot, sender);
-            }, removeTimeSeconds * 20L).getTaskId();
+            }, removeTimeSeconds * 20L)).getTaskId();
 
             sender.sendMessage(join(spaces(),
                     text("Bot", GRAY),
