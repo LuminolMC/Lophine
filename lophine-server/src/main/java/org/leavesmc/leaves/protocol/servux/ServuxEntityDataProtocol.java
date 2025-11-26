@@ -17,6 +17,7 @@
 
 package org.leavesmc.leaves.protocol.servux;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
@@ -31,6 +32,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import org.leavesmc.leaves.protocol.core.LeavesCustomPayload;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
@@ -104,6 +106,7 @@ public class ServuxEntityDataProtocol implements LeavesProtocol {
 
     public static void onBlockEntityRequest(ServerPlayer player, BlockPos pos) {
         player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
+            if (!TickThread.isTickThreadFor(nmsEntity.level(), pos)) return;
             BlockEntity be = nmsEntity.level().getBlockEntity(pos);
             CompoundTag nbt = be != null ? be.saveWithFullMetadata(nmsEntity.registryAccess()) : new CompoundTag();
 
@@ -115,7 +118,9 @@ public class ServuxEntityDataProtocol implements LeavesProtocol {
     }
 
     public static void onEntityRequest(ServerPlayer player, int entityId) {
+        final Vec3 pos = player.position();
         player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
+            if (!TickThread.isTickThreadFor(nmsEntity.level(), pos)) return;
             Entity entity = nmsEntity.level().getEntity(entityId);
             CompoundTag nbt = TagUtil.saveEntityWithoutId(entity);
 
