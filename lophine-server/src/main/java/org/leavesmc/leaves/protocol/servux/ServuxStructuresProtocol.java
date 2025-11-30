@@ -103,7 +103,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
         final ChunkPos pos = chunk.getPos();
 
         if (chunkHasStructureReferences(pos.x, pos.z, chunk.getLevel())) {
-            final Map<ChunkPos, Timeout> map = timeouts.computeIfAbsent(uuid, (u) -> new HashMap<>());
+            final Map<ChunkPos, Timeout> map = timeouts.computeIfAbsent(uuid, (u) -> new ConcurrentHashMap<>());
             map.computeIfAbsent(pos, (p) -> new Timeout(tickCounter - ServuxProtocolConfig.maxDelay));
         }
     }
@@ -304,7 +304,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     }
 
     public static void addOrRefreshTimeouts(final UUID uuid, final Map<Structure, LongSet> references, final long tickCounter) {
-        Map<ChunkPos, Timeout> map = timeouts.computeIfAbsent(uuid, (u) -> new HashMap<>());
+        Map<ChunkPos, Timeout> map = timeouts.computeIfAbsent(uuid, (u) -> new ConcurrentHashMap<>());
 
         for (LongSet chunks : references.values()) {
             for (Long chunkPosLong : chunks) {
