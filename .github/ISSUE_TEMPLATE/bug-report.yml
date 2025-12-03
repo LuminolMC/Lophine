@@ -25,7 +25,7 @@ body:
         LophineMC服务端发行版本 LophineMC server release version (contains the git commit's hash)<br>
         通过执行`/version`命令将获取到的内容复制到这里。 Run `/version` on your server and paste the full, unmodified output here.
       placeholder: >
-        e.g. git-Lophine-"0635a89" (MC: 1.20.4)
+        e.g. git-Lophine-"fa1ab90" (MC: 1.21.8)
     validations:
       required: true
   - type: textarea
@@ -65,6 +65,20 @@ body:
         To list plugins, run `/plugins`. For datapacks, run `/datapack list`.
     validations:
       required: true
+  - type: textarea
+    id: config-file-list
+    attributes:
+      label: 配置文件列表（如果可以）。 Config File List (if possible).
+      description:
+        服务器上的配置文件列表。
+        All config files on your server.
+        例如以下文件（或者文件夹）：
+        Example files (or folders)：
+         - \spigot.yml
+         - \bukkit.yml
+         - \config\*
+         - \lophine_config\*
+         - \luminol_config\*
   - type: textarea
     id: other
     attributes:
