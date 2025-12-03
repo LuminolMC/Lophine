@@ -37,7 +37,8 @@ public class EntitiesCounterUtil {
     }
 
     public static boolean canRunNewTask(ServerLevel level) {
-        return tasks.get(level).isDone();
+        CompletableFuture<Void> task = tasks.get(level);
+        return task == null || task.isDone();
     }
 
     public static void tick(ServerLevel level) {
@@ -55,8 +56,8 @@ public class EntitiesCounterUtil {
                                         entity.spawnReason == CreatureSpawnEvent.SpawnReason.CHUNK_GEN)) {
                             continue;
                         }
-                        map.addTo(category, 1);
                         // Paper end - Only count natural spawns
+                        map.addTo(category, 1);
                     }
                     // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
                 }
@@ -74,10 +75,17 @@ public class EntitiesCounterUtil {
             ServerLevel level, int spawnableChunkCount, Iterable<Entity> entities, NaturalSpawner.ChunkGetter chunkGetter, LocalMobCapCalculator calculator, final boolean countMobs
     ) {
         // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
-        Object2IntOpenHashMap<MobCategory> map = mobsMap.get(level);
+        Object2IntOpenHashMap<MobCategory> map = getMobsMap(level);
         if (map == null) return null; // skip if no data
         PotentialCalculator potentialCalculator = new PotentialCalculator();
         for (Entity entity : entities) {
+            // Paper start - Only count natural spawns
+            if (!entity.level().paperConfig().entities.spawning.countAllMobsForSpawning &&
+                    !(entity.spawnReason == CreatureSpawnEvent.SpawnReason.NATURAL ||
+                            entity.spawnReason == CreatureSpawnEvent.SpawnReason.CHUNK_GEN)) {
+                continue;
+            }
+            // Paper end - Only count natural spawns
             BlockPos blockPos = entity.blockPosition();
             chunkGetter.query(ChunkPos.asLong(blockPos), chunk -> {
                 MobSpawnSettings.MobSpawnCost mobSpawnCost = getRoughBiome(blockPos, chunk).getMobSettings().getMobSpawnCost(entity.getType());
