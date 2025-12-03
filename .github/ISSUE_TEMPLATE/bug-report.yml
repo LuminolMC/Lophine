@@ -76,9 +76,9 @@ body:
         Example files (or folders)：
          - \spigot.yml
          - \bukkit.yml
-         - \config\*
-         - \lophine_config\*
-         - \luminol_config\*
+         - \config\\\*
+         - \lophine_config\\\*
+         - \luminol_config\\\*
   - type: textarea
     id: other
     attributes:

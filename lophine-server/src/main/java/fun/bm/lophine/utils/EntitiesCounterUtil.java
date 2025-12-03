@@ -73,6 +73,7 @@ public class EntitiesCounterUtil {
     public static NaturalSpawner.SpawnState runRemainingTasks(
             ServerLevel level, int spawnableChunkCount, Iterable<Entity> entities, NaturalSpawner.ChunkGetter chunkGetter, LocalMobCapCalculator calculator, final boolean countMobs
     ) {
+        // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
         Object2IntOpenHashMap<MobCategory> map = mobsMap.get(level);
         if (map == null) return null; // skip if no data
         PotentialCalculator potentialCalculator = new PotentialCalculator();
@@ -96,5 +97,6 @@ public class EntitiesCounterUtil {
             });
         }
         return new NaturalSpawner.SpawnState(spawnableChunkCount, map, potentialCalculator, calculator);
+        // Lophine end - Copy from net/minecraft/world/level/NaturalSpawner
     }
 }
