@@ -17,6 +17,8 @@ import org.bukkit.craftbukkit.util.WeakCollection;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,11 +27,22 @@ import static net.minecraft.world.level.NaturalSpawner.getRoughBiome;
 public class EntitiesCounterUtil {
     private static final WeakHashMap<ServerLevel, WeakCollection<ReferenceList<Entity>>> globalLoadedEntities = new WeakHashMap<>();
     private static final WeakHashMap<ServerLevel, Object2IntOpenHashMap<MobCategory>> mobsMap = new WeakHashMap<>();
+    private static final WeakHashMap<ServerLevel, WeakHashMap<Thread, ChunkCounter>> fullSpawnableChunkCount = new WeakHashMap<>();
+    private static final WeakHashMap<ServerLevel, Integer> spawnableChunkCount = new WeakHashMap<>();
     private static final WeakHashMap<ServerLevel, CompletableFuture<Void>> tasks = new WeakHashMap<>();
 
     public static void addDataToLoaded(ReferenceList<Entity> data, ServerLevel level) {
         WeakCollection<ReferenceList<Entity>> data0 = globalLoadedEntities.computeIfAbsent(level, k -> new WeakCollection<>());
         data0.add(data);
+    }
+
+    public static void reportChunkCount(int count, ServerLevel level) {
+        Map<Thread, ChunkCounter> counter = fullSpawnableChunkCount.computeIfAbsent(level, k -> new WeakHashMap<>());
+        counter.put(Thread.currentThread(), new ChunkCounter(count));
+    }
+
+    public static int getTotalChunkCount(ServerLevel level) {
+        return spawnableChunkCount.getOrDefault(level, 0);
     }
 
     public static @Nullable Object2IntOpenHashMap<MobCategory> getMobsMap(ServerLevel level) {
@@ -63,6 +76,25 @@ public class EntitiesCounterUtil {
                 }
             }
             mobsMap.put(level, map);
+
+            synchronized (fullSpawnableChunkCount) {
+                for (ServerLevel world : fullSpawnableChunkCount.keySet()) {
+                    int count = 0;
+                    Map<Thread, ChunkCounter> map0 = fullSpawnableChunkCount.get(level);
+                    if (map0 == null) continue;
+                    Map<Thread, ChunkCounter> map1 = Map.copyOf(map0);
+                    for (Thread thread : map1.keySet()) {
+                        ChunkCounter counter = map1.get(thread);
+                        counter.tick();
+                        if (counter.timeout()) {
+                            fullSpawnableChunkCount.get(world).remove(thread);
+                        } else {
+                            count += counter.getChunkCount();
+                        }
+                    }
+                    spawnableChunkCount.put(level, count);
+                }
+            }
         };
         if (GlobalEntitiesCounter.async) {
             tasks.put(level, CompletableFuture.runAsync(task));
@@ -72,11 +104,12 @@ public class EntitiesCounterUtil {
     }
 
     public static NaturalSpawner.SpawnState runRemainingTasks(
-            ServerLevel level, int spawnableChunkCount, Iterable<Entity> entities, NaturalSpawner.ChunkGetter chunkGetter, LocalMobCapCalculator calculator, final boolean countMobs
+            ServerLevel level, int newSpawnableChunkCount, Iterable<Entity> entities, NaturalSpawner.ChunkGetter chunkGetter, LocalMobCapCalculator calculator, final boolean countMobs
     ) {
-        // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
+        reportChunkCount(newSpawnableChunkCount, level);
         Object2IntOpenHashMap<MobCategory> map = getMobsMap(level);
         if (map == null) return null; // skip if no data
+        // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
         PotentialCalculator potentialCalculator = new PotentialCalculator();
         for (Entity entity : entities) {
             // Paper start - Only count natural spawns
@@ -104,7 +137,28 @@ public class EntitiesCounterUtil {
                 // Paper end - Optional per player mob spawns
             });
         }
-        return new NaturalSpawner.SpawnState(spawnableChunkCount, map, potentialCalculator, calculator);
+        return new NaturalSpawner.SpawnState(getTotalChunkCount(level), map, potentialCalculator, calculator);
         // Lophine end - Copy from net/minecraft/world/level/NaturalSpawner
+    }
+
+    public static class ChunkCounter {
+        private final int chunkCount;
+        private int timeout = 20;
+
+        public void tick() {
+            timeout--;
+        }
+
+        public ChunkCounter(int chunkCount) {
+            this.chunkCount = chunkCount;
+        }
+
+        public boolean timeout() {
+            return timeout <= 0;
+        }
+
+        public int getChunkCount() {
+            return chunkCount;
+        }
     }
 }
