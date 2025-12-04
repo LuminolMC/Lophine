@@ -160,25 +160,4 @@ public class EntitiesCounterUtil {
         return new NaturalSpawner.SpawnState(getTotalChunkCount(level), map, potentialCalculator, calculator);
         // Lophine end - Copy from net/minecraft/world/level/NaturalSpawner
     }
-
-    public static class ChunkCounter {
-        private final int chunkCount;
-        private int timeout = 20;
-
-        public void tick() {
-            timeout--;
-        }
-
-        public ChunkCounter(int chunkCount) {
-            this.chunkCount = chunkCount;
-        }
-
-        public boolean timeout() {
-            return timeout <= 0;
-        }
-
-        public int getChunkCount() {
-            return chunkCount;
-        }
-    }
 }
