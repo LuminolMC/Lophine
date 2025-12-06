@@ -4,8 +4,9 @@ on:
   pull_request:
   push:
     branches: # Specify your branches here
-      - main # The 'main' branch
-      - 'releases/*' # The release branches
+      - ver/* # Stable branch
+      - exp/* # Experimental branch
+      - dev/* # Development Branch
 
 jobs:
   qodana:
