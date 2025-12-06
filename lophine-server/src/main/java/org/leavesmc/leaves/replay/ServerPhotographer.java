@@ -161,10 +161,15 @@ public class ServerPhotographer extends ServerPlayer {
         super.remove(RemovalReason.KILLED);
         photographers.remove(this);
         this.recorder.stop();
-        this.getServer().getPlayerList().removePhotographer(this);
-
-        LOGGER.info("Photographer {} removed", createState.id);
-
+        Runnable task = () -> {
+            MinecraftServer.getServer().getPlayerList().removePhotographer(this);
+            LOGGER.info("Photographer {} removed", createState.id);
+        };
+        if (TickThread.isTickThreadFor(this)) {
+            task.run();
+        } else {
+            this.getBukkitEntity().taskScheduler.schedule((nmsentity) -> task.run(), null, 1L);
+        }
         if (!recorder.isSaved()) {
             CompletableFuture<Void> future = recorder.saveRecording(saveFile, save);
             if (!async) {
