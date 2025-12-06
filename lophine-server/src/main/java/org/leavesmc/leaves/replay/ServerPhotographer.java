@@ -84,9 +84,8 @@ public class ServerPhotographer extends ServerPlayer {
             placePhotographer(server, photographer, world, state);
         } else {
             RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
-                    world, net.minecraft.util.Mth.floor(state.loc.getX()) >> 4, net.minecraft.util.Mth.floor(state.loc.getZ()) >> 4,
-                    () -> placePhotographer(server, photographer, world, state),
-                    ca.spottedleaf.concurrentutil.util.Priority.HIGHER);
+                    world, state.loc.blockX() >> 4, state.loc.blockZ() >> 4,
+                    () -> placePhotographer(server, photographer, world, state));
         }
 
         photographers.add(photographer);
@@ -116,11 +115,13 @@ public class ServerPhotographer extends ServerPlayer {
 
         if (this.followPlayer != null) {
             if (this.getCamera() == this || this.getCamera().level() != this.level()) {
-                this.getBukkitPlayer().teleportAsync(this.getCamera().getBukkitEntity().getLocation());
                 this.setCamera(followPlayer);
             }
+
             if (lastPosVec3.distanceToSqr(this.position()) > 1024D) {
-                this.getBukkitPlayer().teleportAsync(this.getCamera().getBukkitEntity().getLocation());
+                ((CraftPhotographer) this.getBukkitPlayer()).taskScheduler.schedule(ent -> {
+                    this.getBukkitPlayer().teleportAsync(this.getCamera().getBukkitEntity().getLocation());
+                }, null, 1L);
             }
         }
 
@@ -158,18 +159,12 @@ public class ServerPhotographer extends ServerPlayer {
     }
 
     public void remove(boolean async, boolean save) {
-        super.remove(RemovalReason.KILLED);
-        photographers.remove(this);
+        LOGGER.info("Photographer {} removed", createState.id);
+
         this.recorder.stop();
-        Runnable task = () -> {
-            MinecraftServer.getServer().getPlayerList().removePhotographer(this);
-            LOGGER.info("Photographer {} removed", createState.id);
-        };
-        if (TickThread.isTickThreadFor(this)) {
-            task.run();
-        } else {
-            this.getBukkitEntity().taskScheduler.schedule((nmsentity) -> task.run(), null, 1L);
-        }
+        photographers.remove(this);
+
+        MinecraftServer.getServer().getPlayerList().removePhotographer(this);
         if (!recorder.isSaved()) {
             CompletableFuture<Void> future = recorder.saveRecording(saveFile, save);
             if (!async) {

@@ -288,7 +288,7 @@ index f5ba0c9a4c3f9eaa38eeb689de915c25c7165433..24bbc32bc17802edbd9cc14310fe8141
  
              this.setListData(list);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 5efe7d94a364cec1bd18c4d8d62c19075d52f3e8..a4ee2bcdb31f889c7edbbc422636782c0d5d0af6 100644
+index 3393fb585747aaf3fa270c4bfe06ed4e9174d519..c58b88f09e6f08d178fcb17a13dd790c3cb62aae 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -2836,7 +2836,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -323,7 +323,7 @@ index 4b2dba8b30b72fb3acc00957b3e19d6fc178c99e..afd607df83fda3de6f53f55ad305c8f6
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_XZ = 32;
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_Y = 10;
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c947965938 100644
+index 11c1eb6995ec3aa896815efa59477096c39089d1..762728e490a152d159684324e200ab0d2852ac7f 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -130,6 +130,7 @@ public abstract class PlayerList {
@@ -334,7 +334,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
  
      // CraftBukkit start
      private org.bukkit.craftbukkit.CraftServer cserver;
-@@ -213,6 +214,122 @@ public abstract class PlayerList {
+@@ -213,6 +214,123 @@ public abstract class PlayerList {
  
      abstract public void loadAndSaveFiles(); // Paper - fix converting txt to json file; moved from DedicatedPlayerList constructor
  
@@ -384,6 +384,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
 +        this.playersByUUID.put(player.getUUID(), player);
 +
 +        player.supressTrackerForLogin = true;
++        worldserver1.getCurrentWorldData().connections.add(player.connection.connection);
 +        worldserver1.addNewPlayer(player);
 +        this.server.getCustomBossEvents().onPlayerConnect(player);
 +        org.bukkit.craftbukkit.entity.CraftPlayer bukkitPlayer = player.getBukkitEntity();
@@ -457,7 +458,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
      public void loadSpawnForNewPlayer(Connection connection, ServerPlayer player, CommonListenerCookie cookie, org.apache.commons.lang3.mutable.MutableObject<net.minecraft.util.ProblemReporter.ScopedCollector> scopedCollectorStore, org.apache.commons.lang3.mutable.MutableObject<ValueInput> data, org.apache.commons.lang3.mutable.MutableObject<String> lastKnownName, ca.spottedleaf.concurrentutil.completable.CallbackCompletable<org.bukkit.Location> toComplete) { // Folia - region threading - rewrite login process
          player.isRealPlayer = true; // Paper
          player.loginTime = System.currentTimeMillis(); // Paper - Replace OfflinePlayer#getLastPlayed
-@@ -398,6 +515,7 @@ public abstract class PlayerList {
+@@ -398,6 +516,7 @@ public abstract class PlayerList {
  
              // player.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(this.players)); // CraftBukkit - replaced with loop below
              this.players.add(player);
@@ -465,7 +466,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
              this.playersByName.put(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT), player); // Spigot
              this.playersByUUID.put(player.getUUID(), player);
              // this.broadcastAll(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(player))); // CraftBukkit - replaced with loop below
-@@ -601,6 +719,7 @@ public abstract class PlayerList {
+@@ -601,6 +720,7 @@ public abstract class PlayerList {
      }
  
      protected void save(ServerPlayer player) {
@@ -473,7 +474,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
          if (!player.getBukkitEntity().isPersistent()) return; // CraftBukkit
          player.lastSave = System.nanoTime(); // Folia - region threading - changed to nanoTime tracking
          this.playerIo.save(player);
-@@ -615,6 +734,43 @@ public abstract class PlayerList {
+@@ -615,6 +735,44 @@ public abstract class PlayerList {
          }
      }
  
@@ -497,6 +498,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
 +            }
 +        }
 +
++        worldserver.getCurrentWorldData().connections.remove(entityplayer.connection.connection);
 +        worldserver.removePlayerImmediately(entityplayer, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
 +        entityplayer.retireScheduler();
 +        entityplayer.getAdvancements().stopListening();
@@ -517,7 +519,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
      public @Nullable net.kyori.adventure.text.Component remove(ServerPlayer player) { // CraftBukkit - return string // Paper - return Component
          // Paper start - Fix kick event leave message not being sent
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
-@@ -688,6 +844,7 @@ public abstract class PlayerList {
+@@ -688,6 +846,7 @@ public abstract class PlayerList {
          player.retireScheduler(); // Paper - Folia schedulers
          player.getAdvancements().stopListening();
          this.players.remove(player);
@@ -525,7 +527,7 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..54e7ddf0b3949e02d2705ff7626010c9
          this.playersByName.remove(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT)); // Spigot
          this.server.getCustomBossEvents().onPlayerDisconnect(player);
          UUID uuid = player.getUUID();
-@@ -1044,15 +1201,15 @@ public abstract class PlayerList {
+@@ -1044,15 +1203,15 @@ public abstract class PlayerList {
      }
  
      public String[] getPlayerNamesArray() {

@@ -281,6 +281,7 @@ public class BotList {
 
         bot.level().getCurrentWorldData().connections.remove(bot.connection.connection);
         bot.level().removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+        bot.retireScheduler();
 
         this.bots.remove(bot);
         this.botsByName.remove(bot.getScoreboardName().toLowerCase(Locale.ROOT));
@@ -304,7 +305,6 @@ public class BotList {
             this.server.getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(removeMessage), false);
         }
 
-        bot.retireScheduler();
         return true;
     }
 
