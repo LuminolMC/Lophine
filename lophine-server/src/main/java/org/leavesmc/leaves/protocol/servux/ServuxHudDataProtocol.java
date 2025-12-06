@@ -61,7 +61,6 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
     private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = HashBasedTable.create();
 
     public static boolean refreshSpawnMetadata = false;
-    private long lastAcceptTime = 0;
 
     @ProtocolHandler.Init
     private static void initializeLoggers() {
@@ -240,8 +239,6 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         }
 
         long currentTime = System.currentTimeMillis() / 50;
-        if (currentTime == lastAcceptTime) return;
-        lastAcceptTime = currentTime;
 
         if (currentTime % ServuxProtocolConfig.hudUpdateInterval == 0) {
             MinecraftServer server = MinecraftServer.getServer();
