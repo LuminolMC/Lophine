@@ -121,7 +121,7 @@ public class BotList {
         }
 
         ServerBot bot = new ServerBot(this.server, this.server.getLevel(Level.OVERWORLD), new GameProfile(uuid, realName));
-        bot.connection = new ServerBotPacketListenerImpl(this.server, bot);
+        bot.connection = new ServerBotPacketListenerImpl(this.server, bot, new ServerBotPacketListenerImpl.BotConnection());
         Optional<ValueInput> optional;
         try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(bot.problemPath(), LOGGER)) {
             optional = playerIO.load(bot, scopedCollector);
@@ -154,7 +154,7 @@ public class BotList {
 
         bot.isRealPlayer = true;
         bot.loginTime = System.currentTimeMillis();
-        bot.connection = new ServerBotPacketListenerImpl(this.server, bot);
+        bot.connection = new ServerBotPacketListenerImpl(this.server, bot, new ServerBotPacketListenerImpl.BotConnection());
         bot.setServerLevel(world);
 
         BotSpawnLocationEvent event = new BotSpawnLocationEvent(bot.getBukkitEntity(), location);
@@ -175,22 +175,24 @@ public class BotList {
 
         bot.supressTrackerForLogin = true;
 
-        if (TickThread.isTickThreadFor(world, net.minecraft.util.Mth.floor(location.getX()) >> 4, net.minecraft.util.Mth.floor(location.getZ()) >> 4)) {
-            summonBot(bot, world);
-        } else {
-            RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
-                    world, net.minecraft.util.Mth.floor(location.getX()) >> 4, net.minecraft.util.Mth.floor(location.getZ()) >> 4,
-                    () -> summonBot(bot, world),
-                    ca.spottedleaf.concurrentutil.util.Priority.HIGHER);
-        }
         optional.ifPresent(nbt -> {
             bot.loadAndSpawnEnderPearls(nbt);
             bot.loadAndSpawnParentVehicle(nbt);
         });
+
+        if (TickThread.isTickThreadFor(world, location.blockX() >> 4, location.blockZ() >> 4)) {
+            summonBot(bot, world);
+        } else {
+            RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                    world, location.getBlockX() >> 4, location.blockZ() >> 4,
+                    () -> summonBot(bot, world));
+        }
+
         return bot;
     }
 
     private ServerBot summonBot(ServerBot bot, ServerLevel world) {
+        world.getCurrentWorldData().connections.add(bot.connection.connection);
         world.addNewPlayer(bot);
 
         BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
@@ -277,7 +279,9 @@ public class BotList {
             }
         }
 
+        bot.level().getCurrentWorldData().connections.remove(bot.connection.connection);
         bot.level().removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+
         this.bots.remove(bot);
         this.botsByName.remove(bot.getScoreboardName().toLowerCase(Locale.ROOT));
 
@@ -299,6 +303,8 @@ public class BotList {
         if (removeMessage != null && !removeMessage.equals(net.kyori.adventure.text.Component.empty())) {
             this.server.getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(removeMessage), false);
         }
+
+        bot.retireScheduler();
         return true;
     }
 

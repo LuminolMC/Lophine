@@ -20,7 +20,7 @@ index a82d84283632342bd30bc3449983431ba43583e0..f59526f6bfa1b4af5b474f0b438513c9
          Set<CriterionTrigger.Listener<T>> set = (Set) advancements.criterionData.get(this); // Paper - fix PlayerAdvancements leak
          if (set != null && !set.isEmpty()) {
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..04ae8de63af0a8abe578f14c8ef85fd4beca0969 100644
+index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..58694e28b3ff85ef038fe2ada2672e6d3b074fa4 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -96,7 +96,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -28,7 +28,7 @@ index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..04ae8de63af0a8abe578f14c8ef85fd4
      private volatile PacketListener disconnectListener;
      @Nullable
 -    private volatile PacketListener packetListener;
-+    protected volatile PacketListener packetListener; // Leaves - private -> protected
++    public volatile PacketListener packetListener; // Leaves - private -> protected // Lophine protected -> public
      @Nullable
      private DisconnectionDetails disconnectionDetails;
      private boolean encrypted;
@@ -257,7 +257,7 @@ index 70740381c6501c1a518c52b24381edd16792507f..8ad6d5a2522cfbe316fec2c3b918e2e1
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 89d72f242d0fc224701bdcdf245d948415e7c820..5efe7d94a364cec1bd18c4d8d62c19075d52f3e8 100644
+index 7fb095c544294796768ce19c4409416e2848e296..3393fb585747aaf3fa270c4bfe06ed4e9174d519 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -207,6 +207,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe

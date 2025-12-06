@@ -29,9 +29,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ServerBotPacketListenerImpl extends ServerGamePacketListenerImpl {
+    public final Connection fakeConnection;
 
-    public ServerBotPacketListenerImpl(MinecraftServer server, ServerBot bot) {
-        super(server, BotConnection.INSTANCE, bot, CommonListenerCookie.createInitial(bot.gameProfile, false));
+    public ServerBotPacketListenerImpl(MinecraftServer server, ServerBot bot, BotConnection botConnection) {
+        super(server, botConnection, bot, CommonListenerCookie.createInitial(bot.gameProfile, false));
+        this.fakeConnection = botConnection;
+        this.fakeConnection.packetListener = this;
     }
 
     @Override
@@ -52,8 +55,6 @@ public class ServerBotPacketListenerImpl extends ServerGamePacketListenerImpl {
     }
 
     public static class BotConnection extends Connection {
-
-        private static final BotConnection INSTANCE = new BotConnection();
 
         public BotConnection() {
             super(PacketFlow.SERVERBOUND);
