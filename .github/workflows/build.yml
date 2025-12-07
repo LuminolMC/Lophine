@@ -106,11 +106,12 @@ jobs:
       - name: Create Release - Pre Process
         if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == '2')) || inputs.force-release == '1'
         run: |
-          if [ ${{ inputs.comments }} == "" ]; then
-          echo "No comments provided"
-          echo "flag_comment=true" >> $GITHUB_ENV
+          if [ "${{ inputs.comments }}" == "" ]; then
+            echo "No comments provided"
+            echo "flag_comment=false" >> $GITHUB_ENV
           else
-          echo "flag_comment=false" >> $GITHUB_ENV
+            echo "Comments provided: ${{ inputs.comments }}"
+            echo "flag_comment=true" >> $GITHUB_ENV
           fi
 
       - name: Create Release - No Comment
