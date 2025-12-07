@@ -91,6 +91,7 @@ public class EntitiesCounterUtil {
             Object2IntOpenHashMap<MobCategory> map = new Object2IntOpenHashMap<>();
             for (ReferenceList<Entity> data : data0.values()) {
                 for (Entity entity : GlobalEntitiesCounter.enabled ? data.copy() : data) {
+                    if (entity == null || entity.isRemoved() || !entity.isAlive()) continue;
                     // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
                     MobCategory category = entity.getType().getCategory();
                     if (category != MobCategory.MISC) {
@@ -132,6 +133,7 @@ public class EntitiesCounterUtil {
         // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
         PotentialCalculator potentialCalculator = new PotentialCalculator();
         for (Entity entity : entities) {
+            if (entity == null || entity.isRemoved() || !entity.isAlive()) continue;
             // Paper start - Only count natural spawns
             if (!entity.level().paperConfig().entities.spawning.countAllMobsForSpawning &&
                     !(entity.spawnReason == CreatureSpawnEvent.SpawnReason.NATURAL ||

@@ -123,9 +123,10 @@ public class ReplayFile {
         data.fileFormatVersion = RecordMetaData.CURRENT_FILE_FORMAT_VERSION;
         data.protocol = SharedConstants.getCurrentVersion().protocolVersion();
         data.generator = ProtocolUtils.buildProtocolVersion("replay");
+        RecordMetaData dataCopy = data.copy();
 
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(metaFile), StandardCharsets.UTF_8)) {
-            writer.write(META_GSON.toJson(data));
+            writer.write(META_GSON.toJson(dataCopy));
         }
     }
 

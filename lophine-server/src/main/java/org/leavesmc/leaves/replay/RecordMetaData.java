@@ -26,7 +26,7 @@ public class RecordMetaData {
     public static final int CURRENT_FILE_FORMAT_VERSION = 14;
 
     public boolean singleplayer = false;
-    public String serverName = "Leaves";
+    public String serverName = "Lophine";
     public int duration = 0;
     public long date;
     public String mcversion;
@@ -37,4 +37,22 @@ public class RecordMetaData {
     public int selfId = -1;
 
     public Set<UUID> players = new HashSet<>();
+
+    public RecordMetaData copy() {
+        RecordMetaData ret = new RecordMetaData();
+        synchronized (this) {
+            ret.singleplayer = this.singleplayer;
+            ret.serverName = this.serverName;
+            ret.duration = this.duration;
+            ret.date = this.date;
+            ret.mcversion = this.mcversion;
+            ret.fileFormat = this.fileFormat;
+            ret.fileFormatVersion = this.fileFormatVersion;
+            ret.protocol = this.protocol;
+            ret.generator = this.generator;
+            ret.selfId = this.selfId;
+            ret.players = new HashSet<>(this.players);
+        }
+        return ret;
+    }
 }

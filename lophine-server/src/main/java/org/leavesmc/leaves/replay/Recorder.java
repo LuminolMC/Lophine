@@ -195,7 +195,9 @@ public class Recorder extends Connection {
             }
             case ClientboundAddEntityPacket packet1 -> {
                 if (packet1.getType() == EntityType.PLAYER) {
-                    metaData.players.add(packet1.getUUID());
+                    synchronized (metaData) {
+                        metaData.players.add(packet1.getUUID());
+                    }
                     saveMetadata();
                 }
             }
