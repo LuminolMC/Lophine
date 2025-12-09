@@ -55,7 +55,7 @@ public class EntitiesCounterUtil {
         synchronized (globalLoadedEntities) {
             globalLoadedEntities.get(level).remove(uniqueId);
         }
-        synchronized (mobsMap) {
+        synchronized (mobsAreaMap) {
             mobsAreaMap.get(level).remove(uniqueId);
         }
     }
