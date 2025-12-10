@@ -1,7 +1,7 @@
 package fun.bm.lophine.utils.concurrent;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -45,7 +45,7 @@ public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
     }
 
     @Override
-    public Map<X, Y> getXY(Z z) {
+    public List<Map.Entry<X, Y>> getXY(Z z) {
         return filterAndMap(
                 entry -> entry.getZ().equals(z),
                 TableEntry::getX,
@@ -54,7 +54,7 @@ public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
     }
 
     @Override
-    public Map<Y, Z> getYZ(X x) {
+    public List<Map.Entry<Y, Z>> getYZ(X x) {
         return filterAndMap(
                 entry -> entry.getX().equals(x),
                 TableEntry::getY,
@@ -63,7 +63,7 @@ public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
     }
 
     @Override
-    public Map<X, Z> getXZ(Y y) {
+    public List<Map.Entry<X, Z>> getXZ(Y y) {
         return filterAndMap(
                 entry -> entry.getY().equals(y),
                 TableEntry::getX,
@@ -117,16 +117,16 @@ public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
         return result;
     }
 
-    private <K, V> Map<K, V> filterAndMap(Predicate<TableEntry<X, Y, Z>> filter,
-                                          java.util.function.Function<TableEntry<X, Y, Z>, K> keyMapper,
-                                          java.util.function.Function<TableEntry<X, Y, Z>, V> valueMapper) {
-        Map<K, V> map = new HashMap<>();
+    private <K, V> List<Map.Entry<K, V>> filterAndMap(Predicate<TableEntry<X, Y, Z>> filter,
+                                                      java.util.function.Function<TableEntry<X, Y, Z>, K> keyMapper,
+                                                      java.util.function.Function<TableEntry<X, Y, Z>, V> valueMapper) {
+        List<Map.Entry<K, V>> list = new ArrayList<>();
         for (TableEntry<X, Y, Z> entry : data) {
             if (filter.test(entry)) {
-                map.put(keyMapper.apply(entry), valueMapper.apply(entry));
+                list.add(new AbstractMap.SimpleEntry<>(keyMapper.apply(entry), valueMapper.apply(entry)));
             }
         }
-        return map;
+        return list;
     }
 
     private <T> List<T> collectAll(java.util.function.Function<TableEntry<X, Y, Z>, T> mapper) {

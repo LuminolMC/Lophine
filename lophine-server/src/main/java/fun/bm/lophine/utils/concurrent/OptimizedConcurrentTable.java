@@ -2,7 +2,7 @@ package fun.bm.lophine.utils.concurrent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> {
@@ -81,18 +81,18 @@ public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> 
     }
 
     @Override
-    public Map<X, Y> getXY(Z z) {
-        return buildMapFromIndex(zxIndex.get(z), Function.identity(), Function.identity());
+    public List<Map.Entry<X, Y>> getXY(Z z) {
+        return buildDataFromIndex(zxIndex.get(z));
     }
 
     @Override
-    public Map<Y, Z> getYZ(X x) {
-        return buildMapFromIndex(xyIndex.get(x), Function.identity(), Function.identity());
+    public List<Map.Entry<Y, Z>> getYZ(X x) {
+        return buildDataFromIndex(xyIndex.get(x));
     }
 
     @Override
-    public Map<X, Z> getXZ(Y y) {
-        return reverseMapFromIndex(yzIndex.get(y));
+    public List<Map.Entry<X, Z>> getXZ(Y y) {
+        return reverseDataFromIndex(yzIndex.get(y));
     }
 
     @Override
@@ -141,15 +141,16 @@ public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> 
     }
 
 
-    private <K, V, R, S> Map<R, S> buildMapFromIndex(ConcurrentHashMap<K, Set<V>> indexMap, java.util.function.Function<K, R> keyMapper, java.util.function.Function<V, S> valueMapper) {
-        Map<R, S> result = new HashMap<>();
+    private <K, V, R> List<R> buildEntriesFromIndex(ConcurrentHashMap<K, Set<V>> indexMap,
+                                                    BiFunction<K, V, R> entryCreator) {
+        List<R> result = new ArrayList<>();
         if (indexMap != null) {
             for (Map.Entry<K, Set<V>> entry : indexMap.entrySet()) {
                 K key = entry.getKey();
                 Set<V> valueSet = entry.getValue();
                 if (valueSet != null && !valueSet.isEmpty()) {
                     for (V value : valueSet) {
-                        result.put(keyMapper.apply(key), valueMapper.apply(value));
+                        result.add(entryCreator.apply(key, value));
                     }
                 }
             }
@@ -157,19 +158,11 @@ public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> 
         return result;
     }
 
-    private <K, V> Map<V, K> reverseMapFromIndex(ConcurrentHashMap<K, Set<V>> indexMap) {
-        Map<V, K> result = new HashMap<>();
-        if (indexMap != null) {
-            for (Map.Entry<K, Set<V>> entry : indexMap.entrySet()) {
-                K key = entry.getKey();
-                Set<V> valueSet = entry.getValue();
-                if (valueSet != null && !valueSet.isEmpty()) {
-                    for (V value : valueSet) {
-                        result.put(value, key);
-                    }
-                }
-            }
-        }
-        return result;
+    private <K, V> List<Map.Entry<K, V>> buildDataFromIndex(ConcurrentHashMap<K, Set<V>> indexMap) {
+        return buildEntriesFromIndex(indexMap, AbstractMap.SimpleEntry::new);
+    }
+
+    private <K, V> List<Map.Entry<V, K>> reverseDataFromIndex(ConcurrentHashMap<K, Set<V>> indexMap) {
+        return buildEntriesFromIndex(indexMap, (key, value) -> new AbstractMap.SimpleEntry<>(value, key));
     }
 }
