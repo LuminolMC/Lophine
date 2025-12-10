@@ -23,7 +23,7 @@ index 1fb359073342a657e9e493403263b56be5b3393f..451a685782da46f5683ea6707289bbaf
          WorldBorderCommand.register(this.dispatcher);
          if (JvmProfiler.INSTANCE.isAvailable()) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..73b69b0d93c17ab8bd3a7c0226d210760b607d7f 100644
+index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..40675f209518d58267fb6ce3bfe697a2e681ea29 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
 @@ -16,19 +16,26 @@ import net.minecraft.world.waypoints.WaypointManager;
@@ -35,7 +35,7 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..73b69b0d93c17ab8bd3a7c0226d21076
 -    private final Table<ServerPlayer, WaypointTransmitter, WaypointTransmitter.Connection> connections = HashBasedTable.create();
 +    private final Set<WaypointTransmitter> waypoints = new java.util.concurrent.CopyOnWriteArraySet<>(); // Lophine - concurrent
 +    private final Set<ServerPlayer> players = new java.util.concurrent.CopyOnWriteArraySet<>(); // Lophine - concurrent
-+    private final fun.bm.lophine.utils.concurrent.ConcurrentTable<ServerPlayer, WaypointTransmitter, WaypointTransmitter.Connection> connections = new fun.bm.lophine.utils.concurrent.ConcurrentTable<>(); // Lophine - concurrent
++    private final fun.bm.lophine.utils.concurrent.AbstractConcurrentTable<ServerPlayer, WaypointTransmitter, WaypointTransmitter.Connection> connections = fun.bm.lophine.config.modules.optimizations.WayPointOptimizedTableConfig.optimizedTable ? new fun.bm.lophine.utils.concurrent.OptimizedConcurrentTable<>() : new fun.bm.lophine.utils.concurrent.ConcurrentTable<>(); // Lophine - concurrent
  
      @Override
      public void trackWaypoint(WaypointTransmitter waypoint) {
@@ -121,23 +121,33 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..73b69b0d93c17ab8bd3a7c0226d21076
      }
  
      public void remakeConnections(WaypointTransmitter waypoint) {
-@@ -86,7 +125,8 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+@@ -86,10 +125,15 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
                      this.connections.put(player, waypoint, connection);
                      connection.connect();
                  }, () -> {
 -                    WaypointTransmitter.Connection connection = this.connections.remove(player, waypoint);
-+                    WaypointTransmitter.Connection connection = this.connections.getZ(player, waypoint); // Lophine - concurrent
-+                    this.connections.remove(player, waypoint, connection); // Lophine - concurrent
-                     if (connection != null) {
-                         connection.disconnect();
-                     }
-@@ -106,7 +146,8 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+-                    if (connection != null) {
+-                        connection.disconnect();
+-                    }
++                    // Lophine start - concurrent
++                    java.util.List<WaypointTransmitter.Connection> c = this.connections.getZ(player, waypoint);
++                    c.forEach((connection) -> {
++                        this.connections.remove(player, waypoint, connection);
++                        if (connection != null) {
++                            connection.disconnect();
++                        }
++                    });
++                    // Lophine end - concurrent
+                 });
+             }
+         }
+@@ -106,7 +150,8 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
                          this.connections.put(player, waypoint, connection1);
                      }, () -> {
                          connection.disconnect();
 -                        this.connections.remove(player, waypoint);
-+                        WaypointTransmitter.Connection c = this.connections.getZ(player, waypoint); // Lophine - concurrent
-+                        this.connections.remove(player, waypoint, c); // Lophine - concurrent
++                        java.util.List<WaypointTransmitter.Connection> c = this.connections.getZ(player, waypoint); // Lophine - concurrent
++                        c.forEach((connection1) -> this.connections.remove(player, waypoint, connection1)); // Lophine - concurrent
                      });
                  }
              }

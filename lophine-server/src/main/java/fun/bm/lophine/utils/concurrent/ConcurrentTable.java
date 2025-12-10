@@ -5,112 +5,135 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.function.Predicate;
 
-public class ConcurrentTable<X, Y, Z> {
-    ConcurrentLinkedDeque<TableEntry<X, Y, Z>> data = new ConcurrentLinkedDeque<>();
+public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
+    protected final ConcurrentLinkedDeque<TableEntry<X, Y, Z>> data = new ConcurrentLinkedDeque<>();
 
+    @Override
     public void put(X x, Y y, Z z) {
         data.add(new TableEntry<>(x, y, z));
     }
 
+    @Override
     public void remove(X x, Y y, Z z) {
         data.removeIf(entry -> entry.getX().equals(x) && entry.getY().equals(y) && entry.getZ().equals(z));
     }
 
-    public Z getZ(X x, Y y) {
-        for (TableEntry<X, Y, Z> entry : data) {
-            if (entry.getX().equals(x) && entry.getY().equals(y)) {
-                return entry.getZ();
-            }
-        }
-        return null;
+    @Override
+    public List<Z> getZ(X x, Y y) {
+        return filterAndCollect(
+                entry -> entry.getX().equals(x) && entry.getY().equals(y),
+                TableEntry::getZ
+        );
     }
 
-    public Y getY(X x, Z z) {
-        for (TableEntry<X, Y, Z> entry : data) {
-            if (entry.getX().equals(x) && entry.getZ().equals(z)) {
-                return entry.getY();
-            }
-        }
-        return null;
+    @Override
+    public List<Y> getY(X x, Z z) {
+        return filterAndCollect(
+                entry -> entry.getX().equals(x) && entry.getZ().equals(z),
+                TableEntry::getY
+        );
     }
 
-    public X getX(Y y, Z z) {
-        for (TableEntry<X, Y, Z> entry : data) {
-            if (entry.getY().equals(y) && entry.getZ().equals(z)) {
-                return entry.getX();
-            }
-        }
-        return null;
+    @Override
+    public List<X> getX(Y y, Z z) {
+        return filterAndCollect(
+                entry -> entry.getY().equals(y) && entry.getZ().equals(z),
+                TableEntry::getX
+        );
     }
 
+    @Override
     public Map<X, Y> getXY(Z z) {
-        HashMap<X, Y> map = new HashMap<>();
-        for (TableEntry<X, Y, Z> entry : data) {
-            if (entry.getZ().equals(z)) {
-                map.put(entry.getX(), entry.getY());
-            }
-        }
-        return map;
+        return filterAndMap(
+                entry -> entry.getZ().equals(z),
+                TableEntry::getX,
+                TableEntry::getY
+        );
     }
 
+    @Override
     public Map<Y, Z> getYZ(X x) {
-        HashMap<Y, Z> map = new HashMap<>();
-        for (TableEntry<X, Y, Z> entry : data) {
-            if (entry.getX().equals(x)) {
-                map.put(entry.getY(), entry.getZ());
-            }
-        }
-        return map;
+        return filterAndMap(
+                entry -> entry.getX().equals(x),
+                TableEntry::getY,
+                TableEntry::getZ
+        );
     }
 
+    @Override
     public Map<X, Z> getXZ(Y y) {
-        HashMap<X, Z> map = new HashMap<>();
-        for (TableEntry<X, Y, Z> entry : data) {
-            if (entry.getY().equals(y)) {
-                map.put(entry.getX(), entry.getZ());
-            }
-        }
-        return map;
+        return filterAndMap(
+                entry -> entry.getY().equals(y),
+                TableEntry::getX,
+                TableEntry::getZ
+        );
     }
 
+    @Override
     public List<X> getAllX() {
-        List<X> xList = new ArrayList<>();
-        for (TableEntry<X, Y, Z> entry : data) {
-            xList.add(entry.getX());
-        }
-        return xList;
+        return collectAll(TableEntry::getX);
     }
 
+    @Override
     public List<Y> getAllY() {
-        List<Y> yList = new ArrayList<>();
-        for (TableEntry<X, Y, Z> entry : data) {
-            yList.add(entry.getY());
-        }
-        return yList;
+        return collectAll(TableEntry::getY);
     }
 
+    @Override
     public List<Z> getAllZ() {
-        List<Z> zList = new ArrayList<>();
-        for (TableEntry<X, Y, Z> entry : data) {
-            zList.add(entry.getZ());
-        }
-        return zList;
+        return collectAll(TableEntry::getZ);
     }
 
+    @Override
     public void clearXY(Z z) {
         data.removeIf(entry -> entry.getZ().equals(z));
     }
 
+    @Override
     public void clearYZ(X x) {
         data.removeIf(entry -> entry.getX().equals(x));
     }
 
+    @Override
     public void clearXZ(Y y) {
         data.removeIf(entry -> entry.getY().equals(y));
     }
 
+    @Override
     public void clearAll() {
         data.clear();
+    }
+
+    private <T> List<T> filterAndCollect(Predicate<TableEntry<X, Y, Z>> filter,
+                                         java.util.function.Function<TableEntry<X, Y, Z>, T> mapper) {
+        List<T> result = new ArrayList<>();
+        for (TableEntry<X, Y, Z> entry : data) {
+            if (filter.test(entry)) {
+                result.add(mapper.apply(entry));
+            }
+        }
+        return result;
+    }
+
+    private <K, V> Map<K, V> filterAndMap(Predicate<TableEntry<X, Y, Z>> filter,
+                                          java.util.function.Function<TableEntry<X, Y, Z>, K> keyMapper,
+                                          java.util.function.Function<TableEntry<X, Y, Z>, V> valueMapper) {
+        Map<K, V> map = new HashMap<>();
+        for (TableEntry<X, Y, Z> entry : data) {
+            if (filter.test(entry)) {
+                map.put(keyMapper.apply(entry), valueMapper.apply(entry));
+            }
+        }
+        return map;
+    }
+
+    private <T> List<T> collectAll(java.util.function.Function<TableEntry<X, Y, Z>, T> mapper) {
+        List<T> result = new ArrayList<>();
+        for (TableEntry<X, Y, Z> entry : data) {
+            result.add(mapper.apply(entry));
+        }
+        return result;
     }
 }
