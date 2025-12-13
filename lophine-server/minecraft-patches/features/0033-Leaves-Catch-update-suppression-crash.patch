@@ -55,7 +55,7 @@ index 3c94631f468f4ee1b46de9981c17171e5901d745..f7a2a19c0832ca90536d09de23f4ec9a
                  serverLevel.fillReportDetails(crashReport);
                  throw new ReportedException(crashReport);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index a4ee2bcdb31f889c7edbbc422636782c0d5d0af6..42bf4f0430a232a10cffb47d0d33f586afdc2a4d 100644
+index c58b88f09e6f08d178fcb17a13dd790c3cb62aae..c0ba36849da0983117901f0cd04b2c785df0010b 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -840,7 +840,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -168,7 +168,7 @@ index 9b9842462b210b0407279ee8a8e9ccecf3ead005..1057f3bd32ff4c8f93f09251341c2439
      }
  
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index a536dc4e09b22b69bcdf59871a9cccfcf8129395..a557045888b153bb046a25d276d811b9146a7874 100644
+index 1f44a59e46f86ca055e89631d831a38f4c3e238e..39c075173b77b5197af5d4ad3fe235ea0d2df756 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -378,7 +378,7 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p

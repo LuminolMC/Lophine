@@ -765,7 +765,7 @@ index e9749b66239d7562ecf22002bfbaa95df197050f..6e3841ed012eee16dcaa61f70edfc1d8
              this.getBlock().affectNeighborsAfterRemoval(this.asState(), level, pos, movedByPiston);
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index a557045888b153bb046a25d276d811b9146a7874..568427a952a24012c17f64f62b6545a9d89c8c8a 100644
+index 39c075173b77b5197af5d4ad3fe235ea0d2df756..b8a2ac505d121b46c33db2fbf4d02c5bc60c6c0f 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -401,20 +401,26 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p

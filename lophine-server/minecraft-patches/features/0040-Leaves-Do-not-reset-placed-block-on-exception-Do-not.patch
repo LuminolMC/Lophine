@@ -46,7 +46,7 @@ index 8f112f382190d606a87f38da8bcdf8dd5f31d1c5..f27915e43df8e627000cda1cb213a953
                          // CraftBukkit start
                          if (bukkitState != null) {
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 568427a952a24012c17f64f62b6545a9d89c8c8a..49a740bf17b2bed8010e347747b170b69ac26929 100644
+index b8a2ac505d121b46c33db2fbf4d02c5bc60c6c0f..7a8ceb00eb5845a1d5011a518f63a9cabf131f3c 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -971,12 +971,14 @@ public class LevelChunk extends ChunkAccess implements ca.spottedleaf.moonrise.p
