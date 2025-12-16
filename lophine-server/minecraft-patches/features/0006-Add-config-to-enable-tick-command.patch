@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable tick command
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839621d73d7 100644
+index ed0966b0576d2d90dead0f770811ccea9b3d69c7..3e541007a004e4e032df5c82afe3b1e9b3e121dd 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -299,6 +299,11 @@ public final class RegionizedServer {
+@@ -315,6 +315,11 @@ public final class RegionizedServer {
          this.randomWalk();
           */
          ++this.tickCount;
@@ -20,7 +20,7 @@ index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839
          // expire invalid click command callbacks
          io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.ADVENTURE_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
          io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.DIALOG_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
-@@ -322,6 +327,13 @@ public final class RegionizedServer {
+@@ -338,6 +343,13 @@ public final class RegionizedServer {
              this.globalTick(world, tickCount);
          }
  
@@ -34,7 +34,7 @@ index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839
          // tick connections
          this.tickConnections();
  
-@@ -455,7 +467,7 @@ public final class RegionizedServer {
+@@ -471,7 +483,7 @@ public final class RegionizedServer {
      }
  
      private void tickTime(final ServerLevel world, final int tickCount) {
@@ -44,7 +44,7 @@ index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839
                  world.setDayTime(world.levelData.getDayTime() + (long)tickCount);
              }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index c485d5b3ba95f2a969bdf0dab9654ac284976f8d..b957585cf7cf7f845e20f59c7b355722880f3b4e 100644
+index 74603dff963500e9bea417d667ebfe8c7b06096a..1906eef3f3f1b1a1de818f35874d46924186edf2 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -31,8 +31,8 @@ public final class TickRegionScheduler {
@@ -58,7 +58,7 @@ index c485d5b3ba95f2a969bdf0dab9654ac284976f8d..b957585cf7cf7f845e20f59c7b355722
  
      // Folia start - watchdog
      public static final FoliaWatchdogThread WATCHDOG_THREAD = new FoliaWatchdogThread();
-@@ -394,8 +394,23 @@ public final class TickRegionScheduler {
+@@ -399,8 +399,23 @@ public final class TickRegionScheduler {
              final long cpuStart = MEASURE_CPU_TIME ? THREAD_MX_BEAN.getCurrentThreadCpuTime() : 0L;
              final long tickStart = System.nanoTime();
  
@@ -84,7 +84,7 @@ index c485d5b3ba95f2a969bdf0dab9654ac284976f8d..b957585cf7cf7f845e20f59c7b355722
  
              if (!this.tryMarkTicking()) {
                  if (!this.cancelled.get()) {
-@@ -435,6 +450,11 @@ public final class TickRegionScheduler {
+@@ -440,6 +455,11 @@ public final class TickRegionScheduler {
              try {
                  // next start isn't updated until the end of this tick
                  this.tickRegion(tickCount, tickStart, scheduledEnd);
@@ -114,7 +114,7 @@ index 22d211bee83e3ef34d6ac81dd89c0e73924bee90..1fb359073342a657e9e493403263b56b
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 75027e73859c955a54034640f905cb5d91a6a2f4..2f4970242c754cfba8ff5656a63af07d9d0a723c 100644
+index 56d193c287357e3a34dea52f3b1ff1429d18fa5a..b3cc3b05771049d29e6932955140932741f2e6ab 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -267,7 +267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

@@ -21,7 +21,7 @@ index e1f456b31ffda9370b63e51f343847d6f9f62263..8a0f85241cc1530aacccc8b6ea24b9de
          }
          // Leaves end - skip bot
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 0a96721797b9bbc643f68677bbb1d10c3c89e815..7e2d870dc8b77c58270542f8916b9c9b88588809 100644
+index d6557bc6c525a925a730f1e477bbfaa7b5a1388f..910c053291c5339000f70847c132a38a716a3986 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -317,6 +317,7 @@ public final class CraftServer implements Server {
@@ -66,10 +66,10 @@ index 8eb5d014d9ed688ffebaffb4ce0bb40896961a04..634bd74449c6991ad72330d10f42ddbb
          // Special case complex part, since there is no extra entity type for them
          if (entity instanceof EnderDragonPart complexPart) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 7883b7973570b5f275a03c6aac4d3b4392e7fa6e..18d066c605f8027d9b1170b64ef1428fb969631b 100644
+index 80a025a777462900a5970da56bc48a1486f00db5..591e943b6e6ce26c23557e4964bd44d38601609b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -2214,7 +2214,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2255,7 +2255,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
  
      @Override
      public boolean canSee(Player player) {

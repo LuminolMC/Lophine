@@ -33,10 +33,10 @@ index 7280ca2250ade4166a1a883b205bbc89f4e00d1a..06268ac3420fc03a798a20bb617ba89a
                              throw makeReportedException(var4, packet, processor);
                          }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 3c94631f468f4ee1b46de9981c17171e5901d745..f7a2a19c0832ca90536d09de23f4ec9a7d4a1521 100644
+index 27f9049b85ffda7e43f70527e6581adf79d2328d..1e8cf3530afc8f9dc52b1c4ac74cc643158da5da 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1878,8 +1878,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1879,8 +1879,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
                  serverLevel.tick(hasTimeLeft, region); // Folia - region threading
@@ -81,10 +81,10 @@ index c58b88f09e6f08d178fcb17a13dd790c3cb62aae..c0ba36849da0983117901f0cd04b2c78
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index afd607df83fda3de6f53f55ad305c8f69fe6ddb6..e2f4b35c88c64a68cf7ef9fadf977e7b99e17c6e 100644
+index 3f47efca0cebc482dc34c767994457f45272b185..e37e317fdde96aab5d195bb93a1d22b054d264e0 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1123,6 +1123,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1124,6 +1124,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  ((org.bukkit.craftbukkit.CraftWorldBorder) this.getBukkitEntity().getWorldBorder()).getHandle().tick();
              }
              // CraftBukkit end

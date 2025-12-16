@@ -5,22 +5,22 @@ Subject: [PATCH] Global Entities Counter
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 3b39b8f7ccb278cf910e3cc4e00da29790465a81..7cc41630a39c1e29840d70eee78473d06b7c11cd 100644
+index 29a85585716e9c993a325d9d7830f5d8a305f34d..b0e98f704393b8db9e773c38623f5dfc87e951c2 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -520,6 +520,9 @@ public final class RegionizedWorldData {
+@@ -525,6 +525,9 @@ public final class RegionizedWorldData {
      public final Map<Long, ChunkSectionItemEntityMovementTracker> itemEntityMovementTrackerMap = new it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap<>();
      // Luminol end
  
 +    public int uniqueId = -1; // Lophine - Global Entities Counter
 +    public boolean underGlobalEntitiesCounter = false; // Lophine - Global Entities Counter
 +
-     public RegionizedWorldData(final ServerLevel world) {
-         this.world = world;
-         this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
-@@ -529,6 +532,15 @@ public final class RegionizedWorldData {
-         this.wireHandler = new alternate.current.wire.WireHandler(world);
+     public final TickRegionData regionData;
+ 
+     public RegionizedWorldData(final ServerLevel world, final TickRegionData regionData) {
+@@ -537,6 +540,15 @@ public final class RegionizedWorldData {
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
+         this.regionData = regionData;
  
 +        // Lophine start - Global Entities Counter
 +        if (fun.bm.lophine.config.modules.experiment.GlobalEntitiesCounter.enabled) {

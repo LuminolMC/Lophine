@@ -5,10 +5,10 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index d0de3b22f6cef6eb213b7ff688a514a67f84fbcf..3b39b8f7ccb278cf910e3cc4e00da29790465a81 100644
+index be3dc42a66a04ffacb022deaab92ae7428a733b6..29a85585716e9c993a325d9d7830f5d8a305f34d 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -524,7 +524,7 @@ public final class RegionizedWorldData {
+@@ -531,7 +531,7 @@ public final class RegionizedWorldData {
          this.world = world;
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);

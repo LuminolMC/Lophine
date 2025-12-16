@@ -33,7 +33,7 @@ index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..58694e28b3ff85ef038fe2ada2672e6d
      private DisconnectionDetails disconnectionDetails;
      private boolean encrypted;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786e46148b1 100644
+index 6ef0459423fe9d6c79ef7614e7522278817319fb..380ae7b3048508534939ca8ad606689ee569e51c 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -347,6 +347,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -66,7 +66,7 @@ index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1912,6 +1919,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1913,6 +1920,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -74,7 +74,7 @@ index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -2983,6 +2991,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2984,6 +2992,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return 0;
      }
  
@@ -314,7 +314,7 @@ index 7fb095c544294796768ce19c4409416e2848e296..3393fb585747aaf3fa270c4bfe06ed4e
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 44f0e3a675c612e9ca2bc40cc3898bdbca0f6718..4b2dba8b30b72fb3acc00957b3e19d6fc178c99e 100644
+index 32815bb55c12ee14db70e3a7362baebb73a3552f..2ff1ef23b1e6f3e289a3d291d4d40e7d53f74501 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -219,7 +219,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -355,7 +355,7 @@ index 44f0e3a675c612e9ca2bc40cc3898bdbca0f6718..4b2dba8b30b72fb3acc00957b3e19d6f
  
      @Override
      public final boolean moonrise$isRealPlayer() {
-@@ -924,6 +928,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -925,6 +929,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          }
          // CraftBukkit end
          this.tickClientLoadTimeout();
@@ -363,7 +363,7 @@ index 44f0e3a675c612e9ca2bc40cc3898bdbca0f6718..4b2dba8b30b72fb3acc00957b3e19d6f
          this.gameMode.tick();
          this.wardenSpawnTracker.tick();
          if (this.spawnInvulnerableTime > 0) --this.spawnInvulnerableTime; // Lophine - spawn invulnerable time
-@@ -2029,6 +2034,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2030,6 +2035,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  this.lastSentHealth = -1.0F;
                  this.lastSentFood = -1;
                  this.teleportSpectators(teleportTransition, serverLevel);
@@ -375,7 +375,7 @@ index 44f0e3a675c612e9ca2bc40cc3898bdbca0f6718..4b2dba8b30b72fb3acc00957b3e19d6f
                  // CraftBukkit start
                  org.bukkit.event.player.PlayerChangedWorldEvent changeEvent = new org.bukkit.event.player.PlayerChangedWorldEvent(this.getBukkitEntity(), serverLevel.getWorld());
                  this.level().getCraftServer().getPluginManager().callEvent(changeEvent);
-@@ -3577,4 +3587,31 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -3578,4 +3588,31 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          return (org.bukkit.craftbukkit.entity.CraftPlayer) super.getBukkitEntity();
      }
      // CraftBukkit end
@@ -425,7 +425,7 @@ index 144a2644c15f276f02bb3be859dc5d05a677ac55..c6a89e8936cffa49b3de153ed3c40e3c
          boolean stateLocked = true; try { this.stateLock.lock(); // Paper - Fix GameProfileCache concurrency
          GameProfileCache.GameProfileInfo gameProfileInfo = this.profilesByName.get(string);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d00e5115d 100644
+index ccfc119ca680c7d9d3d08df84299f6b908fc12b5..30b85a4e4ea4dd5961334a2e0a157646c66f01a6 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -425,6 +425,19 @@ public abstract class PlayerList {
@@ -448,7 +448,7 @@ index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d
              final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
              if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -922,6 +935,12 @@ public abstract class PlayerList {
+@@ -923,6 +936,12 @@ public abstract class PlayerList {
          }
          // Paper end - Add PlayerPostRespawnEvent
  
@@ -461,7 +461,7 @@ index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d
          // CraftBukkit end
  
          return serverPlayer;
-@@ -1026,11 +1045,16 @@ public abstract class PlayerList {
+@@ -1027,11 +1046,16 @@ public abstract class PlayerList {
  
      public String[] getPlayerNamesArray() {
          List<ServerPlayer> players = new java.util.ArrayList<>(this.players); // Folia - region threading
@@ -479,7 +479,7 @@ index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d
  
          return strings;
      }
-@@ -1141,7 +1165,14 @@ public abstract class PlayerList {
+@@ -1142,7 +1166,14 @@ public abstract class PlayerList {
  
      @Nullable
      public ServerPlayer getPlayerByName(String username) {
@@ -495,7 +495,7 @@ index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d
      }
  
      public void broadcast(@Nullable Player except, double x, double y, double z, double radius, ResourceKey<Level> dimension, Packet<?> packet) {
-@@ -1482,7 +1513,13 @@ public abstract class PlayerList {
+@@ -1483,7 +1514,13 @@ public abstract class PlayerList {
  
      @Nullable
      public ServerPlayer getPlayer(UUID playerUUID) {

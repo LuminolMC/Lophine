@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8405157ec35a443e238fa6866772c839621d73d7..67f3454e6479abb241a7d94699d4f7bec22da56b 100644
+index 3e541007a004e4e032df5c82afe3b1e9b3e121dd..fc84fa1bfc9ee670029a046240e16e0418538a43 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -334,6 +334,8 @@ public final class RegionizedServer {
+@@ -350,6 +350,8 @@ public final class RegionizedServer {
          }
          // Luminol end - Add a config to enable tick command
  
@@ -129,7 +129,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
          this.connection.setReadOnly();
          // CraftBukkit - Don't wait
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 4ef2816210f06082f2209c51d04aad6bb188232b..593dbcda4b497291eb1ecdc64b947a8d279f8be6 100644
+index d4f16779583916854352467aac16210cac6f67ee..073ff43279a399623ea0fda2c5c3930d51ae3b84 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -423,6 +423,8 @@ public abstract class PlayerList {
@@ -149,7 +149,7 @@ index 4ef2816210f06082f2209c51d04aad6bb188232b..593dbcda4b497291eb1ecdc64b947a8d
          // Paper end - Fix kick event leave message not being sent
          ServerLevel serverLevel = player.level();
          player.awardStat(Stats.LEAVE_GAME);
-@@ -1520,6 +1523,7 @@ public abstract class PlayerList {
+@@ -1521,6 +1524,7 @@ public abstract class PlayerList {
              serverPlayer.connection.send(clientboundUpdateRecipesPacket);
              serverPlayer.getRecipeBook().sendInitialRecipeBook(serverPlayer);
          }

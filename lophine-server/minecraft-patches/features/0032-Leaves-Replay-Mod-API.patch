@@ -84,10 +84,10 @@ index 514f8fbdeb776087608665c35de95294aadf5cf0..b75772897cabc3e7c59301d451685378
                              players.add(serverPlayer1);
                              if (players.size() >= resultLimit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 81726e5782d25ff35a2bea8820a62786e46148b1..3c94631f468f4ee1b46de9981c17171e5901d745 100644
+index 380ae7b3048508534939ca8ad606689ee569e51c..27f9049b85ffda7e43f70527e6581adf79d2328d 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1800,7 +1800,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1801,7 +1801,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      private ServerStatus.Players buildPlayerStatus() {
@@ -96,7 +96,7 @@ index 81726e5782d25ff35a2bea8820a62786e46148b1..3c94631f468f4ee1b46de9981c17171e
          int maxPlayers = this.getMaxPlayers();
          if (this.hidesOnlinePlayers()) {
              return new ServerStatus.Players(maxPlayers, players.size(), List.of());
-@@ -2001,7 +2001,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2002,7 +2002,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @Override
      public int getPlayerCount() {
@@ -105,7 +105,7 @@ index 81726e5782d25ff35a2bea8820a62786e46148b1..3c94631f468f4ee1b46de9981c17171e
      }
  
      @Override
-@@ -2415,7 +2415,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2416,7 +2416,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      if (Thread.currentThread() != this.serverThread) return; // Paper
                      // Paper start - we don't need to save everything, just advancements
                      // this.getPlayerList().saveAll();
@@ -114,7 +114,7 @@ index 81726e5782d25ff35a2bea8820a62786e46148b1..3c94631f468f4ee1b46de9981c17171e
                          player.getAdvancements().save();
                      }
                      // Paper end - we don't need to save everything, just advancements
-@@ -2554,7 +2554,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2555,7 +2555,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              if (!playerList.isUsingWhitelist()) return; // Paper - whitelist not enabled
              UserWhiteList whiteList = playerList.getWhiteList();
  
@@ -310,7 +310,7 @@ index 3393fb585747aaf3fa270c4bfe06ed4e9174d519..c58b88f09e6f08d178fcb17a13dd790c
                  }
                  // Leaves end - skip
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 4b2dba8b30b72fb3acc00957b3e19d6fc178c99e..afd607df83fda3de6f53f55ad305c8f69fe6ddb6 100644
+index 2ff1ef23b1e6f3e289a3d291d4d40e7d53f74501..3f47efca0cebc482dc34c767994457f45272b185 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -194,7 +194,7 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
@@ -323,7 +323,7 @@ index 4b2dba8b30b72fb3acc00957b3e19d6fc178c99e..afd607df83fda3de6f53f55ad305c8f6
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_XZ = 32;
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_Y = 10;
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 11c1eb6995ec3aa896815efa59477096c39089d1..762728e490a152d159684324e200ab0d2852ac7f 100644
+index 242badf4c0ad084926c89c3554b2ee7d74021c47..0dd750bd3de8c82a685c83adfc4b68bba1bb7044 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -130,6 +130,7 @@ public abstract class PlayerList {
@@ -519,15 +519,15 @@ index 11c1eb6995ec3aa896815efa59477096c39089d1..762728e490a152d159684324e200ab0d
      public @Nullable net.kyori.adventure.text.Component remove(ServerPlayer player) { // CraftBukkit - return string // Paper - return Component
          // Paper start - Fix kick event leave message not being sent
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
-@@ -688,6 +846,7 @@ public abstract class PlayerList {
-         player.retireScheduler(); // Paper - Folia schedulers
+@@ -689,6 +847,7 @@ public abstract class PlayerList {
+         player.getBukkitEntity().stopAcceptingPackets(); // Folia - region threading
          player.getAdvancements().stopListening();
          this.players.remove(player);
 +        this.realPlayers.remove(player); // Leaves - replay api
          this.playersByName.remove(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT)); // Spigot
          this.server.getCustomBossEvents().onPlayerDisconnect(player);
          UUID uuid = player.getUUID();
-@@ -1044,15 +1203,15 @@ public abstract class PlayerList {
+@@ -1045,15 +1204,15 @@ public abstract class PlayerList {
      }
  
      public String[] getPlayerNamesArray() {

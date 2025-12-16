@@ -6,10 +6,10 @@ Subject: [PATCH] Add null check in RegionizedWorldData >> conections
 some of our function patches will crash because of get null in conn.getPlayer(), then when we process player.chunkPosition() will get NPE, so we need to fix it.
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 7cc41630a39c1e29840d70eee78473d06b7c11cd..d0ab09a77953c1ccd309637ba80c47a37114f082 100644
+index b0e98f704393b8db9e773c38623f5dfc87e951c2..44ea4866e453d6bbbfca71f6d5683867196128c1 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -230,14 +230,17 @@ public final class RegionizedWorldData {
+@@ -233,14 +233,17 @@ public final class RegionizedWorldData {
                  regionToData.get(CoordinateUtils.getChunkKey(pos.x >> chunkToRegionShift, pos.z >> chunkToRegionShift)).itemEntityMovementTrackerMap.put(key, tracker);
              }
              // Luminol end
@@ -27,9 +27,9 @@ index 7cc41630a39c1e29840d70eee78473d06b7c11cd..d0ab09a77953c1ccd309637ba80c47a3
              }
              // entities
              for (final ServerPlayer player : from.localPlayers) {
-@@ -247,6 +250,13 @@ public final class RegionizedWorldData {
-                 final RegionizedWorldData into = regionToData.get(CoordinateUtils.getChunkKey(pos.x >> chunkToRegionShift, pos.z >> chunkToRegionShift));
+@@ -251,6 +254,13 @@ public final class RegionizedWorldData {
                  into.localPlayers.add(player);
+                 player.getBukkitEntity().updateRegion(into);
                  into.nearbyPlayers.addPlayer(player);
 +                // Lophine start - we need to process the connection if player's connection is not processed, if connection.player is null, next tick will clean up it
 +                final Connection conn = player.connection.connection;
@@ -41,7 +41,7 @@ index 7cc41630a39c1e29840d70eee78473d06b7c11cd..d0ab09a77953c1ccd309637ba80c47a3
              }
              for (final Entity entity : from.allEntities) {
                  final ChunkPos pos = entity.chunkPosition();
-@@ -577,6 +587,7 @@ public final class RegionizedWorldData {
+@@ -585,6 +595,7 @@ public final class RegionizedWorldData {
      private static void cleanUpConnection(final Connection conn) {
          // note: ALL connections HERE have a player
          final ServerPlayer player = conn.getPlayer();
