@@ -14,7 +14,7 @@ on:
         required: false
         default: ""
       force-push:
-        description: "Force disable push to repo if you enter 2, push to repo if you enter 1, default push if not released else skip push repo"
+        description: "Force disable push to repo if you enter 2, force push to repo if you enter 1, default push if not released else skip push repo"
         required: false
         default: ""
       comments:
@@ -96,7 +96,7 @@ jobs:
           fi
 
       - name: Publish To Repo
-        if: (( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !( inputs.force-release == '2' )) || inputs.force-push == '1') && false # do not push to any repo
+        if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !( inputs.force-release == '2' )) || inputs.force-push == '1'
         continue-on-error: true
         run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
         env:

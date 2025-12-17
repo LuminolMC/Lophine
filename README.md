@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("me.earthme.luminol:luminol-api:$VERSION")
+    compileOnly("fun.bm.lophine:lophine-api:$VERSION")
 }
 ```
 
@@ -78,7 +78,7 @@ dependencies {
 
 <dependencies>
     <dependency>
-        <groupId>me.earthme.luminol</groupId>
+        <groupId>fun.bm.lophine</groupId>
         <artifactId>luminol-api</artifactId>
         <version>$VERSION</version>
     </dependency>
