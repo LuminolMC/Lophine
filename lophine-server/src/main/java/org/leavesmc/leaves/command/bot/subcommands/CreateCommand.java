@@ -25,7 +25,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -141,7 +141,7 @@ public class CreateCommand extends BotSubcommand {
         }
     }
 
-    private static class WorldArgument extends ArgumentNode<ResourceLocation> {
+    private static class WorldArgument extends ArgumentNode<Identifier> {
 
         private WorldArgument() {
             super("world", DimensionArgument.dimension());

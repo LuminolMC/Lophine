@@ -70,7 +70,7 @@ public class EntityUtils {
                 Entity passenger = createEntityAndPassengersFromNBT(tagList.getCompoundOrEmpty(i), world);
 
                 if (passenger != null) {
-                    passenger.startRiding(entity, true);
+                    passenger.startRiding(entity, true, true);
                 }
             }
         }

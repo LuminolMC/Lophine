@@ -21,20 +21,17 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.*;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.IdMapper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.protocol.jade.JadeProtocol;
-import org.leavesmc.leaves.protocol.jade.provider.IJadeProvider;
-import org.slf4j.Logger;
+import org.leavesmc.leaves.protocol.jade.provider.JadeProvider;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
-public class HierarchyLookup<T extends IJadeProvider> implements IHierarchyLookup<T> {
-    private static final Logger LOGGER = LogUtils.getLogger();
+public class HierarchyLookup<T extends JadeProvider> implements IHierarchyLookup<T> {
     private final Class<?> baseClass;
     private final Cache<Class<?>, List<T>> resultCache = CacheBuilder.newBuilder().build();
     private final boolean singleton;
@@ -89,7 +86,7 @@ public class HierarchyLookup<T extends IJadeProvider> implements IHierarchyLooku
                 return list;
             });
         } catch (ExecutionException e) {
-            LOGGER.warn("HierarchyLookup error", e);
+            JadeProtocol.LOGGER.warn("HierarchyLookup error", e);
         }
         return List.of();
     }
@@ -117,12 +114,12 @@ public class HierarchyLookup<T extends IJadeProvider> implements IHierarchyLooku
     }
 
     @Override
-    public void loadComplete(PriorityStore<ResourceLocation, IJadeProvider> priorityStore) {
+    public void loadComplete(PriorityStore<Identifier, JadeProvider> priorityStore) {
         objects.asMap().forEach((clazz, list) -> {
             if (list.size() < 2) {
                 return;
             }
-            Set<ResourceLocation> set = Sets.newHashSetWithExpectedSize(list.size());
+            Set<Identifier> set = Sets.newHashSetWithExpectedSize(list.size());
             for (T provider : list) {
                 if (set.contains(provider.getUid())) {
                     throw new IllegalStateException("Duplicate UID: %s for %s".formatted(provider.getUid(), list.stream()

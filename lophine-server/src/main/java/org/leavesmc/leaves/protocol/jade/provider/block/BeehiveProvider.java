@@ -20,7 +20,7 @@ package org.leavesmc.leaves.protocol.jade.provider.block;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.jade.JadeProtocol;
@@ -30,7 +30,7 @@ import org.leavesmc.leaves.protocol.jade.provider.StreamServerDataProvider;
 public enum BeehiveProvider implements StreamServerDataProvider<BlockAccessor, Byte> {
     INSTANCE;
 
-    private static final ResourceLocation MC_BEEHIVE = JadeProtocol.mc_id("beehive");
+    private static final Identifier MC_BEEHIVE = JadeProtocol.mc_id("beehive");
 
     @Override
     public @NotNull StreamCodec<RegistryFriendlyByteBuf, Byte> streamCodec() {
@@ -45,7 +45,7 @@ public enum BeehiveProvider implements StreamServerDataProvider<BlockAccessor, B
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MC_BEEHIVE;
     }
 }

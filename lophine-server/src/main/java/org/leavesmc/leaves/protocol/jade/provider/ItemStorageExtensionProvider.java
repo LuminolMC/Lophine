@@ -19,13 +19,12 @@ package org.leavesmc.leaves.protocol.jade.provider;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.WorldlyContainerHolder;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
@@ -42,20 +41,17 @@ import org.leavesmc.leaves.protocol.jade.accessor.BlockAccessor;
 import org.leavesmc.leaves.protocol.jade.util.ItemCollector;
 import org.leavesmc.leaves.protocol.jade.util.ItemIterator;
 import org.leavesmc.leaves.protocol.jade.util.ViewGroup;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public enum ItemStorageExtensionProvider implements IServerExtensionProvider<ItemStack> {
+public enum ItemStorageExtensionProvider implements ServerExtensionProvider<ItemStack> {
     INSTANCE;
 
     public static final Cache<Object, ItemCollector<?>> targetCache = CacheBuilder.newBuilder().weakKeys().expireAfterAccess(60, TimeUnit.SECONDS).build();
 
-    private static final ResourceLocation UNIVERSAL_ITEM_STORAGE = JadeProtocol.mc_id("item_storage.default");
-
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Identifier UNIVERSAL_ITEM_STORAGE = JadeProtocol.mc_id("item_storage.default");
 
     public static ItemCollector<?> createItemCollector(Accessor<?> request) {
         if (request.getTarget() instanceof AbstractHorse) {
@@ -146,7 +142,7 @@ public enum ItemStorageExtensionProvider implements IServerExtensionProvider<Ite
         try {
             itemCollector = targetCache.get(target, () -> createItemCollector(request));
         } catch (ExecutionException e) {
-            LOGGER.warn("Failed to get item collector for " + target);
+            JadeProtocol.LOGGER.error("Failed to get item collector for {}", target);
             return null;
         }
 
@@ -154,7 +150,7 @@ public enum ItemStorageExtensionProvider implements IServerExtensionProvider<Ite
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return UNIVERSAL_ITEM_STORAGE;
     }
 

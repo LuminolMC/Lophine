@@ -8,7 +8,7 @@ Helvetica Volubi <suisuroru@blue-millennium.fun>
 bdlvl <bdlvl@blendreams.cn>
 
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
-index 22c038e6556d9911e1eaedf71d7b86843af89c16..f5574eb883b1ee8747acc42832bc88ae03e27b67 100644
+index fcdfd4f6de5e1c2d5e80c7f3d8cb0b33a62d257d..6eaa4e9bd1ecbfa531313ce1f470d55edf31b467 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
 +++ b/src/main/java/com/destroystokyo/paper/Metrics.java
 @@ -593,7 +593,7 @@ public class Metrics {
@@ -90,19 +90,6 @@ index 4ada790812957657d580cb748077c4961987d0cb..3a539df860305e777e85ed6dc72b5eff
      }
  
      @Override
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 9699d7dcca5cf67f50ad05c0e875de424a4e00c5..2c546d470013d4daf3ddf427ab4bda1b51d6e641 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-@@ -11,7 +11,7 @@ public final class Versioning {
-     public static String getBukkitVersion() {
-         String result = "Unknown-Version";
- 
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/me.earthme.luminol/luminol-api/pom.properties"); // Folia //Luminol
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/fun.bm.lophine/lophine-api/pom.properties"); // Folia //Luminol
-         Properties properties = new Properties();
- 
-         if (stream != null) {
 diff --git a/src/main/resources/logo.png b/src/main/resources/logo.png
 index 2b6037aab645e303df6edbbc8af34dc4b4a55bc5..76ea89f23e6d2a42806c5d5d29b415d325e1ee82 100644
 GIT binary patch

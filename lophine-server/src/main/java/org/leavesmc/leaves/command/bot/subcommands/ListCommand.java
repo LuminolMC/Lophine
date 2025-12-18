@@ -22,7 +22,7 @@ import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
@@ -85,7 +85,7 @@ public class ListCommand extends BotSubcommand {
                 .map(PaperAdventure::asAdventure)
                 .reduce((a, b) -> a.append(text(", ", GRAY)).append(b))
                 .get();
-        String worldLocation = ((CraftWorld) world).getHandle().dimension().location().toString();
+        String worldLocation = ((CraftWorld) world).getHandle().dimension().identifier().toString();
         return join(noSeparators(),
                 text(world.getName(), AQUA).hoverEvent(showText(text(worldLocation))),
                 text(" (" + botsInLevel.size() + ")\n", GRAY),
@@ -93,7 +93,7 @@ public class ListCommand extends BotSubcommand {
         );
     }
 
-    private static class WorldArgument extends ArgumentNode<ResourceLocation> {
+    private static class WorldArgument extends ArgumentNode<Identifier> {
 
         private WorldArgument() {
             super("world", DimensionArgument.dimension());

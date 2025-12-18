@@ -1,6 +1,6 @@
 --- a/luminol-server/build.gradle.kts
 +++ b/luminol-server/build.gradle.kts
-@@ -52,7 +_,23 @@
+@@ -48,7 +_,23 @@
          }
      }
  
@@ -25,7 +25,7 @@
  
  
      spigot {
-@@ -142,12 +_,16 @@
+@@ -139,12 +_,16 @@
          resources { srcDir("../paper-server/src/main/resources") }
          java { srcDir("../folia-server/src/main/java") }
          resources { srcDir("../folia-server/src/main/resources") }
@@ -42,16 +42,16 @@
      }
  }
  val log4jPlugins = sourceSets.create("log4jPlugins") {
-@@ -174,7 +_,7 @@
+@@ -172,7 +_,7 @@
  }
  
  dependencies {
 -    implementation(project(":luminol-api")) // Luminol
 +    implementation(project(":lophine-api")) // Lophine
      // Luminol start - Dependenices insert
-     implementation("com.electronwill.night-config:toml:3.8.2") // Night config
+     implementation("com.electronwill.night-config:toml:3.8.3") // Night config
      implementation("com.github.luben:zstd-jni:1.5.4-1")
-@@ -275,14 +_,14 @@
+@@ -272,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -70,7 +70,7 @@
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -446,7 +_,7 @@
+@@ -431,7 +_,7 @@
  }
  
  fill {

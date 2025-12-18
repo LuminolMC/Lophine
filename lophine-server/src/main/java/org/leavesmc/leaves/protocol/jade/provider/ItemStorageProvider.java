@@ -20,7 +20,7 @@ package org.leavesmc.leaves.protocol.jade.provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.entity.player.Player;
@@ -39,11 +39,11 @@ import org.leavesmc.leaves.protocol.jade.util.ViewGroup;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ItemStorageProvider<T extends Accessor<?>> implements IServerDataProvider<T> {
+public abstract class ItemStorageProvider<T extends Accessor<?>> implements ServerDataProvider<T> {
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, Map.Entry<ResourceLocation, List<ViewGroup<ItemStack>>>> STREAM_CODEC = ViewGroup.listCodec(ItemStack.OPTIONAL_STREAM_CODEC);
+    private static final StreamCodec<RegistryFriendlyByteBuf, Map.Entry<Identifier, List<ViewGroup<ItemStack>>>> STREAM_CODEC = ViewGroup.listCodec(ItemStack.OPTIONAL_STREAM_CODEC);
 
-    private static final ResourceLocation UNIVERSAL_ITEM_STORAGE = JadeProtocol.mc_id("item_storage");
+    private static final Identifier UNIVERSAL_ITEM_STORAGE = JadeProtocol.mc_id("item_storage");
 
     public static ForBlock getBlock() {
         return ForBlock.INSTANCE;
@@ -56,7 +56,7 @@ public abstract class ItemStorageProvider<T extends Accessor<?>> implements ISer
     public static void putData(CompoundTag tag, @NotNull Accessor<?> accessor) {
         Object target = accessor.getTarget();
         Player player = accessor.getPlayer();
-        Map.Entry<ResourceLocation, List<ViewGroup<ItemStack>>> entry = CommonUtil.getServerExtensionData(accessor, JadeProtocol.itemStorageProviders);
+        Map.Entry<Identifier, List<ViewGroup<ItemStack>>> entry = CommonUtil.getServerExtensionData(accessor, JadeProtocol.itemStorageProviders);
         if (entry != null) {
             List<ViewGroup<ItemStack>> groups = entry.getValue();
             for (ViewGroup<ItemStack> group : groups) {
@@ -77,7 +77,7 @@ public abstract class ItemStorageProvider<T extends Accessor<?>> implements ISer
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return UNIVERSAL_ITEM_STORAGE;
     }
 

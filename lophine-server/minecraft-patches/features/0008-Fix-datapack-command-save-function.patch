@@ -5,10 +5,10 @@ Subject: [PATCH] Fix datapack command save function
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 2f4970242c754cfba8ff5656a63af07d9d0a723c..b156b5c635f931a3d4abc0584591f90476d011a6 100644
+index 2f91e80f8c3df2775a793aa3c648c50007543192..6230c08d001aebc119900906aa557247261985a3 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -2353,6 +2353,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2430,6 +2430,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.reloadResources(selectedIds, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause.PLUGIN);
      }
  
@@ -26,13 +26,13 @@ index 2f4970242c754cfba8ff5656a63af07d9d0a723c..b156b5c635f931a3d4abc0584591f904
          // Paper end - Add ServerResourcesReloadedEvent
          CompletableFuture<Void> completableFuture = CompletableFuture.<ImmutableList>supplyAsync(
 diff --git a/net/minecraft/server/commands/DataPackCommand.java b/net/minecraft/server/commands/DataPackCommand.java
-index a5032b34752061d61fd9ddb4db828d35e403f5e7..3eaa9c85d06f6ecc8ed639d8befa861439390eb7 100644
+index bb36fa4559cdfe82079af1c39516239119ff06f4..8c530eef0e416d8b96f190ada358d77d34dbc8ac 100644
 --- a/net/minecraft/server/commands/DataPackCommand.java
 +++ b/net/minecraft/server/commands/DataPackCommand.java
 @@ -98,7 +98,7 @@ public class DataPackCommand {
          dispatcher.register(
              Commands.literal("datapack")
-                 .requires(Commands.hasPermission(2))
+                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 -                /*.then( // Luminol - Add back read-only datapack command
 +                .then(
                      Commands.literal("enable")
@@ -71,7 +71,7 @@ index a5032b34752061d61fd9ddb4db828d35e403f5e7..3eaa9c85d06f6ecc8ed639d8befa8614
          if (selectedPacks.isEmpty()) {
              source.sendSuccess(() -> Component.translatable("commands.datapack.list.enabled.none"), false);
 diff --git a/net/minecraft/server/commands/ReloadCommand.java b/net/minecraft/server/commands/ReloadCommand.java
-index b540a3c3a02f7242578a63477e34b9063e86f1d2..bc999de32931558d0d8dc26264653dd63c1cad19 100644
+index fcca0babb4e7929cc168fc8b9ad47619e6feb1a5..bac5f4e023f8b73eebea0f31fd253e04c8809918 100644
 --- a/net/minecraft/server/commands/ReloadCommand.java
 +++ b/net/minecraft/server/commands/ReloadCommand.java
 @@ -16,11 +16,17 @@ public class ReloadCommand {

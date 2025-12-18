@@ -6,10 +6,10 @@ Subject: [PATCH] Add config to enable waypoint command & bar
 use concurrent method to fix it (now, they are thread safe)
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 1fb359073342a657e9e493403263b56be5b3393f..451a685782da46f5683ea6707289bbaf3193771f 100644
+index b9dc7dd77aeb6e3b59b6903cb5094b7eadee4d2d..b049520cca9f365282493d7c442bbcd3075d78ac 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -257,7 +257,11 @@ public class Commands {
+@@ -270,7 +270,11 @@ public class Commands {
          TimeCommand.register(this.dispatcher);
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
@@ -23,7 +23,7 @@ index 1fb359073342a657e9e493403263b56be5b3393f..451a685782da46f5683ea6707289bbaf
          WorldBorderCommand.register(this.dispatcher);
          if (JvmProfiler.INSTANCE.isAvailable()) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..55cb2d16e22e4d8745da539177b636d188ad0489 100644
+index 1cbc46e480cc7d109c6128f109a1a9e38bf1a193..9492698541bfe704a1075a8fb58a9d7624895e48 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
 @@ -16,22 +16,31 @@ import net.minecraft.world.waypoints.WaypointManager;

@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8405157ec35a443e238fa6866772c839621d73d7..67f3454e6479abb241a7d94699d4f7bec22da56b 100644
+index f7cc53bf3308771ab8d09010452e579485f6f1bc..7c8aee6a7052e5a3b30a0a9c8e827ea37d5c81cd 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -334,6 +334,8 @@ public final class RegionizedServer {
+@@ -352,6 +352,8 @@ public final class RegionizedServer {
          }
          // Luminol end - Add a config to enable tick command
  
@@ -21,7 +21,7 @@ index 8405157ec35a443e238fa6866772c839621d73d7..67f3454e6479abb241a7d94699d4f7be
          this.tickConnections();
  
 diff --git a/net/minecraft/network/protocol/common/custom/CustomPacketPayload.java b/net/minecraft/network/protocol/common/custom/CustomPacketPayload.java
-index fb263fa1f30a7dfcb7ec2656abfb38e5fe88eac9..56fd1ed7ccaf96e7eedea60fbdbf7f934939d563 100644
+index 1da034752064312962a4144f91be5265a9a08997..081ca42b6a6644eb8c2b5ac9105fecf8ad39d501 100644
 --- a/net/minecraft/network/protocol/common/custom/CustomPacketPayload.java
 +++ b/net/minecraft/network/protocol/common/custom/CustomPacketPayload.java
 @@ -40,13 +40,22 @@ public interface CustomPacketPayload {
@@ -39,20 +39,20 @@ index fb263fa1f30a7dfcb7ec2656abfb38e5fe88eac9..56fd1ed7ccaf96e7eedea60fbdbf7f93
  
              @Override
              public CustomPacketPayload decode(B buffer) {
-                 ResourceLocation resourceLocation = buffer.readResourceLocation();
--                return (CustomPacketPayload)this.findCodec(resourceLocation).decode(buffer);
+                 Identifier identifier = buffer.readIdentifier();
+-                return (CustomPacketPayload)this.findCodec(identifier).decode(buffer);
 +                // Leaves start - protocol core
-+                var payload = org.leavesmc.leaves.protocol.core.LeavesProtocolManager.decode(resourceLocation, buffer);
-+                return java.util.Objects.requireNonNullElseGet(payload, () -> this.findCodec(resourceLocation).decode(buffer));
++                var payload = org.leavesmc.leaves.protocol.core.LeavesProtocolManager.decode(identifier, buffer);
++                return java.util.Objects.requireNonNullElseGet(payload, () -> this.findCodec(identifier).decode(buffer));
 +                // Leaves end - protocol core
              }
          };
      }
 diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
-index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3ddc776bf9e 100644
+index 0bf2173c5445de021090c2d0264afc440b005bdc..076bfe7a7b57f8d3b29ef0aaad117707678da7a3 100644
 --- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
-@@ -57,6 +57,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -58,6 +58,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
      public @Nullable String playerBrand;
      public final java.util.Set<String> pluginMessagerChannels;
      // Paper end - retain certain values
@@ -60,7 +60,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
  
      public ServerCommonPacketListenerImpl(MinecraftServer server, Connection connection, CommonListenerCookie cookie) {
          this.server = server;
-@@ -70,6 +71,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -71,6 +72,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
          this.pluginMessagerChannels = cookie.channels();
          this.keepAlive = cookie.keepAlive();
          // Paper end
@@ -68,7 +68,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
      }
  
      // Paper start - configuration phase API
-@@ -160,6 +162,18 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -161,6 +163,18 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
  
      @Override
      public void handleCustomPayload(ServerboundCustomPayloadPacket packet) {
@@ -77,7 +77,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
 +            org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePayload(org.leavesmc.leaves.protocol.core.ProtocolUtils.createSelector(this), leavesPayload);
 +            return;
 +        }
-+        if (packet.payload() instanceof net.minecraft.network.protocol.common.custom.DiscardedPayload(net.minecraft.resources.ResourceLocation id, byte[] data)) {
++        if (packet.payload() instanceof net.minecraft.network.protocol.common.custom.DiscardedPayload(net.minecraft.resources.Identifier id, byte[] data)) {
 +            if (org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handleBytebuf(org.leavesmc.leaves.protocol.core.ProtocolUtils.createSelector(this), id, io.netty.buffer.Unpooled.wrappedBuffer(data))) {
 +                return;
 +            }
@@ -87,7 +87,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
          // Paper start
          if (!(packet.payload() instanceof final net.minecraft.network.protocol.common.custom.DiscardedPayload discardedPayload)) {
              return;
-@@ -219,10 +233,11 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -220,10 +234,11 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
          final String channel = new String(data, from, length, java.nio.charset.StandardCharsets.US_ASCII);
          if (register) {
              bridge.addChannel(channel);
@@ -100,7 +100,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
      }
  
      @Override
-@@ -385,9 +400,9 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -386,9 +401,9 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
              net.minecraft.server.level.ServerPlayer player = serverGamePacketListener.player;
              org.bukkit.event.player.PlayerKickEvent.Cause cause = disconnectionDetails.disconnectionReason().orElseThrow().game().orElse(org.bukkit.event.player.PlayerKickEvent.Cause.UNKNOWN);
              org.bukkit.event.player.PlayerKickEvent event = new org.bukkit.event.player.PlayerKickEvent(
@@ -113,7 +113,7 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
  
              );
  
-@@ -420,10 +435,10 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -421,10 +436,10 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
  
      private void disconnect0(DisconnectionDetails disconnectionDetails) {
          this.connection
@@ -129,27 +129,27 @@ index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3dd
          this.connection.setReadOnly();
          // CraftBukkit - Don't wait
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 4ef2816210f06082f2209c51d04aad6bb188232b..593dbcda4b497291eb1ecdc64b947a8d279f8be6 100644
+index faf1f5e62ca1efb917256fb6291ae9c71c5ad92e..a8a034ad5895ad1b833754c91c3a370c3b9b3744 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -423,6 +423,8 @@ public abstract class PlayerList {
-                 //return; // Folia - region threading - must still allow the player to connect, as we must add to chunk map before handling disconnect
-             }
+@@ -315,6 +315,8 @@ public abstract class PlayerList {
+             //return; // Folia - region threading - must still allow the player to connect, as we must add to chunk map before handling disconnect
+         }
  
-+            org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player);
++        org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player);
 +
-             final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
+         final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
-             if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -605,6 +607,7 @@ public abstract class PlayerList {
+         if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
+@@ -511,6 +513,7 @@ public abstract class PlayerList {
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
      }
-     public @Nullable net.kyori.adventure.text.Component remove(ServerPlayer player, net.kyori.adventure.text.Component leaveMessage) {
+     public net.kyori.adventure.text.@Nullable Component remove(ServerPlayer player, net.kyori.adventure.text.Component leaveMessage) {
 +        org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerLeave(player); // Leaves - protocol
          // Paper end - Fix kick event leave message not being sent
          ServerLevel serverLevel = player.level();
          player.awardStat(Stats.LEAVE_GAME);
-@@ -1520,6 +1523,7 @@ public abstract class PlayerList {
+@@ -1400,6 +1403,7 @@ public abstract class PlayerList {
              serverPlayer.connection.send(clientboundUpdateRecipesPacket);
              serverPlayer.getRecipeBook().sendInitialRecipeBook(serverPlayer);
          }

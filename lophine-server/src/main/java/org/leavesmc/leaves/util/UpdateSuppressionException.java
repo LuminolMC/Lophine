@@ -115,7 +115,7 @@ public class UpdateSuppressionException extends RuntimeException {
             messages.add("at [x:%d,y:%d,z:%d]".formatted(pos.getX(), pos.getY(), pos.getZ()));
         }
         if (level != null) {
-            messages.add("in %s".formatted(level.dimension().location()));
+            messages.add("in %s".formatted(level.dimension().identifier().getPath()));
         }
         if (player != null) {
             if (player instanceof ServerBot) {

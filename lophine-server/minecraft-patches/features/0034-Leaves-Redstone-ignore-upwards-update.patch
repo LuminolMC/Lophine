@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Wed, 14 Jun 2023 12:07:07 +0800
+Subject: [PATCH] Leaves: Redstone ignore upwards update
+
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+diff --git a/net/minecraft/world/level/block/ComparatorBlock.java b/net/minecraft/world/level/block/ComparatorBlock.java
+index 578e7c8dc601f53cf2a068685c6901bfaf47e763..0686aa5425c00e10beb381f3c3ff3c554603cd49 100644
+--- a/net/minecraft/world/level/block/ComparatorBlock.java
++++ b/net/minecraft/world/level/block/ComparatorBlock.java
+@@ -58,6 +58,7 @@ public class ComparatorBlock extends DiodeBlock implements EntityBlock {
+         BlockState neighborState,
+         RandomSource random
+     ) {
++        if (fun.bm.lophine.config.modules.experiment.RedStoneConfig.redstoneIgnoreUpwardsUpdate && direction == Direction.DOWN) return state; // Leaves - behavior to 1.20.1
+         return direction == Direction.DOWN && !this.canSurviveOn(level, neighborPos, neighborState)
+             ? Blocks.AIR.defaultBlockState()
+             : super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
+diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
+index ba253a9af6141d8ea99c064e3cc0c6486c221098..48f9e234e4025633cbc41d334d88ada36c2e0d7b 100644
+--- a/net/minecraft/world/level/block/RedStoneWireBlock.java
++++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
+@@ -178,7 +178,7 @@ public class RedStoneWireBlock extends Block {
+         RandomSource random
+     ) {
+         if (direction == Direction.DOWN) {
+-            return !this.canSurviveOn(level, neighborPos, neighborState) ? Blocks.AIR.defaultBlockState() : state;
++            return fun.bm.lophine.config.modules.experiment.RedStoneConfig.redstoneIgnoreUpwardsUpdate ? state : !this.canSurviveOn(level, neighborPos, neighborState) ? Blocks.AIR.defaultBlockState() : state; // Leaves - behavior to 1.19
+         } else if (direction == Direction.UP) {
+             return this.getConnectionState(level, state, pos);
+         } else {
+@@ -238,7 +238,7 @@ public class RedStoneWireBlock extends Block {
+         BlockPos blockPos = pos.relative(direction);
+         BlockState blockState = level.getBlockState(blockPos);
+         if (nonNormalCubeAbove) {
+-            boolean flag = blockState.getBlock() instanceof TrapDoorBlock || this.canSurviveOn(level, blockPos, blockState);
++            boolean flag = (!fun.bm.lophine.config.modules.experiment.RedStoneConfig.redstoneIgnoreUpwardsUpdate && blockState.getBlock() instanceof TrapDoorBlock) || this.canSurviveOn(level, blockPos, blockState); // Leaves - behavior to 1.19
+             if (flag && shouldConnectTo(level.getBlockState(blockPos.above()))) {
+                 if (blockState.isFaceSturdy(level, blockPos, direction.getOpposite())) {
+                     return RedstoneSide.UP;
+diff --git a/net/minecraft/world/level/block/RepeaterBlock.java b/net/minecraft/world/level/block/RepeaterBlock.java
+index 87e1a32376adc5a15f035b62bc1f672c507cd230..26c10c1fecb976f3ef0338aa78603d454d1b3fe8 100644
+--- a/net/minecraft/world/level/block/RepeaterBlock.java
++++ b/net/minecraft/world/level/block/RepeaterBlock.java
+@@ -68,6 +68,7 @@ public class RepeaterBlock extends DiodeBlock {
+         BlockState neighborState,
+         RandomSource random
+     ) {
++        if (fun.bm.lophine.config.modules.experiment.RedStoneConfig.redstoneIgnoreUpwardsUpdate && direction == Direction.DOWN) return state; // Leaves - behavior to 1.20.1
+         if (direction == Direction.DOWN && !this.canSurviveOn(level, neighborPos, neighborState)) {
+             return Blocks.AIR.defaultBlockState();
+         } else {

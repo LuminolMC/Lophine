@@ -21,9 +21,11 @@ import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.profile.MutablePropertyMap;
 import io.papermc.paper.threadedregions.RegionizedServer;
 import io.papermc.paper.threadedregions.scheduler.FoliaGlobalRegionScheduler;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,9 +39,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.Bukkit;
@@ -92,7 +94,7 @@ public class BotList {
         Location location = event.getCreateLocation();
         ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
 
-        CustomGameProfile profile = new CustomGameProfile(BotUtil.getBotUUID(state), state.name(), state.skin());
+        GameProfile profile = setProfile(BotUtil.getBotUUID(state), state.name(), state.skin());
         ServerBot bot = new ServerBot(this.server, world, profile);
         bot.createState = state;
         if (event.getCreator() instanceof org.bukkit.entity.Player player) {
@@ -122,11 +124,16 @@ public class BotList {
 
         ServerBot bot = new ServerBot(this.server, this.server.getLevel(Level.OVERWORLD), new GameProfile(uuid, realName));
         bot.connection = new ServerBotPacketListenerImpl(this.server, bot, new ServerBotPacketListenerImpl.BotConnection());
+        bot.connection.markClientLoaded();
         Optional<ValueInput> optional;
-        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(bot.problemPath(), LOGGER)) {
-            optional = playerIO.load(bot, scopedCollector);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (playerIO instanceof BotDataStorage botIO) {
+            try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(bot.problemPath(), LOGGER)) {
+                optional = botIO.load(bot, scopedCollector);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            optional = Optional.empty();
         }
 
         if (optional.isEmpty()) {
@@ -155,6 +162,7 @@ public class BotList {
         bot.isRealPlayer = true;
         bot.loginTime = System.currentTimeMillis();
         bot.connection = new ServerBotPacketListenerImpl(this.server, bot, new ServerBotPacketListenerImpl.BotConnection());
+        bot.connection.markClientLoaded();
         bot.setServerLevel(world);
 
         BotSpawnLocationEvent event = new BotSpawnLocationEvent(bot.getBukkitEntity(), location);
@@ -173,7 +181,7 @@ public class BotList {
         this.botsByName.put(bot.getScoreboardName().toLowerCase(Locale.ROOT), bot);
         this.botsByUUID.put(bot.getUUID(), bot);
 
-        bot.supressTrackerForLogin = true;
+        bot.suppressTrackerForLogin = true;
 
         optional.ifPresent(nbt -> {
             bot.loadAndSpawnEnderPearls(nbt);
@@ -204,7 +212,7 @@ public class BotList {
         }
 
         bot.renderInfo();
-        bot.supressTrackerForLogin = false;
+        bot.suppressTrackerForLogin = false;
 
         bot.level().getChunkSource().chunkMap.addEntity(bot);
         bot.renderData();
@@ -415,17 +423,11 @@ public class BotList {
         return this.dataStorage.getSavedBotList();
     }
 
-    public static class CustomGameProfile extends GameProfile {
-
-        public CustomGameProfile(UUID uuid, String name, String[] skin) {
-            super(uuid, name);
-            this.setSkin(skin);
-        }
-
-        public void setSkin(String[] skin) {
-            if (skin != null) {
-                this.getProperties().put("textures", new Property("textures", skin[0], skin[1]));
-            }
-        }
+    public GameProfile setProfile(UUID uuid, String name, String[] skin) {
+        GameProfile profile = new GameProfile(uuid, name);
+        if (skin == null) return profile;
+        PropertyMap profileMap = new MutablePropertyMap(profile.properties());
+        profileMap.put("textures", new Property("textures", skin[0], skin[1]));
+        return new GameProfile(uuid, name, profileMap);
     }
 }

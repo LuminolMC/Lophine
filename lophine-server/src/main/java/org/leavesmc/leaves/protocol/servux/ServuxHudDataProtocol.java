@@ -30,13 +30,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.core.LeavesCustomPayload;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
@@ -137,7 +137,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
             if (dr.result().isPresent()) {
                 CompoundTag entry = new CompoundTag();
                 entry.putString("id_reg", recipeEntry.id().registry().toString());
-                entry.putString("id_value", recipeEntry.id().location().toString());
+                entry.putString("id_value", recipeEntry.id().identifier().toString());
                 entry.put("recipe", dr.result().get());
                 list.add(entry);
             }
@@ -149,7 +149,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static void refreshWeatherData(ServerPlayer player) {
         ServerLevel level = MinecraftServer.getServer().overworld();
-        if (!level.getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE)) {
+        if (!level.getGameRules().get(GameRules.ADVANCE_WEATHER)) {
             return;
         }
 
@@ -180,11 +180,11 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     private static void putWorldData(@NotNull CompoundTag metadata) {
         ServerLevel level = MinecraftServer.getServer().overworld();
-        BlockPos spawnPos = level.levelData.getSpawnPos();
+        BlockPos spawnPos = level.serverLevelData.getRespawnData().pos();
         metadata.putInt("spawnPosX", spawnPos.getX());
         metadata.putInt("spawnPosY", spawnPos.getY());
         metadata.putInt("spawnPosZ", spawnPos.getZ());
-        metadata.putInt("spawnChunkRadius", level.getGameRules().getInt(GameRules.RULE_SPAWN_CHUNK_RADIUS));
+        metadata.putInt("spawnChunkRadius", level.getGameRules().get(GameRules.RESPAWN_RADIUS));
 
         if (ServuxProtocolConfig.hudMetadataShareSeed) {
             metadata.putLong("worldSeed", level.getSeed());
@@ -331,7 +331,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
                                  FriendlyByteBuf buffer) implements LeavesCustomPayload {
 
         @ID
-        public static final ResourceLocation CHANNEL = ServuxProtocol.id("hud_metadata");
+        public static final Identifier CHANNEL = ServuxProtocol.id("hud_metadata");
 
         @Codec
         public static final StreamCodec<FriendlyByteBuf, HudDataPayload> CODEC = StreamCodec.of(

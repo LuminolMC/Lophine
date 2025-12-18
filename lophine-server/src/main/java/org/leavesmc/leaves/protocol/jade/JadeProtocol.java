@@ -25,7 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,12 +35,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.armadillo.Armadillo;
+import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.sniffer.Sniffer;
-import net.minecraft.world.entity.monster.ZombieVillager;
+import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -68,31 +68,31 @@ import java.util.Set;
 
 @LeavesProtocol.Register(namespace = "jade")
 public class JadeProtocol implements LeavesProtocol {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final String PROTOCOL_ID = "jade";
-    public static final String PROTOCOL_VERSION = "8";
-    public static final HierarchyLookup<IServerDataProvider<EntityAccessor>> entityDataProviders = new HierarchyLookup<>(Entity.class);
-    public static final PairHierarchyLookup<IServerDataProvider<BlockAccessor>> blockDataProviders = new PairHierarchyLookup<>(new HierarchyLookup<>(Block.class), new HierarchyLookup<>(BlockEntity.class));
-    public static final WrappedHierarchyLookup<IServerExtensionProvider<ItemStack>> itemStorageProviders = WrappedHierarchyLookup.forAccessor();
+    public static final String PROTOCOL_VERSION = "9";
+    public static final HierarchyLookup<ServerDataProvider<EntityAccessor>> entityDataProviders = new HierarchyLookup<>(Entity.class);
+    public static final PairHierarchyLookup<ServerDataProvider<BlockAccessor>> blockDataProviders = new PairHierarchyLookup<>(new HierarchyLookup<>(Block.class), new HierarchyLookup<>(BlockEntity.class));
+    public static final WrappedHierarchyLookup<ServerExtensionProvider<ItemStack>> itemStorageProviders = WrappedHierarchyLookup.forAccessor();
     private static final Set<ServerPlayer> enabledPlayers = new HashSet<>();
 
-    public static PriorityStore<ResourceLocation, IJadeProvider> priorities;
+    public static PriorityStore<Identifier, JadeProvider> priorities;
     private static List<Block> shearableBlocks = null;
 
     @Contract("_ -> new")
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.tryBuild(PROTOCOL_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(PROTOCOL_ID, path);
     }
 
     @Contract("_ -> new")
-    public static @NotNull ResourceLocation mc_id(String path) {
-        return ResourceLocation.withDefaultNamespace(path);
+    public static @NotNull Identifier mc_id(String path) {
+        return Identifier.withDefaultNamespace(path);
     }
 
     @ProtocolHandler.Init
     public static void init() {
-        priorities = new PriorityStore<>(IJadeProvider::getDefaultPriority, IJadeProvider::getUid);
+        priorities = new PriorityStore<>(JadeProvider::getDefaultPriority, JadeProvider::getUid);
 
         // core plugin
         blockDataProviders.register(BlockEntity.class, BlockNameProvider.INSTANCE);
@@ -178,20 +178,20 @@ public class JadeProtocol implements LeavesProtocol {
                 return;
             }
 
-            List<IServerDataProvider<EntityAccessor>> providers = entityDataProviders.get(entity);
+            List<ServerDataProvider<EntityAccessor>> providers = entityDataProviders.get(entity);
             if (providers.isEmpty()) {
                 return;
             }
 
             CompoundTag tag = new CompoundTag();
-            for (IServerDataProvider<EntityAccessor> provider : providers) {
+            for (ServerDataProvider<EntityAccessor> provider : providers) {
                 if (!payload.dataProviders().contains(provider)) {
                     continue;
                 }
                 try {
                     provider.appendServerData(tag, accessor);
                 } catch (Exception e) {
-                    LOGGER.warn("Error while saving data for entity " + entity);
+                    LOGGER.warn("Error while saving data for entity {}", entity);
                 }
             }
             tag.putInt("EntityId", entity.getId());
@@ -217,7 +217,7 @@ public class JadeProtocol implements LeavesProtocol {
                 return;
             }
 
-            List<IServerDataProvider<BlockAccessor>> providers;
+            List<ServerDataProvider<BlockAccessor>> providers;
             if (blockEntity != null) {
                 providers = blockDataProviders.getMerged(block, blockEntity);
             } else {
@@ -229,14 +229,14 @@ public class JadeProtocol implements LeavesProtocol {
             }
 
             CompoundTag tag = new CompoundTag();
-            for (IServerDataProvider<BlockAccessor> provider : providers) {
+            for (ServerDataProvider<BlockAccessor> provider : providers) {
                 if (!payload.dataProviders().contains(provider)) {
                     continue;
                 }
                 try {
                     provider.appendServerData(tag, accessor);
                 } catch (Exception e) {
-                    LOGGER.warn("Error while saving data for block " + accessor.getBlockState());
+                    LOGGER.warn("Error while saving data for block {}", accessor.getBlockState());
                 }
             }
             NbtUtils.writeBlockPosToTag(pos, tag);
@@ -264,7 +264,7 @@ public class JadeProtocol implements LeavesProtocol {
             ));
         } catch (Throwable ignore) {
             shearableBlocks = List.of();
-            LOGGER.warn("Failed to collect shearable blocks");
+            LOGGER.error("Failed to collect shearable blocks");
         }
     }
 

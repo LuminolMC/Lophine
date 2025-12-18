@@ -119,7 +119,7 @@ public abstract class DataLogger<T extends Tag> {
                 ServerTickRateManager tickManager = server.tickRateManager();
                 boolean frozen = tickManager.isFrozen();
                 boolean sprinting = tickManager.isSprinting();
-                io.papermc.paper.threadedregions.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
+                ca.spottedleaf.moonrise.common.time.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
                 final double tps = tickData.tpsData().segmentAll().average();
                 final double mspt = tickData.timePerTickData().segmentAll().average() / 1.0E6;
 
@@ -163,7 +163,7 @@ public abstract class DataLogger<T extends Tag> {
                 }
 
                 try {
-                    nbt.put(nmsEntity.level().dimension().location().toString(), MobCapData.CODEC.encodeStart(player.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), mobCapData).getPartialOrThrow());
+                    nbt.put(nmsEntity.level().dimension().identifier().toString(), MobCapData.CODEC.encodeStart(player.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), mobCapData).getPartialOrThrow());
                     protocol.applyData(Type.MOB_CAPS, (ServerPlayer) nmsEntity, nbt);
                 } catch (Exception ignored) {
                 }

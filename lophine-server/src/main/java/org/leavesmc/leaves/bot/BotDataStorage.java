@@ -93,7 +93,6 @@ public class BotDataStorage implements IPlayerDataStorage {
         }
     }
 
-    @Override
     public Optional<ValueInput> load(Player player, ProblemReporter reporter) {
         return this.load(player.getScoreboardName(), player.getStringUUID()).map(nbt -> {
             ValueInput valueInput = TagValueInput.create(reporter, player.registryAccess(), nbt);

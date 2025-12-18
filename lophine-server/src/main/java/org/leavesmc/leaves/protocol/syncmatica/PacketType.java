@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.protocol.syncmatica;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum PacketType {
     REGISTER_METADATA("register_metadata"),
@@ -39,9 +39,9 @@ public enum PacketType {
     MODIFY_FINISH("modify_finish"),
     MESSAGE("mesage");
 
-    public final ResourceLocation identifier;
+    public final Identifier identifier;
 
     PacketType(final String id) {
-        identifier = ResourceLocation.tryBuild(SyncmaticaProtocol.PROTOCOL_ID, id);
+        identifier = Identifier.tryBuild(SyncmaticaProtocol.PROTOCOL_ID, id);
     }
 }

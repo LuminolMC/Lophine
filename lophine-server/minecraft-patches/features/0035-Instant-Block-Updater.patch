@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Mon, 17 Nov 2025 18:41:08 +0800
+Subject: [PATCH] Instant Block Updater
+
+
+diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
+index 918bd1f48156940bc85bfb399adf593b9805bb08..3b39b8f7ccb278cf910e3cc4e00da29790465a81 100644
+--- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
++++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
+@@ -467,7 +467,7 @@ public final class RegionizedWorldData {
+     public long lastMidTickExecuteFailure;
+     // From Level
+     public boolean populating;
+-    public final CollectingNeighborUpdater neighborUpdater;
++    public final NeighborUpdater neighborUpdater;
+     public boolean captureBlockStates = false;
+     public boolean captureTreeGeneration = false;
+     public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
+@@ -524,7 +524,7 @@ public final class RegionizedWorldData {
+         this.world = world;
+         this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
+         this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);
+-        this.neighborUpdater = new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
++        this.neighborUpdater = fun.bm.lophine.config.modules.experiment.RedStoneConfig.instantBlockUpdater ? new net.minecraft.world.level.redstone.InstantNeighborUpdater(world) : new CollectingNeighborUpdater(world, world.neighbourUpdateMax); // Lophine - Instant Block Updater
+         this.nearbyPlayers = new NearbyPlayers(world);
+         this.wireHandler = new alternate.current.wire.WireHandler(world);
+         this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
+diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
+index b878f5a8316dfee582180a6bbe7122a78581fae2..a906e7a34d048369f9357b0371339b4cccac5f25 100644
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -911,12 +911,16 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+         // Paper - rewrite chunk system
+         profilerFiller.pop();
+         profilerFiller.push("debugSynchronizers");
++        // Lophine start - instant neighbor updates
++        if (regionizedWorldData.neighborUpdater instanceof net.minecraft.world.level.redstone.CollectingNeighborUpdater neighborUpdater) {
+         if (this.debugSynchronizers.hasAnySubscriberFor(DebugSubscriptions.NEIGHBOR_UPDATES)) {
+-            regionizedWorldData.neighborUpdater // Folia - region threading
+-                .setDebugListener(blockPos -> this.debugSynchronizers.broadcastEventToTracking(blockPos, DebugSubscriptions.NEIGHBOR_UPDATES, blockPos));
++            neighborUpdater // Folia - region threading
++                    .setDebugListener(blockPos -> this.debugSynchronizers.broadcastEventToTracking(blockPos, DebugSubscriptions.NEIGHBOR_UPDATES, blockPos));
+         } else {
+-            regionizedWorldData.neighborUpdater.setDebugListener(null); // Folia - region threading
++            neighborUpdater.setDebugListener(null); // Folia - region threading
+         }
++        }
++        // Lophine end - instant neighbor updates
+ 
+         this.debugSynchronizers.tick(this.server.debugSubscribers());
+         profilerFiller.pop();

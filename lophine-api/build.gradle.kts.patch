@@ -1,6 +1,6 @@
 --- a/luminol-api/build.gradle.kts
 +++ b/luminol-api/build.gradle.kts
-@@ -103,20 +_,24 @@
+@@ -104,20 +_,24 @@
              srcDir(generatedDir)
              srcDir(file("../paper-api/src/main/java"))
              srcDir(file("../folia-api/src/main/java"))

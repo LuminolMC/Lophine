@@ -24,10 +24,10 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..c9af615ff9120c07787f436dbb6024e5
              if (raidAt == null || raidAt.getRaidOmenLevel() < raidAt.getMaxRaidOmenLevel()) {
                  serverPlayer.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplifier));
 diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
-index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34320a4fa2 100644
+index 4deb9e4688a04b25e862572b70bf91e3ace9841e..2f31fae204dbeeeec1d188b6908aec5ad937e62e 100644
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
-@@ -263,7 +263,7 @@ public class Raid {
+@@ -264,7 +264,7 @@ public class Raid {
      }
  
      public boolean absorbRaidOmen(ServerPlayer player) {
@@ -36,7 +36,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
          if (effect == null) {
              return false;
          } else {
-@@ -340,7 +340,13 @@ public class Raid {
+@@ -341,7 +341,13 @@ public class Raid {
                          }
  
                          if (flag1) {
@@ -51,7 +51,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
                          }
  
                          if (this.raidCooldownTicks == 300 || this.raidCooldownTicks % 20 == 0) {
-@@ -375,7 +381,14 @@ public class Raid {
+@@ -396,7 +402,14 @@ public class Raid {
                  int i = 0;
  
                  while (this.shouldSpawnGroup()) {
@@ -67,7 +67,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
                      if (blockPos != null) {
                          this.started = true;
                          this.spawnGroup(level, blockPos);
-@@ -387,7 +400,7 @@ public class Raid {
+@@ -408,7 +421,7 @@ public class Raid {
                          i++;
                      }
  
@@ -76,7 +76,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
                          org.bukkit.craftbukkit.event.CraftEventFactory.callRaidStopEvent(level, this, org.bukkit.event.raid.RaidStopEvent.Reason.UNSPAWNABLE); // CraftBukkit
                          this.stop();
                          break;
-@@ -683,7 +696,7 @@ public class Raid {
+@@ -702,7 +715,7 @@ public class Raid {
              int i2 = this.center.getX() + Mth.floor(Mth.cos(f2) * 32.0F * f) + level.random.nextInt(3) * Mth.floor(f);
              int i3 = this.center.getZ() + Mth.floor(Mth.sin(f2) * 32.0F * f) + level.random.nextInt(3) * Mth.floor(f);
              int height = level.getHeight(Heightmap.Types.WORLD_SURFACE, i2, i3);
@@ -85,7 +85,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
                  mutableBlockPos.set(i2, height, i3);
                  if (!level.isVillage(mutableBlockPos) || i <= 7) {
                      int i4 = 10;
-@@ -702,6 +715,36 @@ public class Raid {
+@@ -721,6 +734,36 @@ public class Raid {
          return null;
      }
  
@@ -122,7 +122,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
      private boolean addWaveMob(ServerLevel level, int wave, Raider raider) {
          // Folia start - make raids thread-safe
          if (!this.ownsRaid(level)) {
-@@ -864,4 +907,43 @@ public class Raid {
+@@ -883,4 +926,43 @@ public class Raid {
              this.spawnsPerWaveBeforeBonus = spawnsPerWaveBeforeBonus;
          }
      }
@@ -167,10 +167,10 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34
 +    // Leaves end - old FindSpawnPosition
  }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..2d163f3d5eb1af4d539d24c0256855bbec960de4 100644
+index 29ddff87216069cdf423f96f3fe835e0802d9ab5..18c4dffb5942b17dc1f2e9d9124c4f3ba3271360 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
-@@ -128,6 +128,43 @@ public abstract class Raider extends PatrollingMonster {
+@@ -127,6 +127,43 @@ public abstract class Raider extends PatrollingMonster {
  
                  currentRaid.removeFromRaid(serverLevel, this, false);
              }
@@ -203,7 +203,7 @@ index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..2d163f3d5eb1af4d539d24c0256855bb
 +                        i = net.minecraft.util.Mth.clamp(i, 0, 4);
 +                        net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, 120000, i, false, false, true);
 +
-+                        if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {
++                        if (serverLevel.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.RAIDS)) {
 +                            entityhuman.addEffect(mobeffect1, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN); // CraftBukkit
 +                        }
 +                        this.setPatrolLeader(false);
@@ -213,4 +213,4 @@ index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..2d163f3d5eb1af4d539d24c0256855bb
 +            // Leaves end - Revert raid changes
          }
  
-         super.die(cause);
+         super.die(damageSource);

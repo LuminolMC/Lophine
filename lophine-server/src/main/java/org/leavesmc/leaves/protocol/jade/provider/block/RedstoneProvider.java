@@ -19,7 +19,7 @@ package org.leavesmc.leaves.protocol.jade.provider.block;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.CalibratedSculkSensorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.CalibratedSculkSensorBlockEntity;
@@ -27,12 +27,12 @@ import net.minecraft.world.level.block.entity.ComparatorBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.jade.JadeProtocol;
 import org.leavesmc.leaves.protocol.jade.accessor.BlockAccessor;
-import org.leavesmc.leaves.protocol.jade.provider.IServerDataProvider;
+import org.leavesmc.leaves.protocol.jade.provider.ServerDataProvider;
 
-public enum RedstoneProvider implements IServerDataProvider<BlockAccessor> {
+public enum RedstoneProvider implements ServerDataProvider<BlockAccessor> {
     INSTANCE;
 
-    private static final ResourceLocation MC_REDSTONE = JadeProtocol.mc_id("redstone");
+    private static final Identifier MC_REDSTONE = JadeProtocol.mc_id("redstone");
 
     @Override
     public void appendServerData(CompoundTag data, @NotNull BlockAccessor accessor) {
@@ -47,7 +47,7 @@ public enum RedstoneProvider implements IServerDataProvider<BlockAccessor> {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MC_REDSTONE;
     }
 }

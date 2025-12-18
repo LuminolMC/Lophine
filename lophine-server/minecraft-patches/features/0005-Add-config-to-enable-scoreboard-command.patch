@@ -5,11 +5,11 @@ Subject: [PATCH] Add config to enable scoreboard command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 25ccbfa12d57d540195ecc16aa54a144f8ecc0e8..22d211bee83e3ef34d6ac81dd89c0e73924bee90 100644
+index ddde2c3e7c8d9105202a7ff32e444f85485cdb7f..8779f16cde40676fcb441973f53c8648c2a5e405 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -229,7 +229,11 @@ public class Commands {
-         //RotateCommand.register(this.dispatcher); // Folia - region threading - TODO later
+@@ -241,7 +241,11 @@ public class Commands {
+         RotateCommand.register(this.dispatcher); // Folia - region threading - TODO later
          SayCommand.register(this.dispatcher);
          //ScheduleCommand.register(this.dispatcher); // Folia - region threading
 -        //ScoreboardCommand.register(this.dispatcher, context); // Folia - region threading

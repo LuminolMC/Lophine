@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 7584ba257d61bf650d83a2316ff012df928d54f3..4d71cc3b643f6f594c90f2f8f9e5b820ebdff080 100644
+index a60c70550c217bccda6695dc7b7165de8e97e5cd..6aad6024dc121eae63b7fde92a89cbea29fcafb3 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -2901,7 +2901,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -3015,7 +3015,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              // Spigot start
              if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder && (!(entity instanceof ServerPlayer) || entity.getRemovalReason() != Entity.RemovalReason.KILLED)) { // SPIGOT-6876: closeInventory clears death message
                  // Paper start - Fix merchant inventory not closing on entity removal
@@ -21,20 +21,20 @@ index 7584ba257d61bf650d83a2316ff012df928d54f3..4d71cc3b643f6f594c90f2f8f9e5b820
                  }
                  // Paper end - Fix merchant inventory not closing on entity removal
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 593dbcda4b497291eb1ecdc64b947a8d279f8be6..6c1f4f943a5be5f2e43a82cca52ca76a98226915 100644
+index a8a034ad5895ad1b833754c91c3a370c3b9b3744..35d51c727ce9229a174c45e9ea838fa9e3c3d80a 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -649,7 +649,7 @@ public abstract class PlayerList {
+@@ -555,7 +555,7 @@ public abstract class PlayerList {
                  player.stopRiding();
                  rootVehicle.getPassengersAndSelf().forEach(entity -> {
                      // Paper start - Fix villager boat exploit
--                    if (entity instanceof net.minecraft.world.entity.npc.AbstractVillager villager) {
-+                    if (!fun.bm.lophine.config.modules.function.OldFeatureConfig.villagerVoidTrade && entity instanceof net.minecraft.world.entity.npc.AbstractVillager villager) { // Leaves - Configurable trading with the void
+-                    if (entity instanceof net.minecraft.world.entity.npc.villager.AbstractVillager villager) {
++                    if (!fun.bm.lophine.config.modules.function.OldFeatureConfig.villagerVoidTrade && entity instanceof net.minecraft.world.entity.npc.villager.AbstractVillager villager) { // Leaves - Configurable trading with the void
                          final net.minecraft.world.entity.player.Player human = villager.getTradingPlayer();
                          if (human != null) {
                              villager.setTradingPlayer(null);
 diff --git a/net/minecraft/world/inventory/MerchantMenu.java b/net/minecraft/world/inventory/MerchantMenu.java
-index d59f67ffe34201c63e3d9706a4434f33b6732edb..c635c7211bff9d190b7035b284dda162334fd5c2 100644
+index 6dfee62a46a5882df7f405e59d762647289d7866..1192a6ab33a9481397b84c9cf0a24fbbcb0ed065 100644
 --- a/net/minecraft/world/inventory/MerchantMenu.java
 +++ b/net/minecraft/world/inventory/MerchantMenu.java
 @@ -74,6 +74,7 @@ public class MerchantMenu extends AbstractContainerMenu {

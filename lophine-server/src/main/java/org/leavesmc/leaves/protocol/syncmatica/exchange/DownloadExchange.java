@@ -19,7 +19,7 @@ package org.leavesmc.leaves.protocol.syncmatica.exchange;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.syncmatica.*;
 
@@ -50,7 +50,7 @@ public class DownloadExchange extends AbstractExchange {
     }
 
     @Override
-    public boolean checkPacket(final @NotNull ResourceLocation id, final FriendlyByteBuf packetBuf) {
+    public boolean checkPacket(final @NotNull Identifier id, final FriendlyByteBuf packetBuf) {
         if (id.equals(PacketType.SEND_LITEMATIC.identifier)
                 || id.equals(PacketType.FINISHED_LITEMATIC.identifier)
                 || id.equals(PacketType.CANCEL_LITEMATIC.identifier)) {
@@ -60,7 +60,7 @@ public class DownloadExchange extends AbstractExchange {
     }
 
     @Override
-    public void handle(final @NotNull ResourceLocation id, final @NotNull FriendlyByteBuf packetBuf) {
+    public void handle(final @NotNull Identifier id, final @NotNull FriendlyByteBuf packetBuf) {
         packetBuf.readUUID();
         if (id.equals(PacketType.SEND_LITEMATIC.identifier)) {
             final int size = packetBuf.readInt();

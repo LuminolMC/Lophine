@@ -17,26 +17,18 @@
 
 package org.leavesmc.leaves.protocol.jade.util;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
+import org.leavesmc.leaves.protocol.jade.JadeProtocol;
 import org.leavesmc.leaves.protocol.jade.accessor.Accessor;
-import org.leavesmc.leaves.protocol.jade.provider.IServerExtensionProvider;
-import org.slf4j.Logger;
+import org.leavesmc.leaves.protocol.jade.provider.ServerExtensionProvider;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 public class CommonUtil {
-
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static Entity wrapPartEntityParent(Entity target) {
         if (target instanceof EnderDragonPart part) {
@@ -62,25 +54,15 @@ public class CommonUtil {
     }
 
 
-    @Nullable
-    public static String getLastKnownUsername(@Nullable UUID uuid) {
-        if (uuid == null) {
-            return null;
-        }
-        Optional<GameProfile> optional = SkullBlockEntity.fetchGameProfile(String.valueOf(uuid)).getNow(Optional.empty());
-        return optional.map(GameProfile::getName).orElse(null);
-    }
-
-
-    public static <T> Map.Entry<ResourceLocation, List<ViewGroup<T>>> getServerExtensionData(
+    public static <T> Map.Entry<Identifier, List<ViewGroup<T>>> getServerExtensionData(
             Accessor<?> accessor,
-            WrappedHierarchyLookup<IServerExtensionProvider<T>> lookup) {
+            WrappedHierarchyLookup<ServerExtensionProvider<T>> lookup) {
         for (var provider : lookup.wrappedGet(accessor)) {
             List<ViewGroup<T>> groups;
             try {
                 groups = provider.getGroups(accessor);
             } catch (Exception e) {
-                LOGGER.warn(e.toString());
+                JadeProtocol.LOGGER.error(e.toString());
                 continue;
             }
             if (groups != null) {

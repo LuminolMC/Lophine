@@ -23,7 +23,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -63,7 +63,7 @@ public class CommunicationManager implements LeavesProtocol {
         final VersionHandshakeServer hi = new VersionHandshakeServer(newPlayer);
         playerMap.put(newPlayer, player);
         final GameProfile profile = player.getGameProfile();
-        SyncmaticaProtocol.getPlayerIdentifierProvider().updateName(profile.getId(), profile.getName());
+        SyncmaticaProtocol.getPlayerIdentifierProvider().updateName(profile.id(), profile.name());
         startExchangeUnchecked(hi);
     }
 
@@ -86,7 +86,7 @@ public class CommunicationManager implements LeavesProtocol {
         onPacket(player.connection.exchangeTarget, payload.packetType(), payload.data());
     }
 
-    public static void onPacket(final @NotNull ExchangeTarget source, final ResourceLocation id, final FriendlyByteBuf packetBuf) {
+    public static void onPacket(final @NotNull ExchangeTarget source, final Identifier id, final FriendlyByteBuf packetBuf) {
         Exchange handler = null;
         final Collection<Exchange> potentialMessageTarget = source.getExchanges();
         if (potentialMessageTarget != null) {
@@ -105,7 +105,7 @@ public class CommunicationManager implements LeavesProtocol {
         }
     }
 
-    protected static void handle(ExchangeTarget source, @NotNull ResourceLocation id, FriendlyByteBuf packetBuf) {
+    protected static void handle(ExchangeTarget source, @NotNull Identifier id, FriendlyByteBuf packetBuf) {
         if (id.equals(PacketType.REQUEST_LITEMATIC.identifier)) {
             final UUID syncmaticaId = packetBuf.readUUID();
             final ServerPlacement placement = SyncmaticaProtocol.getSyncmaticManager().getPlacement(syncmaticaId);
@@ -157,7 +157,7 @@ public class CommunicationManager implements LeavesProtocol {
             final UUID placementId = packetBuf.readUUID();
             final ServerPlacement placement = SyncmaticaProtocol.getSyncmaticManager().getPlacement(placementId);
             if (placement != null) {
-                if (!getGameProfile(source).getId().equals(placement.getOwner().uuid)) {
+                if (!getGameProfile(source).id().equals(placement.getOwner().uuid)) {
                     return;
                 }
 

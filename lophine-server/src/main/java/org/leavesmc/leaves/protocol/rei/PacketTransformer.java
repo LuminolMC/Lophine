@@ -24,7 +24,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.DiscardedPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 
@@ -43,13 +43,13 @@ public class PacketTransformer {
 
     private final Map<UUID, PartData> cache = Collections.synchronizedMap(new HashMap<>());
 
-    public static DiscardedPayload wrapRei(ResourceLocation location, FriendlyByteBuf buf) {
+    public static DiscardedPayload wrapRei(Identifier location, FriendlyByteBuf buf) {
         FriendlyByteBuf newBuf = new FriendlyByteBuf(Unpooled.buffer());
         newBuf.writeByteArray(ByteBufUtil.getBytes(buf));
         return new DiscardedPayload(location, ByteBufUtil.getBytes(newBuf));
     }
 
-    public void inbound(ResourceLocation id, RegistryFriendlyByteBuf buf, ServerPlayer player, BiConsumer<ResourceLocation, RegistryFriendlyByteBuf> consumer) {
+    public void inbound(Identifier id, RegistryFriendlyByteBuf buf, ServerPlayer player, BiConsumer<Identifier, RegistryFriendlyByteBuf> consumer) {
         UUID key = player.getUUID();
         PartData data;
         buf.readVarInt();
@@ -120,7 +120,7 @@ public class PacketTransformer {
         }
     }
 
-    public void outbound(ResourceLocation id, RegistryFriendlyByteBuf buf, BiConsumer<ResourceLocation, RegistryFriendlyByteBuf> consumer) {
+    public void outbound(Identifier id, RegistryFriendlyByteBuf buf, BiConsumer<Identifier, RegistryFriendlyByteBuf> consumer) {
         int maxSize = 1048576 - 1 - 20 - id.toString().getBytes(StandardCharsets.UTF_8).length;
         if (buf.readableBytes() <= maxSize) {
             ByteBuf stateBuf = Unpooled.buffer(1);
@@ -150,11 +150,11 @@ public class PacketTransformer {
     }
 
     private static class PartData {
-        private final ResourceLocation id;
+        private final Identifier id;
         private final int partsNum;
         private final List<RegistryFriendlyByteBuf> parts;
 
-        public PartData(ResourceLocation id, int partsNum) {
+        public PartData(Identifier id, int partsNum) {
             this.id = id;
             this.partsNum = partsNum;
             this.parts = new ArrayList<>();

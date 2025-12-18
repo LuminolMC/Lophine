@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.protocol.servux;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class ServuxProtocol {
     public static final String SERVUX_STRING = ProtocolUtils.buildProtocolVersion(PROTOCOL_ID);
 
     @Contract("_ -> new")
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.tryBuild(PROTOCOL_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.tryBuild(PROTOCOL_ID, path);
     }
 }

@@ -39,7 +39,7 @@ public class PlayerIdentifierProvider {
     }
 
     public PlayerIdentifier createOrGet(final @NotNull GameProfile gameProfile) {
-        return createOrGet(gameProfile.getId(), gameProfile.getName());
+        return createOrGet(gameProfile.id(), gameProfile.name());
     }
 
     public PlayerIdentifier createOrGet(final UUID uuid, final String playerName) {

@@ -53,12 +53,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.entity.vehicle.AbstractBoat;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -122,7 +122,6 @@ public class ServerBot extends ServerPlayer {
         this.notSleepTicks = 0;
         this.fauxSleeping = FakeplayerConfig.canSkipSleep;
         this.getBukkitEntity().setSimulationDistance(FakeplayerConfig.getSimulationDistance(this));
-        this.setClientLoaded(true);
     }
 
     @Override
@@ -201,7 +200,7 @@ public class ServerBot extends ServerPlayer {
                 this.notSleepTicks = 0;
             }
 
-            if (!this.level().isClientSide && this.level().isBrightOutside()) {
+            if (!this.level().isClientSide() && this.level().isBrightOutside()) {
                 this.stopSleepInBed(false, true);
             }
         } else if (this.sleepCounter > 0) {
@@ -351,7 +350,7 @@ public class ServerBot extends ServerPlayer {
         if (FakeplayerConfig.canOpenInventory) {
             if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
                 BotInventoryOpenEvent event = new BotInventoryOpenEvent(this.getBukkitEntity(), player1.getBukkitEntity());
-                this.getServer().server.getPluginManager().callEvent(event);
+                MinecraftServer.getServer().server.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     player.openMenu(new SimpleMenuProvider((i, inventory, p) -> ChestMenu.sixRows(i, inventory, this.container), this.getDisplayName()));
                     return InteractionResult.SUCCESS;
@@ -423,7 +422,7 @@ public class ServerBot extends ServerPlayer {
         createBuilder.createReason(BotCreateEvent.CreateReason.INTERNAL).creator(null);
 
         this.createState = createBuilder.build();
-        this.gameProfile = new BotList.CustomGameProfile(this.getUUID(), this.createState.name(), this.createState.skin());
+        this.gameProfile = BotList.INSTANCE.setProfile(this.getUUID(), this.createState.name(), this.createState.skin());
 
 
         if (nbt.list("actions", CompoundTag.CODEC).isPresent()) {
@@ -480,22 +479,22 @@ public class ServerBot extends ServerPlayer {
     }
 
     public void renderInfo() {
-        this.getServer().getPlayerList().getPlayers().forEach(this::sendPlayerInfo);
+        MinecraftServer.getServer().getPlayerList().getPlayers().forEach(this::sendPlayerInfo);
     }
 
     public void renderData() {
-        this.getServer().getPlayerList().getPlayers().forEach(
+        MinecraftServer.getServer().getPlayerList().getPlayers().forEach(
                 player -> this.sendFakeDataIfNeed(player, false)
         );
     }
 
     private void sendPacket(Packet<?> packet) {
-        this.getServer().getPlayerList().getPlayers().forEach(player -> player.connection.send(packet));
+        MinecraftServer.getServer().getPlayerList().getPlayers().forEach(player -> player.connection.send(packet));
     }
 
     @Override
     public void die(@NotNull DamageSource damageSource) {
-        boolean flag = this.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES);
+        boolean flag = this.level().getGameRules().get(GameRules.SHOW_DEATH_MESSAGES);
         Component defaultMessage = this.getCombatTracker().getDeathMessage();
 
         BotDeathEvent event = new BotDeathEvent(this.getBukkitEntity(), PaperAdventure.asAdventure(defaultMessage), flag);
@@ -512,18 +511,18 @@ public class ServerBot extends ServerPlayer {
 
         net.kyori.adventure.text.Component deathMessage = event.deathMessage();
         if (event.isSendDeathMessage() && deathMessage != null && !deathMessage.equals(net.kyori.adventure.text.Component.empty())) {
-            this.getServer().getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(deathMessage), false);
+            MinecraftServer.getServer().getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(deathMessage), false);
         }
 
-        this.getServer().getBotList().removeBot(this, BotRemoveEvent.RemoveReason.DEATH, null, false);
+        MinecraftServer.getServer().getBotList().removeBot(this, BotRemoveEvent.RemoveReason.DEATH, null, false);
     }
 
     @Override
-    public boolean startRiding(@NotNull Entity vehicle, boolean force) {
-        if (super.startRiding(vehicle, force)) {
-            if (vehicle.getControllingPassenger() == this) { // see net.minecraft.server.networkServerGamePacketListenerImpl#handleMoveVehicle
+    public boolean startRiding(Entity entity, boolean force, boolean triggerEvents) {
+        if (super.startRiding(entity, force, triggerEvents)) {
+            if (entity.getControllingPassenger() == this) { // see net.minecraft.server.networkServerGamePacketListenerImpl#handleMoveVehicle
                 this.setDeltaMovement(Vec3.ZERO);
-                this.setYRot(vehicle.yRotO);
+                this.setYRot(entity.yRotO);
             }
             return true;
         } else {
