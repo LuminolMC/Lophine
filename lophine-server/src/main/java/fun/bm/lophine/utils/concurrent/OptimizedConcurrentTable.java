@@ -11,14 +11,43 @@ public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> 
     private final ConcurrentHashMap<Z, ConcurrentHashMap<X, Set<Y>>> zxIndex = new ConcurrentHashMap<>();
 
     @Override
-    public void put(X x, Y y, Z z) {
-        super.put(x, y, z);
+    public void putOrUpdate(X x, Y y, Z z) {
+        boolean updated = false;
+
+        for (TableEntry<X, Y, Z> entry : data) {
+            if (entry.getX().equals(x) && entry.getY().equals(y)) {
+                removeFromIndex(xyIndex, entry.getX(), entry.getY(), entry.getZ());
+                removeFromIndex(yzIndex, entry.getY(), entry.getZ(), entry.getX());
+                removeFromIndex(zxIndex, entry.getZ(), entry.getX(), entry.getY());
+
+                entry.setZ(z);
+
+                putData(x, y, z);
+
+                updated = true;
+                break;
+            }
+        }
+
+        if (!updated) {
+            this.put(x, y, z);
+        }
+    }
+
+    private void putData(X x, Y y, Z z) {
         xyIndex.computeIfAbsent(x, k -> new ConcurrentHashMap<>())
                 .computeIfAbsent(y, k -> ConcurrentHashMap.newKeySet()).add(z);
         yzIndex.computeIfAbsent(y, k -> new ConcurrentHashMap<>())
                 .computeIfAbsent(z, k -> ConcurrentHashMap.newKeySet()).add(x);
         zxIndex.computeIfAbsent(z, k -> new ConcurrentHashMap<>())
                 .computeIfAbsent(x, k -> ConcurrentHashMap.newKeySet()).add(y);
+    }
+
+
+    @Override
+    public void put(X x, Y y, Z z) {
+        super.put(x, y, z);
+        putData(x, y, z);
     }
 
     @Override
