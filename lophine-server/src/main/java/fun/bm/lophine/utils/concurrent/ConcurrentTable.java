@@ -11,8 +11,18 @@ public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
     protected final ConcurrentLinkedDeque<TableEntry<X, Y, Z>> data = new ConcurrentLinkedDeque<>();
 
     @Override
+    public void putOrUpdate(X x, Y y, Z z) {
+        for (TableEntry<X, Y, Z> entry : data) {
+            if (entry.getX().equals(x) && entry.getY().equals(y)) {
+                entry.setZ(z);
+                return;
+            }
+        }
+        this.put(x, y, z);
+    }
+
+    @Override
     public void put(X x, Y y, Z z) {
-        if (true) return; // TODO: because of some bug, we disabled it
         data.add(new TableEntry<>(x, y, z));
     }
 

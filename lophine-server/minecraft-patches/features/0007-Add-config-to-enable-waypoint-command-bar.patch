@@ -6,7 +6,7 @@ Subject: [PATCH] Add config to enable waypoint command & bar
 use concurrent method to fix it (now, they are thread safe)
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index b9dc7dd77aeb6e3b59b6903cb5094b7eadee4d2d..b049520cca9f365282493d7c442bbcd3075d78ac 100644
+index 23f047a47cdccc90a96153cc52bdedf91cd15db9..9cfcac44b4d51cb5f122d7e1fa980791a23dd38f 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -270,7 +270,11 @@ public class Commands {
@@ -23,7 +23,7 @@ index b9dc7dd77aeb6e3b59b6903cb5094b7eadee4d2d..b049520cca9f365282493d7c442bbcd3
          WorldBorderCommand.register(this.dispatcher);
          if (JvmProfiler.INSTANCE.isAvailable()) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index 1cbc46e480cc7d109c6128f109a1a9e38bf1a193..9492698541bfe704a1075a8fb58a9d7624895e48 100644
+index 1cbc46e480cc7d109c6128f109a1a9e38bf1a193..d2c0b532200f274e44f18147d294dfe5d3f52d1d 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
 @@ -16,22 +16,31 @@ import net.minecraft.world.waypoints.WaypointManager;
@@ -130,8 +130,12 @@ index 1cbc46e480cc7d109c6128f109a1a9e38bf1a193..9492698541bfe704a1075a8fb58a9d76
      }
  
      public void remakeConnections(WaypointTransmitter waypoint) {
-@@ -86,10 +129,15 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
-                     this.connections.put(player, waypoint, connection);
+@@ -83,13 +126,18 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+         if (player != waypoint) {
+             if (isLocatorBarEnabledFor(player)) {
+                 waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection -> {
+-                    this.connections.put(player, waypoint, connection);
++                    this.connections.putOrUpdate(player, waypoint, connection);
                      connection.connect();
                  }, () -> {
 -                    WaypointTransmitter.Connection connection = this.connections.remove(player, waypoint);
@@ -150,8 +154,12 @@ index 1cbc46e480cc7d109c6128f109a1a9e38bf1a193..9492698541bfe704a1075a8fb58a9d76
                  });
              }
          }
-@@ -106,7 +154,8 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
-                         this.connections.put(player, waypoint, connection1);
+@@ -103,10 +151,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+                 } else {
+                     waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection1 -> {
+                         connection1.connect();
+-                        this.connections.put(player, waypoint, connection1);
++                        this.connections.putOrUpdate(player, waypoint, connection1);
                      }, () -> {
                          connection.disconnect();
 -                        this.connections.remove(player, waypoint);

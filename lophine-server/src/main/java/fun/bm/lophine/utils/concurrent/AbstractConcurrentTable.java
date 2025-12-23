@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractConcurrentTable<X, Y, Z> {
+    public abstract void putOrUpdate(X x, Y y, Z z);
+
     public abstract void put(X x, Y y, Z z);
 
     public abstract void remove(X x, Y y, Z z);

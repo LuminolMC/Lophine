@@ -3,7 +3,7 @@ package fun.bm.lophine.utils.concurrent;
 public class TableEntry<X, Y, Z> {
     private final X x;
     private final Y y;
-    private final Z z;
+    private Z z;
 
     public TableEntry(X x, Y y, Z z) {
         this.x = x;
@@ -21,5 +21,9 @@ public class TableEntry<X, Y, Z> {
 
     public Z getZ() {
         return z;
+    }
+
+    public void setZ(Z z) {
+        this.z = z;
     }
 }
