@@ -5,19 +5,19 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 918bd1f48156940bc85bfb399adf593b9805bb08..3b39b8f7ccb278cf910e3cc4e00da29790465a81 100644
+index 56e09b99c2901882483c5f2b3216bf0a11406e2e..1480bd04597001cd7c54e53ded46d7f75908a65a 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -467,7 +467,7 @@ public final class RegionizedWorldData {
+@@ -468,7 +468,7 @@ public final class RegionizedWorldData {
      public long lastMidTickExecuteFailure;
      // From Level
      public boolean populating;
 -    public final CollectingNeighborUpdater neighborUpdater;
-+    public final NeighborUpdater neighborUpdater;
++    public final net.minecraft.world.level.redstone.NeighborUpdater neighborUpdater;
      public boolean captureBlockStates = false;
      public boolean captureTreeGeneration = false;
      public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
-@@ -524,7 +524,7 @@ public final class RegionizedWorldData {
+@@ -527,7 +527,7 @@ public final class RegionizedWorldData {
          this.world = world;
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);

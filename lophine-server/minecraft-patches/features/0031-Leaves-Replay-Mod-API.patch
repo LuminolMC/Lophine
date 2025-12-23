@@ -84,7 +84,7 @@ index af71e0e1eb1c93745f3e4954ecc8fbd2ad4808a3..f3829564681faff3ae8971ed90b947b4
                              players.add(serverPlayer1);
                              if (players.size() >= resultLimit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index c6ff3d2a2e22be141e7a7a6999162a8ff74fa94a..367759edd3bd76345bc8cb46342abfd9f37cb2e9 100644
+index 324f9d259c6e0fd814ffe11b62d07fb4d2197da3..9d334ed3307f3c4c82bb5300219a465408bf341a 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1894,7 +1894,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -328,7 +328,7 @@ index f79735abf21b6eecc02e5b5f1ce3140dfef3ede9..04a600d96f4ae7c08d06dc4fb8f71b3f
              if (new org.bukkit.event.player.PlayerGameModeChangeEvent(this.getBukkitEntity(), org.bukkit.GameMode.getByValue(this.server.getDefaultGameType().getId()), org.bukkit.event.player.PlayerGameModeChangeEvent.Cause.DEFAULT_GAMEMODE, null).callEvent()) {
                  this.gameMode.setGameModeForPlayer(this.server.getForcedGameType(), GameType.DEFAULT_MODE);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 70113b7d5cb2462f132f58ab60bea048ad219b41..eb0ec68a93e1bd81b32d0c309a56c95e265c977f 100644
+index 98f2ced8e6afdf0074ade94e0bbf5498bd6c505f..4dcb90709200b33fc9155f6dea4281ed32427889 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -130,6 +130,7 @@ public abstract class PlayerList {
@@ -524,15 +524,15 @@ index 70113b7d5cb2462f132f58ab60bea048ad219b41..eb0ec68a93e1bd81b32d0c309a56c95e
      public net.kyori.adventure.text.@Nullable Component remove(ServerPlayer player) { // CraftBukkit - return string // Paper - return Component
          // Paper start - Fix kick event leave message not being sent
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
-@@ -594,6 +752,7 @@ public abstract class PlayerList {
-         player.retireScheduler(); // Paper - Folia schedulers
+@@ -595,6 +753,7 @@ public abstract class PlayerList {
+         player.getBukkitEntity().packetProcessor.close(); // Folia - region threading
          player.getAdvancements().stopListening();
          this.players.remove(player);
 +        this.realPlayers.remove(player); // Leaves - replay api
          this.playersByName.remove(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT)); // Spigot
          this.server.getCustomBossEvents().onPlayerDisconnect(player);
          UUID uuid = player.getUUID();
-@@ -910,15 +1069,15 @@ public abstract class PlayerList {
+@@ -911,15 +1070,15 @@ public abstract class PlayerList {
      }
  
      public String[] getPlayerNamesArray() {

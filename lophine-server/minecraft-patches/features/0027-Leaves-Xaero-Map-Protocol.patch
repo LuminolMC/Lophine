@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index b78edaae1693c96b6b114348ef0c6198c04ab3bd..70113b7d5cb2462f132f58ab60bea048ad219b41 100644
+index 95e7d3245bb38bf33a401648143522d3c96739a6..98f2ced8e6afdf0074ade94e0bbf5498bd6c505f 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1126,6 +1126,7 @@ public abstract class PlayerList {
+@@ -1127,6 +1127,7 @@ public abstract class PlayerList {
          player.connection.send(new ClientboundSetChunkCacheRadiusPacket(level.spigotConfig.viewDistance));
          player.connection.send(new ClientboundSetSimulationDistancePacket(level.spigotConfig.simulationDistance));
          // Paper end

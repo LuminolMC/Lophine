@@ -20,7 +20,7 @@ index 368a9d33f93c2e85abe4cf10df5a85c09fb03dd6..2b78040daeb3b09c08494cbc1d4a9d36
          Set<CriterionTrigger.Listener<T>> set = (Set) advancements.criterionData.get(this); // Paper - fix PlayerAdvancements leak
          if (set != null && !set.isEmpty()) {
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index b4d6ddf02e72378022cc0a7cb6f8137fff3fa4f9..cb2ba07516ab931812987eaf5bb9222e9d279522 100644
+index d5e604bf18a223aa434bc9f78274e1f3ff7f203d..715976a49ca621ba40d9353b18d41d342315afd4 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -74,7 +74,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -33,7 +33,7 @@ index b4d6ddf02e72378022cc0a7cb6f8137fff3fa4f9..cb2ba07516ab931812987eaf5bb9222e
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 6230c08d001aebc119900906aa557247261985a3..c6ff3d2a2e22be141e7a7a6999162a8ff74fa94a 100644
+index e4d1f0ae66aec2cdc625e3140da094c99350687d..324f9d259c6e0fd814ffe11b62d07fb4d2197da3 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -398,7 +398,7 @@ index 1a43bdcb4c37df4ad1c4dfe6ebb84470832e910f..daff493e4ea944afa91ce99a3596931a
 +    // Leaves end - player operation limiter
  }
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index e4debb1e86f1f325dc17b709c5c9f3c4aa224b83..b78edaae1693c96b6b114348ef0c6198c04ab3bd 100644
+index 66e7b62a57eada0f0db7d9cc1be6362ac1e3ee85..95e7d3245bb38bf33a401648143522d3c96739a6 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -317,6 +317,19 @@ public abstract class PlayerList {
@@ -421,7 +421,7 @@ index e4debb1e86f1f325dc17b709c5c9f3c4aa224b83..b78edaae1693c96b6b114348ef0c6198
          final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
          if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -790,6 +803,13 @@ public abstract class PlayerList {
+@@ -791,6 +804,13 @@ public abstract class PlayerList {
          ).callEvent();
          // Paper end
  
@@ -435,7 +435,7 @@ index e4debb1e86f1f325dc17b709c5c9f3c4aa224b83..b78edaae1693c96b6b114348ef0c6198
          return serverPlayer;
      }
  
-@@ -891,11 +911,16 @@ public abstract class PlayerList {
+@@ -892,11 +912,16 @@ public abstract class PlayerList {
  
      public String[] getPlayerNamesArray() {
          List<ServerPlayer> players = new java.util.ArrayList<>(this.players); // Folia - region threading
@@ -453,7 +453,7 @@ index e4debb1e86f1f325dc17b709c5c9f3c4aa224b83..b78edaae1693c96b6b114348ef0c6198
  
          return strings;
      }
-@@ -1015,7 +1040,14 @@ public abstract class PlayerList {
+@@ -1016,7 +1041,14 @@ public abstract class PlayerList {
      }
  
      public @Nullable ServerPlayer getPlayerByName(String username) {
@@ -469,7 +469,7 @@ index e4debb1e86f1f325dc17b709c5c9f3c4aa224b83..b78edaae1693c96b6b114348ef0c6198
      }
  
      public void broadcast(@Nullable Player except, double x, double y, double z, double radius, ResourceKey<Level> dimension, Packet<?> packet) {
-@@ -1352,7 +1384,13 @@ public abstract class PlayerList {
+@@ -1353,7 +1385,13 @@ public abstract class PlayerList {
      }
  
      public @Nullable ServerPlayer getPlayer(UUID playerUUID) {
@@ -485,7 +485,7 @@ index e4debb1e86f1f325dc17b709c5c9f3c4aa224b83..b78edaae1693c96b6b114348ef0c6198
  
      public @Nullable ServerPlayer getPlayer(String name) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index 9492698541bfe704a1075a8fb58a9d7624895e48..5d304c468c99322e5ef6ea1c597fbbb1831e4020 100644
+index d2c0b532200f274e44f18147d294dfe5d3f52d1d..55133071b97400dfb3ed6615c30006003de492c5 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
 @@ -24,6 +24,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
@@ -513,7 +513,7 @@ index 9492698541bfe704a1075a8fb58a9d7624895e48..5d304c468c99322e5ef6ea1c597fbbb1
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index dddd8757292e8a817b0f697ac9e8f4ea0a74f589..65bdfef07547f9e034b7cc818316e7c30b6c975f 100644
+index 0f213d1cfab6066f6713c5b2124b76409510454c..5bcf646ef600a2aae7633453d3331fde2f141aff 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1252,7 +1252,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name

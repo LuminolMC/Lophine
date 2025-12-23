@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/network/PacketProcessor.java b/net/minecraft/network/PacketProcessor.java
-index 758cb258a7e0478bfaacfc1b6c93ce8a501b0e6c..8624b8462742907d5be9f010f465f0e118fa2d6c 100644
+index e07e5eced7e32d1c3a0ac14e8639c1f19b0f641a..fe7483581e5c3f5cb523601b394750a94a178e10 100644
 --- a/net/minecraft/network/PacketProcessor.java
 +++ b/net/minecraft/network/PacketProcessor.java
 @@ -107,7 +107,20 @@ public class PacketProcessor implements AutoCloseable {
@@ -34,10 +34,10 @@ index 758cb258a7e0478bfaacfc1b6c93ce8a501b0e6c..8624b8462742907d5be9f010f465f0e1
                          throw PacketUtils.makeReportedException(var3, this.packet, this.listener);
                      }
 diff --git a/net/minecraft/network/protocol/PacketUtils.java b/net/minecraft/network/protocol/PacketUtils.java
-index 760e7c579410432776ae8b1d6f70f0747da0460b..f29b639693615df29908a14716e394d7a62eb828 100644
+index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d7348369a12e96 100644
 --- a/net/minecraft/network/protocol/PacketUtils.java
 +++ b/net/minecraft/network/protocol/PacketUtils.java
-@@ -36,6 +36,7 @@ public class PacketUtils {
+@@ -34,6 +34,7 @@ public class PacketUtils {
      }
  
      public static <T extends PacketListener> ReportedException makeReportedException(Exception exception, Packet<T> packet, T packetListener) {
@@ -46,7 +46,7 @@ index 760e7c579410432776ae8b1d6f70f0747da0460b..f29b639693615df29908a14716e394d7
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 367759edd3bd76345bc8cb46342abfd9f37cb2e9..323c5557984bd1361a0bb2de9e446b2e6b2cb301 100644
+index 9d334ed3307f3c4c82bb5300219a465408bf341a..f2f57cfcd7739a951123c81f82cac1c2bbd3a3bd 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1973,8 +1973,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -111,7 +111,7 @@ index 04a600d96f4ae7c08d06dc4fb8f71b3f0eb1be07..45e4e3243c72b01d94dc440b26230a48
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 65bdfef07547f9e034b7cc818316e7c30b6c975f..4beb7026ad01921c09b31d0a8e6b5a0645adc6aa 100644
+index 5bcf646ef600a2aae7633453d3331fde2f141aff..5d5c3694e821954e6ede4d5c3de8844a84f71f45 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1434,9 +1434,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
