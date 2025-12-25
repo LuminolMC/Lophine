@@ -8,13 +8,13 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 95e7d3245bb38bf33a401648143522d3c96739a6..98f2ced8e6afdf0074ade94e0bbf5498bd6c505f 100644
+index 293b154dc027694acd2dceaf00c61b3e42cf7a1c..63e0c4f64f99b230c5779095382f93fad0ac2cf6 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -1127,6 +1127,7 @@ public abstract class PlayerList {
-         player.connection.send(new ClientboundSetChunkCacheRadiusPacket(level.spigotConfig.viewDistance));
-         player.connection.send(new ClientboundSetSimulationDistancePacket(level.spigotConfig.simulationDistance));
-         // Paper end
+         //player.connection.send(new ClientboundSetChunkCacheRadiusPacket(io.papermc.paper.FeatureHooks.getViewDistance(level))); // Paper - rewrite chunk system
+         //player.connection.send(new ClientboundSetSimulationDistancePacket(io.papermc.paper.FeatureHooks.getSimulationDistance(level))); // Paper - rewrite chunk system
+         // Paper end - view distances
 +        org.leavesmc.leaves.protocol.XaeroMapProtocol.onSendWorldInfo(player); // Leaves - xaero map protocol
          if (level.isRaining()) {
              // CraftBukkit start - handle player weather

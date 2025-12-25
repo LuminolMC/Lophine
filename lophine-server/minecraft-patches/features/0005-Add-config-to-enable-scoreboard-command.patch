@@ -5,11 +5,11 @@ Subject: [PATCH] Add config to enable scoreboard command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index c347830fbd8fccbf3b6b536beaba818fb7c6be32..8d77d6f165a5883e997122d1c2f231287e0caebe 100644
+index b95d144dd479d339cc4b0f92cc4c3bade9af4927..44f469b1fc5169adf3214ac52b8e2647d26e7974 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -241,7 +241,11 @@ public class Commands {
-         //RotateCommand.register(this.dispatcher); // Folia - region threading - TODO later // Luminol - Disable not correctly disabled unsupported commands
+         RotateCommand.register(this.dispatcher);
          SayCommand.register(this.dispatcher);
          //ScheduleCommand.register(this.dispatcher); // Folia - region threading
 -        //ScoreboardCommand.register(this.dispatcher, context); // Folia - region threading
