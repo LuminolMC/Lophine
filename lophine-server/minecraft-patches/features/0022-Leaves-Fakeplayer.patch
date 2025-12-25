@@ -33,7 +33,7 @@ index d5e604bf18a223aa434bc9f78274e1f3ff7f203d..715976a49ca621ba40d9353b18d41d34
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index e4d1f0ae66aec2cdc625e3140da094c99350687d..324f9d259c6e0fd814ffe11b62d07fb4d2197da3 100644
+index f04352738e4f703d28f3c06ff884aee7d980542c..0990879441a7d1ef97681115a6427e18eae7adef 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -398,7 +398,7 @@ index 1a43bdcb4c37df4ad1c4dfe6ebb84470832e910f..daff493e4ea944afa91ce99a3596931a
 +    // Leaves end - player operation limiter
  }
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 66e7b62a57eada0f0db7d9cc1be6362ac1e3ee85..95e7d3245bb38bf33a401648143522d3c96739a6 100644
+index 0d322ef4aa3e70c9edbb9fa8ba368bef916eb93d..293b154dc027694acd2dceaf00c61b3e42cf7a1c 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -317,6 +317,19 @@ public abstract class PlayerList {
@@ -485,7 +485,7 @@ index 66e7b62a57eada0f0db7d9cc1be6362ac1e3ee85..95e7d3245bb38bf33a401648143522d3
  
      public @Nullable ServerPlayer getPlayer(String name) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index d2c0b532200f274e44f18147d294dfe5d3f52d1d..55133071b97400dfb3ed6615c30006003de492c5 100644
+index f76d3a404eb7077f1db2374303eb265cb513d848..2e0e17a59fa2864dc9a2f2dafd18158cae6dae04 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
 @@ -24,6 +24,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
@@ -500,7 +500,7 @@ index d2c0b532200f274e44f18147d294dfe5d3f52d1d..55133071b97400dfb3ed6615c3000600
          this.waypoints.add(waypoint);
  
          for (ServerPlayer serverPlayer : this.players) {
-@@ -61,6 +66,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+@@ -64,6 +69,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
          // Folia - region threading
          // Lophine start - unsafe waypoint bar
          if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
@@ -668,7 +668,7 @@ index fc1b3501114108d0166256c514a225337955e461..56bc87fefc82c77077bfed50accbde77
          return switch (this.getStatus()) {
              case IN_WATER, UNDER_WATER, UNDER_FLOWING_WATER -> SoundEvents.BOAT_PADDLE_WATER;
 diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
-index 8e28afcfda7b180def81122e35920f6fd57a4574..f42697374461ab2e1c610b8c3250d3c03c0821b4 100644
+index a67901ed3bcb67fb2cab05894bc386db2f0f90f8..3456712f837f91101cc1d38c953af1d7237603b9 100644
 --- a/net/minecraft/world/inventory/AbstractContainerMenu.java
 +++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
 @@ -404,6 +404,7 @@ public abstract class AbstractContainerMenu {
