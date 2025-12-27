@@ -81,32 +81,32 @@ public class HopperCounter {
         this.coloredName = Component.text(color.getName(), TextColor.color(color.getTextColor()));
     }
 
-    public void add(Level level, ItemStack stack) {
+    public void add(MinecraftServer server, ItemStack stack) {
         if (startTick < 0) {
-            startTick = level.getGameTime();
+            startTick = server.overworld().getGameTime();
             startMillis = System.currentTimeMillis();
         }
         Item item = stack.getItem();
         counter.put(item, counter.getLong(item) + stack.getCount());
     }
 
-    public void reset(Level level) {
+    public void reset(MinecraftServer server) {
         counter.clear();
-        startTick = level.getGameTime();
+        startTick = server.overworld().getGameTime();
         startMillis = System.currentTimeMillis();
     }
 
-    public static void resetAll(Level level, boolean fresh) {
+    public static void resetAll(MinecraftServer server, boolean fresh) {
         for (HopperCounter counter : COUNTERS.values()) {
-            counter.reset(level);
+            counter.reset(server);
             if (fresh) {
                 counter.startTick = -1;
             }
         }
     }
 
-    public List<Component> format(MinecraftServer server, Level level, boolean realTime) {
-        long ticks = Math.max(realTime ? (System.currentTimeMillis() - startMillis) / 50 : level.getGameTime() - startTick, -1);
+    public List<Component> format(MinecraftServer server, boolean realTime) {
+        long ticks = Math.max(realTime ? (System.currentTimeMillis() - startMillis) / 50 : server.overworld().getGameTime() - startTick, -1);
 
         if (startTick < 0 || ticks == -1) {
             return Collections.singletonList(Component.text().append(coloredName, Component.text(" hasn't started counting yet")).build());

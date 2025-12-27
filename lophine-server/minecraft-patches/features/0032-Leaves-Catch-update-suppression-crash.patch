@@ -46,10 +46,10 @@ index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d73483
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 9d334ed3307f3c4c82bb5300219a465408bf341a..f2f57cfcd7739a951123c81f82cac1c2bbd3a3bd 100644
+index c8f2f98ebc145063505b73ef7c723f2878d34ea3..56160853050cd131718d16e21a0bb6c9780e2658 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1973,8 +1973,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1974,8 +1974,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
                  serverLevel.tick(hasTimeLeft, region); // Folia - region threading
@@ -94,10 +94,10 @@ index b3c593474e889d254f59813e7f42299b7b77d9ce..b878f5a8316dfee582180a6bbe7122a7
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 04a600d96f4ae7c08d06dc4fb8f71b3f0eb1be07..45e4e3243c72b01d94dc440b26230a48b3909367 100644
+index 8ea3c580b506e214664135a2c10722b56ab8e439..2ead230fde7a8d75ebb0036f9087aeee3c204db4 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1115,6 +1115,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1110,6 +1110,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  ((org.bukkit.craftbukkit.CraftWorldBorder) this.getBukkitEntity().getWorldBorder()).getHandle().tick();
              }
              // CraftBukkit end
@@ -111,7 +111,7 @@ index 04a600d96f4ae7c08d06dc4fb8f71b3f0eb1be07..45e4e3243c72b01d94dc440b26230a48
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 5bcf646ef600a2aae7633453d3331fde2f141aff..5d5c3694e821954e6ede4d5c3de8844a84f71f45 100644
+index 6a20033fbe8c6a9a4eaf3f819fffae04fee6aaeb..f6142276f15f6748027d8007e31f68f87270eb35 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1434,9 +1434,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name

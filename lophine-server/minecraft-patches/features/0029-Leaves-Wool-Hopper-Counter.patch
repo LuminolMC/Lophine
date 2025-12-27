@@ -10,7 +10,7 @@ Licensed under: MIT
 This patch is Powered by fabric-carpet(https://github.com/gnembon/fabric-carpet)
 
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 6a51bace3151646afae9de820d9c8977a0221df4..8dd50507bbc9f61c9ae019eecc5e9338d20addff 100644
+index 6a51bace3151646afae9de820d9c8977a0221df4..474ca0ce0d3095fc586f8f9e9a584ed4f7c91471 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -229,8 +229,30 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -72,7 +72,7 @@ index 6a51bace3151646afae9de820d9c8977a0221df4..8dd50507bbc9f61c9ae019eecc5e9338
 +            for (int i = 0; i < container.getContainerSize(); ++i) {
 +                if (!container.getItem(i).isEmpty()) {
 +                    ItemStack itemstack = container.getItem(i);
-+                    org.leavesmc.leaves.util.HopperCounter.getCounter(woolColor).add(level, itemstack);
++                    org.leavesmc.leaves.util.HopperCounter.getCounter(woolColor).add(level.getServer(), itemstack);
 +                    container.setItem(i, ItemStack.EMPTY);
 +                }
 +            }

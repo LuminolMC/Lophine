@@ -27,8 +27,8 @@ import java.util.function.Consumer;
 
 public interface BotCreator {
 
-    static BotCreator of(String realName, Location location) {
-        return Bukkit.getBotManager().botCreator(realName, location);
+    static BotCreator of(String rawName, Location location) {
+        return Bukkit.getBotManager().botCreator(rawName, location);
     }
 
     BotCreator name(String name);

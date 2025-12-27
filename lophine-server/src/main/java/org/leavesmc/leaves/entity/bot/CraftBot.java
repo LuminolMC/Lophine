@@ -46,8 +46,8 @@ public class CraftBot extends CraftPlayer implements Bot {
     }
 
     @Override
-    public @NotNull String getRealName() {
-        return this.getHandle().createState.realName();
+    public @NotNull String getRawName() {
+        return this.getHandle().createState.rawName();
     }
 
     @Override
@@ -92,7 +92,12 @@ public class CraftBot extends CraftPlayer implements Bot {
 
     @Override
     public boolean remove(boolean save) {
-        return BotList.INSTANCE.removeBot(this.getHandle(), BotRemoveEvent.RemoveReason.PLUGIN, null, save);
+        return BotList.INSTANCE.removeBot(this.getHandle(), BotRemoveEvent.RemoveReason.PLUGIN, null, save, false);
+    }
+
+    @Override
+    public boolean remove(boolean save, boolean resume) {
+        return BotList.INSTANCE.removeBot(this.getHandle(), BotRemoveEvent.RemoveReason.PLUGIN, null, save, resume);
     }
 
     @Override

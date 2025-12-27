@@ -20,29 +20,27 @@ package org.leavesmc.leaves.command.bot.subcommands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.FinePositionResolver;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.commands.arguments.coordinates.Coordinates;
-import net.minecraft.commands.arguments.coordinates.Vec3Argument;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.BotCreateState;
 import org.leavesmc.leaves.bot.BotList;
+import org.leavesmc.leaves.bot.BotUtil;
 import org.leavesmc.leaves.command.ArgumentNode;
 import org.leavesmc.leaves.command.CommandContext;
 import org.leavesmc.leaves.command.bot.BotSubcommand;
 import org.leavesmc.leaves.event.bot.BotCreateEvent;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.minecraft.commands.arguments.DimensionArgument.getDimension;
 
 public class CreateCommand extends BotSubcommand {
 
@@ -54,15 +52,16 @@ public class CreateCommand extends BotSubcommand {
     protected static boolean handleCreateCommand(@NotNull CommandContext context) throws CommandSyntaxException {
         CommandSender sender = context.getSender();
 
-        String name = context.getArgument(NameArgument.class);
-        if (!canCreate(sender, name)) {
+        String rawName = context.getArgument(NameArgument.class);
+        String fullName = BotUtil.getFullName(rawName);
+        if (!canCreate(sender, fullName)) { // Check full name
             return false;
         }
-        String skinName = context.getArgumentOrDefault(SkinNameArgument.class, name);
+        String skinName = context.getArgumentOrDefault(SkinNameArgument.class, rawName); // Use raw name for correct skin
 
         World world;
         try {
-            world = getDimension(context.getMojangContext(), "world").getWorld();
+            world = context.getArgument(WorldArgument.class);
         } catch (IllegalArgumentException e) {
             if (!(sender instanceof Entity entity)) {
                 sender.sendMessage(text("Must specify world and location when executed by console", NamedTextColor.RED));
@@ -72,16 +71,16 @@ public class CreateCommand extends BotSubcommand {
         }
 
         Location location = Bukkit.getWorlds().getFirst().getSpawnLocation();
-        Coordinates coords = context.getArgumentOrDefault(LocationArgument.class, null);
-        if (coords != null) {
-            Vec3 vec3 = coords.getPosition(context.getSource());
-            location = new Location(world, vec3.x, vec3.y, vec3.z);
+        FinePositionResolver positionResolver = context.getArgumentOrDefault(LocationArgument.class, null);
+        if (positionResolver != null) {
+            Vector vec3 = positionResolver.resolve(context.getSource()).toVector();
+            location = new Location(world, vec3.getX(), vec3.getY(), vec3.getZ());
         } else if (sender instanceof Entity entity) {
             location = entity.getLocation();
         }
 
         BotCreateState
-                .builder(name, location)
+                .builder(rawName, location)
                 .createReason(BotCreateEvent.CreateReason.COMMAND)
                 .skinName(skinName)
                 .creator(sender)
@@ -116,7 +115,6 @@ public class CreateCommand extends BotSubcommand {
     }
 
     private static class NameArgument extends ArgumentNode<String> {
-
         private NameArgument() {
             super("name", StringArgumentType.word());
             children(SkinNameArgument::new);
@@ -129,7 +127,6 @@ public class CreateCommand extends BotSubcommand {
     }
 
     private static class SkinNameArgument extends ArgumentNode<String> {
-
         private SkinNameArgument() {
             super("skin_name", StringArgumentType.word());
             children(WorldArgument::new);
@@ -141,10 +138,9 @@ public class CreateCommand extends BotSubcommand {
         }
     }
 
-    private static class WorldArgument extends ArgumentNode<Identifier> {
-
+    private static class WorldArgument extends ArgumentNode<World> {
         private WorldArgument() {
-            super("world", DimensionArgument.dimension());
+            super("world", ArgumentTypes.world());
             children(LocationArgument::new);
         }
 
@@ -154,10 +150,9 @@ public class CreateCommand extends BotSubcommand {
         }
     }
 
-    private static class LocationArgument extends ArgumentNode<Coordinates> {
-
+    private static class LocationArgument extends ArgumentNode<FinePositionResolver> {
         private LocationArgument() {
-            super("location", Vec3Argument.vec3(true));
+            super("location", ArgumentTypes.finePosition());
         }
 
         @Override

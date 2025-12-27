@@ -30,7 +30,7 @@ import org.leavesmc.leaves.bot.BotList;
 import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.command.ArgumentNode;
 import org.leavesmc.leaves.command.CommandContext;
-import org.leavesmc.leaves.command.CustomArgumentNode;
+import org.leavesmc.leaves.command.arguments.BotArgumentType;
 import org.leavesmc.leaves.command.bot.BotSubcommand;
 import org.leavesmc.leaves.event.bot.BotRemoveEvent;
 import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
@@ -65,7 +65,7 @@ public class RemoveCommand extends BotSubcommand {
     }
 
     private static boolean removeBotOrigin(@NotNull ServerBot bot, @Nullable CommandSender sender) {
-        boolean success = BotList.INSTANCE.removeBot(bot, BotRemoveEvent.RemoveReason.COMMAND, sender, false);
+        boolean success = BotList.INSTANCE.removeBot(bot, BotRemoveEvent.RemoveReason.COMMAND, sender, false, false);
         if (!success) {
             sender = sender == null ? Bukkit.getConsoleSender() : sender;
             sender.sendMessage(text("Bot remove canceled by a plugin", RED));
@@ -73,16 +73,15 @@ public class RemoveCommand extends BotSubcommand {
         return success;
     }
 
-    private static class BotArgument extends CustomArgumentNode<ServerBot, String> {
-
+    private static class BotArgument extends ArgumentNode<ServerBot> {
         private BotArgument() {
-            super("bot", new org.leavesmc.leaves.command.bot.BotArgument());
+            super("bot", BotArgumentType.bot());
             children(RemoveTimeArgument::new);
         }
 
         @Override
-        protected boolean execute(@NotNull CommandContext context) throws CommandSyntaxException {
-            ServerBot bot = context.getCustomArgument(BotArgument.class);
+        protected boolean execute(@NotNull CommandContext context) {
+            ServerBot bot = context.getArgument(BotArgument.class);
             return removeBot(bot, context.getSender());
         }
     }
@@ -97,7 +96,7 @@ public class RemoveCommand extends BotSubcommand {
         protected boolean execute(@NotNull CommandContext context) throws CommandSyntaxException {
             String removeTimeStr = context.getArgument("remove_time", String.class);
             int removeTimeSeconds = parseRemoveTime(removeTimeStr);
-            ServerBot bot = context.getCustomArgument(BotArgument.class);
+            ServerBot bot = context.getArgument(BotArgument.class);
             CommandSender sender = context.getSender();
 
             boolean isReschedule = bot.removeTaskId != -1;
@@ -141,22 +140,25 @@ public class RemoveCommand extends BotSubcommand {
             }
 
             Matcher matcher = Pattern.compile("(\\d+)([hmsHMS])").matcher(timeStr);
-            int seconds = 0;
+            long seconds = 0;
             boolean foundMatch = false;
 
             while (matcher.find()) {
                 foundMatch = true;
-                int value = Integer.parseInt(matcher.group(1));
+                long value;
+                try {
+                    value = Long.parseLong(matcher.group(1));
+                } catch (NumberFormatException e) {
+                    throw new CommandSyntaxException(
+                            CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
+                            literal("Number too large: " + matcher.group(1))
+                    );
+                }
+
                 switch (matcher.group(2).toLowerCase()) {
-                    case "h":
-                        seconds += value * 3600;
-                        break;
-                    case "m":
-                        seconds += value * 60;
-                        break;
-                    case "s":
-                        seconds += value;
-                        break;
+                    case "h" -> seconds += value * 3600;
+                    case "m" -> seconds += value * 60;
+                    case "s" -> seconds += value;
                 }
             }
 
@@ -167,7 +169,14 @@ public class RemoveCommand extends BotSubcommand {
                 );
             }
 
-            return seconds;
+            if (seconds > Integer.MAX_VALUE) {
+                throw new CommandSyntaxException(
+                        CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
+                        literal("Total time exceeds maximum limit")
+                );
+            }
+
+            return (int) seconds;
         }
 
         private static @NotNull String formatSeconds(int totalSeconds) {

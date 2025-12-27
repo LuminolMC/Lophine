@@ -19,18 +19,18 @@ package org.leavesmc.leaves.bot.agent.actions;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.logging.LogUtils;
+import fun.bm.lophine.LophineLogger;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
+import org.leavesmc.leaves.bot.agent.ExtraData;
 import org.leavesmc.leaves.command.CommandContext;
 import org.leavesmc.leaves.command.WrappedArgument;
 import org.leavesmc.leaves.event.bot.BotActionExecuteEvent;
 import org.leavesmc.leaves.event.bot.BotActionStopEvent;
 import org.leavesmc.leaves.util.UpdateSuppressionException;
-import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -56,7 +56,6 @@ public abstract class AbstractBotAction<E extends AbstractBotAction<E>> {
     private Consumer<E> onFail;
     private Consumer<E> onSuccess;
     private Consumer<E> onStop;
-    private static final Logger LOGGER = LogUtils.getClassLogger();
 
     public AbstractBotAction(String name, Supplier<E> creator) {
         this.name = name;
@@ -74,13 +73,12 @@ public abstract class AbstractBotAction<E extends AbstractBotAction<E>> {
 
     public abstract Object asCraft();
 
-    public void provideActionData(@NotNull ActionData data) {
+    public String getActionDataString() {
+        return getActionDataString(new ExtraData(new ArrayList<>()));
     }
 
-    public String getActionDataString() {
-        ActionData data = new ActionData(new ArrayList<>());
-        provideActionData(data);
-        return data.raw.stream()
+    public String getActionDataString(@NotNull ExtraData data) {
+        return data.raw().stream()
                 .map(pair -> pair.getLeft() + "=" + pair.getRight())
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("No arguments");
@@ -141,7 +139,7 @@ public abstract class AbstractBotAction<E extends AbstractBotAction<E>> {
                 e.providePlayer(bot);
                 e.consume();
             } catch (Exception e) {
-                LOGGER.warn("An error occurred while executing bot " + bot.displayName + ", action " + this.name, e);
+                LophineLogger.LOGGER.error("An error occurred while executing bot {}, action {}", bot.displayName, this.name, e);
             }
 
             if (result) {
@@ -179,12 +177,12 @@ public abstract class AbstractBotAction<E extends AbstractBotAction<E>> {
     public void load(@NotNull CompoundTag nbt) {
         this.uuid = nbt.read("actionUUID", UUIDUtil.CODEC).orElse(UUID.randomUUID());
 
-        this.initialTickDelay = nbt.getInt("initialTickDelay").orElse(0);
-        this.initialTickInterval = nbt.getInt("initialTickInterval").orElse(0);
-        this.initialNumber = nbt.getInt("initialNumber").orElse(0);
+        this.initialTickDelay = nbt.getIntOr("initialTickDelay", 0);
+        this.initialTickInterval = nbt.getIntOr("initialTickInterval", 0);
+        this.initialNumber = nbt.getIntOr("initialNumber", 0);
 
-        this.tickToNext = nbt.getInt("tickToNext").orElse(0);
-        this.numberRemaining = nbt.getInt("numberRemaining").orElse(0);
+        this.tickToNext = nbt.getIntOr("tickToNext", 0);
+        this.numberRemaining = nbt.getIntOr("numberRemaining", 0);
     }
 
     public void stop(@NotNull ServerBot bot, BotActionStopEvent.Reason reason) {
@@ -262,13 +260,5 @@ public abstract class AbstractBotAction<E extends AbstractBotAction<E>> {
 
     public void setOnStop(Consumer<E> onStop) {
         this.onStop = onStop;
-    }
-
-    public record ActionData(
-            List<Pair<String, String>> raw
-    ) {
-        public void add(String key, String value) {
-            raw.add(Pair.of(key, value));
-        }
     }
 }

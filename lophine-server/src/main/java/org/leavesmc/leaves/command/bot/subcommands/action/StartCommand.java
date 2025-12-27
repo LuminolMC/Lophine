@@ -20,7 +20,7 @@ package org.leavesmc.leaves.command.bot.subcommands.action;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSourceStack;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
@@ -49,10 +49,7 @@ public class StartCommand extends LiteralNode {
 
     public StartCommand() {
         super("start");
-        Actions.getAll()
-                .stream()
-                .map(this::actionNodeCreator)
-                .forEach(this::children);
+        Actions.getAll().stream().map(this::actionNodeCreator).forEach(this::children);
     }
 
     private boolean handleStartCommand(CommandContext context, @NotNull AbstractBotAction<?> action) throws CommandSyntaxException {

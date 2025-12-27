@@ -20,10 +20,8 @@ package org.leavesmc.leaves.command.bot.subcommands;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.Component;
-import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -45,8 +43,6 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.JoinConfiguration.noSeparators;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.minecraft.commands.arguments.DimensionArgument.getDimension;
-
 
 public class ListCommand extends BotSubcommand {
 
@@ -93,16 +89,16 @@ public class ListCommand extends BotSubcommand {
         );
     }
 
-    private static class WorldArgument extends ArgumentNode<Identifier> {
+    private static class WorldArgument extends ArgumentNode<World> {
 
         private WorldArgument() {
-            super("world", DimensionArgument.dimension());
+            super("world", ArgumentTypes.world());
         }
 
         @Override
-        protected boolean execute(@NotNull CommandContext context) throws CommandSyntaxException {
-            ServerLevel dimension = getDimension(context.getMojangContext(), "world");
-            Component botListMessage = getBotListMessage(dimension.getWorld());
+        protected boolean execute(@NotNull CommandContext context) {
+            World world = context.getArgument(WorldArgument.class);
+            Component botListMessage = getBotListMessage(world);
             CommandSender sender = context.getSender();
             if (botListMessage == null) {
                 sender.sendMessage(text("No bots in that world", RED));

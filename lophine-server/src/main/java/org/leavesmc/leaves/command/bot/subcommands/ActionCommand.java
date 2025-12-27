@@ -17,13 +17,13 @@
 
 package org.leavesmc.leaves.command.bot.subcommands;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
-import net.minecraft.commands.CommandSourceStack;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
+import org.leavesmc.leaves.command.ArgumentNode;
 import org.leavesmc.leaves.command.CommandContext;
-import org.leavesmc.leaves.command.CustomArgumentNode;
+import org.leavesmc.leaves.command.arguments.BotArgumentType;
 import org.leavesmc.leaves.command.bot.BotSubcommand;
 import org.leavesmc.leaves.command.bot.subcommands.action.ListCommand;
 import org.leavesmc.leaves.command.bot.subcommands.action.StartCommand;
@@ -41,10 +41,10 @@ public class ActionCommand extends BotSubcommand {
         return FakeplayerConfig.canUseAction && super.requires(source);
     }
 
-    public static class BotArgument extends CustomArgumentNode<ServerBot, String> {
+    public static class BotArgument extends ArgumentNode<ServerBot> {
 
         private BotArgument() {
-            super("bot", new org.leavesmc.leaves.command.bot.BotArgument());
+            super("bot", BotArgumentType.bot());
             children(
                     StartCommand::new,
                     StopCommand::new,
@@ -52,8 +52,8 @@ public class ActionCommand extends BotSubcommand {
             );
         }
 
-        public static @NotNull ServerBot getBot(@NotNull CommandContext context) throws CommandSyntaxException {
-            return context.getCustomArgument(BotArgument.class);
+        public static @NotNull ServerBot getBot(@NotNull CommandContext context) {
+            return context.getArgument(BotArgument.class);
         }
     }
 }

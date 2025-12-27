@@ -22,8 +22,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.commands.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.BotList;
@@ -63,27 +63,27 @@ public class LoadCommand extends BotSubcommand {
             String botName = context.getArgument(BotNameArgument.class);
             BotList botList = BotList.INSTANCE;
             CommandSender sender = context.getSender();
-            if (!botList.getSavedBotList().contains(botName)) {
+            if (!botList.getManualSavedBotList().contains(botName)) {
                 throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().create();
             }
+            if (botList.getBotByName(botName) != null) {
+                sender.sendMessage(text("Bot with name " + botName + " already exists!", NamedTextColor.RED));
+                return false;
+            }
 
-            ServerBot bot = botList.loadNewBot(botName);
+            ServerBot bot = botList.loadNewManualSavedBot(botName);
             if (bot == null) {
                 sender.sendMessage(text("Failed to load bot, please check log", NamedTextColor.RED));
                 return false;
             }
-            sender.sendMessage(join(
-                    spaces(),
-                    text("Successfully loaded bot", NamedTextColor.GRAY),
-                    asAdventure(bot.getDisplayName())
-            ));
+            sender.sendMessage(join(spaces(), text("Successfully loaded bot", NamedTextColor.GRAY), asAdventure(bot.getDisplayName())));
             return true;
         }
 
         @Override
         protected CompletableFuture<Suggestions> getSuggestions(CommandContext context, @NotNull SuggestionsBuilder builder) {
             BotList botList = BotList.INSTANCE;
-            Set<String> bots = botList.getSavedBotList().keySet();
+            Set<String> bots = botList.getManualSavedBotList().keySet();
             if (bots.isEmpty()) {
                 return builder
                         .suggest("<NO SAVED BOT EXISTS>", net.minecraft.network.chat.Component.literal("There are no bots saved before, save one first."))

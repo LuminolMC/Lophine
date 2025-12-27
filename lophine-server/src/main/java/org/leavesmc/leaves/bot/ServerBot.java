@@ -19,7 +19,7 @@ package org.leavesmc.leaves.bot;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
-import com.mojang.logging.LogUtils;
+import fun.bm.lophine.LophineLogger;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
@@ -77,16 +77,16 @@ import org.leavesmc.leaves.entity.bot.CraftBot;
 import org.leavesmc.leaves.event.bot.*;
 import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.leavesmc.leaves.util.MathUtils;
-import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.Predicate;
 
+import static net.minecraft.server.MinecraftServer.getServer;
+
 public class ServerBot extends ServerPlayer {
 
     private final List<AbstractBotAction<?>> actions;
-    private final Map<String, AbstractBotConfig<?, ?, ?>> configs;
-    private static final Logger LOGGER = LogUtils.getClassLogger();
+    private final Map<String, AbstractBotConfig<?, ?>> configs;
 
     public boolean resume = false;
     public BotCreateState createState;
@@ -108,8 +108,8 @@ public class ServerBot extends ServerPlayer {
         this.gameMode = new ServerBotGameMode(this);
 
         this.actions = new ArrayList<>();
-        ImmutableMap.Builder<String, AbstractBotConfig<?, ?, ?>> configBuilder = ImmutableMap.builder();
-        for (AbstractBotConfig<?, ?, ?> config : Configs.getConfigs()) {
+        ImmutableMap.Builder<String, AbstractBotConfig<?, ?>> configBuilder = ImmutableMap.builder();
+        for (AbstractBotConfig<?, ?> config : Configs.getConfigs()) {
             configBuilder.put(config.getName(), config.create().setBot(this));
         }
         this.configs = configBuilder.build();
@@ -139,7 +139,7 @@ public class ServerBot extends ServerPlayer {
             this.joining = false;
         }
 
-        this.resetOperationCountPerTick(); // Leaves - player operation limiter
+//        this.resetOperationCountPerTick(); // Leaves - player operation limiter
         this.wardenSpawnTracker.tick();
         if (this.invulnerableTime > 0) {
             this.invulnerableTime--;
@@ -213,17 +213,7 @@ public class ServerBot extends ServerPlayer {
         this.updateIsUnderwater();
 
         if (this.getConfigValue(Configs.TICK_TYPE) == TickType.NETWORK) {
-            try {
-                Bukkit.getRegionScheduler().execute(
-                        MinecraftInternalPlugin.INSTANCE,
-                        this.level().getWorld(),
-                        this.getBlockX() >> 4,
-                        this.getBlockZ() >> 4,
-                        this::runAction
-                );
-            } catch (Exception e) {
-                this.runAction();
-            }
+            getServer().scheduleOnMain(this::runAction);
         }
 
         this.livingEntityTick();
@@ -305,6 +295,18 @@ public class ServerBot extends ServerPlayer {
             teleportTransition.postTeleportTransition().onTransition(this);
             this.isChangingDimension = false;
 
+            // Lophine - We don't have this
+/*            if (LeavesConfig.modify.netherPortalFix) {
+                final ResourceKey<Level> fromDim = fromLevel.dimension();
+                final ResourceKey<Level> toDim = level().dimension();
+                if (!((fromDim != Level.OVERWORLD || toDim != Level.NETHER) && (fromDim != Level.NETHER || toDim != Level.OVERWORLD))) {
+                    BlockPos fromPortal = org.leavesmc.leaves.util.ReturnPortalManager.findPortalAt(this, fromDim, lastPos);
+                    BlockPos toPos = this.blockPosition();
+                    if (fromPortal != null) {
+                        org.leavesmc.leaves.util.ReturnPortalManager.storeReturnPortal(this, toDim, toPos, fromPortal);
+                    }
+                }
+            }*/
             if (this.isBlocking()) {
                 this.stopUsingItem();
             }
@@ -350,7 +352,7 @@ public class ServerBot extends ServerPlayer {
         if (FakeplayerConfig.canOpenInventory) {
             if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
                 BotInventoryOpenEvent event = new BotInventoryOpenEvent(this.getBukkitEntity(), player1.getBukkitEntity());
-                MinecraftServer.getServer().server.getPluginManager().callEvent(event);
+                getServer().server.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     player.openMenu(new SimpleMenuProvider((i, inventory, p) -> ChestMenu.sixRows(i, inventory, this.container), this.getDisplayName()));
                     return InteractionResult.SUCCESS;
@@ -372,8 +374,8 @@ public class ServerBot extends ServerPlayer {
         nbt.putBoolean("isShiftKeyDown", this.isShiftKeyDown());
 
         CompoundTag createNbt = new CompoundTag();
-        createNbt.putString("realName", this.createState.realName());
-        createNbt.putString("name", this.createState.name());
+        createNbt.putString("rawName", this.createState.rawName());
+        createNbt.putString("name", this.createState.fullName());
 
         createNbt.putString("skinName", this.createState.skinName());
         if (this.createState.skin() != null) {
@@ -395,7 +397,7 @@ public class ServerBot extends ServerPlayer {
 
         if (!this.configs.isEmpty()) {
             ValueOutput.TypedOutputList<CompoundTag> configNbt = nbt.list("configs", CompoundTag.CODEC);
-            for (AbstractBotConfig<?, ?, ?> config : this.configs.values()) {
+            for (AbstractBotConfig<?, ?> config : this.configs.values()) {
                 configNbt.add(config.save(new CompoundTag()));
             }
         }
@@ -407,7 +409,11 @@ public class ServerBot extends ServerPlayer {
         this.setShiftKeyDown(nbt.getBooleanOr("isShiftKeyDown", false));
 
         CompoundTag createNbt = nbt.read("createStatus", CompoundTag.CODEC).orElseThrow();
-        BotCreateState.Builder createBuilder = BotCreateState.builder(createNbt.getString("realName").orElseThrow(), null).name(createNbt.getString("name").orElseThrow());
+        BotCreateState.Builder createBuilder = BotCreateState
+                .builder(createNbt.getString("rawName")
+                        .orElseGet(() -> createNbt.getString("realName")
+                                .orElseThrow()), null) // Convert from legacy version, consider to use ca.spottedleaf.dataconverter.minecraft.MCDataConverter instead for release version
+                .name(createNbt.getString("name").orElseThrow());
 
         String[] skin = null;
         if (createNbt.contains("skin")) {
@@ -422,7 +428,7 @@ public class ServerBot extends ServerPlayer {
         createBuilder.createReason(BotCreateEvent.CreateReason.INTERNAL).creator(null);
 
         this.createState = createBuilder.build();
-        this.gameProfile = BotList.INSTANCE.setProfile(this.getUUID(), this.createState.name(), this.createState.skin());
+        this.gameProfile = BotList.createBotProfile(this.getUUID(), this.createState.fullName(), this.createState.skin());
 
 
         if (nbt.list("actions", CompoundTag.CODEC).isPresent()) {
@@ -440,8 +446,9 @@ public class ServerBot extends ServerPlayer {
         if (nbt.list("configs", CompoundTag.CODEC).isPresent()) {
             ValueInput.TypedInputList<CompoundTag> configNbt = nbt.list("configs", CompoundTag.CODEC).orElseThrow();
             for (CompoundTag configTag : configNbt) {
-                AbstractBotConfig<?, ?, ?> config = Configs.getConfig(configTag.getString("configName").orElseThrow());
+                AbstractBotConfig<?, ?> config = Configs.getConfig(configTag.getString("configName").orElseThrow());
                 if (config != null) {
+                    config.setBot(this);
                     config.load(configTag);
                 }
             }
@@ -466,30 +473,30 @@ public class ServerBot extends ServerPlayer {
         ChunkMap.TrackedEntity entityTracker = this.moonrise$getTrackedEntity();
 
         if (entityTracker == null) {
-            LOGGER.warn("Fakeplayer cant get entity tracker for {}", this.getId());
+            LophineLogger.LOGGER.warn("Fakeplayer cant get entity tracker for {}", this.getId());
             return;
         }
 
         playerConnection.send(this.getAddEntityPacket(entityTracker.serverEntity));
         if (login) {
-            Bukkit.getGlobalRegionScheduler().runDelayed(MinecraftInternalPlugin.INSTANCE, (unused) -> playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f))), 10);
+            Bukkit.getGlobalRegionScheduler().runDelayed(MinecraftInternalPlugin.INSTANCE, (task) -> playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f))), 10);
         } else {
             playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f)));
         }
     }
 
     public void renderInfo() {
-        MinecraftServer.getServer().getPlayerList().getPlayers().forEach(this::sendPlayerInfo);
+        getServer().getPlayerList().getPlayers().forEach(this::sendPlayerInfo);
     }
 
     public void renderData() {
-        MinecraftServer.getServer().getPlayerList().getPlayers().forEach(
+        getServer().getPlayerList().getPlayers().forEach(
                 player -> this.sendFakeDataIfNeed(player, false)
         );
     }
 
     private void sendPacket(Packet<?> packet) {
-        MinecraftServer.getServer().getPlayerList().getPlayers().forEach(player -> player.connection.send(packet));
+        getServer().getPlayerList().getPlayers().forEach(player -> player.connection.send(packet));
     }
 
     @Override
@@ -498,7 +505,7 @@ public class ServerBot extends ServerPlayer {
         Component defaultMessage = this.getCombatTracker().getDeathMessage();
 
         BotDeathEvent event = new BotDeathEvent(this.getBukkitEntity(), PaperAdventure.asAdventure(defaultMessage), flag);
-        MinecraftServer.getServer().server.getPluginManager().callEvent(event);
+        getServer().server.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             if (this.getHealth() <= 0) {
@@ -511,18 +518,23 @@ public class ServerBot extends ServerPlayer {
 
         net.kyori.adventure.text.Component deathMessage = event.deathMessage();
         if (event.isSendDeathMessage() && deathMessage != null && !deathMessage.equals(net.kyori.adventure.text.Component.empty())) {
-            MinecraftServer.getServer().getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(deathMessage), false);
+            getServer().getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(deathMessage), false);
         }
 
-        MinecraftServer.getServer().getBotList().removeBot(this, BotRemoveEvent.RemoveReason.DEATH, null, false);
+        // TODO: separate die and remove logic, call super.die here
+        this.removeEntitiesOnShoulder();
+        if (this.level().getGameRules().get(GameRules.FORGIVE_DEAD_PLAYERS)) {
+            this.tellNeutralMobsThatIDied();
+        }
+        getServer().getBotList().removeBot(this, BotRemoveEvent.RemoveReason.DEATH, null, false, false);
     }
 
     @Override
-    public boolean startRiding(Entity entity, boolean force, boolean triggerEvents) {
-        if (super.startRiding(entity, force, triggerEvents)) {
-            if (entity.getControllingPassenger() == this) { // see net.minecraft.server.networkServerGamePacketListenerImpl#handleMoveVehicle
+    public boolean startRiding(@NotNull Entity vehicle, boolean force, boolean sendGameEvent) {
+        if (super.startRiding(vehicle, force, sendGameEvent)) {
+            if (vehicle.getControllingPassenger() == this) { // see net.minecraft.server.networkServerGamePacketListenerImpl#handleMoveVehicle
                 this.setDeltaMovement(Vec3.ZERO);
-                this.setYRot(entity.yRotO);
+                this.setYRot(vehicle.yRotO);
             }
             return true;
         } else {
@@ -669,15 +681,15 @@ public class ServerBot extends ServerPlayer {
     }
 
     @SuppressWarnings("unchecked")
-    public <O, I, E extends AbstractBotConfig<O, I, E>> AbstractBotConfig<O, I, E> getConfig(@NotNull AbstractBotConfig<O, I, E> config) {
-        return (AbstractBotConfig<O, I, E>) Objects.requireNonNull(this.configs.get(config.getName()));
+    public <T, E extends AbstractBotConfig<T, E>> AbstractBotConfig<T, E> getConfig(@NotNull AbstractBotConfig<T, E> config) {
+        return (AbstractBotConfig<T, E>) Objects.requireNonNull(this.configs.get(config.getName()));
     }
 
-    public Collection<AbstractBotConfig<?, ?, ?>> getAllConfigs() {
+    public Collection<AbstractBotConfig<?, ?>> getAllConfigs() {
         return configs.values();
     }
 
-    public <O, I, E extends AbstractBotConfig<O, I, E>> O getConfigValue(@NotNull AbstractBotConfig<O, I, E> config) {
+    public <T, E extends AbstractBotConfig<T, E>> T getConfigValue(@NotNull AbstractBotConfig<T, E> config) {
         return this.getConfig(config).getValue();
     }
 

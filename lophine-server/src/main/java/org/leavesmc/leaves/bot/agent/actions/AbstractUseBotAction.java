@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
+import org.leavesmc.leaves.bot.agent.ExtraData;
 import org.leavesmc.leaves.command.CommandContext;
 import org.leavesmc.leaves.event.bot.BotActionStopEvent;
 
@@ -115,10 +116,10 @@ public abstract class AbstractUseBotAction<T extends AbstractUseBotAction<T>> ex
     }
 
     @Override
-    public void provideActionData(@NotNull ActionData data) {
-        super.provideActionData(data);
+    public String getActionDataString(@NotNull ExtraData data) {
         data.add("use_timeout", String.valueOf(this.useTickTimeout));
         data.add("already_used_tick", String.valueOf(this.alreadyUsedTick));
+        return super.getActionDataString(data);
     }
 
     @Override
@@ -133,9 +134,9 @@ public abstract class AbstractUseBotAction<T extends AbstractUseBotAction<T>> ex
     @Override
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
-        this.useTickTimeout = nbt.getInt("useTick").orElseThrow();
+        this.useTickTimeout = nbt.getIntOr("useTick", this.useTickTimeout);
         this.alreadyUsedTick = nbt.getInt("alreadyUsedTick").orElseGet(
-                () -> this.useTickTimeout - nbt.getInt("tickToRelease").orElseThrow()
+                () -> nbt.getInt("tickToRelease").map(tickToRelease -> this.useTickTimeout - tickToRelease).orElse(this.alreadyUsedTick)
         );
     }
 

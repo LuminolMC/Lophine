@@ -18,11 +18,13 @@
 package org.leavesmc.leaves.bot.agent.actions;
 
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
+import org.leavesmc.leaves.bot.agent.ExtraData;
 import org.leavesmc.leaves.command.CommandContext;
 import org.leavesmc.leaves.entity.bot.actions.CraftRotationAction;
 
@@ -35,16 +37,26 @@ public class ServerRotationAction extends AbstractBotAction<ServerRotationAction
     public ServerRotationAction() {
         super("rotation", ServerRotationAction::new);
         this.addArgument("yaw", FloatArgumentType.floatArg(-180, 180))
-                .suggests((context, builder) -> builder.suggest(
-                        DF.format(context.getSource().getEntityOrException().getYRot()),
-                        Component.literal("current player yaw")
-                ))
+                .suggests((context, builder) -> {
+                    CommandSender sender = context.getSender();
+                    if (sender instanceof Entity entity) {
+                        builder.suggest(
+                                DF.format(entity.getYaw()),
+                                Component.literal("current player yaw")
+                        );
+                    }
+                })
                 .setOptional(true);
         this.addArgument("pitch", FloatArgumentType.floatArg(-90, 90))
-                .suggests((context, builder) -> builder.suggest(
-                        DF.format(context.getSource().getEntityOrException().getXRot()),
-                        Component.literal("current player pitch")
-                ))
+                .suggests((context, builder) -> {
+                    CommandSender sender = context.getSender();
+                    if (sender instanceof Entity entity) {
+                        builder.suggest(
+                                DF.format(entity.getPitch()),
+                                Component.literal("current player pitch")
+                        );
+                    }
+                })
                 .setOptional(true);
     }
 
@@ -52,9 +64,14 @@ public class ServerRotationAction extends AbstractBotAction<ServerRotationAction
     private float pitch = 0.0f;
 
     @Override
-    public void loadCommand(@NotNull CommandContext context) throws CommandSyntaxException {
-        this.yaw = context.getFloatOrDefault("yaw", context.getSource().getEntityOrException().getYRot());
-        this.pitch = context.getFloatOrDefault("pitch", context.getSource().getEntityOrException().getXRot());
+    public void loadCommand(@NotNull CommandContext context) {
+        CommandSender sender = context.getSender();
+        if (sender instanceof Entity entity) {
+            this.yaw = entity.getYaw();
+            this.pitch = entity.getPitch();
+        }
+        this.yaw = context.getFloatOrDefault("yaw", this.yaw);
+        this.pitch = context.getFloatOrDefault("pitch", this.pitch);
     }
 
     public void setYaw(float yaw) {
@@ -74,10 +91,10 @@ public class ServerRotationAction extends AbstractBotAction<ServerRotationAction
     }
 
     @Override
-    public void provideActionData(@NotNull ActionData data) {
-        super.provideActionData(data);
+    public String getActionDataString(@NotNull ExtraData data) {
         data.add("yaw", DF.format(this.yaw));
         data.add("pitch", DF.format(this.pitch));
+        return super.getActionDataString(data);
     }
 
     @Override

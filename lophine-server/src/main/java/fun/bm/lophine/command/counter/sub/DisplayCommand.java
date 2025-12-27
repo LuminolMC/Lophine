@@ -25,7 +25,7 @@ public class DisplayCommand extends CounterSubCommand {
     }
 
     public static void displayCounter(CommandContext context, @NotNull HopperCounter counter, boolean realTime) {
-        for (Component component : counter.format(MinecraftServer.getServer(), context.getSource().getLevel(), realTime)) {
+        for (Component component : counter.format(MinecraftServer.getServer(), realTime)) {
             context.getSender().sendMessage(component);
         }
     }

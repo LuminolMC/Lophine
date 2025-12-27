@@ -18,6 +18,7 @@
 package org.leavesmc.leaves.bot.agent.configs;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import fun.bm.lophine.LophineLogger;
 import fun.bm.lophine.config.modules.experiment.CommandConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import me.earthme.luminol.utils.NullPlugin;
@@ -25,10 +26,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.waypoints.ServerWaypointManager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.command.CommandContext;
 
-public class LocatorBarConfig extends AbstractBotConfig<Boolean, Boolean, LocatorBarConfig> {
+public class LocatorBarConfig extends AbstractBotConfig<Boolean, LocatorBarConfig> {
     private boolean value;
 
     public LocatorBarConfig() {
@@ -43,20 +43,24 @@ public class LocatorBarConfig extends AbstractBotConfig<Boolean, Boolean, Locato
 
     @Override
     public void setValue(@NotNull Boolean value) throws IllegalArgumentException {
-        if (bot == null) {
-            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task) -> setValue(value), 20);
-        } else {
-            setValue(value, this.bot);
-        }
+        setValue(value, 0);
     }
 
-    public void setValue(@NotNull Boolean value, ServerBot bot) throws IllegalArgumentException {
-        this.value = value;
-        ServerWaypointManager manager = bot.level().getWaypointManager();
-        if (value) {
-            manager.trackWaypoint(bot);
+    public void setValue(@NotNull Boolean value, int count) throws IllegalArgumentException {
+        if (count > 60) {
+            LophineLogger.LOGGER.error("Failed to set locator bar for a fakeplayer after 60 attempts");
+            return;
+        }
+        if (this.bot != null) {
+            this.value = value;
+            ServerWaypointManager manager = this.bot.level().getWaypointManager();
+            if (value) {
+                manager.trackWaypoint(this.bot);
+            } else {
+                manager.untrackWaypoint(this.bot);
+            }
         } else {
-            manager.untrackWaypoint(bot);
+            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task0) -> setValue(value, count + 1), 20);
         }
     }
 

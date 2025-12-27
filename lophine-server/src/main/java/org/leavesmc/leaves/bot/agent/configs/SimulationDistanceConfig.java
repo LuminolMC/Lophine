@@ -19,6 +19,7 @@ package org.leavesmc.leaves.bot.agent.configs;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import fun.bm.lophine.LophineLogger;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +29,7 @@ import org.leavesmc.leaves.command.CommandContext;
 
 import static net.minecraft.network.chat.Component.literal;
 
-public class SimulationDistanceConfig extends AbstractBotConfig<Integer, Integer, SimulationDistanceConfig> {
+public class SimulationDistanceConfig extends AbstractBotConfig<Integer, SimulationDistanceConfig> {
 
     public SimulationDistanceConfig() {
         super("simulation_distance", IntegerArgumentType.integer(2, 32), SimulationDistanceConfig::new);
@@ -68,10 +69,18 @@ public class SimulationDistanceConfig extends AbstractBotConfig<Integer, Integer
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
-        if (this.bot == null) {
-            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task) -> load(nbt), 20);
-        } else {
+        load(nbt, 0);
+    }
+
+    public void load(@NotNull CompoundTag nbt, int count) {
+        if (count > 60) {
+            LophineLogger.LOGGER.error("Failed to load simulation distance for a fakeplayer after 60 attempts");
+            return;
+        }
+        if (this.bot != null) {
             this.setValue(nbt.getIntOr(getName(), FakeplayerConfig.getSimulationDistance(this.bot)));
+        } else {
+            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task0) -> load(nbt, count + 1), 20);
         }
     }
 }

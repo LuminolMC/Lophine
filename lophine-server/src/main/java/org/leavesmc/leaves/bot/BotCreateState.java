@@ -17,7 +17,6 @@
 
 package org.leavesmc.leaves.bot;
 
-import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,7 +32,7 @@ import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public record BotCreateState(String realName, String name, String skinName, String[] skin, Location location,
+public record BotCreateState(String rawName, String fullName, String skinName, String[] skin, Location location,
                              BotCreateEvent.CreateReason createReason, CommandSender creator) {
 
     private static final MinecraftServer server = MinecraftServer.getServer();
@@ -43,15 +42,15 @@ public record BotCreateState(String realName, String name, String skinName, Stri
     }
 
     @NotNull
-    public static Builder builder(@NotNull String realName, @Nullable Location location) {
-        return new Builder(realName, location);
+    public static Builder builder(@NotNull String rawName, @Nullable Location location) {
+        return new Builder(rawName, location);
     }
 
     public static class Builder implements BotCreator {
 
-        private final String realName;
+        private final String rawName; // For internal calculation, use it as little as possible
 
-        private String name;
+        private String fullName;
         private Location location;
 
         private String skinName;
@@ -60,14 +59,14 @@ public record BotCreateState(String realName, String name, String skinName, Stri
         private BotCreateEvent.CreateReason createReason;
         private CommandSender creator;
 
-        private Builder(@NotNull String realName, @Nullable Location location) {
-            Objects.requireNonNull(realName);
+        private Builder(@NotNull String rawName, @Nullable Location location) {
+            Objects.requireNonNull(rawName);
 
-            this.realName = realName;
+            this.rawName = rawName;
             this.location = location;
 
-            this.name = FakeplayerConfig.prefix + realName + FakeplayerConfig.suffix;
-            this.skinName = this.realName;
+            this.fullName = BotUtil.getFullName(rawName);
+            this.skinName = this.rawName;
             this.skin = null;
             this.createReason = BotCreateEvent.CreateReason.UNKNOWN;
             this.creator = null;
@@ -75,7 +74,7 @@ public record BotCreateState(String realName, String name, String skinName, Stri
 
         public Builder name(@NotNull String name) {
             Objects.requireNonNull(name);
-            this.name = name;
+            this.fullName = name;
             return this;
         }
 
@@ -113,31 +112,24 @@ public record BotCreateState(String realName, String name, String skinName, Stri
         }
 
         public BotCreateState build() {
-            return new BotCreateState(realName, name, skinName, skin, location, createReason, creator);
+            return new BotCreateState(rawName, fullName, skinName, skin, location, createReason, creator);
         }
 
         public void spawnWithSkin(Consumer<Bot> consumer) {
-            Bukkit.getRegionScheduler().execute(
-                    MinecraftInternalPlugin.INSTANCE,
-                    location.getWorld(),
-                    location.getBlockX() >> 4,
-                    location.getBlockZ() >> 4,
-                    () -> {
-                        this.mojangAPISkin();
-                        Bukkit.getRegionScheduler().execute(
-                                MinecraftInternalPlugin.INSTANCE,
-                                location.getWorld(),
-                                location.getBlockX() >> 4,
-                                location.getBlockZ() >> 4,
-                                () -> {
-                                    CraftBot bot = this.spawn();
-                                    if (bot != null && consumer != null) {
-                                        consumer.accept(bot);
-                                    }
-                                }
-                        );
-                    }
-            );
+            Bukkit.getAsyncScheduler().runNow(MinecraftInternalPlugin.INSTANCE, (task0) -> {
+                this.mojangAPISkin();
+                Bukkit.getRegionScheduler().execute(
+                        MinecraftInternalPlugin.INSTANCE,
+                        location.getWorld(),
+                        location.getBlockX() >> 4,
+                        location.getBlockZ() >> 4,
+                        () -> {
+                            CraftBot bot = this.spawn();
+                            if (bot != null && consumer != null) {
+                                consumer.accept(bot);
+                            }
+                        });
+            });
         }
 
         @Nullable

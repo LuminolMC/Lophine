@@ -84,10 +84,10 @@ index af71e0e1eb1c93745f3e4954ecc8fbd2ad4808a3..f3829564681faff3ae8971ed90b947b4
                              players.add(serverPlayer1);
                              if (players.size() >= resultLimit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 324f9d259c6e0fd814ffe11b62d07fb4d2197da3..9d334ed3307f3c4c82bb5300219a465408bf341a 100644
+index 744b780075bf76fa0fa5e27699a146701289e0d8..c8f2f98ebc145063505b73ef7c723f2878d34ea3 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1894,7 +1894,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1895,7 +1895,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      private ServerStatus.Players buildPlayerStatus() {
@@ -96,7 +96,7 @@ index 324f9d259c6e0fd814ffe11b62d07fb4d2197da3..9d334ed3307f3c4c82bb5300219a4654
          int maxPlayers = this.getMaxPlayers();
          if (this.hidesOnlinePlayers()) {
              return new ServerStatus.Players(maxPlayers, players.size(), List.of());
-@@ -2103,7 +2103,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2104,7 +2104,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @Override
      public int getPlayerCount() {
@@ -105,7 +105,7 @@ index 324f9d259c6e0fd814ffe11b62d07fb4d2197da3..9d334ed3307f3c4c82bb5300219a4654
      }
  
      public String[] getPlayerNames() {
-@@ -2307,7 +2307,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2308,7 +2308,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          } else {
              int i = 0;
  
@@ -114,7 +114,7 @@ index 324f9d259c6e0fd814ffe11b62d07fb4d2197da3..9d334ed3307f3c4c82bb5300219a4654
                  serverPlayer.getBukkitEntity().taskScheduler.schedule((ServerPlayer player) -> { // Folia - region threading
                  // Paper start - Expand PlayerGameModeChangeEvent
                  org.bukkit.event.player.PlayerGameModeChangeEvent event = player.setGameMode(gameMode, org.bukkit.event.player.PlayerGameModeChangeEvent.Cause.DEFAULT_GAMEMODE, null); // Folia - region threading
-@@ -2492,7 +2492,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2493,7 +2493,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      if (Thread.currentThread() != this.serverThread) return; // Paper
                      // Paper start - we don't need to save everything, just advancements
                      // this.getPlayerList().saveAll();
@@ -123,7 +123,7 @@ index 324f9d259c6e0fd814ffe11b62d07fb4d2197da3..9d334ed3307f3c4c82bb5300219a4654
                          player.getAdvancements().save();
                      }
                      // Paper end - we don't need to save everything, just advancements
-@@ -2630,7 +2630,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2631,7 +2631,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              PlayerList playerList = this.getPlayerList();
              UserWhiteList whiteList = playerList.getWhiteList();
  
@@ -181,7 +181,7 @@ index e7c778a7f292fd0749cbd5e6586ad1b93ac7f29e..024b56405bb58801b17a6adad7fec7a4
              org.bukkit.entity.Player sender = (org.bukkit.entity.Player) source.getBukkitSender();
              playersTemp = playersTemp.stream().filter((ep) -> sender.canSee(ep.getBukkitEntity())).collect(java.util.stream.Collectors.toList());
 diff --git a/net/minecraft/server/commands/OpCommand.java b/net/minecraft/server/commands/OpCommand.java
-index 3798c1ea92ead20b3b7e67d88d2405f29e324d2c..922383a284c8fb3c183d8a15dc41d813451adfb3 100644
+index 590891d70a71ab30ceae3a3cf1923745e7c20b26..0ede1e5c73a0071e854de70f81ae1fc6a1d6dc59 100644
 --- a/net/minecraft/server/commands/OpCommand.java
 +++ b/net/minecraft/server/commands/OpCommand.java
 @@ -25,7 +25,7 @@ public class OpCommand {
@@ -306,7 +306,7 @@ index c09af6b81987df8e681689ecce9932a2e39af1a3..b3c593474e889d254f59813e7f42299b
                  }
                  // Leaves end - skip
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f79735abf21b6eecc02e5b5f1ce3140dfef3ede9..04a600d96f4ae7c08d06dc4fb8f71b3f0eb1be07 100644
+index 4ca7cf022f4e213bcd5a310dfd8b2db293c441b8..8ea3c580b506e214664135a2c10722b56ab8e439 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -202,7 +202,7 @@ import org.jspecify.annotations.Nullable;
@@ -318,7 +318,7 @@ index f79735abf21b6eecc02e5b5f1ce3140dfef3ede9..04a600d96f4ae7c08d06dc4fb8f71b3f
      public static final long LAST_SAVE_ABSENT = Long.MIN_VALUE; public long lastSave = LAST_SAVE_ABSENT; // Paper // Folia - threaded regions - changed to nanoTime
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_XZ = 32;
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_Y = 10;
-@@ -673,7 +673,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -669,7 +669,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          // Paper start - Expand PlayerGameModeChangeEvent
          this.loadGameTypes(input);
      }
@@ -328,7 +328,7 @@ index f79735abf21b6eecc02e5b5f1ce3140dfef3ede9..04a600d96f4ae7c08d06dc4fb8f71b3f
              if (new org.bukkit.event.player.PlayerGameModeChangeEvent(this.getBukkitEntity(), org.bukkit.GameMode.getByValue(this.server.getDefaultGameType().getId()), org.bukkit.event.player.PlayerGameModeChangeEvent.Cause.DEFAULT_GAMEMODE, null).callEvent()) {
                  this.gameMode.setGameModeForPlayer(this.server.getForcedGameType(), GameType.DEFAULT_MODE);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 98f2ced8e6afdf0074ade94e0bbf5498bd6c505f..4dcb90709200b33fc9155f6dea4281ed32427889 100644
+index 36cd1a0307ff1a734eb5f4f3cc013781692e7ad8..e38f5ae03f184696a3d68542c0bde3b1091dfd2e 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -130,6 +130,7 @@ public abstract class PlayerList {
@@ -405,7 +405,7 @@ index 98f2ced8e6afdf0074ade94e0bbf5498bd6c505f..4dcb90709200b33fc9155f6dea4281ed
 +        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +            org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
 +            if (bot != null) {
-+                this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false);
++                this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
 +            }
 +            this.server.getBotList().bots.forEach(bot1 -> {
 +                bot1.sendPlayerInfo(player);
@@ -532,7 +532,7 @@ index 98f2ced8e6afdf0074ade94e0bbf5498bd6c505f..4dcb90709200b33fc9155f6dea4281ed
          this.playersByName.remove(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT)); // Spigot
          this.server.getCustomBossEvents().onPlayerDisconnect(player);
          UUID uuid = player.getUUID();
-@@ -911,15 +1070,15 @@ public abstract class PlayerList {
+@@ -910,15 +1069,15 @@ public abstract class PlayerList {
      }
  
      public String[] getPlayerNamesArray() {
@@ -553,7 +553,7 @@ index 98f2ced8e6afdf0074ade94e0bbf5498bd6c505f..4dcb90709200b33fc9155f6dea4281ed
          // Leaves end - fakeplayer support
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index f80f5533c1c3c64ee1b8b2c43e2bc2dea8ab567f..aa9cbb5f02b87789fd94521792aefac5c840c95a 100644
+index c89a2de1e1959c1275d39003c1b6b49f165df60f..99915b37331da819fd72c34b25773ab3e63f1775 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -262,7 +262,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.command.bot;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import net.minecraft.commands.CommandSourceStack;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.command.RootNode;
@@ -52,7 +52,7 @@ public class BotCommand extends RootNode {
         return sender.hasPermission(PERM_BASE);
     }
 
-    public static boolean hasPermission(@NotNull CommandSender sender, String... subcommand) {
-        return hasPermission(PERM_BASE, sender, subcommand);
+    public static boolean hasPermission(@NotNull CommandSender sender, String subcommand) {
+        return sender.hasPermission(PERM_BASE) || sender.hasPermission(PERM_BASE + "." + subcommand);
     }
 }

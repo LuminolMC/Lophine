@@ -9,6 +9,7 @@ import fun.bm.lophine.command.counter.CounterSubCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.command.ArgumentNode;
@@ -27,7 +28,7 @@ public class ResetCommand extends CounterSubCommand {
 
     @Override
     protected boolean execute(@NotNull CommandContext context) throws CommandSyntaxException {
-        HopperCounter.resetAll(context.getSource().getLevel(), false);
+        HopperCounter.resetAll(MinecraftServer.getServer(), false);
         context.getSender().sendMessage(Component.text("Restarted all counters."));
         return true;
     }
@@ -41,14 +42,14 @@ public class ResetCommand extends CounterSubCommand {
         protected boolean execute(@NotNull CommandContext context) {
             String color0 = context.getArgument(DyeColorArg.class);
             if (color0.equals("all")) {
-                HopperCounter.resetAll(context.getSource().getLevel(), false);
+                HopperCounter.resetAll(MinecraftServer.getServer(), false);
                 context.getSender().sendMessage(Component.text("Restarted all counters."));
                 return true;
             }
             DyeColor color = DyeColor.byName(color0, null);
             if (color == null) return true;
             HopperCounter counter = HopperCounter.getCounter(color);
-            counter.reset(context.getSource().getLevel());
+            counter.reset(MinecraftServer.getServer());
             context.getSender().sendMessage(Component.join(JoinConfiguration.noSeparators(),
                     Component.text("Restarted "),
                     Component.text(color.getName(), TextColor.color(color.getTextColor())),

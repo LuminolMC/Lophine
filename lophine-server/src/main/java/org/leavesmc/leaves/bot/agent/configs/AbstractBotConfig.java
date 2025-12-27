@@ -21,29 +21,27 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
+import org.leavesmc.leaves.bot.agent.ExtraData;
 import org.leavesmc.leaves.command.CommandContext;
 import org.leavesmc.leaves.command.WrappedArgument;
 
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.event.HoverEvent.showText;
-import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
-
-public abstract class AbstractBotConfig<Value, Type, E extends AbstractBotConfig<Value, Type, E>> {
+public abstract class AbstractBotConfig<T, E extends AbstractBotConfig<T, E>> {
     private final String name;
-    private final WrappedArgument<Type> argument;
+    private final WrappedArgument<T> argument;
     private final Supplier<E> creator;
 
     protected ServerBot bot;
 
-    public AbstractBotConfig(String name, ArgumentType<Type> type, Supplier<E> creator) {
+    public AbstractBotConfig(String name, ArgumentType<T> type, Supplier<E> creator) {
         this.name = name;
         this.argument = new WrappedArgument<>(name, type);
         if (shouldApplySuggestions()) {
@@ -56,7 +54,7 @@ public abstract class AbstractBotConfig<Value, Type, E extends AbstractBotConfig
     public void applySuggestions(final CommandContext context, final SuggestionsBuilder builder) throws CommandSyntaxException {
     }
 
-    public AbstractBotConfig<Value, Type, E> setBot(ServerBot bot) {
+    public AbstractBotConfig<T, E> setBot(ServerBot bot) {
         this.bot = bot;
         return this;
     }
@@ -65,34 +63,32 @@ public abstract class AbstractBotConfig<Value, Type, E extends AbstractBotConfig
         return creator.get();
     }
 
-    public abstract Value getValue();
+    public abstract T getValue();
 
-    public abstract void setValue(Value value) throws CommandSyntaxException;
+    public abstract void setValue(T value) throws CommandSyntaxException;
 
-    public abstract Value loadFromCommand(@NotNull CommandContext context) throws CommandSyntaxException;
-
-    public List<Pair<String, String>> getExtraData() {
-        return List.of();
-    }
+    public abstract T loadFromCommand(@NotNull CommandContext context) throws CommandSyntaxException;
 
     public String getName() {
         return name;
     }
 
     public Component getNameComponent() {
-        Component result = text(getName(), AQUA);
-        if (!getExtraData().isEmpty()) {
-            result = result.hoverEvent(showText(
-                    getExtraData().stream()
-                            .map(pair -> text(pair.getKey() + "=" + pair.getValue()))
-                            .reduce((a, b) -> a.append(text(", ")).append(b))
-                            .orElseGet(() -> text(""))
-            ));
-        }
-        return result;
+        return Component.text(getName(), NamedTextColor.AQUA).hoverEvent(HoverEvent.showText(Component.text(getExtraDataString())));
     }
 
-    public WrappedArgument<Type> getArgument() {
+    public String getExtraDataString() {
+        return getExtraDataString(new ExtraData(new ArrayList<>()));
+    }
+
+    public String getExtraDataString(@NotNull ExtraData data) {
+        return data.raw().stream()
+                .map(pair -> pair.getLeft() + "=" + pair.getRight())
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("No data");
+    }
+
+    public WrappedArgument<T> getArgument() {
         return argument;
     }
 

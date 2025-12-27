@@ -5,14 +5,14 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 93bc76af4d0abbe1c526434991e74c4465764ac6..1a43bdcb4c37df4ad1c4dfe6ebb84470832e910f 100644
+index 93bc76af4d0abbe1c526434991e74c4465764ac6..7b8dc8db175d905790462bbf6d0802ca416d7b36 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -240,6 +240,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      private int lastSentFood = -99999999;
      private boolean lastFoodSaturationZero = true;
      public int lastSentExp = -99999999;
-+    private int spawnInvulnerableTime = 60; // Lophine - spawn invulnerable time
++    protected int spawnInvulnerableTime = 60; // Lophine - spawn invulnerable time
      private ChatVisiblity chatVisibility = ChatVisiblity.FULL;
      public ParticleStatus particleStatus = ParticleStatus.ALL;
      private boolean canChatColor = true;
