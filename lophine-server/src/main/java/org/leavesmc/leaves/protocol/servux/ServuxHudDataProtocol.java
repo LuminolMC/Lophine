@@ -53,7 +53,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 2;
 
-    private static final List<ServerPlayer> players = Collections.synchronizedList(new ArrayList<>());
+    private static final List<ServerPlayer> players = new ArrayList<>();
     private static final int updateInterval = 80;
 
     private static final Map<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
@@ -117,7 +117,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         sendPacket(player, new HudDataPayload(HudDataPayloadType.PACKET_S2C_METADATA, metadata));
     }
 
-    public static void refreshSpawnMetadata(ServerPlayer player) {
+    public static void refreshSpawnMetadata(ServerPlayer player) { // TODO: 1.21.9 removed spawn chunk, should we keep this?
         CompoundTag metadata = new CompoundTag();
         metadata.putString("id", HudDataPayload.CHANNEL.toString());
         metadata.putString("servux", ServuxProtocol.SERVUX_STRING);
@@ -180,7 +180,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     private static void putWorldData(@NotNull CompoundTag metadata) {
         ServerLevel level = MinecraftServer.getServer().overworld();
-        BlockPos spawnPos = level.serverLevelData.getRespawnData().pos();
+        BlockPos spawnPos = level.levelData.getRespawnData().pos();
         metadata.putInt("spawnPosX", spawnPos.getX());
         metadata.putInt("spawnPosY", spawnPos.getY());
         metadata.putInt("spawnPosZ", spawnPos.getZ());

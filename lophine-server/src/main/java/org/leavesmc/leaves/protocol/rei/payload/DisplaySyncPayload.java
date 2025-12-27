@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.protocol.rei.payload;
 
-import com.mojang.logging.LogUtils;
+import fun.bm.lophine.LophineLogger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -28,7 +28,6 @@ import net.minecraft.util.ByIdMap;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.core.LeavesCustomPayload;
 import org.leavesmc.leaves.protocol.rei.display.Display;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,8 +42,6 @@ public record DisplaySyncPayload(
         long version
 ) implements LeavesCustomPayload {
 
-    private static final Logger LOGGER = LogUtils.getLogger();
-
     public static final StreamCodec<? super RegistryFriendlyByteBuf, DisplaySyncPayload> STREAM_CODEC = StreamCodec.composite(
             SyncType.STREAM_CODEC,
             DisplaySyncPayload::syncType,
@@ -57,7 +54,7 @@ public record DisplaySyncPayload(
                             } catch (Exception e) {
                                 tmpBuf.release();
                                 buf.writeBoolean(false);
-                                LOGGER.warn("Failed to encode display: " + display, e);
+                                LophineLogger.LOGGER.warn("Failed to encode display: {}", display, e);
                                 return;
                             }
                             buf.writeBoolean(true);

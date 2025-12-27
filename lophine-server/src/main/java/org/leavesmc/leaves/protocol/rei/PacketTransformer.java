@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.protocol.rei;
 
-import com.mojang.logging.LogUtils;
+import fun.bm.lophine.LophineLogger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -26,15 +26,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.DiscardedPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import org.slf4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiConsumer;
 
 public class PacketTransformer {
-
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     private static final byte START = 0x0;
     private static final byte PART = 0x1;
@@ -58,17 +55,17 @@ public class PacketTransformer {
                 int partsNum = buf.readInt();
                 data = new PartData(id, partsNum);
                 if (cache.put(key, data) != null) {
-                    LOGGER.warn("Received invalid START packet for SplitPacketTransformer with packet id " + id);
+                    LophineLogger.LOGGER.warn("Received invalid START packet for SplitPacketTransformer with packet id {}", id);
                 }
                 buf.retain();
                 data.parts.add(buf);
             }
             case PART -> {
                 if ((data = cache.get(key)) == null) {
-                    LOGGER.warn("Received invalid PART packet for SplitPacketTransformer with packet id " + id);
+                    LophineLogger.LOGGER.warn("Received invalid PART packet for SplitPacketTransformer with packet id {}", id);
                     buf.release();
                 } else if (!data.id.equals(id)) {
-                    LOGGER.warn("Received invalid PART packet for SplitPacketTransformer with packet id " + id + ", id in cache is {}" + data.id);
+                    LophineLogger.LOGGER.warn("Received invalid PART packet for SplitPacketTransformer with packet id {}, id in cache is {}", id, data.id);
                     buf.release();
                     for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
@@ -83,10 +80,10 @@ public class PacketTransformer {
             }
             case END -> {
                 if ((data = cache.get(key)) == null) {
-                    LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id {}" + id);
+                    LophineLogger.LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id {}", id);
                     buf.release();
                 } else if (!data.id.equals(id)) {
-                    LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + ", id in cache is {}" + data.id);
+                    LophineLogger.LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id {}, id in cache is {}", id, data.id);
                     buf.release();
                     for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
@@ -102,7 +99,7 @@ public class PacketTransformer {
                     return;
                 }
                 if (data.parts.size() != data.partsNum) {
-                    LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id " + id + " with size " + data.parts + ", parts expected is {}" + data.partsNum);
+                    LophineLogger.LOGGER.warn("Received invalid END packet for SplitPacketTransformer with packet id {} with size {}, parts expected is {}", id, data.parts, data.partsNum);
                     for (RegistryFriendlyByteBuf part : data.parts) {
                         if (part != buf) {
                             part.release();

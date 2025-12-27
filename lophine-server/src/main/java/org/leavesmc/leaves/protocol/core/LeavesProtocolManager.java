@@ -213,7 +213,12 @@ public class LeavesProtocolManager {
         if (codec == null) {
             return null;
         }
-        return codec.decode(ProtocolUtils.decorate(buf));
+        try {
+            return codec.decode(ProtocolUtils.decorate(buf));
+        } catch (Exception e) {
+            LOGGER.error("Failed to decode payload {}", location, e);
+            throw e;
+        }
     }
 
     public static void encode(FriendlyByteBuf buf, LeavesCustomPayload payload) {
@@ -222,8 +227,13 @@ public class LeavesProtocolManager {
         if (location == null || codec == null) {
             throw new IllegalArgumentException("Payload " + payload.getClass() + " is not configured correctly " + location + " " + codec);
         }
-        buf.writeIdentifier(location);
-        codec.encode(ProtocolUtils.decorate(buf), payload);
+        try {
+            buf.writeIdentifier(location);
+            codec.encode(ProtocolUtils.decorate(buf), payload);
+        } catch (Exception e) {
+            LOGGER.error("Failed to encode payload {}", location, e);
+            throw e;
+        }
     }
 
     public static void handlePayload(IdentifierSelector selector, LeavesCustomPayload payload) {
