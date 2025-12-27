@@ -23,10 +23,10 @@ index 1fb359073342a657e9e493403263b56be5b3393f..451a685782da46f5683ea6707289bbaf
          WorldBorderCommand.register(this.dispatcher);
          if (JvmProfiler.INSTANCE.isAvailable()) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60752c3614 100644
+index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..65a4956ba2f0e38da7ae4f8cd7ed6e4b02c015a9 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
-@@ -16,22 +16,32 @@ import net.minecraft.world.waypoints.WaypointManager;
+@@ -16,22 +16,31 @@ import net.minecraft.world.waypoints.WaypointManager;
  import net.minecraft.world.waypoints.WaypointTransmitter;
  
  public class ServerWaypointManager implements WaypointManager<WaypointTransmitter> {
@@ -56,9 +56,8 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60
 -            Map<ServerPlayer, WaypointTransmitter.Connection> map = Tables.transpose(this.connections).row(waypoint);
 -            SetView<ServerPlayer> set = Sets.difference(this.players, map.keySet());
 +            java.util.List<Entry<ServerPlayer, WaypointTransmitter.Connection>> map = this.connections.getXZ(waypoint); // Lophine - concurrent
-+            if (map.isEmpty()) return; // Lophine - concurrent
 +            Set<ServerPlayer> players1 = new HashSet<>(); // Lophine - concurrent
-+            map.forEach((entry) -> players1.add(entry.getKey())); // Lophine - concurrent
++            if (!map.isEmpty()) map.forEach((entry) -> players1.add(entry.getKey())); // Lophine - concurrent
 +            SetView<ServerPlayer> set = Sets.difference(this.players, players1); // Lophine - concurrent
  
 -            for (Entry<ServerPlayer, WaypointTransmitter.Connection> entry : ImmutableSet.copyOf(map.entrySet())) {
@@ -66,16 +65,16 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60
                  this.updateConnection(entry.getKey(), waypoint, entry.getValue());
              }
  
-@@ -43,26 +53,67 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+@@ -43,26 +52,65 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
  
      @Override
      public void untrackWaypoint(WaypointTransmitter waypoint) {
 -        this.connections.column(waypoint).forEach((serverPlayer, connection) -> connection.disconnect());
 -        Tables.transpose(this.connections).row(waypoint).clear();
-+        java.util.List<Entry<ServerPlayer, WaypointTransmitter.Connection>> map = this.connections.getXZ(waypoint); // Lophine - concurrent
-+        if (map.isEmpty()) return; // Lophine - concurrent
-+        this.connections.getXZ(waypoint).forEach((entry) -> entry.getKey().disconnect()); // Lophine - concurrent
-+        this.connections.clearXZ(waypoint); // Lophine - concurrent
++        this.connections.getXZ(waypoint).forEach((entry) -> {
++            entry.getValue().disconnect();
++            this.connections.remove(entry.getKey(), waypoint, entry.getValue());
++        }); // Lophine - concurrent
          this.waypoints.remove(waypoint);
      }
  
@@ -100,9 +99,8 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60
 +        // Lophine start - unsafe waypoint bar
 +        if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
 +        java.util.List<Entry<WaypointTransmitter, WaypointTransmitter.Connection>> map = this.connections.getYZ(player); // Lophine - concurrent
-+        if (map.isEmpty()) return; // Lophine - concurrent
 +        Set<WaypointTransmitter> waypoints1 = new HashSet<>();// Lophine - concurrent
-+        map.forEach((entry) -> waypoints1.add(entry.getKey()));// Lophine - concurrent
++        if (!map.isEmpty()) map.forEach((entry) -> waypoints1.add(entry.getKey()));// Lophine - concurrent
 +        SetView<WaypointTransmitter> set = Sets.difference(this.waypoints, waypoints1); // Lophine - concurrent
 +
 +        for (Entry<WaypointTransmitter, WaypointTransmitter.Connection> entry : map) { // Lophine - concurrent
@@ -119,10 +117,10 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60
          // Folia - region threading
 +        // Lophine start - unsafe waypoint bar
 +        if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
-+        java.util.List<Entry<WaypointTransmitter, WaypointTransmitter.Connection>> map = this.connections.getYZ(player); // Lophine - concurrent
-+        if (map.isEmpty()) return; // Lophine - concurrent
-+        map.forEach((entry) -> entry.getValue().disconnect()); // Lophine - concurrent
-+        this.connections.clearYZ(player); // Lophine - concurrent
++        this.connections.getYZ(player).forEach((entry) -> {
++            entry.getValue().disconnect();
++            this.connections.remove(player, entry.getKey(), entry.getValue());
++        }); // Lophine - concurrent
 +        this.untrackWaypoint((WaypointTransmitter)player);
 +        this.players.remove(player);
 +        // Lophine end - unsafe waypoint bar
@@ -132,13 +130,12 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60
 -        this.connections.values().forEach(WaypointTransmitter.Connection::disconnect);
 -        this.connections.clear();
 +        java.util.List<WaypointTransmitter.Connection> map = this.connections.getAllZ(); // Lophine - concurrent
-+        if (map.isEmpty()) return; // Lophine - concurrent
-+        map.forEach(WaypointTransmitter.Connection::disconnect); // Lophine - concurrent
++        if (!map.isEmpty()) map.forEach(WaypointTransmitter.Connection::disconnect); // Lophine - concurrent
 +        this.connections.clearAll(); // Lophine - concurrent
      }
  
      public void remakeConnections(WaypointTransmitter waypoint) {
-@@ -83,13 +134,19 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+@@ -83,13 +131,19 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
          if (player != waypoint) {
              if (isLocatorBarEnabledFor(player)) {
                  waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection -> {
@@ -163,7 +160,7 @@ index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..f34b6a858095c4257947ca30a5851e60
                  });
              }
          }
-@@ -103,10 +160,12 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+@@ -103,10 +157,12 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
                  } else {
                      waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection1 -> {
                          connection1.connect();

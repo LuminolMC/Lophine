@@ -511,7 +511,7 @@ index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d
  
      public boolean canBypassPlayerLimit(GameProfile profile) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index f34b6a858095c4257947ca30a5851e60752c3614..d08fe74e00926ee1433e890715f13ff6855b1d2d 100644
+index 65a4956ba2f0e38da7ae4f8cd7ed6e4b02c015a9..044ded5ec81905e38efe8812ff6d50259d761385 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
 @@ -24,6 +24,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
@@ -526,7 +526,7 @@ index f34b6a858095c4257947ca30a5851e60752c3614..d08fe74e00926ee1433e890715f13ff6
          this.waypoints.add(waypoint);
  
          for (ServerPlayer serverPlayer : this.players) {
-@@ -64,6 +69,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+@@ -63,6 +68,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
          // Folia - region threading
          // Lophine start - unsafe waypoint bar
          if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
