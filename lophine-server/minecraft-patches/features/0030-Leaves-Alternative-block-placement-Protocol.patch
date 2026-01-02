@@ -13,10 +13,10 @@ MasaGadget(https://github.com/plusls/MasaGadget)
 litematica(https://github.com/maruohon/litematica)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 98d641b2e8ca340cb10fe0448f8a8b4f8446f616..878f5c5801b68e3a6d01d63caf44737841387600 100644
+index 5811504f350d18a55850af9d2ebcc2b31bac0d43..672d0ca6b9b167b12ac614e06b161a88f54bb926 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2128,7 +2128,7 @@ public class ServerGamePacketListenerImpl
+@@ -2133,7 +2133,7 @@ public class ServerGamePacketListenerImpl
                  if (ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(this.player.level(), blockPos.getX() >> 4, blockPos.getZ() >> 4, 8) && this.player.isWithinBlockInteractionRange(blockPos, 1.0)) { // Folia - do not allow players to interact with blocks outside the current region
                      Vec3 vec3 = location.subtract(Vec3.atCenterOf(blockPos));
                      double d = 1.0000001;
@@ -60,7 +60,7 @@ index d75c95d728efc0b4064f562ca80b68b23883feaf..be685383b8e7c8111e976fc560f16d43
                      blockState = blockState1;
                      break;
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index 13f06f1fbdf77b88493333b481b951d729579f11..e0ab4f7372ed11c9d17b341c8a24a82350c714fa 100644
+index 492b1615d96133c5082e0f16015f114299f8082f..fb47a2acb0e4232359f5da061c1620a7b1d6c476 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
 @@ -489,6 +489,32 @@ public class Block extends BlockBehaviour implements ItemLike {

@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable cross region damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 338ad851814e0d15ac2c20c9f13895f52557e130..93bc76af4d0abbe1c526434991e74c4465764ac6 100644
+index 147cd8742196e52567625a1017f63d7a7e770e44..d17ad8bf49c4911e5939ad25c1822bb4bdd0d71c 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1447,6 +1447,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -48,10 +48,10 @@ index 338ad851814e0d15ac2c20c9f13895f52557e130..93bc76af4d0abbe1c526434991e74c44
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 372fb8a7f06e87c5694b972e3b726e52903ef1e3..ad497cc5a01662e86d6c3d0a7d51b86cfc764f53 100644
+index 80994688d3dd23dbc9de3ccfe739ca4acc66c2a0..b9f52fb032f1465a749f40b656a1d125caf8194f 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1960,6 +1960,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1972,6 +1972,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
              final LivingEntity killer = this.getKillCredit();
              if (killer != null) {
                  killer.awardKillScore(this, damageSource);
@@ -65,7 +65,7 @@ index 372fb8a7f06e87c5694b972e3b726e52903ef1e3..ad497cc5a01662e86d6c3d0a7d51b86c
              }
          }); // Paper end
          this.postDeathDropItems(deathEvent); // Paper
-@@ -1970,6 +1977,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1982,6 +1989,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          return deathEvent; // Paper
      }
  
@@ -84,7 +84,7 @@ index 372fb8a7f06e87c5694b972e3b726e52903ef1e3..ad497cc5a01662e86d6c3d0a7d51b86c
      protected void dropEquipment(ServerLevel level) {
      }
      protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {} // Paper - method for post death logic that cannot be ran before the event is potentially cancelled
-@@ -2597,6 +2616,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -2609,6 +2628,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  

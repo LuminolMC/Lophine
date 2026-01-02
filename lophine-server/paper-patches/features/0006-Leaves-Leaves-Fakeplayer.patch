@@ -96,10 +96,10 @@ index 73e470e0c318568c2f2e82de4f8e170857a20c9a..401f977483b6e809b9b10c601900e351
      /**
       * Gets the TPS from the region which owns the specified location, or {@code null} if no region owns
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index 99ac14e749e6b0f64088df48a984520be724adab..d959e1ac33c62f9ab16c359a2e4601150196cf88 100644
+index e653246b2f991dd5b0c4d755e0844763686275fc..3274a80dd49774ae65d0009c00078379eea15967 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -249,7 +249,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -250,7 +250,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
  
      @Override
      public int getPlayerCount() {
@@ -108,7 +108,7 @@ index 99ac14e749e6b0f64088df48a984520be724adab..d959e1ac33c62f9ab16c359a2e460115
      }
  
      @Override
-@@ -1124,9 +1124,9 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1134,9 +1134,9 @@ public class CraftWorld extends CraftRegionAccessor implements World {
  
      @Override
      public List<Player> getPlayers() {
@@ -120,7 +120,7 @@ index 99ac14e749e6b0f64088df48a984520be724adab..d959e1ac33c62f9ab16c359a2e460115
              HumanEntity bukkitEntity = human.getBukkitEntity();
  
              if ((bukkitEntity != null) && (bukkitEntity instanceof Player)) {
-@@ -1628,7 +1628,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1638,7 +1638,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
      public void playSound(final net.kyori.adventure.sound.Sound sound) {
          org.spigotmc.AsyncCatcher.catchOp("play sound"); // Paper
          final long seed = sound.seed().orElseGet(this.world.getRandom()::nextLong);
@@ -129,7 +129,7 @@ index 99ac14e749e6b0f64088df48a984520be724adab..d959e1ac33c62f9ab16c359a2e460115
              player.connection.send(io.papermc.paper.adventure.PaperAdventure.asSoundPacket(sound, player.getX(), player.getY(), player.getZ(), seed, null));
          }
      }
-@@ -1656,7 +1656,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1666,7 +1666,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
          org.spigotmc.AsyncCatcher.catchOp("play sound"); // Paper
          final long seed = sound.seed().orElseGet(this.getHandle().getRandom()::nextLong);
          if (emitter == net.kyori.adventure.sound.Sound.Emitter.self()) {
@@ -138,7 +138,7 @@ index 99ac14e749e6b0f64088df48a984520be724adab..d959e1ac33c62f9ab16c359a2e460115
                  player.connection.send(io.papermc.paper.adventure.PaperAdventure.asSoundPacket(sound, player, seed, null));
              }
          } else if (emitter instanceof CraftEntity craftEntity) {
-@@ -1797,7 +1797,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1807,7 +1807,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
              Preconditions.checkArgument(particle.getDataType().isInstance(data), "data (%s) should be %s", data.getClass(), particle.getDataType());
          }
          this.getHandle().sendParticlesSource(
@@ -161,7 +161,7 @@ index e6cd1c4a50b32b74f70a264e869b1ab4ac9b9eb0..6867064de52d810f1fd3869463ae2786
          if (entity instanceof EnderDragonPart complexPart) {
              if (complexPart.parentMob instanceof EnderDragon) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 3d465c857b3560a2cd57825c9cbd0a3c9029e6d3..a41b5eeb1e82725948c448c7c3c4f5b2d1e06af6 100644
+index 0429ffda4aa4410f6f53bd163be8dee71b134637..9274f4ef639ed9b3028321566173d6612663082b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -1014,7 +1014,11 @@ public class CraftEventFactory {

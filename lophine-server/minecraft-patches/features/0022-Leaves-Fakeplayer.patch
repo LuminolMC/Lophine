@@ -20,7 +20,7 @@ index 368a9d33f93c2e85abe4cf10df5a85c09fb03dd6..2b78040daeb3b09c08494cbc1d4a9d36
          Set<CriterionTrigger.Listener<T>> set = (Set) advancements.criterionData.get(this); // Paper - fix PlayerAdvancements leak
          if (set != null && !set.isEmpty()) {
 diff --git a/net/minecraft/network/Connection.java b/net/minecraft/network/Connection.java
-index d5e604bf18a223aa434bc9f78274e1f3ff7f203d..715976a49ca621ba40d9353b18d41d342315afd4 100644
+index 9f444988d40208a1bfa9f147ef80489f81115e93..ab2fa0b86564622501238305714fff014e2b2a56 100644
 --- a/net/minecraft/network/Connection.java
 +++ b/net/minecraft/network/Connection.java
 @@ -74,7 +74,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
@@ -33,7 +33,7 @@ index d5e604bf18a223aa434bc9f78274e1f3ff7f203d..715976a49ca621ba40d9353b18d41d34
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index f04352738e4f703d28f3c06ff884aee7d980542c..744b780075bf76fa0fa5e27699a146701289e0d8 100644
+index 951953427b5b18cfc187b0ab04e1f3bbfd0ea6c4..eaf770a1b78e002c0559c0bfdad416e1bf1dda9d 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -255,7 +255,7 @@ index fdccb06c918d387e46c29ede7337159db8c5d9ca..4cd5c5659ac098c3b7ff95efb94b1987
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 90e363a310936830788aee6484a63a989aa316e7..c09af6b81987df8e681689ecce9932a2e39af1a3 100644
+index 7c9a242014acb240589845b36f04fbcc1a6f810c..bd0194ecfaec9d6dd309587d82113ed025c20edf 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -220,6 +220,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -312,7 +312,7 @@ index 90e363a310936830788aee6484a63a989aa316e7..c09af6b81987df8e681689ecce9932a2
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 7b8dc8db175d905790462bbf6d0802ca416d7b36..b644a786d6b4596109efa6e951d46e5d0b808f00 100644
+index 8b1fd4a3ff2aa75230e045fed6653382fa8c8c4b..37b69d32357124e3ba1256beb428eb6581fec956 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -227,7 +227,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -534,7 +534,7 @@ index bd1d4a832eec4c89a7f8bdd5d066b6074f206d81..d7224c2297eb5d580349da3b2770895f
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 979edd3f4cf17d61cec9edf3ff02192cea354a0d..6a20033fbe8c6a9a4eaf3f819fffae04fee6aaeb 100644
+index 89fbe7121e775af4115a90a114494ac6cb7b2727..80c126507030cee85a648903b1c57cd26f77108c 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1252,7 +1252,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
@@ -556,10 +556,10 @@ index 979edd3f4cf17d61cec9edf3ff02192cea354a0d..6a20033fbe8c6a9a4eaf3f819fffae04
          final boolean yZero = movement.y == 0.0;
          final boolean zZero = movement.z == 0.0;
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 67faf1ed52806ee2c1e2ea080b39959ad9ae986d..c89a2de1e1959c1275d39003c1b6b49f165df60f 100644
+index 93201c8d74a77ea47c6f53503939714fb5e94b88..347af65f4f4388b69022a69328491c7022855b16 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -3304,7 +3304,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3316,7 +3316,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      private void travelRidden(Player player, Vec3 travelVector) {
          Vec3 riddenInput = this.getRiddenInput(player, travelVector);
          this.tickRidden(player, riddenInput);
@@ -568,7 +568,7 @@ index 67faf1ed52806ee2c1e2ea080b39959ad9ae986d..c89a2de1e1959c1275d39003c1b6b49f
              this.setSpeed(this.getRiddenSpeed(player));
              this.travel(riddenInput);
          } else {
-@@ -4213,7 +4213,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4225,7 +4225,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          // Paper start - lag compensate eating
          // we add 1 to the expected time to avoid lag compensating when we should not
          final boolean shouldLagCompensate = this.useItem.has(DataComponents.FOOD) && this.eatStartTime != -1 && (System.nanoTime() - this.eatStartTime) > ((1L + this.totalEatTimeTicks) * 50L * (1000L * 1000L));
@@ -577,7 +577,7 @@ index 67faf1ed52806ee2c1e2ea080b39959ad9ae986d..c89a2de1e1959c1275d39003c1b6b49f
              this.useItemRemaining = 0;
              // Paper end - lag compensate eating
              this.completeUsingItem();
-@@ -4397,6 +4397,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4410,6 +4410,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          this.stopUsingItem();
      }
  
@@ -602,7 +602,7 @@ index 67faf1ed52806ee2c1e2ea080b39959ad9ae986d..c89a2de1e1959c1275d39003c1b6b49f
          if (!this.level().isClientSide()) {
              boolean isUsingItem = this.isUsingItem();
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 1e3ac806c3f111ee0a4f8ef47134941ec85fbe6e..52c41d1e526dc0d42dde3773ab20ee7252737e5d 100644
+index 6bbec212142ed1ddb312c403c6c7fc258310b192..2f56cefeeea574f19bc5deaca749d67b0f2a3548 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -168,7 +168,7 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -689,7 +689,7 @@ index fc1b3501114108d0166256c514a225337955e461..56bc87fefc82c77077bfed50accbde77
          return switch (this.getStatus()) {
              case IN_WATER, UNDER_WATER, UNDER_FLOWING_WATER -> SoundEvents.BOAT_PADDLE_WATER;
 diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
-index a67901ed3bcb67fb2cab05894bc386db2f0f90f8..3456712f837f91101cc1d38c953af1d7237603b9 100644
+index e7ea8849e8fa942709f505145e8076f064476206..4935234fba5977246aa303bf8162404813b5491e 100644
 --- a/net/minecraft/world/inventory/AbstractContainerMenu.java
 +++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
 @@ -404,6 +404,7 @@ public abstract class AbstractContainerMenu {
@@ -700,7 +700,7 @@ index a67901ed3bcb67fb2cab05894bc386db2f0f90f8..3456712f837f91101cc1d38c953af1d7
          if (clickType == ClickType.QUICK_CRAFT) {
              int i = this.quickcraftStatus;
              this.quickcraftStatus = getQuickcraftHeader(button);
-@@ -682,6 +683,22 @@ public abstract class AbstractContainerMenu {
+@@ -678,6 +679,22 @@ public abstract class AbstractContainerMenu {
          }
      }
  
@@ -724,7 +724,7 @@ index a67901ed3bcb67fb2cab05894bc386db2f0f90f8..3456712f837f91101cc1d38c953af1d7
          FeatureFlagSet featureFlagSet = player.level().enabledFeatures();
          return carriedItem.isItemEnabled(featureFlagSet) && carriedItem.overrideStackedOnOther(slot, action, player)
 diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
-index a688da5bc71799c13548d390ab58645da9128229..e63cca6f7f63a2b5f249ae01033167186e710fdb 100644
+index 73a97f4f62fe7d27b441cab58c6c86ffce011060..ea6285b7f53f391c84519aa7ae39164cf5740b81 100644
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
 @@ -456,7 +456,7 @@ public final class ItemStack implements DataComponentHolder, ChangePublisher<net
@@ -758,7 +758,7 @@ index a688da5bc71799c13548d390ab58645da9128229..e63cca6f7f63a2b5f249ae0103316718
          return this.getItem().useOnRelease(this);
      }
 diff --git a/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java b/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
-index adc8c8a7b8a02cf395e919eb51aefc47ff6ed9ab..225fedb32b100a0f24e001e442c0bae44acb0284 100644
+index 557ea70254a8d6dd87c656098c5632bdcbe3df8f..1d60054146f970ec24054d2c76a27e2d8620ec67 100644
 --- a/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
 +++ b/net/minecraft/world/level/block/piston/PistonMovingBlockEntity.java
 @@ -145,7 +145,7 @@ public class PistonMovingBlockEntity extends BlockEntity {

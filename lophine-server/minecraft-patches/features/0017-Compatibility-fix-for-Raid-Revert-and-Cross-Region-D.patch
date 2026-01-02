@@ -6,10 +6,10 @@ Subject: [PATCH] Compatibility fix for Raid Revert and Cross Region Damage
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index ad497cc5a01662e86d6c3d0a7d51b86cfc764f53..67faf1ed52806ee2c1e2ea080b39959ad9ae986d 100644
+index b9f52fb032f1465a749f40b656a1d125caf8194f..93201c8d74a77ea47c6f53503939714fb5e94b88 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1225,6 +1225,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1237,6 +1237,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  
@@ -40,7 +40,7 @@ index ad497cc5a01662e86d6c3d0a7d51b86cfc764f53..67faf1ed52806ee2c1e2ea080b39959a
          if (this.getType().is(EntityTypeTags.IMMUNE_TO_INFESTED)) {
              return !effectInstance.is(MobEffects.INFESTED);
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 18c4dffb5942b17dc1f2e9d9124c4f3ba3271360..2a2078ff7e353f5c94145ae700d58771a602a7ff 100644
+index 2b7894a4104d4cb237746a3e66d4368b6f8f3c1e..03e3290367790add702a5856aaff3be465ea548c 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -157,7 +157,7 @@ public abstract class Raider extends PatrollingMonster {

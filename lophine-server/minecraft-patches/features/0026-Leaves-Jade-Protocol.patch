@@ -9,7 +9,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index b644a786d6b4596109efa6e951d46e5d0b808f00..4ca7cf022f4e213bcd5a310dfd8b2db293c441b8 100644
+index 37b69d32357124e3ba1256beb428eb6581fec956..b88f669535f050605e3b5739501ef6d5caee4238 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1453,7 +1453,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -22,10 +22,10 @@ index b644a786d6b4596109efa6e951d46e5d0b808f00..4ca7cf022f4e213bcd5a310dfd8b2db2
          // Luminol End - Cross Region Damage trace
          }
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 12862190a59af38e3cf828e4ac9e66a64d2d2215..8f554cb8cb79fa669f3ee9254c87cde1de674fb3 100644
+index b44f0ac98d52616bc8405995180844a9af2210f9..5811504f350d18a55850af9d2ebcc2b31bac0d43 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3798,7 +3798,7 @@ public class ServerGamePacketListenerImpl
+@@ -3827,7 +3827,7 @@ public class ServerGamePacketListenerImpl
          } else if (this.clientLoadedTimeoutTimer == 1) markClientLoaded(); // Paper - Add PlayerLoadedWorldEvent - decrement by calling #markClientLoaded which will set the value to 0 *and* call the event.
      }
  

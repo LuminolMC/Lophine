@@ -79,10 +79,10 @@ index a8838e45dd7d44c25442c14d49b53583f9f2a2d2..effb56daac89b7cc3106ed4b394a6c58
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index dcec69554213bfb8608b77341819b09e31a96e09..5dce7416f42902de34bff6398cf402c610be600c 100644
+index 6f608ad5d1151925ad0f38596dfe15290d20d753..9c1a48dd4a8957200d8c05cf7e142c621132bb74 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -338,7 +338,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -344,7 +344,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
                      Bukkit.getLogger().log(Level.SEVERE, "Error saving advancement " + key, ex);
                  }
  
