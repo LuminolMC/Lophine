@@ -46,7 +46,7 @@ index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d73483
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index c8f2f98ebc145063505b73ef7c723f2878d34ea3..56160853050cd131718d16e21a0bb6c9780e2658 100644
+index 62069db658d188abdacf071f33e93e11f1467300..644e33e38140854d93529e348db572a075bd2800 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1974,8 +1974,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -68,7 +68,7 @@ index c8f2f98ebc145063505b73ef7c723f2878d34ea3..56160853050cd131718d16e21a0bb6c9
                  serverLevel.fillReportDetails(crashReport);
                  throw new ReportedException(crashReport);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index b3c593474e889d254f59813e7f42299b7b77d9ce..b878f5a8316dfee582180a6bbe7122a78581fae2 100644
+index 8998eadc6bbabed4d4c86cb515ad8013a5f01b23..ed4a12f57b1c51f79ba62b4f61d372e85290da94 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -878,7 +878,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -79,7 +79,7 @@ index b3c593474e889d254f59813e7f42299b7b77d9ce..b878f5a8316dfee582180a6bbe7122a7
 +                                    // Lophine start - update suppression crash fix
 +                                    if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
 +                                        try {
-+                                            this.tickNonPassenger(entity); // Lophine changed
++                                            this.guardEntityTick(this::tickNonPassenger, entity); // Lophine changed
 +                                            // Leaves start - update suppression crash fix - for dragon dupe
 +                                        } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +                                            exception.provideLevel(this);
@@ -94,7 +94,7 @@ index b3c593474e889d254f59813e7f42299b7b77d9ce..b878f5a8316dfee582180a6bbe7122a7
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 8ea3c580b506e214664135a2c10722b56ab8e439..2ead230fde7a8d75ebb0036f9087aeee3c204db4 100644
+index 5e08d8b9c7f1869965be0ee5761bbc40f1e70300..c74e9b421ac2afca5cd1f2cf93467eace2e94075 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1110,6 +1110,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -111,7 +111,7 @@ index 8ea3c580b506e214664135a2c10722b56ab8e439..2ead230fde7a8d75ebb0036f9087aeee
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 6a20033fbe8c6a9a4eaf3f819fffae04fee6aaeb..f6142276f15f6748027d8007e31f68f87270eb35 100644
+index 80c126507030cee85a648903b1c57cd26f77108c..7e2e287468604728805c4e3dd250447ddec4ddfa 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1434,9 +1434,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
@@ -181,7 +181,7 @@ index c020d1944a25e2cd247e30a97c35bf93731d694a..74967f20099ea58cea1f9fc0f2387d8c
      }
  
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index b2694cb60505766877398fa526b9bfe60e6b6404..7c354894f48a5540eb2554d8b1428306e8929066 100644
+index 77577d0df9b14a7ad55b2866c2ac31863226458b..5551d80a81c2878136f96b3e695c4888c7105a49 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -383,7 +383,7 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
