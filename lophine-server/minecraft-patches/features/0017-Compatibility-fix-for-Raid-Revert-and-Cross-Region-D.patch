@@ -6,10 +6,10 @@ Subject: [PATCH] Compatibility fix for Raid Revert and Cross Region Damage
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index b9f52fb032f1465a749f40b656a1d125caf8194f..93201c8d74a77ea47c6f53503939714fb5e94b88 100644
+index 88d532d11c29bd8cfe5b6b02847d960b07cf0a38..fa6ed83a69aafee57195f1b512481c401ade7b09 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1237,6 +1237,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1240,6 +1240,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  

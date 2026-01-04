@@ -84,7 +84,7 @@ index af71e0e1eb1c93745f3e4954ecc8fbd2ad4808a3..f3829564681faff3ae8971ed90b947b4
                              players.add(serverPlayer1);
                              if (players.size() >= resultLimit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 744b780075bf76fa0fa5e27699a146701289e0d8..c8f2f98ebc145063505b73ef7c723f2878d34ea3 100644
+index eaf770a1b78e002c0559c0bfdad416e1bf1dda9d..62069db658d188abdacf071f33e93e11f1467300 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1895,7 +1895,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -133,7 +133,7 @@ index 744b780075bf76fa0fa5e27699a146701289e0d8..c8f2f98ebc145063505b73ef7c723f28
                      serverPlayer.connection.disconnect(net.kyori.adventure.text.Component.text(org.spigotmc.SpigotConfig.whitelistMessage), org.bukkit.event.player.PlayerKickEvent.Cause.WHITELIST); // Paper - use configurable message & kick event cause
                  }
 diff --git a/net/minecraft/server/PlayerAdvancements.java b/net/minecraft/server/PlayerAdvancements.java
-index cd968c6971d054d9b66a0eaea4753a51ebb75b02..9525d77c379264289db4256e8275378d9cfa9f63 100644
+index 5bf7eb5b906cefa57a1dfcf828ff7872dbceac4f..85923708c32a0597e98e028eeec501f2ea07b63b 100644
 --- a/net/minecraft/server/PlayerAdvancements.java
 +++ b/net/minecraft/server/PlayerAdvancements.java
 @@ -167,7 +167,7 @@ public class PlayerAdvancements {
@@ -146,7 +146,7 @@ index cd968c6971d054d9b66a0eaea4753a51ebb75b02..9525d77c379264289db4256e8275378d
          }
          // Leaves end - bot can't get advancement
 diff --git a/net/minecraft/server/ServerScoreboard.java b/net/minecraft/server/ServerScoreboard.java
-index a938ae0f340aaece1fdbe3f6d517809563b1b0f5..e9f2c50c0e87b32627ad16910e1f4a816f4efc5f 100644
+index 04a62e5ab9c0d0b9b7959280b0e0ea3ff388c017..e4260ec1938a43d41e007ad67a2b5be96a00227c 100644
 --- a/net/minecraft/server/ServerScoreboard.java
 +++ b/net/minecraft/server/ServerScoreboard.java
 @@ -249,7 +249,7 @@ public class ServerScoreboard extends Scoreboard {
@@ -284,10 +284,10 @@ index 5a8cd3e6b448a4472092690cf589bca10b142126..158593b1a6384db635a1f224919b24c1
  
              this.setListData(list);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index c09af6b81987df8e681689ecce9932a2e39af1a3..b3c593474e889d254f59813e7f42299b7b77d9ce 100644
+index f41cab482168ca7b0764b371533658374dc4cc3a..15a6a96e49e55570836cca13c897c4be35662877 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -2951,7 +2951,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2960,7 +2960,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.add(serverPlayer);
                  // Leaves start - skip
@@ -296,7 +296,7 @@ index c09af6b81987df8e681689ecce9932a2e39af1a3..b3c593474e889d254f59813e7f42299b
                      ServerLevel.this.realPlayers.add(serverPlayer);
                  }
                  // Leaves end - skip
-@@ -3043,7 +3043,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -3052,7 +3052,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.remove(serverPlayer);
                  // Leaves start - skip
@@ -306,7 +306,7 @@ index c09af6b81987df8e681689ecce9932a2e39af1a3..b3c593474e889d254f59813e7f42299b
                  }
                  // Leaves end - skip
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 4ca7cf022f4e213bcd5a310dfd8b2db293c441b8..8ea3c580b506e214664135a2c10722b56ab8e439 100644
+index b88f669535f050605e3b5739501ef6d5caee4238..5e08d8b9c7f1869965be0ee5761bbc40f1e70300 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -202,7 +202,7 @@ import org.jspecify.annotations.Nullable;
@@ -553,7 +553,7 @@ index 36cd1a0307ff1a734eb5f4f3cc013781692e7ad8..e38f5ae03f184696a3d68542c0bde3b1
          // Leaves end - fakeplayer support
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index c89a2de1e1959c1275d39003c1b6b49f165df60f..99915b37331da819fd72c34b25773ab3e63f1775 100644
+index 97b0f407306e978a506225684ac0a5aeef1d6b3f..0e019e3b870c9a2fc1ed788d444c3e2be2a2b5f2 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -262,7 +262,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

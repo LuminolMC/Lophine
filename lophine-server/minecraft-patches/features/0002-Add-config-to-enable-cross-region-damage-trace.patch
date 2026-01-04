@@ -48,10 +48,10 @@ index 147cd8742196e52567625a1017f63d7a7e770e44..d17ad8bf49c4911e5939ad25c1822bb4
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 80994688d3dd23dbc9de3ccfe739ca4acc66c2a0..b9f52fb032f1465a749f40b656a1d125caf8194f 100644
+index c67c29278ea63ab8b936d53bf654089f2dba2eef..88d532d11c29bd8cfe5b6b02847d960b07cf0a38 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1972,6 +1972,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1975,6 +1975,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
              final LivingEntity killer = this.getKillCredit();
              if (killer != null) {
                  killer.awardKillScore(this, damageSource);
@@ -65,7 +65,7 @@ index 80994688d3dd23dbc9de3ccfe739ca4acc66c2a0..b9f52fb032f1465a749f40b656a1d125
              }
          }); // Paper end
          this.postDeathDropItems(deathEvent); // Paper
-@@ -1982,6 +1989,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1985,6 +1992,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          return deathEvent; // Paper
      }
  
@@ -84,7 +84,7 @@ index 80994688d3dd23dbc9de3ccfe739ca4acc66c2a0..b9f52fb032f1465a749f40b656a1d125
      protected void dropEquipment(ServerLevel level) {
      }
      protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {} // Paper - method for post death logic that cannot be ran before the event is potentially cancelled
-@@ -2609,6 +2628,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -2612,6 +2631,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  

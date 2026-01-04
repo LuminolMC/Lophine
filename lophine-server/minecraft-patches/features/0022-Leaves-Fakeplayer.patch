@@ -100,7 +100,7 @@ index 951953427b5b18cfc187b0ab04e1f3bbfd0ea6c4..eaf770a1b78e002c0559c0bfdad416e1
          @Override
          public void close() {
 diff --git a/net/minecraft/server/PlayerAdvancements.java b/net/minecraft/server/PlayerAdvancements.java
-index 98004b77b7f40d315f41be82105df6d4b9000e33..cd968c6971d054d9b66a0eaea4753a51ebb75b02 100644
+index c9e6cd428e4c74b14a992de9ffe85a5a707c4e6b..5bf7eb5b906cefa57a1dfcf828ff7872dbceac4f 100644
 --- a/net/minecraft/server/PlayerAdvancements.java
 +++ b/net/minecraft/server/PlayerAdvancements.java
 @@ -166,6 +166,11 @@ public class PlayerAdvancements {
@@ -255,7 +255,7 @@ index fdccb06c918d387e46c29ede7337159db8c5d9ca..4cd5c5659ac098c3b7ff95efb94b1987
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 7c9a242014acb240589845b36f04fbcc1a6f810c..bd0194ecfaec9d6dd309587d82113ed025c20edf 100644
+index 354647c41fadfdadcc9b1664ac3ccbf8d29571f4..f41cab482168ca7b0764b371533658374dc4cc3a 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -220,6 +220,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -274,7 +274,7 @@ index 7c9a242014acb240589845b36f04fbcc1a6f810c..bd0194ecfaec9d6dd309587d82113ed0
      }
  
      // Folia start - region threading
-@@ -2469,6 +2471,12 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2478,6 +2480,12 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
          return this.players;
      }
  
@@ -287,7 +287,7 @@ index 7c9a242014acb240589845b36f04fbcc1a6f810c..bd0194ecfaec9d6dd309587d82113ed0
      @Override
      public void updatePOIOnBlockStateChange(BlockPos pos, BlockState oldState, BlockState newState) {
          Optional<Holder<PoiType>> optional = PoiTypes.forState(oldState);
-@@ -2942,6 +2950,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2951,6 +2959,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              // ServerLevel.this.getChunkSource().addEntity(entity); // Paper - ignore and warn about illegal addEntity calls instead of crashing server; moved down below valid=true
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.add(serverPlayer);
@@ -299,7 +299,7 @@ index 7c9a242014acb240589845b36f04fbcc1a6f810c..bd0194ecfaec9d6dd309587d82113ed0
                  if (serverPlayer.isReceivingWaypoints()) {
                      ServerLevel.this.getWaypointManager().addPlayer(serverPlayer);
                  }
-@@ -3029,6 +3042,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -3038,6 +3051,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              ServerLevel.this.getChunkSource().removeEntity(entity);
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.remove(serverPlayer);
@@ -534,7 +534,7 @@ index bd1d4a832eec4c89a7f8bdd5d066b6074f206d81..d7224c2297eb5d580349da3b2770895f
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 89fbe7121e775af4115a90a114494ac6cb7b2727..80c126507030cee85a648903b1c57cd26f77108c 100644
+index b4ebc26ef54aefdb14fca1f958dc0156cb1df642..04ce4cb64e92b63437a216c0cb8318c7e17e23a0 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1252,7 +1252,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
@@ -546,7 +546,7 @@ index 89fbe7121e775af4115a90a114494ac6cb7b2727..80c126507030cee85a648903b1c57cd2
                  this.checkFallDamage(vec3.y, this.onGround(), blockState, onPosLegacy);
              }
  
-@@ -1577,7 +1577,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
+@@ -1587,7 +1587,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
      }
  
      // Paper start - optimise collisions
@@ -556,10 +556,10 @@ index 89fbe7121e775af4115a90a114494ac6cb7b2727..80c126507030cee85a648903b1c57cd2
          final boolean yZero = movement.y == 0.0;
          final boolean zZero = movement.z == 0.0;
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 93201c8d74a77ea47c6f53503939714fb5e94b88..347af65f4f4388b69022a69328491c7022855b16 100644
+index fa6ed83a69aafee57195f1b512481c401ade7b09..97b0f407306e978a506225684ac0a5aeef1d6b3f 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -3316,7 +3316,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3319,7 +3319,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      private void travelRidden(Player player, Vec3 travelVector) {
          Vec3 riddenInput = this.getRiddenInput(player, travelVector);
          this.tickRidden(player, riddenInput);
@@ -568,7 +568,7 @@ index 93201c8d74a77ea47c6f53503939714fb5e94b88..347af65f4f4388b69022a69328491c70
              this.setSpeed(this.getRiddenSpeed(player));
              this.travel(riddenInput);
          } else {
-@@ -4225,7 +4225,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4228,7 +4228,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          // Paper start - lag compensate eating
          // we add 1 to the expected time to avoid lag compensating when we should not
          final boolean shouldLagCompensate = this.useItem.has(DataComponents.FOOD) && this.eatStartTime != -1 && (System.nanoTime() - this.eatStartTime) > ((1L + this.totalEatTimeTicks) * 50L * (1000L * 1000L));
@@ -577,7 +577,7 @@ index 93201c8d74a77ea47c6f53503939714fb5e94b88..347af65f4f4388b69022a69328491c70
              this.useItemRemaining = 0;
              // Paper end - lag compensate eating
              this.completeUsingItem();
-@@ -4410,6 +4410,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4413,6 +4413,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          this.stopUsingItem();
      }
  

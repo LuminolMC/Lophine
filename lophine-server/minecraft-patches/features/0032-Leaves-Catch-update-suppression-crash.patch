@@ -68,7 +68,7 @@ index 62069db658d188abdacf071f33e93e11f1467300..644e33e38140854d93529e348db572a0
                  serverLevel.fillReportDetails(crashReport);
                  throw new ReportedException(crashReport);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 8998eadc6bbabed4d4c86cb515ad8013a5f01b23..ed4a12f57b1c51f79ba62b4f61d372e85290da94 100644
+index 15a6a96e49e55570836cca13c897c4be35662877..68ec2a0bca780f7556873a3f17fbb2c19a946f70 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -878,7 +878,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -111,10 +111,10 @@ index 5e08d8b9c7f1869965be0ee5761bbc40f1e70300..c74e9b421ac2afca5cd1f2cf93467eac
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 80c126507030cee85a648903b1c57cd26f77108c..7e2e287468604728805c4e3dd250447ddec4ddfa 100644
+index 04ce4cb64e92b63437a216c0cb8318c7e17e23a0..7c2f7d5103caa0f6565d42affec260b1cfeee0e8 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1434,9 +1434,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
+@@ -1444,9 +1444,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
                      this.walkingStepSound(pos, state);
                  }
  
