@@ -72,12 +72,12 @@ public class ItemCollector<T> {
             return null;
         }
         long currentVersion = iterator.getVersion(container);
-        long gameTime = request.getLevel().getServer().getTickCount();
+        long gameTimeReforged = System.currentTimeMillis() / 50;
         if (mergedResult != null && iterator.isFinished()) {
             if (version == currentVersion) {
                 return mergedResult; // content not changed
             }
-            if (lastTimeFinished + 5 > gameTime) {
+            if (lastTimeFinished + 5 > gameTimeReforged) {
                 return mergedResult; // avoid update too frequently
             }
             iterator.reset();
@@ -104,7 +104,7 @@ public class ItemCollector<T> {
             mergedResult = groups;
             lastTimeIsEmpty = mergedResult.getFirst().views.isEmpty();
             version = currentVersion;
-            lastTimeFinished = gameTime;
+            lastTimeFinished = gameTimeReforged;
             items.clear();
         }
         return groups;
