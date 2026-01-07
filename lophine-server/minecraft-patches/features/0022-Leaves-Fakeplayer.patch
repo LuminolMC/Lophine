@@ -33,7 +33,7 @@ index 9f444988d40208a1bfa9f147ef80489f81115e93..ab2fa0b86564622501238305714fff01
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 951953427b5b18cfc187b0ab04e1f3bbfd0ea6c4..eaf770a1b78e002c0559c0bfdad416e1bf1dda9d 100644
+index 1124987a47bcdb4c64bcc842f30675f4da866261..e6c55ee206e7bf35fa2a3d8ce400a13932f249c8 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -66,7 +66,7 @@ index 951953427b5b18cfc187b0ab04e1f3bbfd0ea6c4..eaf770a1b78e002c0559c0bfdad416e1
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1800,6 +1807,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1798,6 +1805,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              this.isSaving = true;
              if (playerSaveInterval > 0) {
                  this.playerList.saveAll(playerSaveInterval);
@@ -74,7 +74,7 @@ index 951953427b5b18cfc187b0ab04e1f3bbfd0ea6c4..eaf770a1b78e002c0559c0bfdad416e1
              }
              for (final ServerLevel level : (region == null ? this.getAllLevels() : Arrays.asList(region.world))) { // Folia - region threading
                  if (level.paperConfig().chunks.autoSaveInterval.value() > 0) {
-@@ -2020,6 +2028,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2018,6 +2026,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -82,7 +82,7 @@ index 951953427b5b18cfc187b0ab04e1f3bbfd0ea6c4..eaf770a1b78e002c0559c0bfdad416e1
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -3154,6 +3163,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3152,6 +3161,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.debugSubscribers;
      }
  

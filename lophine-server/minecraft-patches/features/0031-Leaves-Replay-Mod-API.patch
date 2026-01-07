@@ -84,10 +84,10 @@ index af71e0e1eb1c93745f3e4954ecc8fbd2ad4808a3..f3829564681faff3ae8971ed90b947b4
                              players.add(serverPlayer1);
                              if (players.size() >= resultLimit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index eaf770a1b78e002c0559c0bfdad416e1bf1dda9d..62069db658d188abdacf071f33e93e11f1467300 100644
+index e6c55ee206e7bf35fa2a3d8ce400a13932f249c8..30dccb37822c2267c4759804164cc4871fdb8c61 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1895,7 +1895,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1893,7 +1893,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      private ServerStatus.Players buildPlayerStatus() {
@@ -96,7 +96,7 @@ index eaf770a1b78e002c0559c0bfdad416e1bf1dda9d..62069db658d188abdacf071f33e93e11
          int maxPlayers = this.getMaxPlayers();
          if (this.hidesOnlinePlayers()) {
              return new ServerStatus.Players(maxPlayers, players.size(), List.of());
-@@ -2104,7 +2104,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2102,7 +2102,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @Override
      public int getPlayerCount() {
@@ -105,7 +105,7 @@ index eaf770a1b78e002c0559c0bfdad416e1bf1dda9d..62069db658d188abdacf071f33e93e11
      }
  
      public String[] getPlayerNames() {
-@@ -2308,7 +2308,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2306,7 +2306,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          } else {
              int i = 0;
  
@@ -114,7 +114,7 @@ index eaf770a1b78e002c0559c0bfdad416e1bf1dda9d..62069db658d188abdacf071f33e93e11
                  serverPlayer.getBukkitEntity().taskScheduler.schedule((ServerPlayer player) -> { // Folia - region threading
                  // Paper start - Expand PlayerGameModeChangeEvent
                  org.bukkit.event.player.PlayerGameModeChangeEvent event = player.setGameMode(gameMode, org.bukkit.event.player.PlayerGameModeChangeEvent.Cause.DEFAULT_GAMEMODE, null); // Folia - region threading
-@@ -2493,7 +2493,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2491,7 +2491,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      if (Thread.currentThread() != this.serverThread) return; // Paper
                      // Paper start - we don't need to save everything, just advancements
                      // this.getPlayerList().saveAll();
@@ -123,7 +123,7 @@ index eaf770a1b78e002c0559c0bfdad416e1bf1dda9d..62069db658d188abdacf071f33e93e11
                          player.getAdvancements().save();
                      }
                      // Paper end - we don't need to save everything, just advancements
-@@ -2631,7 +2631,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2629,7 +2629,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              PlayerList playerList = this.getPlayerList();
              UserWhiteList whiteList = playerList.getWhiteList();
  

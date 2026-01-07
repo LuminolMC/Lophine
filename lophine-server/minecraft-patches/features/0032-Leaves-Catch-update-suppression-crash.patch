@@ -46,10 +46,10 @@ index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d73483
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 62069db658d188abdacf071f33e93e11f1467300..644e33e38140854d93529e348db572a075bd2800 100644
+index 30dccb37822c2267c4759804164cc4871fdb8c61..c1f4965222b591d367cb1a2bb13e522701724b78 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1974,8 +1974,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1972,8 +1972,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
                  serverLevel.tick(hasTimeLeft, region); // Folia - region threading

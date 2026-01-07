@@ -5,10 +5,10 @@ Subject: [PATCH] Fix datapack command save function
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 2f91e80f8c3df2775a793aa3c648c50007543192..6230c08d001aebc119900906aa557247261985a3 100644
+index ad8a0130069ae06f8e9fdd4cceed9b9028c8e727..1124987a47bcdb4c64bcc842f30675f4da866261 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -2430,6 +2430,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2428,6 +2428,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.reloadResources(selectedIds, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause.PLUGIN);
      }
  
