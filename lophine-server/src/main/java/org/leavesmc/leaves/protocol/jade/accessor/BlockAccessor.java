@@ -17,6 +17,7 @@
 
 package org.leavesmc.leaves.protocol.jade.accessor;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -135,6 +136,7 @@ public class BlockAccessor extends Accessor<BlockHitResult> {
 
         public BlockAccessor unpack(ServerPlayer player) {
             Supplier<BlockEntity> blockEntity = null;
+            if (!TickThread.isTickThreadFor(player.level(), hit.getBlockPos())) return null;
             BlockState blockState = player.level().getBlockState(hit.getBlockPos());
             if (blockState.hasBlockEntity()) {
                 blockEntity = Suppliers.memoize(() -> player.level().getBlockEntity(hit.getBlockPos()));
