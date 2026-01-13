@@ -211,12 +211,11 @@ public class BotList {
 
         bot.suppressTrackerForLogin = true;
 
-        optional.ifPresent(nbt -> {
-            bot.loadAndSpawnEnderPearls(nbt);
-            bot.loadAndSpawnParentVehicle(nbt);
-        });
-
         Runnable task = () -> {
+            optional.ifPresent(nbt -> {
+                bot.loadAndSpawnEnderPearls(nbt);
+                bot.loadAndSpawnParentVehicle(nbt);
+            });
             world.getCurrentWorldData().connections.add(bot.connection.connection);
             world.addNewPlayer(bot);
             BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
@@ -243,7 +242,7 @@ public class BotList {
         } else {
             RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
                     world, location.getBlockX() >> 4, location.blockZ() >> 4,
-                    task::run);
+                    task);
         }
 
         return bot;
