@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Tue, 13 Jan 2026 21:04:59 +0800
+Subject: [PATCH] Add removed check before all checks start in addEffect
+
+
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index 205e2648569b7c18f488aa4d3d9ec944bb1babf4..c6ee14f14e051b30012e608b84a055ff2468850d 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -1174,6 +1174,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+     public boolean addEffect(MobEffectInstance effectInstance, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause, boolean fireEvent) {
+         // Paper end - Don't fire sync event during generation
+         // org.spigotmc.AsyncCatcher.catchOp("effect add"); // Spigot // Paper - move to API
++        if (this.isRemoved()) return false; // Lophine - shouldn't be possible to add effects to removed entity
+         if (!this.hasNullCallback()) ca.spottedleaf.moonrise.common.util.TickThread.ensureTickThread(this, "Cannot add effects to entities asynchronously"); // Folia - region threading
+         if (this.isTickingEffects) {
+             this.effectsToProcess.add(new ProcessableEffect(effectInstance, cause));
