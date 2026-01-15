@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable scoreboard command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 25ccbfa12d57d540195ecc16aa54a144f8ecc0e8..22d211bee83e3ef34d6ac81dd89c0e73924bee90 100644
+index c00e0e74cb4c820a5c8b3722ebc1ff56318dae02..2be7e5de57f474a3600ea4990899c1955faa512e 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -229,7 +229,11 @@ public class Commands {

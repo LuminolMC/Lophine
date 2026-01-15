@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable tick command
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839621d73d7 100644
+index 6deaeaf95a43e217f65d3e0764b844ff4573d4ca..1cefe9d83788dafc293aeb6d1b5e635211094b2a 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -299,6 +299,11 @@ public final class RegionizedServer {
@@ -20,7 +20,7 @@ index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839
          // expire invalid click command callbacks
          io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.ADVENTURE_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
          io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.DIALOG_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
-@@ -322,6 +327,13 @@ public final class RegionizedServer {
+@@ -324,6 +329,13 @@ public final class RegionizedServer {
              this.globalTick(world, tickCount);
          }
  
@@ -34,7 +34,7 @@ index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839
          // tick connections
          this.tickConnections();
  
-@@ -455,7 +467,7 @@ public final class RegionizedServer {
+@@ -457,7 +469,7 @@ public final class RegionizedServer {
      }
  
      private void tickTime(final ServerLevel world, final int tickCount) {
@@ -97,7 +97,7 @@ index c485d5b3ba95f2a969bdf0dab9654ac284976f8d..b957585cf7cf7f845e20f59c7b355722
                  this.scheduler.regionFailed(this, false, thr);
                  // regionFailed will schedule a shutdown, so we should avoid letting this region tick further
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 22d211bee83e3ef34d6ac81dd89c0e73924bee90..1fb359073342a657e9e493403263b56be5b3393f 100644
+index 2be7e5de57f474a3600ea4990899c1955faa512e..8d332f8e99ceb5a20b3b54bc327b024968719017 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -249,7 +249,11 @@ public class Commands {
@@ -114,7 +114,7 @@ index 22d211bee83e3ef34d6ac81dd89c0e73924bee90..1fb359073342a657e9e493403263b56b
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 75027e73859c955a54034640f905cb5d91a6a2f4..2f4970242c754cfba8ff5656a63af07d9d0a723c 100644
+index 1fa4110b61e49ee9527b65ecafb96b0dcd2c8ce2..df5ff1cc7b289c3f52723d4e7b418e79ae6c3082 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -267,7 +267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

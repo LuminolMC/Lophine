@@ -33,7 +33,7 @@ index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..58694e28b3ff85ef038fe2ada2672e6d
      private DisconnectionDetails disconnectionDetails;
      private boolean encrypted;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786e46148b1 100644
+index 8f74af03cf0af0960b1016c8304ca0e440969215..c33757d3e53a97148c11f601cde0b6127d663f11 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -347,6 +347,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -57,7 +57,7 @@ index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786
          // Folia start - region threading
          // halt scheduler
          // don't wait, we may be on a scheduler thread
-@@ -1588,7 +1595,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1593,7 +1600,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int i = this.pauseWhileEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
          if (false && i > 0) { // Folia - region threading - this is complicated to implement, and even if done correctly is messy
@@ -66,7 +66,7 @@ index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1912,6 +1919,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1917,6 +1924,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -74,7 +74,7 @@ index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -2983,6 +2991,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2988,6 +2996,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return 0;
      }
  
