@@ -553,7 +553,7 @@ index d1dbfc821f068f14bf975842f66251816ea5c985..fe13504a7d2d685e43183dd7b3219f16
      protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
          if (!movedByPiston) {
 diff --git a/net/minecraft/world/level/block/SculkSensorBlock.java b/net/minecraft/world/level/block/SculkSensorBlock.java
-index 5ef593a61c74af7077d02f4b18d936bf9b2507b9..a94d69927b78089b2e9eb0ee74f693821c3d93fc 100644
+index 80e6ba8f026a6565696f18304507b2d0a347650c..593fab3d2a70bcd6832dd777afa4973f22abbaeb 100644
 --- a/net/minecraft/world/level/block/SculkSensorBlock.java
 +++ b/net/minecraft/world/level/block/SculkSensorBlock.java
 @@ -128,6 +128,18 @@ public class SculkSensorBlock extends BaseEntityBlock implements SimpleWaterlogg
@@ -732,7 +732,7 @@ index b369e80a4fc371a3762e34e7d4d180b86d1d190f..0b412e360b090dc85d1726eb8f51c69b
      protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
          BlockPos blockPos = pos.relative(state.getValue(FACING).getOpposite());
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
-index 10f9f617123e7ef582707038230f43350d5c5810..d96385dc19b7d6409d65ae37549b6d8f3f955cd2 100644
+index 418517faeaf40ae2f7dea5635e4232cd89db3ead..0de2f6627fb6295d7927ac3e37026f4daf68cfd3 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -171,6 +171,15 @@ public abstract class BlockBehaviour implements FeatureElement, org.leavesmc.lea
@@ -765,7 +765,7 @@ index 10f9f617123e7ef582707038230f43350d5c5810..d96385dc19b7d6409d65ae37549b6d8f
              this.getBlock().affectNeighborsAfterRemoval(this.asState(), level, pos, movedByPiston);
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 7c354894f48a5540eb2554d8b1428306e8929066..de82e9a7f0cc190f8cf8c66eee9dc178241f6a27 100644
+index 5551d80a81c2878136f96b3e695c4888c7105a49..73dd8e67938fbfff745b189c06a93174976ba1bf 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -406,22 +406,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot

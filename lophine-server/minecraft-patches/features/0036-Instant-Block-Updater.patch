@@ -27,7 +27,7 @@ index 56e09b99c2901882483c5f2b3216bf0a11406e2e..1480bd04597001cd7c54e53ded46d7f7
          this.wireHandler = new alternate.current.wire.WireHandler(world);
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index b878f5a8316dfee582180a6bbe7122a78581fae2..a906e7a34d048369f9357b0371339b4cccac5f25 100644
+index 68ec2a0bca780f7556873a3f17fbb2c19a946f70..7f8774ef5a5875638273bb561a731b08a47c80b4 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -911,12 +911,16 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe

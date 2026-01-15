@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/3e96b237749a960f2
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/ServerExplosion.java b/net/minecraft/world/level/ServerExplosion.java
-index c8fa9a9ae29ecf9b2d6234e7efee61d05c8bc0ae..336daa3f7e2c957286d245746af47603a98438bc 100644
+index 08a1be57e1057a9e961eeb8f59cd12e98ed52bab..33ee967d8a7d4ce2c455db9ffaac740cd589e6f3 100644
 --- a/net/minecraft/world/level/ServerExplosion.java
 +++ b/net/minecraft/world/level/ServerExplosion.java
 @@ -717,6 +717,7 @@ public class ServerExplosion implements Explosion {

@@ -8,7 +8,7 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 3c27af5cf768eaa0591846923590a88606dee589..66e7b62a57eada0f0db7d9cc1be6362ac1e3ee85 100644
+index 2eb551390aa66d89988df9ca23cf0dd7ccfd6577..0d322ef4aa3e70c9edbb9fa8ba368bef916eb93d 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -963,6 +963,10 @@ public abstract class PlayerList {
@@ -23,7 +23,7 @@ index 3c27af5cf768eaa0591846923590a88606dee589..66e7b62a57eada0f0db7d9cc1be6362a
  
      // Paper start - whitelist verify event / login event
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 3a8ac0765b8a988c281a2ded8c40ec044781cda2..1e3ac806c3f111ee0a4f8ef47134941ec85fbe6e 100644
+index 212536b5a7b2b0196ef05dbb383bd5ac52b6978e..6bbec212142ed1ddb312c403c6c7fc258310b192 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -179,6 +179,7 @@ public abstract class Player extends Avatar implements ContainerUser {

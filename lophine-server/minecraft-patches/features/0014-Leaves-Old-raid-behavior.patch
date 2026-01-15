@@ -24,7 +24,7 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..c9af615ff9120c07787f436dbb6024e5
              if (raidAt == null || raidAt.getRaidOmenLevel() < raidAt.getMaxRaidOmenLevel()) {
                  serverPlayer.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplifier));
 diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
-index 4deb9e4688a04b25e862572b70bf91e3ace9841e..2f31fae204dbeeeec1d188b6908aec5ad937e62e 100644
+index dcdd6f230ff153a7b58d13b963d32376b1905b72..be9c78f2cf121e8ae55c1b18685877637a25ec80 100644
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
 @@ -264,7 +264,7 @@ public class Raid {
@@ -167,7 +167,7 @@ index 4deb9e4688a04b25e862572b70bf91e3ace9841e..2f31fae204dbeeeec1d188b6908aec5a
 +    // Leaves end - old FindSpawnPosition
  }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 29ddff87216069cdf423f96f3fe835e0802d9ab5..18c4dffb5942b17dc1f2e9d9124c4f3ba3271360 100644
+index 5e8245e6dd8a07ece83dd1bc20e351a92044e7a0..2b7894a4104d4cb237746a3e66d4368b6f8f3c1e 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -127,6 +127,43 @@ public abstract class Raider extends PatrollingMonster {

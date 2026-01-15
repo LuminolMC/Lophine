@@ -22,11 +22,21 @@ public class CommandConfig implements IConfigModule {
     @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint_bar"})
     @ConfigInfo(name = "waypoint_command_enabled", comments =
             """
-                    Allow to use waypoint command""")
+                    Allow to use waypoint command and locator bar""")
     public static boolean waypoint = false;
 
     @ConfigInfo(name = "scoreboard_command_enabled", comments =
             """
                     Allow to use scoreboard command""")
     public static boolean scoreboard = false;
+
+    @ConfigInfo(name = "enabled", directory = {"save_all_command"}, comments =
+            """
+                    Allow to use save-all command""")
+    public static boolean saveAll = false;
+
+    @ConfigInfo(name = "log_all_process", directory = {"save_all_command"}, comments =
+            """
+                    Log all process of save-all command to console""")
+    public static boolean logAllProcess = false;
 }
