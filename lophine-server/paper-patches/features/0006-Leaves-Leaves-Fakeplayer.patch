@@ -53,7 +53,7 @@ index 21d594a39d09b2d17f05c40ce5323d57949d0b0b..46859fc70795097366f02dba48fdaab8
          if (nmsEntity.level() != this.getHandle().getLevel()) {
              throw new IllegalArgumentException(entity + " wasn't created with this world, you must create the entity with the world you want to add it to.");
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 73e470e0c318568c2f2e82de4f8e170857a20c9a..401f977483b6e809b9b10c601900e35110ae7396 100644
+index dfcfc83474443638e30f87d54472e5a38947dfad..973f064fc5e089dc892d4b4077a807517fd199b5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -305,6 +305,7 @@ public final class CraftServer implements Server {
@@ -96,10 +96,10 @@ index 73e470e0c318568c2f2e82de4f8e170857a20c9a..401f977483b6e809b9b10c601900e351
      /**
       * Gets the TPS from the region which owns the specified location, or {@code null} if no region owns
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index e653246b2f991dd5b0c4d755e0844763686275fc..3274a80dd49774ae65d0009c00078379eea15967 100644
+index dcd32c1e32fd67ec13bb7fca8af20aa665407594..b7f83e66227b5a1f5ad9b424e425eee118cc0692 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -250,7 +250,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -247,7 +247,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
  
      @Override
      public int getPlayerCount() {
@@ -108,7 +108,7 @@ index e653246b2f991dd5b0c4d755e0844763686275fc..3274a80dd49774ae65d0009c00078379
      }
  
      @Override
-@@ -1134,9 +1134,9 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1121,9 +1121,9 @@ public class CraftWorld extends CraftRegionAccessor implements World {
  
      @Override
      public List<Player> getPlayers() {
@@ -120,7 +120,7 @@ index e653246b2f991dd5b0c4d755e0844763686275fc..3274a80dd49774ae65d0009c00078379
              HumanEntity bukkitEntity = human.getBukkitEntity();
  
              if ((bukkitEntity != null) && (bukkitEntity instanceof Player)) {
-@@ -1638,7 +1638,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1622,7 +1622,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
      public void playSound(final net.kyori.adventure.sound.Sound sound) {
          org.spigotmc.AsyncCatcher.catchOp("play sound"); // Paper
          final long seed = sound.seed().orElseGet(this.world.getRandom()::nextLong);
@@ -129,7 +129,7 @@ index e653246b2f991dd5b0c4d755e0844763686275fc..3274a80dd49774ae65d0009c00078379
              player.connection.send(io.papermc.paper.adventure.PaperAdventure.asSoundPacket(sound, player.getX(), player.getY(), player.getZ(), seed, null));
          }
      }
-@@ -1666,7 +1666,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1650,7 +1650,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
          org.spigotmc.AsyncCatcher.catchOp("play sound"); // Paper
          final long seed = sound.seed().orElseGet(this.getHandle().getRandom()::nextLong);
          if (emitter == net.kyori.adventure.sound.Sound.Emitter.self()) {
@@ -138,7 +138,7 @@ index e653246b2f991dd5b0c4d755e0844763686275fc..3274a80dd49774ae65d0009c00078379
                  player.connection.send(io.papermc.paper.adventure.PaperAdventure.asSoundPacket(sound, player, seed, null));
              }
          } else if (emitter instanceof CraftEntity craftEntity) {
-@@ -1807,7 +1807,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+@@ -1791,7 +1791,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
              Preconditions.checkArgument(particle.getDataType().isInstance(data), "data (%s) should be %s", data.getClass(), particle.getDataType());
          }
          this.getHandle().sendParticlesSource(

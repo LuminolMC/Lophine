@@ -5,7 +5,7 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index d17ad8bf49c4911e5939ad25c1822bb4bdd0d71c..8b1fd4a3ff2aa75230e045fed6653382fa8c8c4b 100644
+index b8a2afecf6effec43cc5d5bfdd38056a25e79c1d..bdd0cd4b52a75f2971da70a7a09a06bee3ec53b2 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -240,6 +240,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -24,7 +24,7 @@ index d17ad8bf49c4911e5939ad25c1822bb4bdd0d71c..8b1fd4a3ff2aa75230e045fed6653382
          if (this.invulnerableTime > 0) {
              this.invulnerableTime--;
          }
-@@ -1538,6 +1540,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1536,6 +1538,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          if (this.isInvulnerableTo(level, damageSource)) {
              return false;
          } else {

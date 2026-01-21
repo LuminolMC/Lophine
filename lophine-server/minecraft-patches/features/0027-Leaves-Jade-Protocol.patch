@@ -9,10 +9,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 37b69d32357124e3ba1256beb428eb6581fec956..b88f669535f050605e3b5739501ef6d5caee4238 100644
+index 1794ea309bbc6f6a253a8fb5302ffef61ebd0bbb..9eb7875fd3f2da2ded79397d275c968c0fd613ab 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1453,7 +1453,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1451,7 +1451,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          } else if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
              final LivingEntity entitylivingnew = this.getKillCreditOrigin();
              if (entitylivingnew != null) {
@@ -22,10 +22,10 @@ index 37b69d32357124e3ba1256beb428eb6581fec956..b88f669535f050605e3b5739501ef6d5
          // Luminol End - Cross Region Damage trace
          }
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b44f0ac98d52616bc8405995180844a9af2210f9..5811504f350d18a55850af9d2ebcc2b31bac0d43 100644
+index 81ab622f74f9c66f335b868ff55917f8ad5755c0..4ce93776c34ae9714831212ff46dac541094d48f 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3827,7 +3827,7 @@ public class ServerGamePacketListenerImpl
+@@ -3833,7 +3833,7 @@ public class ServerGamePacketListenerImpl
          } else if (this.clientLoadedTimeoutTimer == 1) markClientLoaded(); // Paper - Add PlayerLoadedWorldEvent - decrement by calling #markClientLoaded which will set the value to 0 *and* call the event.
      }
  

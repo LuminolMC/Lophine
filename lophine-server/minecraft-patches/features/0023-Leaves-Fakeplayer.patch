@@ -33,7 +33,7 @@ index 9f444988d40208a1bfa9f147ef80489f81115e93..ab2fa0b86564622501238305714fff01
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 0a11c9b42d55d1077d09bcbf73e1fc7736f230fb..ca199e6334f39d8598ccc22ef5aca36ecfbb4939 100644
+index 2359c5b49e4457cc36239289f203df16767a4341..68c3b0496738ed4fcb02204c5c882fd722397648 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -45,7 +45,7 @@ index 0a11c9b42d55d1077d09bcbf73e1fc7736f230fb..ca199e6334f39d8598ccc22ef5aca36e
      public static <S extends MinecraftServer> S spin(Function<Thread, S> threadFunction) {
          ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry.init(); // Paper - rewrite data converter system
          AtomicReference<S> atomicReference = new AtomicReference<>();
-@@ -1052,6 +1054,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1050,6 +1052,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      // Folia end - region threading
  
      public void stopServer() {
@@ -57,7 +57,7 @@ index 0a11c9b42d55d1077d09bcbf73e1fc7736f230fb..ca199e6334f39d8598ccc22ef5aca36e
          // Folia start - region threading
          // halt scheduler
          // don't wait, we may be on a scheduler thread
-@@ -1670,7 +1677,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1673,7 +1680,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int i = this.pauseWhenEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
          if (false && i > 0) { // Folia - region threading - this is complicated to implement, and even if done correctly is messy
@@ -66,7 +66,7 @@ index 0a11c9b42d55d1077d09bcbf73e1fc7736f230fb..ca199e6334f39d8598ccc22ef5aca36e
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1803,6 +1810,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1806,6 +1813,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              this.isSaving = true;
              if (playerSaveInterval > 0) {
                  this.playerList.saveAll(playerSaveInterval);
@@ -74,7 +74,7 @@ index 0a11c9b42d55d1077d09bcbf73e1fc7736f230fb..ca199e6334f39d8598ccc22ef5aca36e
              }
              for (final ServerLevel level : (region == null ? this.getAllLevels() : Arrays.asList(region.world))) { // Folia - region threading
                  if (level.paperConfig().chunks.autoSaveInterval.value() > 0) {
-@@ -2023,6 +2031,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2026,6 +2034,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -82,7 +82,7 @@ index 0a11c9b42d55d1077d09bcbf73e1fc7736f230fb..ca199e6334f39d8598ccc22ef5aca36e
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -3157,6 +3166,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3160,6 +3169,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.debugSubscribers;
      }
  
@@ -255,7 +255,7 @@ index fdccb06c918d387e46c29ede7337159db8c5d9ca..4cd5c5659ac098c3b7ff95efb94b1987
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 354647c41fadfdadcc9b1664ac3ccbf8d29571f4..f41cab482168ca7b0764b371533658374dc4cc3a 100644
+index 87bb2715eb4c2fd41537e020ba7fa8cce1591a0f..1837ca833939b8c59b05c03313bec7b02bc85151 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -220,6 +220,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -274,7 +274,7 @@ index 354647c41fadfdadcc9b1664ac3ccbf8d29571f4..f41cab482168ca7b0764b37153365837
      }
  
      // Folia start - region threading
-@@ -2478,6 +2480,12 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2490,6 +2492,12 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
          return this.players;
      }
  
@@ -287,7 +287,7 @@ index 354647c41fadfdadcc9b1664ac3ccbf8d29571f4..f41cab482168ca7b0764b37153365837
      @Override
      public void updatePOIOnBlockStateChange(BlockPos pos, BlockState oldState, BlockState newState) {
          Optional<Holder<PoiType>> optional = PoiTypes.forState(oldState);
-@@ -2951,6 +2959,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2963,6 +2971,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              // ServerLevel.this.getChunkSource().addEntity(entity); // Paper - ignore and warn about illegal addEntity calls instead of crashing server; moved down below valid=true
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.add(serverPlayer);
@@ -299,7 +299,7 @@ index 354647c41fadfdadcc9b1664ac3ccbf8d29571f4..f41cab482168ca7b0764b37153365837
                  if (serverPlayer.isReceivingWaypoints()) {
                      ServerLevel.this.getWaypointManager().addPlayer(serverPlayer);
                  }
-@@ -3038,6 +3051,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -3044,6 +3057,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              ServerLevel.this.getChunkSource().removeEntity(entity);
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.remove(serverPlayer);
@@ -312,7 +312,7 @@ index 354647c41fadfdadcc9b1664ac3ccbf8d29571f4..f41cab482168ca7b0764b37153365837
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 8b1fd4a3ff2aa75230e045fed6653382fa8c8c4b..37b69d32357124e3ba1256beb428eb6581fec956 100644
+index bdd0cd4b52a75f2971da70a7a09a06bee3ec53b2..1794ea309bbc6f6a253a8fb5302ffef61ebd0bbb 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -227,7 +227,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -333,7 +333,7 @@ index 8b1fd4a3ff2aa75230e045fed6653382fa8c8c4b..37b69d32357124e3ba1256beb428eb65
      private @Nullable Vec3 levitationStartPos;
      private int levitationStartTime;
      private boolean disconnected;
-@@ -1497,7 +1497,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1495,7 +1495,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
      // Luminol End - Cross Region Damage trace
  
@@ -342,7 +342,7 @@ index 8b1fd4a3ff2aa75230e045fed6653382fa8c8c4b..37b69d32357124e3ba1256beb428eb65
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
              .getEntitiesOfClass(Mob.class, aabb, EntitySelector.NO_SPECTATORS)
-@@ -2134,6 +2134,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2132,6 +2132,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  this.lastSentHealth = -1.0F;
                  this.lastSentFood = -1;
                  this.teleportSpectators(teleportTransition, serverLevel);
@@ -534,7 +534,7 @@ index bd1d4a832eec4c89a7f8bdd5d066b6074f206d81..d7224c2297eb5d580349da3b2770895f
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index b4ebc26ef54aefdb14fca1f958dc0156cb1df642..04ce4cb64e92b63437a216c0cb8318c7e17e23a0 100644
+index 8043b5f24e09e2c96afe14b5ab6978c0b85d744c..df4f5e724673edda7fe46a826a77d0365b40b1f7 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1252,7 +1252,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name

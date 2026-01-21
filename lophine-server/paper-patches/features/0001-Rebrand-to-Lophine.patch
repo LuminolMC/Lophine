@@ -35,27 +35,20 @@ index fcdfd4f6de5e1c2d5e80c7f3d8cb0b33a62d257d..6eaa4e9bd1ecbfa531313ce1f470d55e
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index 22125dbe1765f930fe10fe420be1c275ec553139..d5b070d1a3d84e228960dacd614e0f1abe968e79 100644
+index 549ff74bfade5c1c13f7d6a4d5ec57a6ef36d7ee..4d097ce093d0df9146e7539f55f9bbf30d5eafc6 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -35,7 +35,7 @@ public class PaperVersionFetcher implements VersionFetcher {
-     private static final Logger LOGGER = LogUtils.getClassLogger();
+@@ -40,8 +40,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+     private static final ComponentLogger COMPONENT_LOGGER = ComponentLogger.logger(LogManager.getRootLogger().getName());
      private static final int DISTANCE_ERROR = -1;
      private static final int DISTANCE_UNKNOWN = -2;
--    private static final String DOWNLOAD_PAGE = "https://github.com/LuminolMC/Luminol"; //Luminol
-+    private static final String DOWNLOAD_PAGE = "https://github.com/LuminolMC/Lophine"; //Luminol // Lophine
- 
-     @Override
-     public long getCacheTime() {
-@@ -49,7 +49,7 @@ public class PaperVersionFetcher implements VersionFetcher {
-         if (build.buildNumber().isEmpty() && build.gitCommit().isEmpty()) {
-             updateMessage = text("You are running a development version without access to version information", color(0xFF5300));
-         } else {
--            updateMessage = getUpdateStatusMessage("LuminolMC/Luminol", build); // Folia // Luminol
-+            updateMessage = getUpdateStatusMessage("LuminolMC/Lophine", build); // Folia // Luminol // Lophine
-         }
-         final @Nullable Component history = this.getHistory();
- 
+-    private static final String DOWNLOAD_PAGE = "github.com/LuminolMC/Luminol"; // Luminol
+-    private static final String REPOSITORY = "LuminolMC/Luminol"; // Luminol
++    private static final String DOWNLOAD_PAGE = "github.com/LuminolMC/Lophine"; // Luminol // Lophine
++    private static final String REPOSITORY = "LuminolMCophine"; // Luminol // Lophine
+     private static final ServerBuildInfo BUILD_INFO = ServerBuildInfo.buildInfo();
+     private static final String USER_AGENT = BUILD_INFO.brandName() + "/" + BUILD_INFO.asString(VERSION_SIMPLE) + " (https://papermc.io)";
+     private static final Gson GSON = new Gson();
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 index 4ada790812957657d580cb748077c4961987d0cb..3a539df860305e777e85ed6dc72b5effe76734b4 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java

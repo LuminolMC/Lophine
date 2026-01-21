@@ -18,7 +18,7 @@ index bca2c5410aa543d2bb421e53893e9163508b3568..fdccb06c918d387e46c29ede7337159d
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index da6da815b7ca1270507d69dc563880c70523d094..b4ebc26ef54aefdb14fca1f958dc0156cb1df642 100644
+index e62a8d23736de03f18c615c7622414aac3dc8aef..8043b5f24e09e2c96afe14b5ab6978c0b85d744c 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -152,7 +152,7 @@ import org.jetbrains.annotations.Contract;
@@ -30,7 +30,7 @@ index da6da815b7ca1270507d69dc563880c70523d094..b4ebc26ef54aefdb14fca1f958dc0156
      // CraftBukkit start
      private static final int CURRENT_LEVEL = 2;
      static boolean isLevelAtLeast(ValueInput input, int level) {
-@@ -6444,4 +6444,46 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
+@@ -6443,4 +6443,46 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
      // Paper end - Expose entity id counter
  
      public boolean shouldTickHot() { return this.tickCount > 20 * 10 && this.isAlive(); } // KioCG

@@ -97,10 +97,10 @@ index f4c9c551fc39bae38e283ccbbc3cd116f0536a64..db13211b24208d8addd3c210155bc244
                  NaturalSpawner.spawnForChunk(this.level, chunk, spawnState, spawnCategories);
              }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 7f8774ef5a5875638273bb561a731b08a47c80b4..d91961c3eb8d964eb56845f0e2913f9de8f687aa 100644
+index 1f1dfc897dd826c2d14a9cb9db99c27e884c37a8..e9a995ce1d8835c29d6c1eb331efcb5123ac5c38 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -763,6 +763,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -765,6 +765,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
      }
  
      public void tick(BooleanSupplier hasTimeLeft, io.papermc.paper.threadedregions.TickRegions.TickRegionData region) { // Folia - regionised ticking

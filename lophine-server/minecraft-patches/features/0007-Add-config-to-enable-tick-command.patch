@@ -1,11 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Helvetica Volubi <suisuroru@blue-millennium.fun>
-Date: Thu, 1 May 2025 22:43:08 +0800
+Date: Wed, 21 Jan 2026 21:28:21 +0800
 Subject: [PATCH] Add config to enable tick command
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8d20f7e3d89c42e7b92bbaac5da85ac97fecc459..f3be5b71abde2d9833e3b513845485d3030ef2c6 100644
+index 7748e9ac04fbd3f5259d92fc908d90889cba86c8..80b5d151e0dd6fa44794187875b4b80519839d81 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -332,6 +332,11 @@ public final class RegionizedServer {
@@ -34,20 +34,20 @@ index 8d20f7e3d89c42e7b92bbaac5da85ac97fecc459..f3be5b71abde2d9833e3b513845485d3
          // tick connections
          this.tickConnections();
  
-@@ -490,7 +502,7 @@ public final class RegionizedServer {
+@@ -492,7 +504,7 @@ public final class RegionizedServer {
      }
  
-     private void tickTime(final ServerLevel world, final int tickCount) {
+     private void tickTime(final ServerLevel world, final long tickCount) {
 -        if (world.tickTime) {
 +        if ((!fun.bm.lophine.config.modules.experiment.CommandConfig.tick || world.tickRateManager().runsNormally()) && world.tickTime) { // Luminol - Add a config to enable tick command
              if (world.getGameRules().get(GameRules.ADVANCE_TIME)) {
-                 world.setDayTime(world.levelData.getDayTime() + (long)tickCount);
+                 world.setDayTime(world.levelData.getDayTime() + tickCount);
              }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index e3df94bfd26b118cb8a7bdece75d611aaf27c606..bae2385b725c0ce551768f22945393ccf6e1e432 100644
+index 0f4e8ee9438135e24e0f61a1390c59573b9e9c3f..65699d2ad66c686a8b7d1b951787ddd766800a94 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-@@ -39,8 +39,8 @@ public final class TickRegionScheduler {
+@@ -40,8 +40,8 @@ public final class TickRegionScheduler {
          }
      }
  
@@ -58,14 +58,14 @@ index e3df94bfd26b118cb8a7bdece75d611aaf27c606..bae2385b725c0ce551768f22945393cc
      // Folia start - watchdog
      public static final FoliaWatchdogThread WATCHDOG_THREAD = new FoliaWatchdogThread();
      static {
-@@ -447,8 +447,23 @@ public final class TickRegionScheduler {
+@@ -448,8 +448,23 @@ public final class TickRegionScheduler {
              final long cpuStart = MEASURE_CPU_TIME ? THREAD_MX_BEAN.getCurrentThreadCpuTime() : 0L;
              final long tickStart = System.nanoTime();
  
 -            // use max(), don't assume that tickStart >= scheduledStart
--            final int tickCount = Math.max(1, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
+-            final long tickCount = Math.max(1L, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
 +            // Luminol start - Add a config to enable tick command
-+            final int tickCount;
++            final long tickCount;
 +            if (fun.bm.lophine.config.modules.experiment.CommandConfig.tick) {
 +                if (MinecraftServer.tickRateManager.isSprinting() && MinecraftServer.tickRateManager.checkShouldSprintThisTick()) {
 +                    TICK_RATE = net.minecraft.server.commands.TickCommand.MAX_TICKRATE;
@@ -74,17 +74,17 @@ index e3df94bfd26b118cb8a7bdece75d611aaf27c606..bae2385b725c0ce551768f22945393cc
 +                } else {
 +                    TICK_RATE = MinecraftServer.tickRateManager.tickrate();
 +                    TIME_BETWEEN_TICKS = (long) (1_000_000_000L / TICK_RATE);
-+                    tickCount = Math.max(1, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
++                    tickCount = Math.max(1L, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
 +                }
 +            } else {
 +                // use max(), don't assume that tickStart >= scheduledStart
-+                tickCount = Math.max(1, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
++                tickCount = Math.max(1L, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
 +            }
 +            // Luminol end - Add tick command support
  
              if (!this.tryMarkTicking()) {
                  if (!this.cancelled.get()) {
-@@ -497,6 +512,11 @@ public final class TickRegionScheduler {
+@@ -498,6 +513,11 @@ public final class TickRegionScheduler {
              try {
                  // next start isn't updated until the end of this tick
                  this.tickRegion(tickCount, tickStart, scheduledEnd);
@@ -114,7 +114,7 @@ index bd8d98aa813b575e83138e79726bd3143268913c..65f200381f486146ce8d893378f0591a
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 1600296f134c84ae8eee4e54f5ea54f19e6ed258..e40ce457fc046b3b244c67afa79e4f637cc73fde 100644
+index 76098a4f44f8d82bebf832fa5e240adf25fbe80a..644c49730fc08a7c680f8114136db00ee8f81378 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -270,7 +270,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
