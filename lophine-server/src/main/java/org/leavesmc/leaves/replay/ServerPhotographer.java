@@ -19,6 +19,7 @@ package org.leavesmc.leaves.replay;
 
 import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.authlib.GameProfile;
+import fun.bm.lophine.utils.RandomProfilePool;
 import io.papermc.paper.threadedregions.RegionizedServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
@@ -38,6 +39,7 @@ import org.leavesmc.leaves.entity.photographer.Photographer;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -70,7 +72,7 @@ public class ServerPhotographer extends ServerPlayer {
         MinecraftServer server = MinecraftServer.getServer();
 
         ServerLevel world = ((CraftWorld) state.loc.getWorld()).getHandle();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), state.id);
+        GameProfile profile = RandomProfilePool.getRandomProfile(state.id); // Lophine - add cache
 
         ServerPhotographer photographer = new ServerPhotographer(server, world, profile);
         photographer.absSnapTo(state.loc.x(), state.loc.y(), state.loc.z(), state.loc.getYaw(), state.loc.getPitch());
@@ -165,6 +167,7 @@ public class ServerPhotographer extends ServerPlayer {
         photographers.remove(this);
 
         MinecraftServer.getServer().getPlayerList().removePhotographer(this);
+        RandomProfilePool.putProfile(this.gameProfile); // Lophine - add cache
         if (!recorder.isSaved()) {
             CompletableFuture<Void> future = recorder.saveRecording(saveFile, save);
             if (!async) {
