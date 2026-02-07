@@ -34,9 +34,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Configure Git User Details
-        run: git config --global user.email "ci@luminolmc.com" && git config --global user.name "LuminolMC CI"
-
       - name: Apply All Patches
         run: ./gradlew --refresh-dependencies applyAllPatches
 
