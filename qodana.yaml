@@ -9,7 +9,7 @@ profile:
 include:
   - name: CheckDependencyLicenses
 exclude:
-  - name: JavaFiles
+  - name: All
     paths:
       - lophine-api/src
       - lophine-server/src
