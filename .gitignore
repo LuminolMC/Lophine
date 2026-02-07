@@ -6,12 +6,10 @@ build
 
 /run
 
-/lightingluminol-server/build.gradle.kts
-/lightingluminol-api/build.gradle.kts
-/luminol-server/build.gradle.kts
-/luminol-server/src/minecraft
+/lophine-server/build.gradle.kts
+/lophine-api/build.gradle.kts
+/lophine-server/src/minecraft
 /paper-server
-/luminol-api/build.gradle.kts
 /paper-api
 /paper-api-generator
 
