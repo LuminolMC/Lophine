@@ -306,7 +306,7 @@ index 1837ca833939b8c59b05c03313bec7b02bc85151..a1279303993ffed6ef5ba4ec86668ad8
                  }
                  // Leaves end - skip
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 9eb7875fd3f2da2ded79397d275c968c0fd613ab..de8d0ad8555679e7814708046f1e93c6b9017c6d 100644
+index cdf0543014a92de7d5181bcc81f828e8b11037b1..b28eaeec3204596b0b00c47241cb6fdaeb379af3 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -202,7 +202,7 @@ import org.jspecify.annotations.Nullable;

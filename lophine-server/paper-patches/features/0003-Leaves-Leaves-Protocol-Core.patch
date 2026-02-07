@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 92de192c7b420ebb4510354f347003127595e141..e28c7043c04a4df34733b9bfc5fd55ee6082d010 100644
+index 507204301b5e3cd545e66c510842c0a6391f0241..dfcfc83474443638e30f87d54472e5a38947dfad 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -485,6 +485,7 @@ public final class CraftServer implements Server {
