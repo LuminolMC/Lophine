@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Bacteriawa <A3167717663@hotmail.com>
-Date: Sat, 15 Nov 2025 01:06:20 +0800
+Date: Sat, 7 Feb 2026 23:57:50 +0800
 Subject: [PATCH] Leaves: Catch update suppression crash
 
 Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
@@ -46,10 +46,10 @@ index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d73483
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 72824013c313b7ada8dc86d9f2ff55a296fb6ac8..93b46fb72b74535cbff8eb9c56ee0cbf9052eafe 100644
+index 72824013c313b7ada8dc86d9f2ff55a296fb6ac8..901b4095d09cca10f6df64103d09322b8fce773b 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1980,8 +1980,17 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1980,11 +1980,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
                  serverLevel.tick(hasTimeLeft, region); // Folia - region threading
@@ -59,14 +59,27 @@ index 72824013c313b7ada8dc86d9f2ff55a296fb6ac8..93b46fb72b74535cbff8eb9c56ee0cbf
 +                    exception.consume();
                  } finally { profiler.stopTimer(serverLevel.tickTimerId); } // Folia - profiler
              } catch (Throwable var7) {
-+                if (var7.getCause() instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
-+                    exception.provideLevel(serverLevel);
-+                    exception.consume();
+-                CrashReport crashReport = CrashReport.forThrowable(var7, "Exception ticking world");
+-                serverLevel.fillReportDetails(crashReport);
+-                throw new ReportedException(crashReport);
++                org.leavesmc.leaves.util.UpdateSuppressionException updateSuppressionException = null;
++                if (var7 instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                    updateSuppressionException = exception;
++                } else if (var7.getCause() instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
++                    updateSuppressionException = exception;
 +                }
-+                // Leaves end - update suppression crash fix
-                 CrashReport crashReport = CrashReport.forThrowable(var7, "Exception ticking world");
-                 serverLevel.fillReportDetails(crashReport);
-                 throw new ReportedException(crashReport);
++                if (updateSuppressionException != null) {
++                    updateSuppressionException.provideLevel(serverLevel);
++                    updateSuppressionException.consume();
++                } else {
++                    // Leaves end - update suppression crash fix
++                    CrashReport crashReport = CrashReport.forThrowable(var7, "Exception ticking world");
++                    serverLevel.fillReportDetails(crashReport);
++                    throw new ReportedException(crashReport);
++                }
+             }
+ 
+             profilerFiller.pop();
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
 index a1279303993ffed6ef5ba4ec86668ad845596318..387709d4475eda2195f409a9f6d76706059341bd 100644
 --- a/net/minecraft/server/level/ServerLevel.java
