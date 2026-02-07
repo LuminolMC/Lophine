@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew --refresh-dependencies applyAllPatches
 
       - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2025.3
+        uses: JetBrains/qodana-action@latest
         with:
           pr-mode: false
         env:
