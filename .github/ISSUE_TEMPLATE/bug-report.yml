@@ -74,11 +74,11 @@ body:
         All config files on your server.
         例如以下文件（或者文件夹）：
         Example files (or folders)：
-         - \spigot.yml
-         - \bukkit.yml
-         - \config\\\*
-         - \lophine_config\\\*
-         - \luminol_config\\\*
+        - \spigot.yml
+        - \bukkit.yml
+        - \config\\\*
+        - \lophine_config\\\*
+        - \luminol_config\\\*
   - type: textarea
     id: other
     attributes:
