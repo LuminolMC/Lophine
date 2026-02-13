@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: violetc <58360096+s-yh-china@users.noreply.github.com>
-Date: Mon, 3 Feb 2025 13:33:19 +0800
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Fri, 13 Feb 2026 16:17:36 +0800
 Subject: [PATCH] Leaves: Jade Protocol
 
 This patch is Powered by Jade(https://github.com/Snownee/Jade)
@@ -22,18 +22,18 @@ index c5d13b60029f27162df445b31b9db94e225ce894..cdf0543014a92de7d5181bcc81f828e8
          // Luminol End - Cross Region Damage trace
          }
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 81ab622f74f9c66f335b868ff55917f8ad5755c0..4ce93776c34ae9714831212ff46dac541094d48f 100644
+index d81e22fe65cded98c201a7bbae8a51b22c6a20b4..43e9fd5684d15f8643524132e60266071c6dc454 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3833,7 +3833,7 @@ public class ServerGamePacketListenerImpl
-         } else if (this.clientLoadedTimeoutTimer == 1) markClientLoaded(); // Paper - Add PlayerLoadedWorldEvent - decrement by calling #markClientLoaded which will set the value to 0 *and* call the event.
+@@ -3835,7 +3835,7 @@ public class ServerGamePacketListenerImpl
      }
  
+     @Deprecated @io.papermc.paper.annotation.DoNotUse // Paper - Add PlayerLoadedWorldEvent
 -    private void markClientLoaded() {
 +    public void markClientLoaded() { // Lophine - private -> public
          // Paper start - Add PlayerLoadedWorldEvent
-         if (!hasClientLoaded()) {
-             final io.papermc.paper.event.player.PlayerClientLoadedWorldEvent event = new io.papermc.paper.event.player.PlayerClientLoadedWorldEvent(this.player.getBukkitEntity(), true);
+         this.markClientLoaded(false);
+     }
 diff --git a/net/minecraft/world/entity/animal/armadillo/Armadillo.java b/net/minecraft/world/entity/animal/armadillo/Armadillo.java
 index 901e4e9897e76cd4158d7f8bb8ec829df8ff8196..59b9373c7a14e42d9e5f691354a7616d16856215 100644
 --- a/net/minecraft/world/entity/animal/armadillo/Armadillo.java

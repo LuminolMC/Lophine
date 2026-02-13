@@ -13,10 +13,10 @@ MasaGadget(https://github.com/plusls/MasaGadget)
 litematica(https://github.com/maruohon/litematica)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 4ce93776c34ae9714831212ff46dac541094d48f..7e5b906fcb1b2462409c83984b5197c4407ea333 100644
+index 43e9fd5684d15f8643524132e60266071c6dc454..62db0ba9c824959f953d452ab7aafcde01b10bcd 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2133,7 +2133,7 @@ public class ServerGamePacketListenerImpl
+@@ -2134,7 +2134,7 @@ public class ServerGamePacketListenerImpl
                  if (ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(this.player.level(), blockPos.getX() >> 4, blockPos.getZ() >> 4, 8) && this.player.isWithinBlockInteractionRange(blockPos, 1.0)) { // Folia - do not allow players to interact with blocks outside the current region
                      Vec3 vec3 = location.subtract(Vec3.atCenterOf(blockPos));
                      double d = 1.0000001;

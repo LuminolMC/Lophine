@@ -5,10 +5,10 @@ Subject: [PATCH] Add configs to disable some check for operators
 
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 6318824fb3efde4043d3db2a0ac681c38621c5fe..1b24f0f6e26dedbf726c620908acaed49054a5f5 100644
+index bd344bbebc867f89061694edc0feeab9d679c90c..6d0bb9868e2c2ef516de7630442808c04ba47b39 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -391,7 +391,7 @@ public class ServerGamePacketListenerImpl
+@@ -392,7 +392,7 @@ public class ServerGamePacketListenerImpl
          this.tickCount++;
          this.knownMovePacketCount = this.receivedMovePacketCount;
          if (this.clientIsFloating && !this.player.isSleeping() && !this.player.isPassenger() && !this.player.isDeadOrDying()) {
@@ -17,7 +17,7 @@ index 6318824fb3efde4043d3db2a0ac681c38621c5fe..1b24f0f6e26dedbf726c620908acaed4
                  // LOGGER.warn("{} was kicked for floating too long!", this.player.getPlainTextName()); // Paper - Logging moved to net.minecraft.server.network.ServerCommonPacketListenerImpl.disconnect()
                  this.disconnect(io.papermc.paper.configuration.GlobalConfiguration.get().messages.kick.flyingPlayer, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_PLAYER); // Paper - use configurable kick message & kick event cause
                  return true;
-@@ -410,7 +410,7 @@ public class ServerGamePacketListenerImpl
+@@ -411,7 +411,7 @@ public class ServerGamePacketListenerImpl
              this.vehicleLastGoodY = this.lastVehicle.getY();
              this.vehicleLastGoodZ = this.lastVehicle.getZ();
              if (this.clientVehicleIsFloating && this.lastVehicle.getControllingPassenger() == this.player) {
@@ -26,7 +26,7 @@ index 6318824fb3efde4043d3db2a0ac681c38621c5fe..1b24f0f6e26dedbf726c620908acaed4
                      // LOGGER.warn("{} was kicked for floating a vehicle too long!", this.player.getPlainTextName()); // Paper - Logging moved to net.minecraft.server.network.ServerCommonPacketListenerImpl.disconnect()
                      this.disconnect(io.papermc.paper.configuration.GlobalConfiguration.get().messages.kick.flyingVehicle, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_VEHICLE); // Paper - use configurable kick message & kick event cause
                      return true;
-@@ -661,7 +661,7 @@ public class ServerGamePacketListenerImpl
+@@ -662,7 +662,7 @@ public class ServerGamePacketListenerImpl
                  d5 = d2 - rootVehicle.getZ();
                  d7 = d3 * d3 + d4 * d4 + d5 * d5;
                  boolean flag1 = false;
@@ -35,7 +35,7 @@ index 6318824fb3efde4043d3db2a0ac681c38621c5fe..1b24f0f6e26dedbf726c620908acaed4
                      flag1 = true; // Paper - diff on change, this should be moved wrongly
                      LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", rootVehicle.getPlainTextName(), this.player.getPlainTextName(), Math.sqrt(d7));
                  }
-@@ -1563,7 +1563,7 @@ public class ServerGamePacketListenerImpl
+@@ -1564,7 +1564,7 @@ public class ServerGamePacketListenerImpl
                                              // Paper start - Add fail move event
                                              io.papermc.paper.event.player.PlayerFailMoveEvent event = fireFailMove(io.papermc.paper.event.player.PlayerFailMoveEvent.FailReason.MOVED_TOO_QUICKLY,
                                                      toX, toY, toZ, toYaw, toPitch, true);
@@ -44,7 +44,7 @@ index 6318824fb3efde4043d3db2a0ac681c38621c5fe..1b24f0f6e26dedbf726c620908acaed4
                                                  if (event.getLogWarning()) {
                                              LOGGER.warn("{} moved too quickly! {},{},{}", this.player.getPlainTextName(), d3, d4, d5);
                                                  }
-@@ -1642,7 +1642,7 @@ public class ServerGamePacketListenerImpl
+@@ -1643,7 +1643,7 @@ public class ServerGamePacketListenerImpl
                                      // Paper start - Add fail move event
                                      io.papermc.paper.event.player.PlayerFailMoveEvent event = fireFailMove(io.papermc.paper.event.player.PlayerFailMoveEvent.FailReason.MOVED_WRONGLY,
                                              toX, toY, toZ, toYaw, toPitch, true);

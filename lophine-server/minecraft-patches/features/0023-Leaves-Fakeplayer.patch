@@ -602,7 +602,7 @@ index fa6ed83a69aafee57195f1b512481c401ade7b09..97b0f407306e978a506225684ac0a5ae
          if (!this.level().isClientSide()) {
              boolean isUsingItem = this.isUsingItem();
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 6bbec212142ed1ddb312c403c6c7fc258310b192..2f56cefeeea574f19bc5deaca749d67b0f2a3548 100644
+index 83612969b6058f444fc17e360cdcc4a8846f79aa..29ca31b05ec5636243b13fee8b3399d5e21808b4 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -168,7 +168,7 @@ public abstract class Player extends Avatar implements ContainerUser {

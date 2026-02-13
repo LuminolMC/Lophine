@@ -92,7 +92,7 @@ index 0590d5723854a03a59fe9471710802f4e64e50b8..4f8ff2c024d6f2e67c5fa38fe2e660ba
      public EntityType(
          EntityType.EntityFactory<T> factory,
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index d45fcebbc28084a076f3ba8cbe25d50934735fa0..212536b5a7b2b0196ef05dbb383bd5ac52b6978e 100644
+index 67c0f4027a1e8b364694b5ed8b71965f2fe9b359..0f6e1428cc71c370af45db3e2a4f47c66e5d8628 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -189,6 +189,25 @@ public abstract class Player extends Avatar implements ContainerUser {
