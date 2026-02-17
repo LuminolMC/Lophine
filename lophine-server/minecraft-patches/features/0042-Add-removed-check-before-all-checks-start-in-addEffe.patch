@@ -5,7 +5,7 @@ Subject: [PATCH] Add removed check before all checks start in addEffect
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 0e019e3b870c9a2fc1ed788d444c3e2be2a2b5f2..4f7cf7c51dc47acdd29d45f571636dc77c6c006f 100644
+index e4ae4354e81f34f0db410333fc9b8e17383a5f41..fc8833655102ca98bb331782a624af79cbef414f 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -1186,6 +1186,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

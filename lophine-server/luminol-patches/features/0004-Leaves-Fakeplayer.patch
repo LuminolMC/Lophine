@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Wed, 18 Feb 2026 00:15:08 +0800
+Subject: [PATCH] Leaves: Fakeplayer
+
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+diff --git a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
+index 14cf379decfd46c4719bc192a1467bbbd6835417..20970844de2e64ca213384e53003e80020165770 100644
+--- a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
++++ b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
+@@ -38,6 +38,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+             return;
+         }
+ 
++        // Leaves start - fakeplayer
++        if (waypoint instanceof org.leavesmc.leaves.bot.ServerBot bot && !bot.getConfigValue(org.leavesmc.leaves.bot.agent.Configs.ENABLE_LOCATOR_BAR)) {
++            return;
++        }
++        // Leaves end - fakeplayer
++
+         this.waypoints.add(waypoint);
+ 
+         for (ServerPlayer toCreateFor : this.trackingPlayers) {
+@@ -91,6 +97,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+     public void addPlayer(ServerPlayer player) {
+         this.trackingPlayers.add(player);
+ 
++        // Leaves start - fakeplayer
++        if (player instanceof org.leavesmc.leaves.bot.ServerBot) {
++            return;
++        }
++        // Leaves end - fakeplayer
++
+         for (WaypointTransmitter waypointTransmitter : this.waypoints) {
+             this.createConnection(player, waypointTransmitter);
+         }

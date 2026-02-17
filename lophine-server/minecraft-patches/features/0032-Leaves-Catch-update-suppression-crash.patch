@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/network/PacketProcessor.java b/net/minecraft/network/PacketProcessor.java
-index e07e5eced7e32d1c3a0ac14e8639c1f19b0f641a..fe7483581e5c3f5cb523601b394750a94a178e10 100644
+index cf162ec136309d05c5aa03042652ab3932935917..469ffd54eb5af980f49061bbec0a72f4e888f8a3 100644
 --- a/net/minecraft/network/PacketProcessor.java
 +++ b/net/minecraft/network/PacketProcessor.java
 @@ -107,7 +107,20 @@ public class PacketProcessor implements AutoCloseable {
@@ -46,10 +46,10 @@ index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d73483
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 72824013c313b7ada8dc86d9f2ff55a296fb6ac8..901b4095d09cca10f6df64103d09322b8fce773b 100644
+index 9130f1fbf15500f2149418b73ae2a374bba22eee..eef40103bcec3b836ffb50154fb05926b9757723 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1980,11 +1980,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1975,11 +1975,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
                  serverLevel.tick(hasTimeLeft, region); // Folia - region threading
@@ -81,7 +81,7 @@ index 72824013c313b7ada8dc86d9f2ff55a296fb6ac8..901b4095d09cca10f6df64103d09322b
  
              profilerFiller.pop();
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index a1279303993ffed6ef5ba4ec86668ad845596318..387709d4475eda2195f409a9f6d76706059341bd 100644
+index bd33a381490ec3f03af9d22c9337f5d686014d85..284bd9703b11804f51273ecfaa5cd44925726f5f 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -894,7 +894,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -107,7 +107,7 @@ index a1279303993ffed6ef5ba4ec86668ad845596318..387709d4475eda2195f409a9f6d76706
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index b28eaeec3204596b0b00c47241cb6fdaeb379af3..03ed32f9be1c7c1b5ed81a288fd40d267eddc038 100644
+index 0741dc695c0b22a6edd9a51a9dcdec0cdd545326..3fc09529159d202ce6201626be535d791818fa4a 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1108,6 +1108,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -124,10 +124,10 @@ index b28eaeec3204596b0b00c47241cb6fdaeb379af3..03ed32f9be1c7c1b5ed81a288fd40d26
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index df4f5e724673edda7fe46a826a77d0365b40b1f7..90611f89bfd8e21e14e4b9095a0154a5f6972a4b 100644
+index 3e44a61bd982dc822437f647a02a95affd988cdb..28ae21b08e42edcc031ace2404b9d213589c28e8 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1444,9 +1444,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
+@@ -1427,9 +1427,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
                      this.walkingStepSound(pos, state);
                  }
  

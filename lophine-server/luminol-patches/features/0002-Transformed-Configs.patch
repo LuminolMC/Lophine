@@ -5,24 +5,34 @@ Subject: [PATCH] Transformed Configs
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
-index 4051384e82dba0416838c3c9889a6e368367b601..a5535b479cdcca870d0c8be6ed6fbcb32f266ac2 100644
+index ad2ba680bedb2336de24146676e70a1f64fd9c5a..f81581782bf684bbcf4719e9b268efa3c6385325 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
-@@ -11,6 +11,7 @@ public class CommandConfig implements IConfigModule {
-     @TransformedConfig(name = "enable", directory = {"experiment", "force_the_data_command_to_be_enabled"})
+@@ -13,6 +13,7 @@ public class CommandConfig implements IConfigModule {
      @ConfigInfo(name = "enable_data_command")
+     @HotReloadUnsupported
      public static boolean data = false;
 +    @TransformedConfig(name = "command_block_enabled", directory = {"experiment", "command"}, originInstance = "lophine")
      @TransformedConfig(name = "enabled", directory = {"experiment", "force_enable_command_block_command_execution"})
      @ConfigInfo(name = "enable_command_block", comments = """
              Force to enable command blocks.
+@@ -20,6 +21,9 @@ public class CommandConfig implements IConfigModule {
+             DO NOT ENABLE UNLESS YOU KNOW WHAT YOU ARE DOING!!!
+             """)
+     public static boolean commandBlock = false;
++    @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint bar"})
++    @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint_bar"})
++    @TransformedConfig(name = "waypoint_command_enabled", directory = {"experiment", "command"})
+     @ConfigInfo(name = "enable_waypoints_and_waypoint_command", comments = """
+             Enable waypoint and waypoint command.
+             WARN: Still under testing
 diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
-index 5c09f6e9265c51b52a1352bf65cdf24ffb7eb4f0..ac399e529ea1fed96cd6407142609aec50051786 100644
+index ce190737de22438d5de86b0ee0e8158954fdca18..0a175e87f3cb5b23480abefd70ee2e84e876b0d4 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
-@@ -8,6 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
- 
- @ConfigClassInfo(category = EnumConfigCategory.MISC, name = "force_disable_packet_limiter_of_paper")
+@@ -11,6 +11,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
+         "has negative impacts on security"
+ )
  public class PaperPacketLimiterConfig implements IConfigModule {
 +    @TransformedConfig(name = "unlimit-packet", directory = {"misc", "network"}, originInstance = "lophine")
      @TransformedConfig(name = "force_disable", directory = {"optimizations", "force_disable_packet_limiter_of_paper"})

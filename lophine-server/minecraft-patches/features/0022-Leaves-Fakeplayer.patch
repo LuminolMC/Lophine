@@ -33,7 +33,7 @@ index 9f444988d40208a1bfa9f147ef80489f81115e93..ab2fa0b86564622501238305714fff01
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 2359c5b49e4457cc36239289f203df16767a4341..68c3b0496738ed4fcb02204c5c882fd722397648 100644
+index 8d96d2130cf3383427047fee97fa49155164e337..dfcf8eb7dc422a55d94d6eb9eb1451c7c14a1d56 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -57,7 +57,7 @@ index 2359c5b49e4457cc36239289f203df16767a4341..68c3b0496738ed4fcb02204c5c882fd7
          // Folia start - region threading
          // halt scheduler
          // don't wait, we may be on a scheduler thread
-@@ -1673,7 +1680,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1668,7 +1675,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int i = this.pauseWhenEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
          if (false && i > 0) { // Folia - region threading - this is complicated to implement, and even if done correctly is messy
@@ -66,7 +66,7 @@ index 2359c5b49e4457cc36239289f203df16767a4341..68c3b0496738ed4fcb02204c5c882fd7
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1806,6 +1813,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1801,6 +1808,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              this.isSaving = true;
              if (playerSaveInterval > 0) {
                  this.playerList.saveAll(playerSaveInterval);
@@ -74,7 +74,7 @@ index 2359c5b49e4457cc36239289f203df16767a4341..68c3b0496738ed4fcb02204c5c882fd7
              }
              for (final ServerLevel level : (region == null ? this.getAllLevels() : Arrays.asList(region.world))) { // Folia - region threading
                  if (level.paperConfig().chunks.autoSaveInterval.value() > 0) {
-@@ -2026,6 +2034,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2021,6 +2029,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -82,7 +82,7 @@ index 2359c5b49e4457cc36239289f203df16767a4341..68c3b0496738ed4fcb02204c5c882fd7
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -3160,6 +3169,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3155,6 +3164,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.debugSubscribers;
      }
  
@@ -255,7 +255,7 @@ index fdccb06c918d387e46c29ede7337159db8c5d9ca..4cd5c5659ac098c3b7ff95efb94b1987
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 87bb2715eb4c2fd41537e020ba7fa8cce1591a0f..1837ca833939b8c59b05c03313bec7b02bc85151 100644
+index f5bf8ed6e741823078ab93eac47636fcebcdfe2d..14516c3ebd092e6f230804145a60dc851f34230b 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -220,6 +220,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -312,7 +312,7 @@ index 87bb2715eb4c2fd41537e020ba7fa8cce1591a0f..1837ca833939b8c59b05c03313bec7b0
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 482ca8764c00838dfa8b555a7614d7f306f466db..c5d13b60029f27162df445b31b9db94e225ce894 100644
+index f0d45cb70af62b747c9235941f3fc45221b3b8e6..132645758827ee4d332909e701dde24e69699beb 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -227,7 +227,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -505,39 +505,11 @@ index 0d322ef4aa3e70c9edbb9fa8ba368bef916eb93d..3a5319739f0687fc6f09b2ac8ee31716
      }
  
      public @Nullable ServerPlayer getPlayer(String name) {
-diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index bd1d4a832eec4c89a7f8bdd5d066b6074f206d81..d7224c2297eb5d580349da3b2770895fba6c3e08 100644
---- a/net/minecraft/server/waypoints/ServerWaypointManager.java
-+++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
-@@ -24,6 +24,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
-     public void trackWaypoint(WaypointTransmitter waypoint) {
-         // Lophine start - unsafe waypoint bar
-         if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
-+        // Leaves start - fakeplayer
-+        if (waypoint instanceof org.leavesmc.leaves.bot.ServerBot bot && !bot.getConfigValue(org.leavesmc.leaves.bot.agent.Configs.ENABLE_LOCATOR_BAR)) {
-+            return;
-+        }
-+        // Leaves end - fakeplayer
-         this.waypoints.add(waypoint);
- 
-         for (ServerPlayer serverPlayer : this.players) {
-@@ -63,6 +68,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
-         // Folia - region threading
-         // Lophine start - unsafe waypoint bar
-         if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
-+        // Leaves start - fakeplayer
-+        if (player instanceof org.leavesmc.leaves.bot.ServerBot) {
-+            return;
-+        }
-+        // Leaves end - fakeplayer
-         this.players.add(player);
- 
-         for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 8043b5f24e09e2c96afe14b5ab6978c0b85d744c..df4f5e724673edda7fe46a826a77d0365b40b1f7 100644
+index 32299faedd89a848ca00288672ce85cad707dca0..3e44a61bd982dc822437f647a02a95affd988cdb 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1252,7 +1252,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
+@@ -1235,7 +1235,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
  
              BlockPos onPosLegacy = this.getOnPosLegacy();
              BlockState blockState = this.level().getBlockState(onPosLegacy);
@@ -546,7 +518,7 @@ index 8043b5f24e09e2c96afe14b5ab6978c0b85d744c..df4f5e724673edda7fe46a826a77d036
                  this.checkFallDamage(vec3.y, this.onGround(), blockState, onPosLegacy);
              }
  
-@@ -1587,7 +1587,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
+@@ -1570,7 +1570,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
      }
  
      // Paper start - optimise collisions
@@ -556,7 +528,7 @@ index 8043b5f24e09e2c96afe14b5ab6978c0b85d744c..df4f5e724673edda7fe46a826a77d036
          final boolean yZero = movement.y == 0.0;
          final boolean zZero = movement.z == 0.0;
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index fa6ed83a69aafee57195f1b512481c401ade7b09..97b0f407306e978a506225684ac0a5aeef1d6b3f 100644
+index 3fe9afe55b4d61db8030479d3d74b8656679cb10..c0ebd700caa950948c58846eaf164afc14f87f09 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -3319,7 +3319,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

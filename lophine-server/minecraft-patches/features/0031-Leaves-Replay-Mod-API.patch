@@ -84,10 +84,10 @@ index af71e0e1eb1c93745f3e4954ecc8fbd2ad4808a3..f3829564681faff3ae8971ed90b947b4
                              players.add(serverPlayer1);
                              if (players.size() >= resultLimit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 68c3b0496738ed4fcb02204c5c882fd722397648..72824013c313b7ada8dc86d9f2ff55a296fb6ac8 100644
+index dfcf8eb7dc422a55d94d6eb9eb1451c7c14a1d56..9130f1fbf15500f2149418b73ae2a374bba22eee 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1901,7 +1901,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1896,7 +1896,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      private ServerStatus.Players buildPlayerStatus() {
@@ -96,7 +96,7 @@ index 68c3b0496738ed4fcb02204c5c882fd722397648..72824013c313b7ada8dc86d9f2ff55a2
          int maxPlayers = this.getMaxPlayers();
          if (this.hidesOnlinePlayers()) {
              return new ServerStatus.Players(maxPlayers, players.size(), List.of());
-@@ -2110,7 +2110,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2105,7 +2105,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @Override
      public int getPlayerCount() {
@@ -105,7 +105,7 @@ index 68c3b0496738ed4fcb02204c5c882fd722397648..72824013c313b7ada8dc86d9f2ff55a2
      }
  
      public String[] getPlayerNames() {
-@@ -2314,7 +2314,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2309,7 +2309,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          } else {
              int i = 0;
  
@@ -114,7 +114,7 @@ index 68c3b0496738ed4fcb02204c5c882fd722397648..72824013c313b7ada8dc86d9f2ff55a2
                  serverPlayer.getBukkitEntity().taskScheduler.schedule((ServerPlayer player) -> { // Folia - region threading
                  // Paper start - Expand PlayerGameModeChangeEvent
                  org.bukkit.event.player.PlayerGameModeChangeEvent event = player.setGameMode(gameMode, org.bukkit.event.player.PlayerGameModeChangeEvent.Cause.DEFAULT_GAMEMODE, null); // Folia - region threading
-@@ -2499,7 +2499,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2494,7 +2494,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      if (Thread.currentThread() != this.serverThread) return; // Paper
                      // Paper start - we don't need to save everything, just advancements
                      // this.getPlayerList().saveAll();
@@ -123,7 +123,7 @@ index 68c3b0496738ed4fcb02204c5c882fd722397648..72824013c313b7ada8dc86d9f2ff55a2
                          player.getAdvancements().save();
                      }
                      // Paper end - we don't need to save everything, just advancements
-@@ -2637,7 +2637,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2632,7 +2632,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              PlayerList playerList = this.getPlayerList();
              UserWhiteList whiteList = playerList.getWhiteList();
  
@@ -284,7 +284,7 @@ index 5a8cd3e6b448a4472092690cf589bca10b142126..158593b1a6384db635a1f224919b24c1
  
              this.setListData(list);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 1837ca833939b8c59b05c03313bec7b02bc85151..a1279303993ffed6ef5ba4ec86668ad845596318 100644
+index 14516c3ebd092e6f230804145a60dc851f34230b..bd33a381490ec3f03af9d22c9337f5d686014d85 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -2972,7 +2972,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -306,7 +306,7 @@ index 1837ca833939b8c59b05c03313bec7b02bc85151..a1279303993ffed6ef5ba4ec86668ad8
                  }
                  // Leaves end - skip
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index cdf0543014a92de7d5181bcc81f828e8b11037b1..b28eaeec3204596b0b00c47241cb6fdaeb379af3 100644
+index 3efce8ae3cba85019aea7453f97a72939baef7f6..0741dc695c0b22a6edd9a51a9dcdec0cdd545326 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -202,7 +202,7 @@ import org.jspecify.annotations.Nullable;
@@ -553,7 +553,7 @@ index 36cd1a0307ff1a734eb5f4f3cc013781692e7ad8..0c3e6c1f70289c63bfe424a49374602f
          // Leaves end - fakeplayer support
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 97b0f407306e978a506225684ac0a5aeef1d6b3f..0e019e3b870c9a2fc1ed788d444c3e2be2a2b5f2 100644
+index c0ebd700caa950948c58846eaf164afc14f87f09..e4ae4354e81f34f0db410333fc9b8e17383a5f41 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -262,7 +262,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

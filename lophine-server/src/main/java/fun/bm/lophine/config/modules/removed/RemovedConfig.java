@@ -8,6 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.REMOVED, name = "removed_config")
 public class RemovedConfig implements IConfigModule {
+    @TransformedConfig(name = "optimizedTable", directory = {"optimizations", "waypoint"}, transform = false)
     @TransformedConfig(name = "enabled", directory = {"fixes", "end-void-ring"}, transform = false)
     @TransformedConfig(name = "enabled", directory = {"gameplay", "end_void_rings"}, transform = false)
     @TransformedConfig(name = "datapack_command_enabled", directory = {"experiment", "command"}, transform = false)
