@@ -6,7 +6,7 @@ Subject: [PATCH] Add null check in RegionizedWorldData >> conections
 some of our function patches will crash because of get null in conn.getPlayer(), then when we process player.chunkPosition() will get NPE, so we need to fix it.
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index c49be29a91422bea393f0acd6daa6ef948bd77ec..9b25483472a606168e6860e0a96f05b78d3e5b02 100644
+index 24a8ea9a709ed9637a8e3814c6f8fe9f9f9dedff..35f8bcb5569987e4096ea06bab4e6693dfb97695 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -229,14 +229,17 @@ public final class RegionizedWorldData {
@@ -41,7 +41,7 @@ index c49be29a91422bea393f0acd6daa6ef948bd77ec..9b25483472a606168e6860e0a96f05b7
              }
              for (final Entity entity : from.allEntities) {
                  final ChunkPos pos = entity.chunkPosition();
-@@ -581,6 +591,7 @@ public final class RegionizedWorldData {
+@@ -585,6 +595,7 @@ public final class RegionizedWorldData {
      private static void cleanUpConnection(final Connection conn) {
          // note: ALL connections HERE have a player
          final ServerPlayer player = conn.getPlayer();

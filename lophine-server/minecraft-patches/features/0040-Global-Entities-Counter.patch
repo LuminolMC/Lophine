@@ -5,10 +5,10 @@ Subject: [PATCH] Global Entities Counter
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 1480bd04597001cd7c54e53ded46d7f75908a65a..c49be29a91422bea393f0acd6daa6ef948bd77ec 100644
+index aee3f98173de1b2c5a5278919a5d21b4bca03b7b..24a8ea9a709ed9637a8e3814c6f8fe9f9f9dedff 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -521,6 +521,9 @@ public final class RegionizedWorldData {
+@@ -525,6 +525,9 @@ public final class RegionizedWorldData {
      public final Map<Long, ChunkSectionItemEntityMovementTracker> itemEntityMovementTrackerMap = new it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap<>();
      // Luminol end
  
@@ -18,7 +18,7 @@ index 1480bd04597001cd7c54e53ded46d7f75908a65a..c49be29a91422bea393f0acd6daa6ef9
      public final TickRegions.TickRegionData regionData;
  
      public RegionizedWorldData(final ServerLevel world, final TickRegions.TickRegionData regionData) {
-@@ -533,6 +536,15 @@ public final class RegionizedWorldData {
+@@ -537,6 +540,15 @@ public final class RegionizedWorldData {
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
          this.regionData = regionData;
  
