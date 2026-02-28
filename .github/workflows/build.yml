@@ -54,7 +54,7 @@ jobs:
         run: ./gradlew --refresh-dependencies createMojmapPaperclipJar
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.project_id_b }} CI Artifacts
           path: lophine-server/build/libs/*-paperclip-*-mojmap.jar
