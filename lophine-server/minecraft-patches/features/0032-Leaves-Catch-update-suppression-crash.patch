@@ -46,10 +46,10 @@ index ab80a66646a7ebe2862221ac342b06c14fcfc734..7834f3da4d0ff4a5cdec46b023d73483
              fillCrashReport(reportedException.getReport(), packetListener, packet);
              return reportedException;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 9130f1fbf15500f2149418b73ae2a374bba22eee..eef40103bcec3b836ffb50154fb05926b9757723 100644
+index 24f83a6875219aaf4b29e2461afcd0478a391014..9457d86461b032ff2dac338620c3d4a54e6c7071 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1975,11 +1975,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1978,11 +1978,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  profiler.startTimer(serverLevel.tickTimerId); try { // Folia - profiler
                  serverLevel.tick(hasTimeLeft, region); // Folia - region threading
@@ -81,7 +81,7 @@ index 9130f1fbf15500f2149418b73ae2a374bba22eee..eef40103bcec3b836ffb50154fb05926
  
              profilerFiller.pop();
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index bd33a381490ec3f03af9d22c9337f5d686014d85..284bd9703b11804f51273ecfaa5cd44925726f5f 100644
+index 9345bdb2770e7c27488c547012020337fc651edc..447b3e6149716a3ca4b9721746ea471c94c56e67 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -894,7 +894,20 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -107,7 +107,7 @@ index bd33a381490ec3f03af9d22c9337f5d686014d85..284bd9703b11804f51273ecfaa5cd449
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 0741dc695c0b22a6edd9a51a9dcdec0cdd545326..3fc09529159d202ce6201626be535d791818fa4a 100644
+index ca751564d9189e873d4a53be9a2c68b2a04a8624..e6ec0788b88d3431c06134c879b4bae9c769dac1 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1108,6 +1108,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -124,7 +124,7 @@ index 0741dc695c0b22a6edd9a51a9dcdec0cdd545326..3fc09529159d202ce6201626be535d79
              CrashReport crashReport = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory crashReportCategory = crashReport.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 3e44a61bd982dc822437f647a02a95affd988cdb..28ae21b08e42edcc031ace2404b9d213589c28e8 100644
+index 5ac53fcdca5fa6aae0452840e78d67653ceececb..26de0d418e0dcbb4ecd88630d75c677fdc7ff93d 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1427,9 +1427,19 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name

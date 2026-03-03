@@ -5,11 +5,11 @@ Subject: [PATCH] Global Entities Counter
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index aee3f98173de1b2c5a5278919a5d21b4bca03b7b..24a8ea9a709ed9637a8e3814c6f8fe9f9f9dedff 100644
+index 782f6810d4ed99052169c7099318dc8a2f8937b0..e166c430938eb22bb90d651298562d704fa8f1d9 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -525,6 +525,9 @@ public final class RegionizedWorldData {
-     public final Map<Long, ChunkSectionItemEntityMovementTracker> itemEntityMovementTrackerMap = new it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap<>();
+@@ -564,6 +564,9 @@ public final class RegionizedWorldData {
+     }
      // Luminol end
  
 +    public int uniqueId = -1; // Lophine - Global Entities Counter
@@ -18,7 +18,7 @@ index aee3f98173de1b2c5a5278919a5d21b4bca03b7b..24a8ea9a709ed9637a8e3814c6f8fe9f
      public final TickRegions.TickRegionData regionData;
  
      public RegionizedWorldData(final ServerLevel world, final TickRegions.TickRegionData regionData) {
-@@ -537,6 +540,15 @@ public final class RegionizedWorldData {
+@@ -576,6 +579,15 @@ public final class RegionizedWorldData {
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
          this.regionData = regionData;
  
@@ -97,7 +97,7 @@ index f4c9c551fc39bae38e283ccbbc3cd116f0536a64..db13211b24208d8addd3c210155bc244
                  NaturalSpawner.spawnForChunk(this.level, chunk, spawnState, spawnCategories);
              }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 9756caff0b7403c212987e58c08a2da09bdeb962..4acd4718628b160c482b04da6ba905687b61bbad 100644
+index d8a2f8a1fbf0189e86ccbce70a84641a143cdb91..76930a603a5bf07e62e8ef3a41bbb5213dcc8aea 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -765,6 +765,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe

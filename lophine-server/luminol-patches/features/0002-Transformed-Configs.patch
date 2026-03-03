@@ -27,11 +27,11 @@ index ad2ba680bedb2336de24146676e70a1f64fd9c5a..f81581782bf684bbcf4719e9b268efa3
              Enable waypoint and waypoint command.
              WARN: Still under testing
 diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
-index ce190737de22438d5de86b0ee0e8158954fdca18..0a175e87f3cb5b23480abefd70ee2e84e876b0d4 100644
+index aece37eb6406f8ada56428e68cf198c43f8ae309..d5f99fd672e33c16fc3c3e2031ce2e5a5001ab55 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
 @@ -11,6 +11,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
-         "has negative impacts on security"
+                 "has negative impacts on security"
  )
  public class PaperPacketLimiterConfig implements IConfigModule {
 +    @TransformedConfig(name = "unlimit-packet", directory = {"misc", "network"}, originInstance = "lophine")

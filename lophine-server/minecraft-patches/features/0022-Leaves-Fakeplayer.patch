@@ -33,7 +33,7 @@ index 9f444988d40208a1bfa9f147ef80489f81115e93..ab2fa0b86564622501238305714fff01
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 8d96d2130cf3383427047fee97fa49155164e337..dfcf8eb7dc422a55d94d6eb9eb1451c7c14a1d56 100644
+index d5b680fc6e13ec26d0db2448009e4cbe59933e22..385c71d70ed9e5a3ae25fbecaefd6773c467d31d 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -425,6 +425,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -74,7 +74,7 @@ index 8d96d2130cf3383427047fee97fa49155164e337..dfcf8eb7dc422a55d94d6eb9eb1451c7
              }
              for (final ServerLevel level : (region == null ? this.getAllLevels() : Arrays.asList(region.world))) { // Folia - region threading
                  if (level.paperConfig().chunks.autoSaveInterval.value() > 0) {
-@@ -2021,6 +2029,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2027,6 +2035,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -82,7 +82,7 @@ index 8d96d2130cf3383427047fee97fa49155164e337..dfcf8eb7dc422a55d94d6eb9eb1451c7
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -3155,6 +3164,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3161,6 +3170,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.debugSubscribers;
      }
  
@@ -255,7 +255,7 @@ index fdccb06c918d387e46c29ede7337159db8c5d9ca..4cd5c5659ac098c3b7ff95efb94b1987
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index f5bf8ed6e741823078ab93eac47636fcebcdfe2d..14516c3ebd092e6f230804145a60dc851f34230b 100644
+index eb5722848d1c77044807510cd6a46a46c5763509..88efbe2bcb5621432b67366116150a3dab52e510 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -220,6 +220,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -274,7 +274,7 @@ index f5bf8ed6e741823078ab93eac47636fcebcdfe2d..14516c3ebd092e6f230804145a60dc85
      }
  
      // Folia start - region threading
-@@ -2490,6 +2492,12 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2518,6 +2520,12 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
          return this.players;
      }
  
@@ -287,7 +287,7 @@ index f5bf8ed6e741823078ab93eac47636fcebcdfe2d..14516c3ebd092e6f230804145a60dc85
      @Override
      public void updatePOIOnBlockStateChange(BlockPos pos, BlockState oldState, BlockState newState) {
          Optional<Holder<PoiType>> optional = PoiTypes.forState(oldState);
-@@ -2963,6 +2971,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2991,6 +2999,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              // ServerLevel.this.getChunkSource().addEntity(entity); // Paper - ignore and warn about illegal addEntity calls instead of crashing server; moved down below valid=true
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.add(serverPlayer);
@@ -299,7 +299,7 @@ index f5bf8ed6e741823078ab93eac47636fcebcdfe2d..14516c3ebd092e6f230804145a60dc85
                  if (serverPlayer.isReceivingWaypoints()) {
                      ServerLevel.this.getWaypointManager().addPlayer(serverPlayer);
                  }
-@@ -3044,6 +3057,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -3072,6 +3085,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              ServerLevel.this.getChunkSource().removeEntity(entity);
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.remove(serverPlayer);
@@ -312,7 +312,7 @@ index f5bf8ed6e741823078ab93eac47636fcebcdfe2d..14516c3ebd092e6f230804145a60dc85
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f0d45cb70af62b747c9235941f3fc45221b3b8e6..132645758827ee4d332909e701dde24e69699beb 100644
+index 6df8f98afa7810815b8d7c86b3dac57cd5915682..7c2d53ca863c2e50c6871938efc426ddefff9b5c 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -227,7 +227,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -506,7 +506,7 @@ index 0d322ef4aa3e70c9edbb9fa8ba368bef916eb93d..3a5319739f0687fc6f09b2ac8ee31716
  
      public @Nullable ServerPlayer getPlayer(String name) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 32299faedd89a848ca00288672ce85cad707dca0..3e44a61bd982dc822437f647a02a95affd988cdb 100644
+index 22e68cabb4554c3e21e6f4ef316186f60ec77511..5ac53fcdca5fa6aae0452840e78d67653ceececb 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1235,7 +1235,7 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name

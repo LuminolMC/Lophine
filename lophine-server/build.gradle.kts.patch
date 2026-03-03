@@ -49,9 +49,9 @@
 -    implementation(project(":luminol-api")) // Luminol
 +    implementation(project(":lophine-api")) // Lophine
      // Luminol start - Dependenices insert
+     implementation("net.objecthunter:exp4j:0.4.8")
      implementation("io.netty:netty-all:4.2.9.Final") // used for io_uring
-     implementation("com.electronwill.night-config:toml:3.8.3") // Night config
-@@ -273,14 +_,14 @@
+@@ -274,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -70,7 +70,7 @@
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -432,7 +_,7 @@
+@@ -433,7 +_,7 @@
  }
  
  fill {

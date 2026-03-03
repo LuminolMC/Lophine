@@ -5,10 +5,10 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index c7f578c117baccb10c0c15b05a6c04e073f15da8..aee3f98173de1b2c5a5278919a5d21b4bca03b7b 100644
+index 6de3e60d63a838cf9d24822cbbf1cd2b445e6b4d..782f6810d4ed99052169c7099318dc8a2f8937b0 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -472,7 +472,7 @@ public final class RegionizedWorldData {
+@@ -482,7 +482,7 @@ public final class RegionizedWorldData {
      public long lastMidTickExecuteFailure;
      // From Level
      public boolean populating;
@@ -17,7 +17,7 @@ index c7f578c117baccb10c0c15b05a6c04e073f15da8..aee3f98173de1b2c5a5278919a5d21b4
      public boolean captureBlockStates = false;
      public boolean captureTreeGeneration = false;
      public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
-@@ -531,7 +531,7 @@ public final class RegionizedWorldData {
+@@ -570,7 +570,7 @@ public final class RegionizedWorldData {
          this.world = world;
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);
@@ -27,7 +27,7 @@ index c7f578c117baccb10c0c15b05a6c04e073f15da8..aee3f98173de1b2c5a5278919a5d21b4
          this.wireHandler = new alternate.current.wire.WireHandler(world);
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 284bd9703b11804f51273ecfaa5cd44925726f5f..9756caff0b7403c212987e58c08a2da09bdeb962 100644
+index 447b3e6149716a3ca4b9721746ea471c94c56e67..d8a2f8a1fbf0189e86ccbce70a84641a143cdb91 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -927,12 +927,16 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe

@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-index 14cf379decfd46c4719bc192a1467bbbd6835417..20970844de2e64ca213384e53003e80020165770 100644
+index 948730740e151352b4a12a90862f1e16925e52b0..0e6c9edbceef525bf102ad8f1fc0cb08e789d0e6 100644
 --- a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
 +++ b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-@@ -38,6 +38,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+@@ -39,6 +39,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
              return;
          }
  
@@ -24,7 +24,7 @@ index 14cf379decfd46c4719bc192a1467bbbd6835417..20970844de2e64ca213384e53003e800
          this.waypoints.add(waypoint);
  
          for (ServerPlayer toCreateFor : this.trackingPlayers) {
-@@ -91,6 +97,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+@@ -92,6 +98,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
      public void addPlayer(ServerPlayer player) {
          this.trackingPlayers.add(player);
  
