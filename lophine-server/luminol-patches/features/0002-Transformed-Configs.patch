@@ -5,7 +5,7 @@ Subject: [PATCH] Transformed Configs
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
-index ad2ba680bedb2336de24146676e70a1f64fd9c5a..f81581782bf684bbcf4719e9b268efa3c6385325 100644
+index ad2ba680bedb2336de24146676e70a1f64fd9c5a..505f7fe2ac40451e56967c90df9c52fb35f80fdf 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 @@ -13,6 +13,7 @@ public class CommandConfig implements IConfigModule {
@@ -20,9 +20,9 @@ index ad2ba680bedb2336de24146676e70a1f64fd9c5a..f81581782bf684bbcf4719e9b268efa3
              DO NOT ENABLE UNLESS YOU KNOW WHAT YOU ARE DOING!!!
              """)
      public static boolean commandBlock = false;
-+    @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint bar"})
-+    @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint_bar"})
-+    @TransformedConfig(name = "waypoint_command_enabled", directory = {"experiment", "command"})
++    @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint bar"}, originInstance = "lophine")
++    @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint_bar"}, originInstance = "lophine")
++    @TransformedConfig(name = "waypoint_command_enabled", directory = {"experiment", "command"}, originInstance = "lophine")
      @ConfigInfo(name = "enable_waypoints_and_waypoint_command", comments = """
              Enable waypoint and waypoint command.
              WARN: Still under testing
