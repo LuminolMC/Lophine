@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function;
+package fun.bm.lophine.config.modules.function.carpet;
 
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
@@ -7,7 +7,8 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
     category = EnumConfigCategory.FUNCTION,
-    name = "carpet-porting",
+    directory = "carpet-porting",
+    name = "carpet",
     comments = """
             Gameplay toggles ported from fabric-carpet."""
 )

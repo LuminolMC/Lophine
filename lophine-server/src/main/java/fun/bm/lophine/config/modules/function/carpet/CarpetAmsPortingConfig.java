@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function;
+package fun.bm.lophine.config.modules.function.carpet;
 
 import java.util.Locale;
 import me.earthme.luminol.config.IConfigModule;
@@ -8,13 +8,13 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 @ConfigClassInfo(
     category = EnumConfigCategory.FUNCTION,
-    name = "carpet-ams-porting",
+    directory = "carpet-porting",
+    name = "carpet-ams",
     comments = """
             Gameplay toggles ported from Carpet-AMS-Addition."""
 )

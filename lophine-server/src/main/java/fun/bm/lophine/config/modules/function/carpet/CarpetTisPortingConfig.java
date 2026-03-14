@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function;
+package fun.bm.lophine.config.modules.function.carpet;
 
 import java.util.Locale;
 import me.earthme.luminol.config.IConfigModule;
@@ -11,7 +11,8 @@ import net.minecraft.world.level.Level;
 
 @ConfigClassInfo(
     category = EnumConfigCategory.FUNCTION,
-    name = "carpet-tis-porting",
+    directory = "carpet-porting",
+    name = "carpet-tis",
     comments = """
             Gameplay toggles ported from carpet-tis-addition."""
 )

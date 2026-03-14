@@ -5,7 +5,7 @@ Subject: [PATCH] Carpet features
 
 
 diff --git a/net/minecraft/server/level/ChunkMap.java b/net/minecraft/server/level/ChunkMap.java
-index 4cd5c5659ac098c3b7ff95efb94b1987e2dd40d0..7fc671ea49262644d828a00ab44196a71fe5427d 100644
+index 4cd5c5659ac098c3b7ff95efb94b1987e2dd40d0..d53d6999eaeaad8a9014c01ec913d299421ede91 100644
 --- a/net/minecraft/server/level/ChunkMap.java
 +++ b/net/minecraft/server/level/ChunkMap.java
 @@ -902,7 +902,8 @@ public class ChunkMap extends SimpleRegionStorage implements ChunkHolder.PlayerP
@@ -14,12 +14,12 @@ index 4cd5c5659ac098c3b7ff95efb94b1987e2dd40d0..7fc671ea49262644d828a00ab44196a7
      private boolean skipPlayer(ServerPlayer player) {
 -        return player.isSpectator() && !this.level.getGameRules().get(GameRules.SPECTATORS_GENERATE_CHUNKS);
 +        return player.isSpectator() && !this.level.getGameRules().get(GameRules.SPECTATORS_GENERATE_CHUNKS)
-+            || player.isCreative() && !fun.bm.lophine.config.modules.function.CarpetPortingConfig.creativePlayersLoadChunks;
++            || player.isCreative() && !fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.creativePlayersLoadChunks;
      }
  
      void updatePlayerStatus(ServerPlayer player, boolean track) {
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index e6ec0788b88d3431c06134c879b4bae9c769dac1..d422be401ba58f13ccace9c961b53de886a3a067 100644
+index e6ec0788b88d3431c06134c879b4bae9c769dac1..8dae3d53b2fff9546946e5ea143e6247e550d962 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1158,8 +1158,15 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -28,7 +28,7 @@ index e6ec0788b88d3431c06134c879b4bae9c769dac1..d422be401ba58f13ccace9c961b53de8
          if (this.fallDistance > 0.5 || this.isInWater() || this.getAbilities().flying || this.isSleeping() || this.isInPowderSnow) {
 -            if (!this.level().paperConfig().entities.behavior.parrotsAreUnaffectedByPlayerMovement) // Paper - Add option to make parrots stay
 -            this.removeEntitiesOnShoulder();
-+            boolean shouldDropPersistentParrots = !fun.bm.lophine.config.modules.function.CarpetPortingConfig.persistentParrots
++            boolean shouldDropPersistentParrots = !fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.persistentParrots
 +                || this.getAbilities().invulnerable && this.fallDistance > 0.5F
 +                || this.isInWater()
 +                || this.getAbilities().flying
@@ -44,7 +44,7 @@ index e6ec0788b88d3431c06134c879b4bae9c769dac1..d422be401ba58f13ccace9c961b53de8
              )) return false; // Paper - split the if statement. If below statement is false, hurtServer would not have been evaluated. Return false.
              // Paper start - cancellable death events
              this.queueHealthUpdatePacket = true;
-+            if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.persistentParrots && !this.isShiftKeyDown()) {
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.persistentParrots && !this.isShiftKeyDown()) {
 +                float dropChance = Math.min(1.0F, amount / 15.0F);
 +                if (this.random.nextFloat() < dropChance) {
 +                    this.releaseLeftShoulderEntity();
@@ -60,20 +60,20 @@ index e6ec0788b88d3431c06134c879b4bae9c769dac1..d422be401ba58f13ccace9c961b53de8
      @Override
      public boolean isInvulnerableTo(ServerLevel level, DamageSource damageSource) {
          return (super.isInvulnerableTo(level, damageSource) // Paper - disable player cramming;
-+            || (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.safeFlight && damageSource.is(DamageTypes.FLY_INTO_WALL))
-+            || (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.invulnerable && !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD))
++            || (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.safeFlight && damageSource.is(DamageTypes.FLY_INTO_WALL))
++            || (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.invulnerable && !damageSource.is(DamageTypes.FELL_OUT_OF_WORLD))
              || this.isChangingDimension() && !damageSource.is(DamageTypes.ENDER_PEARL)
              || !this.connection.hasClientLoaded()) || (!this.level().paperConfig().collisions.allowPlayerCrammingDamage && damageSource.is(DamageTypes.CRAMMING)); // Paper - disable player cramming;
      }
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 26de0d418e0dcbb4ecd88630d75c677fdc7ff93d..dbf427098576dc2683cfb52135d773c0a9d5fba7 100644
+index 26de0d418e0dcbb4ecd88630d75c677fdc7ff93d..5a8fada150705333994897dac9c513becd953330 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -943,8 +943,9 @@ public abstract class Entity implements SyncedDataHolder, DebugValueSource, Name
  
      public void checkBelowWorld() {
          if (!this.level.getWorld().isVoidDamageEnabled()) return; // Paper - check if void damage is enabled on the world
-+        double voidRelatedAltitude = fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.getVoidRelatedAltitude(this.level());
++        double voidRelatedAltitude = fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.getVoidRelatedAltitude(this.level());
          // Paper start - Configurable nether ceiling damage
 -        if (this.getY() < (this.level.getMinY() + this.level.getWorld().getVoidDamageMinBuildHeightOffset()) || (this.level.getWorld().getEnvironment() == org.bukkit.World.Environment.NETHER // Paper - use configured min build height offset
 +        if (this.getY() < voidRelatedAltitude || (this.level.getWorld().getEnvironment() == org.bukkit.World.Environment.NETHER // Paper - use configured min build height offset
@@ -84,7 +84,7 @@ index 26de0d418e0dcbb4ecd88630d75c677fdc7ff93d..dbf427098576dc2683cfb52135d773c0
          // Paper end - Restore vanilla drops behavior
          if (stack.isEmpty()) {
              return null;
-+        } else if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.ironGolemNoDropFlower
++        } else if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.ironGolemNoDropFlower
 +            && this instanceof net.minecraft.world.entity.animal.golem.IronGolem
 +            && stack.is(net.minecraft.world.item.Items.POPPY)) {
 +            return null;
@@ -92,7 +92,7 @@ index 26de0d418e0dcbb4ecd88630d75c677fdc7ff93d..dbf427098576dc2683cfb52135d773c0
              // CraftBukkit start - Capture drops for death event
              if (this instanceof net.minecraft.world.entity.LivingEntity && !this.forceDrops) {
 diff --git a/net/minecraft/world/entity/ExperienceOrb.java b/net/minecraft/world/entity/ExperienceOrb.java
-index 29d904b02a2c7b3d25261ca26c7c0479b00999ef..031f5ca78e6b89b998eaff2c16e9662f4d071ada 100644
+index 29d904b02a2c7b3d25261ca26c7c0479b00999ef..44278d47a896872d77acbece4633e37e949140c6 100644
 --- a/net/minecraft/world/entity/ExperienceOrb.java
 +++ b/net/minecraft/world/entity/ExperienceOrb.java
 @@ -197,8 +197,13 @@ public class ExperienceOrb extends Entity {
@@ -101,12 +101,12 @@ index 29d904b02a2c7b3d25261ca26c7c0479b00999ef..031f5ca78e6b89b998eaff2c16e9662f
          Player prevTarget = this.followingPlayer; // CraftBukkit - store old target
 -        if (this.followingPlayer == null || this.followingPlayer.isSpectator() || this.followingPlayer.distanceToSqr(this) > 64.0) {
 -            Player nearestPlayer = this.level().getNearestPlayer(this, 8.0);
-+        double trackingDistance = fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.getXpTrackingDistance();
++        double trackingDistance = fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.getXpTrackingDistance();
 +        if (trackingDistance <= 0.0D) {
 +            this.followingPlayer = null;
 +        } else if (this.followingPlayer == null
 +            || this.followingPlayer.isSpectator()
-+            || this.followingPlayer.distanceToSqr(this) > fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.getXpTrackingDistanceSqr()) {
++            || this.followingPlayer.distanceToSqr(this) > fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.getXpTrackingDistanceSqr()) {
 +            Player nearestPlayer = this.level().getNearestPlayer(this, trackingDistance);
              if (nearestPlayer != null && !nearestPlayer.isCreativeFlyOrSpectator() && !nearestPlayer.isDeadOrDying()) { // Leaves - creative no clip
                  this.followingPlayer = nearestPlayer;
@@ -124,7 +124,7 @@ index 29d904b02a2c7b3d25261ca26c7c0479b00999ef..031f5ca78e6b89b998eaff2c16e9662f
      @Override
      public void playerTouch(Player entity) {
          if (entity instanceof ServerPlayer serverPlayer) {
-+            boolean xpNoCooldown = fun.bm.lophine.config.modules.function.CarpetPortingConfig.xpNoCooldown;
++            boolean xpNoCooldown = fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.xpNoCooldown;
 +            if (xpNoCooldown) {
 +                entity.takeXpDelay = 0;
 +            }
@@ -153,7 +153,7 @@ index 29d904b02a2c7b3d25261ca26c7c0479b00999ef..031f5ca78e6b89b998eaff2c16e9662f
                      this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.PICKUP); // CraftBukkit - add Bukkit remove cause
                  }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index fc8833655102ca98bb331782a624af79cbef414f..435a540209369b9641175171a1d048454943a78d 100644
+index fc8833655102ca98bb331782a624af79cbef414f..206dc842631ca7b4e2afd23cbb17366b3dfca0eb 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -2866,7 +2866,10 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -161,22 +161,22 @@ index fc8833655102ca98bb331782a624af79cbef414f..435a540209369b9641175171a1d04845
      @Override
      protected void onBelowWorld() {
 -        this.hurt(this.damageSources().fellOutOfWorld(), this.level().getWorld().getVoidDamageAmount()); // Paper - use configured void damage amount
-+        if (this instanceof Player player && fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.shouldIgnoreVoidDamage(player)) {
++        if (this instanceof Player player && fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.shouldIgnoreVoidDamage(player)) {
 +            return;
 +        }
-+        this.hurt(this.damageSources().fellOutOfWorld(), fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.getVoidDamageAmount(this.level())); // Paper - use configured void damage amount
++        this.hurt(this.damageSources().fellOutOfWorld(), fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.getVoidDamageAmount(this.level())); // Paper - use configured void damage amount
      }
  
      protected void updateSwingTime() {
 diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
-index c6985d2a9d1093943d754d77089bd4c3d5baf3ee..485b922f60aeb12b540792ea666b0f65c8495b9e 100644
+index c6985d2a9d1093943d754d77089bd4c3d5baf3ee..e4616615473ebbdf94de5344dae602d853550af3 100644
 --- a/net/minecraft/world/entity/Mob.java
 +++ b/net/minecraft/world/entity/Mob.java
 @@ -2,6 +2,7 @@ package net.minecraft.world.entity;
- 
+
  import com.google.common.annotations.VisibleForTesting;
  import com.google.common.collect.Maps;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
  import java.util.ArrayList;
  import java.util.HashSet;
@@ -184,7 +184,7 @@ index c6985d2a9d1093943d754d77089bd4c3d5baf3ee..485b922f60aeb12b540792ea666b0f65
      }
  
      private void burnUndead() {
-+        if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.undeadDontBurnInSunlight) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.undeadDontBurnInSunlight) {
 +            return;
 +        }
          if (this.isAlive() && this.isSunBurnTick()) {
@@ -206,7 +206,7 @@ index c6985d2a9d1093943d754d77089bd4c3d5baf3ee..485b922f60aeb12b540792ea666b0f65
              this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
          } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
 diff --git a/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java b/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
-index 50cc4c462640a9d40abef6245439d71e8c593ae6..c09be37c14a60090384c4be6b41b5d22d8f1a2d8 100644
+index 50cc4c462640a9d40abef6245439d71e8c593ae6..ac89ce89d25911727e464b325ab12478a3d12225 100644
 --- a/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
 +++ b/net/minecraft/world/entity/ai/goal/RemoveBlockGoal.java
 @@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
@@ -221,7 +221,7 @@ index 50cc4c462640a9d40abef6245439d71e8c593ae6..c09be37c14a60090384c4be6b41b5d22
              }
  
              if (this.ticksSinceReachedGoal > 60) {
-+                if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.turtleEggTrampledDisabled && this.blockToRemove == Blocks.TURTLE_EGG) {
++                if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.turtleEggTrampledDisabled && this.blockToRemove == Blocks.TURTLE_EGG) {
 +                    this.ticksSinceReachedGoal -= 30;
 +                    return;
 +                }
@@ -229,13 +229,13 @@ index 50cc4c462640a9d40abef6245439d71e8c593ae6..c09be37c14a60090384c4be6b41b5d22
                  if (!org.bukkit.craftbukkit.event.CraftEventFactory.callEntityInteractEvent(this.removerMob, org.bukkit.craftbukkit.block.CraftBlock.at(level, posWithBlock))) {
                      return;
 diff --git a/net/minecraft/world/entity/ambient/Bat.java b/net/minecraft/world/entity/ambient/Bat.java
-index ca68d356e892e0ac8a651ced92aab7dbfd4699b4..69484dffd313b28743493a33eb802cb6487b9a02 100644
+index ca68d356e892e0ac8a651ced92aab7dbfd4699b4..1ba85d8a58d679de993a9f13b0fa5502d97c0ab9 100644
 --- a/net/minecraft/world/entity/ambient/Bat.java
 +++ b/net/minecraft/world/entity/ambient/Bat.java
 @@ -1,5 +1,6 @@
  package net.minecraft.world.entity.ambient;
- 
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
+
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import net.minecraft.core.BlockPos;
  import net.minecraft.network.syncher.EntityDataAccessor;
  import net.minecraft.network.syncher.EntityDataSerializers;
@@ -251,14 +251,14 @@ index ca68d356e892e0ac8a651ced92aab7dbfd4699b4..69484dffd313b28743493a33eb802cb6
              && !randomSource.nextBoolean()
              && level.getMaxLocalRawBrightness(pos) <= randomSource.nextInt(4)
 diff --git a/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java b/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
-index 09c794e68e6197d507cbe0b95aee822bac3ea4b6..0e394860545639f20bfb07a82c4d2e4dc643c9da 100644
+index 09c794e68e6197d507cbe0b95aee822bac3ea4b6..68ede2b4a356a1a1d8672dd428382780a7e54b84 100644
 --- a/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
 +++ b/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
 @@ -443,6 +443,10 @@ public class EnderDragon extends Mob implements Enemy {
      }
  
      private boolean checkWalls(ServerLevel level, AABB box) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.enderDragonNoDestroyBlock) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.enderDragonNoDestroyBlock) {
 +            return false;
 +        }
 +
@@ -266,14 +266,14 @@ index 09c794e68e6197d507cbe0b95aee822bac3ea4b6..0e394860545639f20bfb07a82c4d2e4d
          int floor1 = Mth.floor(box.minY);
          int floor2 = Mth.floor(box.minZ);
 diff --git a/net/minecraft/world/entity/boss/wither/WitherBoss.java b/net/minecraft/world/entity/boss/wither/WitherBoss.java
-index 86b6b94c3e63bb52917fe0f708d24aa813f433c7..562b03f03ceeb2c02051bc207fc05c445e83954b 100644
+index 86b6b94c3e63bb52917fe0f708d24aa813f433c7..14ee41e12b011039453bdfbb506376d339a49611 100644
 --- a/net/minecraft/world/entity/boss/wither/WitherBoss.java
 +++ b/net/minecraft/world/entity/boss/wither/WitherBoss.java
 @@ -1,6 +1,7 @@
  package net.minecraft.world.entity.boss.wither;
- 
+
  import com.google.common.collect.ImmutableList;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.EnumSet;
  import java.util.List;
  import net.minecraft.core.BlockPos;
@@ -282,7 +282,7 @@ index 86b6b94c3e63bb52917fe0f708d24aa813f433c7..562b03f03ceeb2c02051bc207fc05c44
                  }
                  // CraftBukkit end
 -                if (!this.isSilent()) {
-+                if (!this.isSilent() && !fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.witherSpawnedSoundDisabled) {
++                if (!this.isSilent() && !fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.witherSpawnedSoundDisabled) {
                      // CraftBukkit start - Use relative location for far away sounds
                      // level.globalLevelEvent(LevelEvent.SOUND_WITHER_BOSS_SPAWN, this.blockPosition(), 0);
                      int viewDistance = level.getCraftServer().getViewDistance() * 16;
@@ -302,7 +302,7 @@ index 86b6b94c3e63bb52917fe0f708d24aa813f433c7..562b03f03ceeb2c02051bc207fc05c44
              this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
          } else {
 diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
-index 1b8a963726ee2b2244d429f1e7e3a08034bfbd70..0c39dc463e90f71ccf115c46fac30e25750f5dc0 100644
+index 1b8a963726ee2b2244d429f1e7e3a08034bfbd70..693c72c7d60ba3ef84a6bb6a3ed40230d5973296 100644
 --- a/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/net/minecraft/world/entity/item/ItemEntity.java
 @@ -175,7 +175,10 @@ public class ItemEntity extends Entity implements TraceableEntity, ChangePublish
@@ -312,7 +312,7 @@ index 1b8a963726ee2b2244d429f1e7e3a08034bfbd70..0c39dc463e90f71ccf115c46fac30e25
 -            if (!this.onGround() || this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F || (this.tickCount + this.getId()) % 4 == 0) { // Paper - Diff on change; ActivationRange immunity
 +            if (!this.onGround()
 +                || this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-5F
-+                || fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.itemEntitySkipMovementDisabled
++                || fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.itemEntitySkipMovementDisabled
 +                || (this.tickCount + this.getId()) % 4 == 0) { // Paper - Diff on change; ActivationRange immunity
                  this.move(MoverType.SELF, this.getDeltaMovement());
                  this.applyEffectsFromBlocks();
@@ -323,7 +323,7 @@ index 1b8a963726ee2b2244d429f1e7e3a08034bfbd70..0c39dc463e90f71ccf115c46fac30e25
  
 +    @Override
 +    public void thunderHit(ServerLevel level, net.minecraft.world.entity.LightningBolt lightning) {
-+        if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.lightningKillsDropsFix && this.age <= 8) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.lightningKillsDropsFix && this.age <= 8) {
 +            return;
 +        }
 +        super.thunderHit(level, lightning);
@@ -333,7 +333,7 @@ index 1b8a963726ee2b2244d429f1e7e3a08034bfbd70..0c39dc463e90f71ccf115c46fac30e25
      protected void addAdditionalSaveData(ValueOutput output) {
          output.putShort("Health", (short)this.health);
 diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
-index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896bfbcb868c 100644
+index fd1db18764be58bc5ed5983b98e669c76f7ff427..9658c7273d03c3daaf8eddaeac5abcca361a6bca 100644
 --- a/net/minecraft/world/entity/item/PrimedTnt.java
 +++ b/net/minecraft/world/entity/item/PrimedTnt.java
 @@ -26,6 +26,7 @@ import net.minecraft.world.level.material.FluidState;
@@ -342,7 +342,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
  import net.minecraft.world.level.storage.ValueOutput;
 +import net.minecraft.world.phys.Vec3;
  import org.jspecify.annotations.Nullable;
- 
+
  // CraftBukkit start
 @@ -58,6 +59,8 @@ public class PrimedTnt extends Entity implements TraceableEntity {
      private boolean usedPortal;
@@ -360,13 +360,13 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
 -        double d = this.random.nextDouble() * (float) (Math.PI * 2); // Paper - Don't use level random in entity constructors
 -        this.setDeltaMovement(-Math.sin(d) * 0.02, 0.2F, -Math.cos(d) * 0.02);
 -        this.setFuse(80);
-+        if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.tntPrimerMomentumRemoved) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.tntPrimerMomentumRemoved) {
 +            this.setDeltaMovement(0.0, 0.2F, 0.0);
 +        } else {
 +            double d = this.random.nextDouble() * (float) (Math.PI * 2); // Paper - Don't use level random in entity constructors
 +            this.setDeltaMovement(-Math.sin(d) * 0.02, 0.2F, -Math.cos(d) * 0.02);
 +        }
-+        this.setFuse(fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.getTntFuseDuration());
++        this.setFuse(fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.getTntFuseDuration());
          this.xo = x;
          this.yo = y;
          this.zo = z;
@@ -375,7 +375,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
      @Override
      protected void defineSynchedData(SynchedEntityData.Builder builder) {
 -        builder.define(DATA_FUSE_ID, 80);
-+        builder.define(DATA_FUSE_ID, fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.getTntFuseDuration());
++        builder.define(DATA_FUSE_ID, fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.getTntFuseDuration());
          builder.define(DATA_BLOCK_STATE_ID, DEFAULT_BLOCK_STATE);
      }
  
@@ -387,7 +387,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
 +            Vec3 deltaMovement = this.getDeltaMovement();
 +            if (deltaMovement.x != 0.0 || deltaMovement.y != 0.0 || deltaMovement.z != 0.0) {
 +                this.canMerge = true;
-+            } else if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.mergeTNT && this.canMerge) {
++            } else if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.mergeTNT && this.canMerge) {
 +                this.canMerge = false;
 +                for (Entity entity : this.level().getEntities(this, this.getBoundingBox())) {
 +                    if (entity instanceof PrimedTnt primedTnt && !entity.isRemoved()) {
@@ -413,7 +413,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
                  return;
              }
              // CraftBukkit end
-+            float explosionPower = fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.getTntPower(event.getRadius());
++            float explosionPower = fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.getTntPower(event.getRadius());
              this.level()
                  .explode(
                      this,
@@ -426,7 +426,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
                      event.getFire(), // CraftBukkit
                      Level.ExplosionInteraction.TNT
                  );
-+            if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.mergeTNT && this.mergedTntCount > 1) {
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.mergeTNT && this.mergedTntCount > 1) {
 +                for (int i = 0; i < this.mergedTntCount - 1; i++) {
 +                    this.level()
 +                        .explode(
@@ -446,7 +446,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..2d514829ac29067576f4f1de74a9896b
      }
  
 diff --git a/net/minecraft/world/entity/monster/Guardian.java b/net/minecraft/world/entity/monster/Guardian.java
-index 8229de18fbac59493b377b12a281f3f4d74731d7..74b190565ed35219913f5f6cba90c58d6e2fffcc 100644
+index 8229de18fbac59493b377b12a281f3f4d74731d7..b449964d265c0e1813d7218d6b6fb3c1bb30d85b 100644
 --- a/net/minecraft/world/entity/monster/Guardian.java
 +++ b/net/minecraft/world/entity/monster/Guardian.java
 @@ -20,6 +20,7 @@ import net.minecraft.world.entity.Entity;
@@ -465,7 +465,7 @@ index 8229de18fbac59493b377b12a281f3f4d74731d7..74b190565ed35219913f5f6cba90c58d
 +    public void thunderHit(ServerLevel level, LightningBolt lightning) {
 +        if (!this.level().isClientSide()
 +            && !this.isRemoved()
-+            && fun.bm.lophine.config.modules.function.CarpetPortingConfig.renewableSponges
++            && fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.renewableSponges
 +            && !(this instanceof ElderGuardian)) {
 +            ElderGuardian elderGuardian = new ElderGuardian(EntityType.ELDER_GUARDIAN, this.level());
 +            elderGuardian.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
@@ -486,7 +486,7 @@ index 8229de18fbac59493b377b12a281f3f4d74731d7..74b190565ed35219913f5f6cba90c58d
          EntityType<? extends Guardian> entityType, LevelAccessor level, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random
      ) {
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 8966953ee80a1527c9c4cc4d0a7a3bdb2197a2da..94b040335d0b31b536493de00ab048d34edb3937 100644
+index 8966953ee80a1527c9c4cc4d0a7a3bdb2197a2da..8a45b71906bf6f0d14505618bcf76ce90ab8c729 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -64,6 +64,7 @@ import net.minecraft.world.entity.Entity;
@@ -511,7 +511,7 @@ index 8966953ee80a1527c9c4cc4d0a7a3bdb2197a2da..94b040335d0b31b536493de00ab048d3
              for (Entity entity : entities) {
                  if (entity.getType() == EntityType.EXPERIENCE_ORB) {
 -                    list.add(entity);
-+                    if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.xpNoCooldown) {
++                    if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.xpNoCooldown) {
 +                        this.touch(entity);
 +                    } else {
 +                        list.add(entity);
@@ -524,7 +524,7 @@ index 8966953ee80a1527c9c4cc4d0a7a3bdb2197a2da..94b040335d0b31b536493de00ab048d3
                  // CraftBukkit start - Don't filter out 0 damage
                  boolean damaged = super.hurtServer(level, damageSource, amount);
 -                if (damaged) {
-+                if (damaged && !fun.bm.lophine.config.modules.function.CarpetPortingConfig.persistentParrots) {
++                if (damaged && !fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.persistentParrots) {
                      this.removeEntitiesOnShoulder();
                  }
                  return damaged;
@@ -532,7 +532,7 @@ index 8966953ee80a1527c9c4cc4d0a7a3bdb2197a2da..94b040335d0b31b536493de00ab048d3
  
          if (playerAttackEntityEvent.callEvent() && willAttack) { // Logic moved to willAttack local variable.
          // Paper end - PlayerAttackEntityEvent
-+            if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.creativeOneHitKill
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.creativeOneHitKill
 +                && this.isCreative()
 +                && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) {
 +                if (this.isShiftKeyDown()) {
@@ -577,13 +577,13 @@ index 8966953ee80a1527c9c4cc4d0a7a3bdb2197a2da..94b040335d0b31b536493de00ab048d3
          sendSoundEffect(this, this.getX(), this.getY(), this.getZ(), sound, this.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
      }
 diff --git a/net/minecraft/world/entity/projectile/arrow/ThrownTrident.java b/net/minecraft/world/entity/projectile/arrow/ThrownTrident.java
-index 483b8247d3be5839f9d764912ae5b879a9f729aa..e96f788be3cb8ac27fc91825cdf23d754a0d8bdb 100644
+index 483b8247d3be5839f9d764912ae5b879a9f729aa..eddc7b0742853fd3b45c07dd42428573d9c16334 100644
 --- a/net/minecraft/world/entity/projectile/arrow/ThrownTrident.java
 +++ b/net/minecraft/world/entity/projectile/arrow/ThrownTrident.java
 @@ -1,7 +1,10 @@
  package net.minecraft.world.entity.projectile.arrow;
  
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.Collection;
  import java.util.List;
 +import net.minecraft.core.BlockPos;
@@ -658,13 +658,13 @@ index 483b8247d3be5839f9d764912ae5b879a9f729aa..e96f788be3cb8ac27fc91825cdf23d75
      public void playerTouch(Player entity) {
          if (this.ownedBy(entity) || this.getOwner() == null) {
 diff --git a/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java b/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java
-index 0dd6d8a39f2c9ab1d959f71d34632a15dfb498f8..4087c40772cc5143c81c20424487c6086a4380d3 100644
+index 0dd6d8a39f2c9ab1d959f71d34632a15dfb498f8..c14104f920ac65a2bf0396d89ae7c91365d4073b 100644
 --- a/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java
 +++ b/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java
 @@ -1,5 +1,6 @@
  package net.minecraft.world.entity.projectile.throwableitemprojectile;
  
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.UUID;
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.SectionPos;
@@ -691,14 +691,14 @@ index 0dd6d8a39f2c9ab1d959f71d34632a15dfb498f8..4087c40772cc5143c81c20424487c608
  
                          this.playSound(serverLevel, vec3);
 diff --git a/net/minecraft/world/inventory/AnvilMenu.java b/net/minecraft/world/inventory/AnvilMenu.java
-index 7939f19b87364a32a40e58e001cea14e06348f86..6b11428d23077cd8f7780393567dfd533a62714c 100644
+index 7939f19b87364a32a40e58e001cea14e06348f86..9e15666e221d2192f3eb7ec1ee7ddb4e1299f44c 100644
 --- a/net/minecraft/world/inventory/AnvilMenu.java
 +++ b/net/minecraft/world/inventory/AnvilMenu.java
 @@ -1,6 +1,7 @@
  package net.minecraft.world.inventory;
  
  import com.mojang.logging.LogUtils;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
  import net.minecraft.core.Holder;
  import net.minecraft.core.component.DataComponents;
@@ -720,7 +720,7 @@ index 7939f19b87364a32a40e58e001cea14e06348f86..6b11428d23077cd8f7780393567dfd53
                          }
                      }
 diff --git a/net/minecraft/world/item/ArmorStandItem.java b/net/minecraft/world/item/ArmorStandItem.java
-index 962483d6f7225f13f121141882262d36dacad8cb..c7baf9d55fec9192ad0b6951a55298fb850b7791 100644
+index 962483d6f7225f13f121141882262d36dacad8cb..daf6733475ba62b132dc1b78301f74ce3a870f33 100644
 --- a/net/minecraft/world/item/ArmorStandItem.java
 +++ b/net/minecraft/world/item/ArmorStandItem.java
 @@ -35,7 +35,8 @@ public class ArmorStandItem extends Item {
@@ -728,19 +728,19 @@ index 962483d6f7225f13f121141882262d36dacad8cb..c7baf9d55fec9192ad0b6951a55298fb
              Vec3 vec3 = Vec3.atBottomCenterOf(clickedPos);
              AABB aabb = EntityType.ARMOR_STAND.getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
 -            if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
-+            if ((fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.entityPlacementIgnoreCollision || level.noCollision(null, aabb))
-+                && (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.entityPlacementIgnoreCollision || level.getEntities(null, aabb).isEmpty())) {
++            if ((fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.entityPlacementIgnoreCollision || level.noCollision(null, aabb))
++                && (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.entityPlacementIgnoreCollision || level.getEntities(null, aabb).isEmpty())) {
                  if (level instanceof ServerLevel serverLevel) {
                      Consumer<ArmorStand> consumer = EntityType.createDefaultStackConfig(serverLevel, itemInHand, context.getPlayer());
                      ArmorStand armorStand = EntityType.ARMOR_STAND.create(serverLevel, consumer, clickedPos, EntitySpawnReason.SPAWN_ITEM_USE, true, true);
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
-index 44786e4f77285f1fbd4643f560105e410035afeb..00c1d03bbd106c82a6f4fe5565ee28da8d06dcf8 100644
+index 44786e4f77285f1fbd4643f560105e410035afeb..1237de8f283ea27cefbb88bfd8422b29eaf5f5f1 100644
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
 @@ -1,5 +1,6 @@
  package net.minecraft.world.item;
  
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.Map;
  import net.minecraft.advancements.CriteriaTriggers;
  import net.minecraft.core.BlockPos;
@@ -749,7 +749,7 @@ index 44786e4f77285f1fbd4643f560105e410035afeb..00c1d03bbd106c82a6f4fe5565ee28da
          CollisionContext collisionContext = player == null ? CollisionContext.empty() : CollisionContext.placementContext(player);
          Level world = context.getLevel(); // Paper - Cancel hit for vanished players
 -        boolean canBuild = (!this.mustSurvive() || state.canSurvive(world, context.getClickedPos())) && ((fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(world, state, context.getClickedPos(), collisionContext) : world.checkEntityCollision(state, player, collisionContext, context.getClickedPos(), true)); // Paper - Cancel hit for vanished players // Leaves - creative no clip
-+        boolean ignoreEntityCollision = fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.blockPlacementIgnoreEntity
++        boolean ignoreEntityCollision = fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.blockPlacementIgnoreEntity
 +            && player != null
 +            && player.isCreative();
 +        boolean canBuild = (!this.mustSurvive() || state.canSurvive(world, context.getClickedPos()))
@@ -783,7 +783,7 @@ index 44786e4f77285f1fbd4643f560105e410035afeb..00c1d03bbd106c82a6f4fe5565ee28da
          }
  
 diff --git a/net/minecraft/world/item/BoatItem.java b/net/minecraft/world/item/BoatItem.java
-index a8732056d0086a0932e82f70396a8849bf8d0ee1..f5caf0bad2ea6e182b7f82329923d3ebf9f2ff29 100644
+index a8732056d0086a0932e82f70396a8849bf8d0ee1..d15585ea6538d987cba90060384ca0cc64ebcd89 100644
 --- a/net/minecraft/world/item/BoatItem.java
 +++ b/net/minecraft/world/item/BoatItem.java
 @@ -39,7 +39,7 @@ public class BoatItem extends Item {
@@ -791,7 +791,7 @@ index a8732056d0086a0932e82f70396a8849bf8d0ee1..f5caf0bad2ea6e182b7f82329923d3eb
                  player, player.getBoundingBox().expandTowards(viewVector.scale(5.0)).inflate(1.0), EntitySelector.CAN_BE_PICKED
              );
 -            if (!entities.isEmpty()) {
-+            if (!fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !entities.isEmpty()) {
++            if (!fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !entities.isEmpty()) {
                  Vec3 eyePosition = player.getEyePosition();
  
                  for (Entity entity : entities) {
@@ -800,12 +800,12 @@ index a8732056d0086a0932e82f70396a8849bf8d0ee1..f5caf0bad2ea6e182b7f82329923d3eb
                  } else {
                      boat.setYRot(player.getYRot());
 -                    if (!level.noCollision(boat, boat.getBoundingBox())) {
-+                    if (!fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !level.noCollision(boat, boat.getBoundingBox())) {
++                    if (!fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !level.noCollision(boat, boat.getBoundingBox())) {
                          return InteractionResult.FAIL;
                      } else {
                          if (!level.isClientSide()) {
 diff --git a/net/minecraft/world/item/BucketItem.java b/net/minecraft/world/item/BucketItem.java
-index 9d6485148393292006ed4453e0ed228b6197b239..25be469c72dedd354670a1de5dcb294435b1dfeb 100644
+index 9d6485148393292006ed4453e0ed228b6197b239..c02e2358b8972d56b3ab0eee5d75f1c8360053d3 100644
 --- a/net/minecraft/world/item/BucketItem.java
 +++ b/net/minecraft/world/item/BucketItem.java
 @@ -148,7 +148,13 @@ public class BucketItem extends Item implements DispensibleContainerItem {
@@ -817,14 +817,14 @@ index 9d6485148393292006ed4453e0ed228b6197b239..25be469c72dedd354670a1de5dcb2944
 +                && this.content.is(FluidTags.WATER)
 +                && !(entity instanceof Player player
 +                    && (
-+                        (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.creativeNetherWaterPlacement && player.isCreative())
-+                            || fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.canPlaceWaterInUltraWarm(player)
++                        (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.creativeNetherWaterPlacement && player.isCreative())
++                            || fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.canPlaceWaterInUltraWarm(player)
 +                    ))) {
                  int x = pos.getX();
                  int y = pos.getY();
                  int z = pos.getZ();
 diff --git a/net/minecraft/world/item/EndCrystalItem.java b/net/minecraft/world/item/EndCrystalItem.java
-index 05ec512839898f96d9769bb0d00f6ba11dda0c4b..06bd2db3a45398bcd562643878ba93757cb7ec95 100644
+index 05ec512839898f96d9769bb0d00f6ba11dda0c4b..c5e445a735f51b39a584cce93499a5c6ae1f61e3 100644
 --- a/net/minecraft/world/item/EndCrystalItem.java
 +++ b/net/minecraft/world/item/EndCrystalItem.java
 @@ -28,14 +28,14 @@ public class EndCrystalItem extends Item {
@@ -832,7 +832,7 @@ index 05ec512839898f96d9769bb0d00f6ba11dda0c4b..06bd2db3a45398bcd562643878ba9375
          } else {
              BlockPos blockPos = clickedPos.above(); final BlockPos aboveBlockPos = blockPos; // Paper - OBFHELPER
 -            if (!level.isEmptyBlock(blockPos)) {
-+            if (!fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !level.isEmptyBlock(blockPos)) {
++            if (!fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !level.isEmptyBlock(blockPos)) {
                  return InteractionResult.FAIL;
              } else {
                  double d = blockPos.getX();
@@ -840,12 +840,12 @@ index 05ec512839898f96d9769bb0d00f6ba11dda0c4b..06bd2db3a45398bcd562643878ba9375
                  double d2 = blockPos.getZ();
                  List<Entity> entities = level.getEntities(null, new AABB(d, d1, d2, d + 1.0, d1 + 2.0, d2 + 1.0));
 -                if (!entities.isEmpty()) {
-+                if (!fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !entities.isEmpty()) {
++                if (!fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.entityPlacementIgnoreCollision && !entities.isEmpty()) {
                      return InteractionResult.FAIL;
                  } else {
                      if (level instanceof ServerLevel) {
 diff --git a/net/minecraft/world/item/EnderEyeItem.java b/net/minecraft/world/item/EnderEyeItem.java
-index e2df0204dd21185c24ef2dc1f900247ca3655721..79cd62c2fa6a361c3af09a1d930e5363e2c068db 100644
+index e2df0204dd21185c24ef2dc1f900247ca3655721..d603da094e0fb5cf101eeb0f296b2e367bcd554a 100644
 --- a/net/minecraft/world/item/EnderEyeItem.java
 +++ b/net/minecraft/world/item/EnderEyeItem.java
 @@ -68,22 +68,24 @@ public class EnderEyeItem extends Item {
@@ -868,7 +868,7 @@ index e2df0204dd21185c24ef2dc1f900247ca3655721..79cd62c2fa6a361c3af09a1d930e5363
 -                        player.connection.send(new net.minecraft.network.protocol.game.ClientboundLevelEventPacket(LevelEvent.SOUND_END_PORTAL_SPAWN, new BlockPos((int) relativeX, (int) soundPos.getY(), (int) relativeZ), 0, true));
 -                    } else {
 -                        player.connection.send(new net.minecraft.network.protocol.game.ClientboundLevelEventPacket(LevelEvent.SOUND_END_PORTAL_SPAWN, soundPos, 0, true));
-+                if (!fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.endPortalOpenedSoundDisabled) {
++                if (!fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.endPortalOpenedSoundDisabled) {
 +                    int viewDistance = level.getCraftServer().getViewDistance() * 16;
 +                    BlockPos soundPos = blockPos.offset(1, 0, 1);
 +                    final net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) level; // Paper - respect global sound events gamerule - ensured by isClientSide check above
@@ -890,13 +890,13 @@ index e2df0204dd21185c24ef2dc1f900247ca3655721..79cd62c2fa6a361c3af09a1d930e5363
                  }
                  // CraftBukkit end
 diff --git a/net/minecraft/world/item/FireworkRocketItem.java b/net/minecraft/world/item/FireworkRocketItem.java
-index 2c597e20c1ff587f2eadef600bedb9e01b999bbf..959fd30c591cd75cfea50fece2eb51f099d93bfe 100644
+index 2c597e20c1ff587f2eadef600bedb9e01b999bbf..f9d6715b706c23d5a40811a0f335de1e85ef0257 100644
 --- a/net/minecraft/world/item/FireworkRocketItem.java
 +++ b/net/minecraft/world/item/FireworkRocketItem.java
 @@ -1,5 +1,6 @@
  package net.minecraft.world.item;
  
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import net.minecraft.core.Direction;
  import net.minecraft.core.Position;
  import net.minecraft.core.dispenser.BlockSource;
@@ -937,14 +937,14 @@ index 2c597e20c1ff587f2eadef600bedb9e01b999bbf..959fd30c591cd75cfea50fece2eb51f0
                      player.containerMenu.forceHeldSlot(hand);
                  }
 diff --git a/net/minecraft/world/item/Item.java b/net/minecraft/world/item/Item.java
-index a97923a94eb8a63b9a2ece6d46b8b19dd4cfb866..c9f5af1ae1afbd9c8e0fd7e3caf8ef3d4f280ec8 100644
+index a97923a94eb8a63b9a2ece6d46b8b19dd4cfb866..a1edc79603b86c920fe89482dfc57a09d0fbff61 100644
 --- a/net/minecraft/world/item/Item.java
 +++ b/net/minecraft/world/item/Item.java
 @@ -182,6 +182,10 @@ public class Item implements FeatureElement, ItemLike {
  
      public InteractionResult use(Level level, Player player, InteractionHand hand) {
          ItemStack itemInHand = player.getItemInHand(hand);
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.noEnchantedGoldenAppleEating && itemInHand.is(Items.ENCHANTED_GOLDEN_APPLE)) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.noEnchantedGoldenAppleEating && itemInHand.is(Items.ENCHANTED_GOLDEN_APPLE)) {
 +            return InteractionResult.FAIL;
 +        }
 +
@@ -952,7 +952,7 @@ index a97923a94eb8a63b9a2ece6d46b8b19dd4cfb866..c9f5af1ae1afbd9c8e0fd7e3caf8ef3d
          if (consumable != null) {
              return consumable.startConsuming(player, itemInHand, hand);
 diff --git a/net/minecraft/world/item/ItemCooldowns.java b/net/minecraft/world/item/ItemCooldowns.java
-index 183b85bd0444032b247457a0fbedeb78c91285ea..941089478b6f2dc06117dd988ba258a717d48fb1 100644
+index 183b85bd0444032b247457a0fbedeb78c91285ea..8de096e6eee97dde2bf9ec42870c06d0d0990600 100644
 --- a/net/minecraft/world/item/ItemCooldowns.java
 +++ b/net/minecraft/world/item/ItemCooldowns.java
 @@ -8,17 +8,32 @@ import net.minecraft.core.component.DataComponents;
@@ -981,7 +981,7 @@ index 183b85bd0444032b247457a0fbedeb78c91285ea..941089478b6f2dc06117dd988ba258a7
      }
  
      public float getCooldownPercent(ItemStack stack, float partialTick) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.useItemCooldownDisabled) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.useItemCooldownDisabled) {
 +            return 0.0F;
 +        }
 +
@@ -1003,11 +1003,11 @@ index 183b85bd0444032b247457a0fbedeb78c91285ea..941089478b6f2dc06117dd988ba258a7
      }
  
 +    protected boolean shouldBypassCooldowns() {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.useItemCooldownDisabled) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.useItemCooldownDisabled) {
 +            return true;
 +        }
 +
-+        return fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.creativeNoItemCooldown
++        return fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.creativeNoItemCooldown
 +            && this.owner != null
 +            && this.owner.isCreative();
 +    }
@@ -1048,13 +1048,13 @@ index 8725fe35812ee5f7ace0ac3dce466738b6eefc53..7257df3bf313aa610188e3dc90d7ba12
              final io.papermc.paper.event.player.PlayerItemGroupCooldownEvent event = new io.papermc.paper.event.player.PlayerItemGroupCooldownEvent(
                  this.player.getBukkitEntity(),
 diff --git a/net/minecraft/world/item/TridentItem.java b/net/minecraft/world/item/TridentItem.java
-index d029fda2e8bac95fb75f75666a55b0c3aa3bb12d..43bce1971db093f93570a18abcdce12f9655037b 100644
+index d029fda2e8bac95fb75f75666a55b0c3aa3bb12d..7561ee1776a81d43fbdb4f1ef0133bec12751106 100644
 --- a/net/minecraft/world/item/TridentItem.java
 +++ b/net/minecraft/world/item/TridentItem.java
 @@ -1,5 +1,6 @@
  package net.minecraft.world.item;
  
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.List;
  import net.minecraft.core.Direction;
  import net.minecraft.core.Holder;
@@ -1079,14 +1079,14 @@ index d029fda2e8bac95fb75f75666a55b0c3aa3bb12d..43bce1971db093f93570a18abcdce12f
          } else {
              player.startUsingItem(hand);
 diff --git a/net/minecraft/world/item/enchantment/Enchantment.java b/net/minecraft/world/item/enchantment/Enchantment.java
-index 0d42a7248e59cc05181da6e9918acf38dab0ac4f..d358528789f3b3263dcdb4e76ba2a2ff1e8ecc44 100644
+index 0d42a7248e59cc05181da6e9918acf38dab0ac4f..e7c21ff4afe6d637d29ccb987157753adf270237 100644
 --- a/net/minecraft/world/item/enchantment/Enchantment.java
 +++ b/net/minecraft/world/item/enchantment/Enchantment.java
 @@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
  import com.mojang.serialization.Codec;
  import com.mojang.serialization.MapCodec;
  import com.mojang.serialization.codecs.RecordCodecBuilder;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import it.unimi.dsi.fastutil.objects.ObjectArraySet;
  import java.util.ArrayList;
  import java.util.HashMap;
@@ -1116,14 +1116,14 @@ index 0d42a7248e59cc05181da6e9918acf38dab0ac4f..d358528789f3b3263dcdb4e76ba2a2ff
  
      public static Component getFullname(Holder<Enchantment> enchantment, int level) {
 diff --git a/net/minecraft/world/item/trading/MerchantOffer.java b/net/minecraft/world/item/trading/MerchantOffer.java
-index 6afeb92c2e00ca5b945b7c7de9257bd741d53c3d..ab93ec89c79173e39006b0f84a4b2e2ff43af713 100644
+index 6afeb92c2e00ca5b945b7c7de9257bd741d53c3d..9d9e2128a04796339829b4e4f2e6586283ffc031 100644
 --- a/net/minecraft/world/item/trading/MerchantOffer.java
 +++ b/net/minecraft/world/item/trading/MerchantOffer.java
 @@ -165,6 +165,9 @@ public class MerchantOffer {
  
      public void increaseUses() {
          this.uses++;
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.infiniteTrades) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.infiniteTrades) {
 +            this.uses = 0;
 +        }
      }
@@ -1162,14 +1162,14 @@ index 411b0b3b2167050805cf16f45938e7e3e5fdc8b3..966104b0b094cc28d02b594d5dd86b1f
          return this.customName != null ? this.customName : DEFAULT_NAME;
      }
 diff --git a/net/minecraft/world/level/NaturalSpawner.java b/net/minecraft/world/level/NaturalSpawner.java
-index e7223540a7cef20b661bdb857ffba962d0f5d348..a1bc5c704bb526f42629d83e4b10dcf4227b17f6 100644
+index e7223540a7cef20b661bdb857ffba962d0f5d348..1f54aa63f2408016662622cd3e54660c2da51924 100644
 --- a/net/minecraft/world/level/NaturalSpawner.java
 +++ b/net/minecraft/world/level/NaturalSpawner.java
 @@ -241,6 +241,10 @@ public final class NaturalSpawner {
          MobCategory category, ServerLevel level, ChunkAccess chunk, BlockPos pos, NaturalSpawner.SpawnPredicate filter, NaturalSpawner.AfterSpawnCallback callback, final int maxSpawns, final @Nullable Consumer<Entity> trackEntity
      ) {
          // Paper end - Optional per player mob spawns
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.shouldFakePeace(level, category)) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.shouldFakePeace(level, category)) {
 +            return;
 +        }
 +
@@ -1177,28 +1177,28 @@ index e7223540a7cef20b661bdb857ffba962d0f5d348..a1bc5c704bb526f42629d83e4b10dcf4
          ChunkGenerator generator = level.getChunkSource().getGenerator();
          int y = pos.getY();
 diff --git a/net/minecraft/world/level/ServerExplosion.java b/net/minecraft/world/level/ServerExplosion.java
-index 33ee967d8a7d4ce2c455db9ffaac740cd589e6f3..6f200fd9ce0e4be0105cfdf8ce6a6f25310eb2fc 100644
+index 33ee967d8a7d4ce2c455db9ffaac740cd589e6f3..6a987b19a82c8e19e82d00fc61b104832881b345 100644
 --- a/net/minecraft/world/level/ServerExplosion.java
 +++ b/net/minecraft/world/level/ServerExplosion.java
 @@ -642,6 +642,9 @@ public class ServerExplosion implements Explosion {
          // Paper end - collision optimisations
          this.level.gameEvent(this.source, GameEvent.EXPLODE, this.center);
          List<BlockPos> list = this.calculateExplodedPositions();
-+        if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.explosionNoBlockDamage) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.explosionNoBlockDamage) {
 +            list.clear();
 +        }
          this.hurtEntities();
          if (this.interactsWithBlocks()) {
              ProfilerFiller profilerFiller = Profiler.get();
 diff --git a/net/minecraft/world/level/biome/Biome.java b/net/minecraft/world/level/biome/Biome.java
-index a253b02bb6e07ba4cdbd9320445a6b6c3e54ada2..eeea1a0dd75d4b9c29c91f7ea8718f0cc530af50 100644
+index a253b02bb6e07ba4cdbd9320445a6b6c3e54ada2..4604c0d29cd8ca90bfc29f9582275e91d57808cb 100644
 --- a/net/minecraft/world/level/biome/Biome.java
 +++ b/net/minecraft/world/level/biome/Biome.java
 @@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
  import com.mojang.serialization.Codec;
  import com.mojang.serialization.MapCodec;
  import com.mojang.serialization.codecs.RecordCodecBuilder;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import it.unimi.dsi.fastutil.longs.Long2FloatLinkedOpenHashMap;
  import java.util.Optional;
  import net.minecraft.core.BlockPos;
@@ -1214,14 +1214,14 @@ index a253b02bb6e07ba4cdbd9320445a6b6c3e54ada2..eeea1a0dd75d4b9c29c91f7ea8718f0c
              return false;
          } else {
 diff --git a/net/minecraft/world/level/block/BambooStalkBlock.java b/net/minecraft/world/level/block/BambooStalkBlock.java
-index 81e2a279d4c29f5fe52387875489239515a8c82b..fb1d459b94607774e6d82c07824514bf702f882d 100644
+index 81e2a279d4c29f5fe52387875489239515a8c82b..41a8719875bf0d545460af1aeaff32a687062d14 100644
 --- a/net/minecraft/world/level/block/BambooStalkBlock.java
 +++ b/net/minecraft/world/level/block/BambooStalkBlock.java
 @@ -71,6 +71,10 @@ public class BambooStalkBlock extends Block implements BonemealableBlock {
  
      @Override
      protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.bambooCollisionBoxDisabled) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.bambooCollisionBoxDisabled) {
 +            return net.minecraft.world.phys.shapes.Shapes.empty();
 +        }
 +
@@ -1229,14 +1229,14 @@ index 81e2a279d4c29f5fe52387875489239515a8c82b..fb1d459b94607774e6d82c07824514bf
      }
  
 diff --git a/net/minecraft/world/level/block/BaseCoralPlantTypeBlock.java b/net/minecraft/world/level/block/BaseCoralPlantTypeBlock.java
-index e348412960da6623cf8d878ea37af05e6b606adc..dbe7120ecfcaa4e3046a2242452cd42f6a8af95f 100644
+index e348412960da6623cf8d878ea37af05e6b606adc..8cdc336a4e833e1ec2d9e09f86e327b50d4b64ed 100644
 --- a/net/minecraft/world/level/block/BaseCoralPlantTypeBlock.java
 +++ b/net/minecraft/world/level/block/BaseCoralPlantTypeBlock.java
 @@ -39,6 +39,10 @@ public abstract class BaseCoralPlantTypeBlock extends Block implements SimpleWat
      }
  
      protected static boolean scanForWater(BlockState state, BlockGetter level, BlockPos pos) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.undyingCoral) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.undyingCoral) {
 +            return true;
 +        }
 +
@@ -1244,14 +1244,14 @@ index e348412960da6623cf8d878ea37af05e6b606adc..dbe7120ecfcaa4e3046a2242452cd42f
              return true;
          } else {
 diff --git a/net/minecraft/world/level/block/BedBlock.java b/net/minecraft/world/level/block/BedBlock.java
-index 19f3bee51888fd3cad0281a5918d1489c5a56b57..09d336a8f442380a76ed22f881ced5df61ede3e2 100644
+index 19f3bee51888fd3cad0281a5918d1489c5a56b57..9ee4ecb478a10693244bd761ca7e9604b39fcb19 100644
 --- a/net/minecraft/world/level/block/BedBlock.java
 +++ b/net/minecraft/world/level/block/BedBlock.java
 @@ -3,6 +3,7 @@ package net.minecraft.world.level.block;
  import com.mojang.math.OctahedralGroup;
  import com.mojang.serialization.MapCodec;
  import com.mojang.serialization.codecs.RecordCodecBuilder;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.List;
  import java.util.Map;
  import java.util.Optional;
@@ -1278,7 +1278,7 @@ index 19f3bee51888fd3cad0281a5918d1489c5a56b57..09d336a8f442380a76ed22f881ced5df
                          // CraftBukkit end
                          // Paper start - PlayerBedFailEnterEvent
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index fb47a2acb0e4232359f5da061c1620a7b1d6c476..64bc543b8e0209c1aba0b407802d19bf61f70d50 100644
+index fb47a2acb0e4232359f5da061c1620a7b1d6c476..d53dcd307db8713dee741cc33c1d69b0808e66a8 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
 @@ -570,6 +570,13 @@ public class Block extends BlockBehaviour implements ItemLike {
@@ -1288,7 +1288,7 @@ index fb47a2acb0e4232359f5da061c1620a7b1d6c476..64bc543b8e0209c1aba0b407802d19bf
 +        if (level instanceof ServerLevel serverLevel
 +            && !player.preventsBlockDrops()
 +            && state.is(Blocks.CAKE)
-+            && fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.shouldDropCake(state)) {
++            && fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.shouldDropCake(state)) {
 +            popResource(serverLevel, pos, new ItemStack(net.minecraft.world.item.Items.CAKE));
 +        }
 +
@@ -1296,14 +1296,14 @@ index fb47a2acb0e4232359f5da061c1620a7b1d6c476..64bc543b8e0209c1aba0b407802d19bf
          if (state.is(BlockTags.GUARDED_BY_PIGLINS) && level instanceof ServerLevel serverLevel) {
              PiglinAi.angerNearbyPiglins(serverLevel, player, false);
 diff --git a/net/minecraft/world/level/block/CakeBlock.java b/net/minecraft/world/level/block/CakeBlock.java
-index cca7bde128f88df4327e6b011c301f60d909bb4d..5bbf00f4af87a99ce691b8c63996fc1de7e852f8 100644
+index cca7bde128f88df4327e6b011c301f60d909bb4d..3012b3d8206f3ffddba549bc0f333dd0b4e3b33f 100644
 --- a/net/minecraft/world/level/block/CakeBlock.java
 +++ b/net/minecraft/world/level/block/CakeBlock.java
 @@ -90,6 +90,10 @@ public class CakeBlock extends Block {
      }
  
      protected static InteractionResult eat(LevelAccessor level, BlockPos pos, BlockState state, Player player) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.noCakeEating) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.noCakeEating) {
 +            return InteractionResult.FAIL;
 +        }
 +
@@ -1311,7 +1311,7 @@ index cca7bde128f88df4327e6b011c301f60d909bb4d..5bbf00f4af87a99ce691b8c63996fc1d
              return InteractionResult.PASS;
          } else {
 diff --git a/net/minecraft/world/level/block/CampfireBlock.java b/net/minecraft/world/level/block/CampfireBlock.java
-index 4985fcfef75abbe2be9cd5e6111de4d60237bafa..fcb4275645f3d6b27a6c3639559269e50fb018bb 100644
+index 4985fcfef75abbe2be9cd5e6111de4d60237bafa..b4bd268048788b7b82f1551b50a765d6a91840bd 100644
 --- a/net/minecraft/world/level/block/CampfireBlock.java
 +++ b/net/minecraft/world/level/block/CampfireBlock.java
 @@ -137,7 +137,7 @@ public class CampfireBlock extends BaseEntityBlock implements SimpleWaterloggedB
@@ -1319,19 +1319,19 @@ index 4985fcfef75abbe2be9cd5e6111de4d60237bafa..fcb4275645f3d6b27a6c3639559269e5
              .setValue(WATERLOGGED, flag)
              .setValue(SIGNAL_FIRE, this.isSmokeSource(level.getBlockState(clickedPos.below())))
 -            .setValue(LIT, !flag)
-+            .setValue(LIT, !flag && !fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.extinguishedCampfire)
++            .setValue(LIT, !flag && !fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.extinguishedCampfire)
              .setValue(FACING, context.getHorizontalDirection());
      }
  
 diff --git a/net/minecraft/world/level/block/ChestBlock.java b/net/minecraft/world/level/block/ChestBlock.java
-index 64c0616c294bd7c7b62ae376d50369500b948390..59183923959effd92bec5c940a559c50b9239a9a 100644
+index 64c0616c294bd7c7b62ae376d50369500b948390..afc5643c8f0fc170ffb559a772002b3a01bb19ee 100644
 --- a/net/minecraft/world/level/block/ChestBlock.java
 +++ b/net/minecraft/world/level/block/ChestBlock.java
 @@ -58,6 +58,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
  import net.minecraft.world.phys.shapes.Shapes;
  import net.minecraft.world.phys.shapes.VoxelShape;
  import org.jspecify.annotations.Nullable;
-+import fun.bm.lophine.config.modules.function.CarpetTisPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig;
  
  public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements SimpleWaterloggedBlock {
      public static final MapCodec<ChestBlock> CODEC = RecordCodecBuilder.mapCodec(
@@ -1345,14 +1345,14 @@ index 64c0616c294bd7c7b62ae376d50369500b948390..59183923959effd92bec5c940a559c50
                  player.awardStat(this.getOpenChestStat());
                  PiglinAi.angerNearbyPiglins(serverLevel, player, true);
 diff --git a/net/minecraft/world/level/block/CommandBlock.java b/net/minecraft/world/level/block/CommandBlock.java
-index b5a780a929c2b6db91d7f86d7178419f87815944..d30e7808eeea5a1407322660dea62cd17e766271 100644
+index b5a780a929c2b6db91d7f86d7178419f87815944..4cda044286af5bb120e03b4b571a0c6a1a1d6762 100644
 --- a/net/minecraft/world/level/block/CommandBlock.java
 +++ b/net/minecraft/world/level/block/CommandBlock.java
 @@ -87,6 +87,19 @@ public class CommandBlock extends BaseEntityBlock implements GameMasterBlock {
                  }
  
                  blockEntity.markConditionMet();
-+                if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.instantCommandBlock
++                if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.instantCommandBlock
 +                    && level instanceof ServerLevel serverLevel
 +                    && blockEntity.getMode() == CommandBlockEntity.Mode.REDSTONE
 +                    && level.getBlockState(pos.below()).is(Blocks.REDSTONE_ORE)) {
@@ -1369,14 +1369,14 @@ index b5a780a929c2b6db91d7f86d7178419f87815944..d30e7808eeea5a1407322660dea62cd1
              }
          }
 diff --git a/net/minecraft/world/level/block/ComposterBlock.java b/net/minecraft/world/level/block/ComposterBlock.java
-index 334d2b48d1cf569037cac53c55843f9090bdaab5..68362e69b0b4dbba7e99f39af28e36c301700d30 100644
+index 334d2b48d1cf569037cac53c55843f9090bdaab5..1c601b123d4fb062f098635a9050c87908d52341 100644
 --- a/net/minecraft/world/level/block/ComposterBlock.java
 +++ b/net/minecraft/world/level/block/ComposterBlock.java
 @@ -337,6 +337,10 @@ public class ComposterBlock extends Block implements WorldlyContainerHolder {
      }
      @Nullable // Paper - make it nullable
      static BlockState addItem(@Nullable Entity entity, BlockState state, LevelAccessor level, BlockPos pos, ItemStack stack, double rand) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.easyCompost) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.easyCompost) {
 +            rand = -1.0D;
 +        }
 +
@@ -1384,14 +1384,14 @@ index 334d2b48d1cf569037cac53c55843f9090bdaab5..68362e69b0b4dbba7e99f39af28e36c3
          float _float = COMPOSTABLES.getFloat(stack.getItem());
          // Paper start - Add CompostItemEvent and EntityCompostItemEvent
 diff --git a/net/minecraft/world/level/block/CoralBlock.java b/net/minecraft/world/level/block/CoralBlock.java
-index 1c86b4fce7392851b2e33914fb588775f90f766b..b9910f7a2b5cac5da92b2a3128dd40d005f4df09 100644
+index 1c86b4fce7392851b2e33914fb588775f90f766b..881971c4bebc0d240318fdb976142336668a6c07 100644
 --- a/net/minecraft/world/level/block/CoralBlock.java
 +++ b/net/minecraft/world/level/block/CoralBlock.java
 @@ -65,6 +65,10 @@ public class CoralBlock extends Block {
      }
  
      protected boolean scanForWater(BlockGetter level, BlockPos pos) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.undyingCoral) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.undyingCoral) {
 +            return true;
 +        }
 +
@@ -1399,7 +1399,7 @@ index 1c86b4fce7392851b2e33914fb588775f90f766b..b9910f7a2b5cac5da92b2a3128dd40d0
              FluidState fluidState = level.getFluidState(pos.relative(direction));
              if (fluidState.is(FluidTags.WATER)) {
 diff --git a/net/minecraft/world/level/block/DiodeBlock.java b/net/minecraft/world/level/block/DiodeBlock.java
-index 4525d718016fe125e3cdb1c1798fe9483213ba49..a5f9737f48710fc811307ac649b724b07d6a7280 100644
+index 4525d718016fe125e3cdb1c1798fe9483213ba49..37110f152b1fe36ce1ec036c3638c5104bd058f1 100644
 --- a/net/minecraft/world/level/block/DiodeBlock.java
 +++ b/net/minecraft/world/level/block/DiodeBlock.java
 @@ -70,7 +70,7 @@ public abstract class DiodeBlock extends HorizontalDirectionalBlock {
@@ -1426,7 +1426,7 @@ index 4525d718016fe125e3cdb1c1798fe9483213ba49..a5f9737f48710fc811307ac649b724b0
  
 +    private int getModifiedDelay(Level level, BlockPos pos, BlockState state) {
 +        int delay = this.getDelay(state);
-+        if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.repeaterHalfDelay
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.repeaterHalfDelay
 +            && this instanceof RepeaterBlock
 +            && level.getBlockState(pos.below()).is(Blocks.REDSTONE_ORE)) {
 +            return Math.max(1, delay / 2);
@@ -1437,7 +1437,7 @@ index 4525d718016fe125e3cdb1c1798fe9483213ba49..a5f9737f48710fc811307ac649b724b0
      protected abstract int getDelay(BlockState state);
  }
 diff --git a/net/minecraft/world/level/block/DispenserBlock.java b/net/minecraft/world/level/block/DispenserBlock.java
-index 0828d663647f7c3267a4a9392a3b0b8e6e54928c..7a8c2b951283b25030c6432e5f434f009a74cf9d 100644
+index 0828d663647f7c3267a4a9392a3b0b8e6e54928c..2470e2cfc7c9ec44b864de35945979a9d91f9736 100644
 --- a/net/minecraft/world/level/block/DispenserBlock.java
 +++ b/net/minecraft/world/level/block/DispenserBlock.java
 @@ -95,7 +95,11 @@ public class DispenserBlock extends BaseEntityBlock {
@@ -1445,23 +1445,23 @@ index 0828d663647f7c3267a4a9392a3b0b8e6e54928c..7a8c2b951283b25030c6432e5f434f00
                  if (dispenseMethod != DispenseItemBehavior.NOOP) {
                      if (!org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockPreDispenseEvent(level, pos, item, randomSlot)) return; // Paper - Add BlockPreDispenseEvent
 -                    dispenserBlockEntity.setItem(randomSlot, dispenseMethod.dispense(blockSource, item));
-+                    ItemStack dispenseStack = fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.dispenserNoItemCost ? item.copy() : item;
++                    ItemStack dispenseStack = fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.dispenserNoItemCost ? item.copy() : item;
 +                    ItemStack result = dispenseMethod.dispense(blockSource, dispenseStack);
-+                    if (!fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.dispenserNoItemCost) {
++                    if (!fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.dispenserNoItemCost) {
 +                        dispenserBlockEntity.setItem(randomSlot, result);
 +                    }
                  }
              }
          }
 diff --git a/net/minecraft/world/level/block/DragonEggBlock.java b/net/minecraft/world/level/block/DragonEggBlock.java
-index 52160294e39e3f0f471087a1fcb6e46763862954..b292df9632bd6b81c88e6b8866148d5c9c6c804c 100644
+index 52160294e39e3f0f471087a1fcb6e46763862954..44ae0d0fe1da93bc91614301689f6637dc225b54 100644
 --- a/net/minecraft/world/level/block/DragonEggBlock.java
 +++ b/net/minecraft/world/level/block/DragonEggBlock.java
 @@ -46,6 +46,10 @@ public class DragonEggBlock extends FallingBlock {
      }
  
      private void teleport(BlockState state, Level level, BlockPos pos) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.easyMineDragonEgg) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.easyMineDragonEgg) {
 +            return;
 +        }
 +
@@ -1469,7 +1469,7 @@ index 52160294e39e3f0f471087a1fcb6e46763862954..b292df9632bd6b81c88e6b8866148d5c
  
          for (int i = 0; i < 1000; i++) {
 diff --git a/net/minecraft/world/level/block/DropperBlock.java b/net/minecraft/world/level/block/DropperBlock.java
-index 0d950a6b32524d0d982d7856fc4791bf3670938e..09d4e1c274f1ae9f12155e58430ab6abf578d722 100644
+index 0d950a6b32524d0d982d7856fc4791bf3670938e..d20942702d8e3b08f2718edce176be87ae2f0ee9 100644
 --- a/net/minecraft/world/level/block/DropperBlock.java
 +++ b/net/minecraft/world/level/block/DropperBlock.java
 @@ -60,10 +60,14 @@ public class DropperBlock extends DispenserBlock {
@@ -1484,7 +1484,7 @@ index 0d950a6b32524d0d982d7856fc4791bf3670938e..09d4e1c274f1ae9f12155e58430ab6ab
 -                        itemStack = DISPENSE_BEHAVIOUR.dispense(blockSource, item);
 +                        itemStack = DISPENSE_BEHAVIOUR.dispense(
 +                            blockSource,
-+                            fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.dispenserNoItemCost ? item.copy() : item
++                            fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.dispenserNoItemCost ? item.copy() : item
 +                        );
                      } else {
                          // CraftBukkit start - Fire event when pushing items into other inventories
@@ -1494,21 +1494,21 @@ index 0d950a6b32524d0d982d7856fc4791bf3670938e..09d4e1c274f1ae9f12155e58430ab6ab
                      }
  
 -                    dispenserBlockEntity.setItem(randomSlot, itemStack);
-+                    if (!(fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.dispenserNoItemCost && itemDispense)) {
++                    if (!(fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.dispenserNoItemCost && itemDispense)) {
 +                        dispenserBlockEntity.setItem(randomSlot, itemStack);
 +                    }
                  }
              }
          }
 diff --git a/net/minecraft/world/level/block/EnderChestBlock.java b/net/minecraft/world/level/block/EnderChestBlock.java
-index 202a986762794da9440365953fcb950c6eefa774..183c55a025af3822d165731a60c15ea6b421ea4f 100644
+index 202a986762794da9440365953fcb950c6eefa774..1ef5a9faeaa4dde9e1589155a23640ae2fa5ea43 100644
 --- a/net/minecraft/world/level/block/EnderChestBlock.java
 +++ b/net/minecraft/world/level/block/EnderChestBlock.java
 @@ -37,6 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
  import net.minecraft.world.phys.shapes.CollisionContext;
  import net.minecraft.world.phys.shapes.VoxelShape;
  import org.jspecify.annotations.Nullable;
-+import fun.bm.lophine.config.modules.function.CarpetTisPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig;
  
  public class EnderChestBlock extends AbstractChestBlock<EnderChestBlockEntity> implements SimpleWaterloggedBlock {
      public static final MapCodec<EnderChestBlock> CODEC = simpleCodec(EnderChestBlock::new);
@@ -1522,14 +1522,14 @@ index 202a986762794da9440365953fcb950c6eefa774..183c55a025af3822d165731a60c15ea6
              } else {
                  // Paper start - Fix InventoryOpenEvent cancellation - moved up;
 diff --git a/net/minecraft/world/level/block/FarmBlock.java b/net/minecraft/world/level/block/FarmBlock.java
-index eb21b20a72062fc53b8f94aa98dcd380c8ad4db3..d81891a077c79ddd550385663c1edc79072659ab 100644
+index eb21b20a72062fc53b8f94aa98dcd380c8ad4db3..1d30d22ccb226966a5bec09b4aacda9f578cca8c 100644
 --- a/net/minecraft/world/level/block/FarmBlock.java
 +++ b/net/minecraft/world/level/block/FarmBlock.java
 @@ -129,6 +129,10 @@ public class FarmBlock extends Block {
                      return;
                  }
  
-+                if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.farmlandTrampledDisabled) {
++                if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.farmlandTrampledDisabled) {
 +                    return;
 +                }
 +
@@ -1537,7 +1537,7 @@ index eb21b20a72062fc53b8f94aa98dcd380c8ad4db3..d81891a077c79ddd550385663c1edc79
                      return;
                  }
 diff --git a/net/minecraft/world/level/block/InfestedBlock.java b/net/minecraft/world/level/block/InfestedBlock.java
-index 05865706673880faf79b10645f9901956b0c76a2..3687214c826701a95ec06b86e696c95cf8418c90 100644
+index 05865706673880faf79b10645f9901956b0c76a2..6699a640c9228abccc93a6628b61878ffcfa4e7e 100644
 --- a/net/minecraft/world/level/block/InfestedBlock.java
 +++ b/net/minecraft/world/level/block/InfestedBlock.java
 @@ -14,6 +14,7 @@ import net.minecraft.world.entity.EntityType;
@@ -1552,21 +1552,21 @@ index 05865706673880faf79b10645f9901956b0c76a2..3687214c826701a95ec06b86e696c95c
              silverfish.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
              level.addFreshEntity(silverfish, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.SILVERFISH_BLOCK); // CraftBukkit - add SpawnReason
              silverfish.spawnAnim();
-+            if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.silverFishDropGravel) {
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.silverFishDropGravel) {
 +                popResource(level, pos, new ItemStack(Blocks.GRAVEL));
 +            }
          }
      }
  
 diff --git a/net/minecraft/world/level/block/LiquidBlock.java b/net/minecraft/world/level/block/LiquidBlock.java
-index 1f62dcf2709d430e996790750a691b12938eb09a..cad82b6942cf25b15cd6710b05618ec7a67fb6c2 100644
+index 1f62dcf2709d430e996790750a691b12938eb09a..6dadfb35b4a58eeeb436a27a9ad4aa0c885654da 100644
 --- a/net/minecraft/world/level/block/LiquidBlock.java
 +++ b/net/minecraft/world/level/block/LiquidBlock.java
 @@ -195,8 +195,18 @@ public class LiquidBlock extends Block implements BucketPickup {
  
              for (Direction direction : POSSIBLE_FLOW_DIRECTIONS) {
                  BlockPos blockPos = pos.relative(direction.getOpposite());
-+                if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.renewableBlackstone && level.getBlockState(blockPos).is(Blocks.BLUE_ICE)) {
++                if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.renewableBlackstone && level.getBlockState(blockPos).is(Blocks.BLUE_ICE)) {
 +                    if (org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(level, pos, Blocks.BLACKSTONE.defaultBlockState(), Block.UPDATE_ALL)) {
 +                        this.fizz(level, pos);
 +                    }
@@ -1576,35 +1576,35 @@ index 1f62dcf2709d430e996790750a691b12938eb09a..cad82b6942cf25b15cd6710b05618ec7
 -                    Block block = level.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
 +                    Block block = level.getFluidState(pos).isSource()
 +                        ? Blocks.OBSIDIAN
-+                        : fun.bm.lophine.config.modules.function.CarpetPortingConfig.renewableDeepslate && level.dimension() == Level.OVERWORLD && pos.getY() < 0
++                        : fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.renewableDeepslate && level.dimension() == Level.OVERWORLD && pos.getY() < 0
 +                            ? Blocks.COBBLED_DEEPSLATE
 +                            : Blocks.COBBLESTONE;
                      // CraftBukkit start
                      if (org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(level, pos, block.defaultBlockState(), Block.UPDATE_ALL)) {
                          this.fizz(level, pos);
 diff --git a/net/minecraft/world/level/block/ObserverBlock.java b/net/minecraft/world/level/block/ObserverBlock.java
-index 17c371f4c24e8a81705bdd322b1de5de4b8be8b7..6c14bd98340ba9d7467b29e929fcc8f0cb047054 100644
+index 17c371f4c24e8a81705bdd322b1de5de4b8be8b7..97719c7363930c25cc4f440d46dd49c3636a1860 100644
 --- a/net/minecraft/world/level/block/ObserverBlock.java
 +++ b/net/minecraft/world/level/block/ObserverBlock.java
 @@ -88,6 +88,9 @@ public class ObserverBlock extends DirectionalBlock {
      }
  
      private void startSignal(LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos) {
-+        if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.observerNoDetection) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.observerNoDetection) {
 +            return;
 +        }
          if (!level.isClientSide() && !scheduledTickAccess.getBlockTicks().hasScheduledTick(pos, this)) {
              scheduledTickAccess.scheduleTick(pos, this, 2);
          }
 diff --git a/net/minecraft/world/level/block/RespawnAnchorBlock.java b/net/minecraft/world/level/block/RespawnAnchorBlock.java
-index e90651ae6ab072c9fa9c179ae56329e0d816c77b..072f4f9ed51f43b01b40d4918bc591c27b2ace84 100644
+index e90651ae6ab072c9fa9c179ae56329e0d816c77b..07fbb69ea46684165914776d4eac85491fc7aba6 100644
 --- a/net/minecraft/world/level/block/RespawnAnchorBlock.java
 +++ b/net/minecraft/world/level/block/RespawnAnchorBlock.java
 @@ -3,6 +3,7 @@ package net.minecraft.world.level.block;
  import com.google.common.collect.ImmutableList;
  import com.google.common.collect.ImmutableList.Builder;
  import com.mojang.serialization.MapCodec;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.Optional;
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.Direction;
@@ -1619,7 +1619,7 @@ index e90651ae6ab072c9fa9c179ae56329e0d816c77b..072f4f9ed51f43b01b40d4918bc591c2
                  return InteractionResult.SUCCESS_SERVER;
              } else {
 diff --git a/net/minecraft/world/level/block/SaplingBlock.java b/net/minecraft/world/level/block/SaplingBlock.java
-index 70fffd4e6399022c719a236c309e9ee0f7ccd447..d24eb6e134be538fae425c07579ed8e4a49bf6c6 100644
+index 70fffd4e6399022c719a236c309e9ee0f7ccd447..1ba1bc42105e0cc7a20bbdb66db7a10a0f0562b4 100644
 --- a/net/minecraft/world/level/block/SaplingBlock.java
 +++ b/net/minecraft/world/level/block/SaplingBlock.java
 @@ -4,10 +4,14 @@ import com.mojang.serialization.MapCodec;
@@ -1641,7 +1641,7 @@ index 70fffd4e6399022c719a236c309e9ee0f7ccd447..d24eb6e134be538fae425c07579ed8e4
          if (state.getValue(STAGE) == 0) {
              level.setBlock(pos, state.cycle(STAGE), Block.UPDATE_NONE);
          } else {
-+            if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.desertShrubs
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.desertShrubs
 +                && level.getBiome(pos).is(BiomeTags.HAS_DESERT_PYRAMID)
 +                && !isNearWater(level, pos)) {
 +                level.setBlock(pos, Blocks.DEAD_BUSH.defaultBlockState(), Block.UPDATE_ALL);
@@ -1665,14 +1665,14 @@ index 70fffd4e6399022c719a236c309e9ee0f7ccd447..d24eb6e134be538fae425c07579ed8e4
 +    }
  }
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index e820cd03e695649a8f83e23ae822524a8f78e23b..410b55379479647b16d81aa42d0430ce6187ad86 100644
+index e820cd03e695649a8f83e23ae822524a8f78e23b..eec0da45b3e6814e30241475cb29226dfff9dfbb 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 @@ -2,6 +2,7 @@ package net.minecraft.world.level.block;
  
  import com.mojang.serialization.MapCodec;
  import com.mojang.serialization.codecs.RecordCodecBuilder;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.List;
  import java.util.Map;
  import java.util.Optional;
@@ -1680,7 +1680,7 @@ index e820cd03e695649a8f83e23ae822524a8f78e23b..410b55379479647b16d81aa42d0430ce
  import net.minecraft.world.phys.shapes.Shapes;
  import net.minecraft.world.phys.shapes.VoxelShape;
  import org.jspecify.annotations.Nullable;
-+import fun.bm.lophine.config.modules.function.CarpetTisPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig;
  
  public class ShulkerBoxBlock extends BaseEntityBlock {
      public static final MapCodec<ShulkerBoxBlock> CODEC = RecordCodecBuilder.mapCodec(
@@ -1703,19 +1703,19 @@ index e820cd03e695649a8f83e23ae822524a8f78e23b..410b55379479647b16d81aa42d0430ce
 +            if (!level.isClientSide()
 +                && player.preventsBlockDrops()
 +                && !shulkerBoxBlockEntity.isEmpty()
-+                && !fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.creativeShulkerBoxDropsDisabled) {
++                && !fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.creativeShulkerBoxDropsDisabled) {
                  ItemStack coloredItemStack = getColoredItemStack(this.getColor());
                  coloredItemStack.applyComponents(blockEntity.collectComponents());
                  ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, coloredItemStack);
 diff --git a/net/minecraft/world/level/block/SpawnerBlock.java b/net/minecraft/world/level/block/SpawnerBlock.java
-index 119ed91439909d44d36c3a9822d2b11525a22f00..a634f98abac78d0ca91f3fa7747b624da3fa6510 100644
+index 119ed91439909d44d36c3a9822d2b11525a22f00..53bc8d6e15f6f2769e7673a823a94f6ad7710ca1 100644
 --- a/net/minecraft/world/level/block/SpawnerBlock.java
 +++ b/net/minecraft/world/level/block/SpawnerBlock.java
 @@ -1,9 +1,17 @@
  package net.minecraft.world.level.block;
  
  import com.mojang.serialization.MapCodec;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
 +import java.util.List;
  import net.minecraft.core.BlockPos;
 +import net.minecraft.core.component.DataComponents;
@@ -1782,7 +1782,7 @@ index 119ed91439909d44d36c3a9822d2b11525a22f00..a634f98abac78d0ca91f3fa7747b624d
 +    }
  }
 diff --git a/net/minecraft/world/level/block/TntBlock.java b/net/minecraft/world/level/block/TntBlock.java
-index 00da328f21e5ce5de6f968323b14a7832a6cbd62..97640e30ba70825f0631237a875da4edbafade66 100644
+index 00da328f21e5ce5de6f968323b14a7832a6cbd62..1055e3b4495bfc11f0f4782a5b999e6639011b2d 100644
 --- a/net/minecraft/world/level/block/TntBlock.java
 +++ b/net/minecraft/world/level/block/TntBlock.java
 @@ -47,7 +47,9 @@ public class TntBlock extends Block {
@@ -1790,35 +1790,35 @@ index 00da328f21e5ce5de6f968323b14a7832a6cbd62..97640e30ba70825f0631237a875da4ed
      protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
          if (!oldState.is(state.getBlock())) {
 -            if (level.hasNeighborSignal(pos) && prime(level, pos, () -> org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(level, pos, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.REDSTONE, null, null))) { // CraftBukkit - TNTPrimeEvent
-+            if (!fun.bm.lophine.config.modules.function.CarpetPortingConfig.tntDoNotUpdate
++            if (!fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.tntDoNotUpdate
 +                && level.hasNeighborSignal(pos)
 +                && prime(level, pos, () -> org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(level, pos, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.REDSTONE, null, null))) { // CraftBukkit - TNTPrimeEvent
                  level.removeBlock(pos, false);
              }
          }
 diff --git a/net/minecraft/world/level/block/TurtleEggBlock.java b/net/minecraft/world/level/block/TurtleEggBlock.java
-index 732f244b0265477434b26a47ddedab10f49b06a3..408cf28bfc806dc9bf23d81d73e1feb6fd3e4496 100644
+index 732f244b0265477434b26a47ddedab10f49b06a3..3946896a84c62c99a676df483e1d254371d1e212 100644
 --- a/net/minecraft/world/level/block/TurtleEggBlock.java
 +++ b/net/minecraft/world/level/block/TurtleEggBlock.java
 @@ -88,6 +88,9 @@ public class TurtleEggBlock extends Block {
                  return;
              }
              // CraftBukkit end
-+            if (fun.bm.lophine.config.modules.function.CarpetTisPortingConfig.turtleEggTrampledDisabled) {
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetTisPortingConfig.turtleEggTrampledDisabled) {
 +                return;
 +            }
              this.decreaseEggs(serverLevel, pos, state);
          }
      }
 diff --git a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-index 07236e86638faa3231917af507cdd37ac49b1270..c177f85e0d71cc02406fdb7ab84bf61562288a44 100644
+index 07236e86638faa3231917af507cdd37ac49b1270..0d0b6b6360990d2e0520e8e2a513356bbb8a86e4 100644
 --- a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 @@ -2,6 +2,7 @@ package net.minecraft.world.level.block.entity;
  
  import com.google.common.collect.Lists;
  import com.mojang.serialization.Codec;
-+import fun.bm.lophine.config.modules.function.CarpetOrgPortingConfig;
++import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
  import it.unimi.dsi.fastutil.objects.Reference2IntMap.Entry;
  import java.util.List;
@@ -1834,14 +1834,14 @@ index 07236e86638faa3231917af507cdd37ac49b1270..c177f85e0d71cc02406fdb7ab84bf615
          float fraction = Mth.frac(recipeIndex * experience);
          if (fraction != 0.0F && level.random.nextFloat() < fraction) {
 diff --git a/net/minecraft/world/level/block/entity/BeaconBlockEntity.java b/net/minecraft/world/level/block/entity/BeaconBlockEntity.java
-index deaac59e24dcc8c259567545507b52ca383f391e..fa2d968d6a407a0f770f125a83cb899432dfa124 100644
+index deaac59e24dcc8c259567545507b52ca383f391e..03301f801f12730a4f9a0f5f4d2fcb36dc913b6d 100644
 --- a/net/minecraft/world/level/block/entity/BeaconBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BeaconBlockEntity.java
 @@ -249,6 +249,13 @@ public class BeaconBlockEntity extends BlockEntity implements MenuProvider, Name
      }
  
      private static int updateBase(Level level, int x, int y, int z) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.easyMaxLevelBeacon) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.easyMaxLevelBeacon) {
 +            BlockPos pos = new BlockPos(x, y - 1, z);
 +            if (level.getBlockState(pos).is(BlockTags.BEACON_BASE_BLOCKS)) {
 +                return 4;
@@ -1852,14 +1852,14 @@ index deaac59e24dcc8c259567545507b52ca383f391e..fa2d968d6a407a0f770f125a83cb8994
  
          for (int i1 = 1; i1 <= 4; i = i1++) {
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 474ca0ce0d3095fc586f8f9e9a584ed4f7c91471..5d5578684b6587c4200cc789eb7869b57a3ab596 100644
+index 474ca0ce0d3095fc586f8f9e9a584ed4f7c91471..c96c6e68bf6aaf61d60147632974edb0c98540c2 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -631,6 +631,10 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      }
  
      public static boolean suckInItems(Level level, Hopper hopper) {
-+        if (fun.bm.lophine.config.modules.function.CarpetAmsPortingConfig.hopperSuctionDisabled) {
++        if (fun.bm.lophine.config.modules.function.carpet.CarpetAmsPortingConfig.hopperSuctionDisabled) {
 +            return false;
 +        }
 +
@@ -1867,7 +1867,7 @@ index 474ca0ce0d3095fc586f8f9e9a584ed4f7c91471..5d5578684b6587c4200cc789eb7869b5
          BlockPos blockPos = BlockPos.containing(hopper.getLevelX(), hopper.getLevelY() + 1.0, hopper.getLevelZ());
          BlockState blockState = level.getBlockState(blockPos);
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
-index 0de2f6627fb6295d7927ac3e37026f4daf68cfd3..24d194ddfd0fdd26a5d196199c85047a9e91710d 100644
+index 0de2f6627fb6295d7927ac3e37026f4daf68cfd3..c5a512cca8a90f746ac5a43c565a3766e7763496 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -192,7 +192,7 @@ public abstract class BlockBehaviour implements FeatureElement, org.leavesmc.lea
@@ -1875,33 +1875,33 @@ index 0de2f6627fb6295d7927ac3e37026f4daf68cfd3..24d194ddfd0fdd26a5d196199c85047a
          if (!state.isAir() && explosion.getBlockInteraction() != Explosion.BlockInteraction.TRIGGER_BLOCK && state.isDestroyable()) { // Paper - Protect Bedrock and End Portal/Frames from being destroyed
              Block block = state.getBlock();
 -            boolean flag = explosion.getIndirectSourceEntity() instanceof Player;
-+            boolean flag = explosion.getIndirectSourceEntity() instanceof Player || fun.bm.lophine.config.modules.function.CarpetPortingConfig.xpFromExplosions;
++            boolean flag = explosion.getIndirectSourceEntity() instanceof Player || fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.xpFromExplosions;
              if (block.dropFromExplosion(explosion)) {
                  BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
                  LootParams.Builder builder = new LootParams.Builder(level)
 diff --git a/net/minecraft/world/level/material/FlowingFluid.java b/net/minecraft/world/level/material/FlowingFluid.java
-index 85e9ec8061fc01d39977f6db314da14b1e7725e1..e69a2ccdc188bb6e28fd54faaae38792c13db3e7 100644
+index 85e9ec8061fc01d39977f6db314da14b1e7725e1..2c4e3735d531ee14d31c9228d7a980f68fb6ce75 100644
 --- a/net/minecraft/world/level/material/FlowingFluid.java
 +++ b/net/minecraft/world/level/material/FlowingFluid.java
 @@ -325,6 +325,9 @@ public abstract class FlowingFluid extends Fluid {
          if (state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer) {
              liquidBlockContainer.placeLiquid(level, pos, state, fluidState);
          } else {
-+            if (fun.bm.lophine.config.modules.function.CarpetPortingConfig.liquidDamageDisabled && !state.isAir()) {
++            if (fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.liquidDamageDisabled && !state.isAir()) {
 +                return;
 +            }
              if (!state.isAir()) {
                  this.beforeDestroyingBlock(level, pos, state, pos.relative(direction.getOpposite())); // Paper - Add BlockBreakBlockEvent
              }
 diff --git a/net/minecraft/world/level/material/LavaFluid.java b/net/minecraft/world/level/material/LavaFluid.java
-index a42878c191445ba4b0d50dd2b789a132d5cf6a3e..21fa57515473264e8670c1bab7fef1de62a0ab11 100644
+index a42878c191445ba4b0d50dd2b789a132d5cf6a3e..f93e3e007ef968a0c1be7a705ac0fd26fe28c1a6 100644
 --- a/net/minecraft/world/level/material/LavaFluid.java
 +++ b/net/minecraft/world/level/material/LavaFluid.java
 @@ -223,8 +223,13 @@ public abstract class LavaFluid extends FlowingFluid {
              FluidState fluidState1 = level.getFluidState(pos);
              if (this.is(FluidTags.LAVA) && fluidState1.is(FluidTags.WATER)) {
                  if (state.getBlock() instanceof LiquidBlock) {
-+                    BlockState blockState = fun.bm.lophine.config.modules.function.CarpetPortingConfig.renewableDeepslate
++                    BlockState blockState = fun.bm.lophine.config.modules.function.carpet.CarpetPortingConfig.renewableDeepslate
 +                            && level.getMinecraftWorld().dimension() == Level.OVERWORLD
 +                            && pos.getY() < 0
 +                        ? Blocks.DEEPSLATE.defaultBlockState()
