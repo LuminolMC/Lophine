@@ -6,11 +6,11 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
-    category = EnumConfigCategory.FUNCTION,
-    directory = "carpet-porting",
-    name = "carpet-org",
-    comments = """
-            Gameplay toggles ported from Carpet-Org-Addition."""
+        category = EnumConfigCategory.FUNCTION,
+        directory = "carpet-porting",
+        name = "carpet-org",
+        comments = """
+                Gameplay toggles ported from Carpet-Org-Addition."""
 )
 public class CarpetOrgPortingConfig implements IConfigModule {
     @ConfigInfo(name = "disable-bat-can-spawn", comments = """

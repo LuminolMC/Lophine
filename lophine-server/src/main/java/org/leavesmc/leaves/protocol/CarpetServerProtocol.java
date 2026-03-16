@@ -108,7 +108,7 @@ public class CarpetServerProtocol implements LeavesProtocol {
 
         @Codec
         private static final StreamCodec<FriendlyByteBuf, CarpetPayload> CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, CarpetPayload::nbt, CarpetPayload::new
+                ByteBufCodecs.COMPOUND_TAG, CarpetPayload::nbt, CarpetPayload::new
         );
     }
 }

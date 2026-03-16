@@ -1,6 +1,5 @@
 package fun.bm.lophine.config.modules.function.carpet;
 
-import java.util.Locale;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
@@ -11,12 +10,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.util.Locale;
+
 @ConfigClassInfo(
-    category = EnumConfigCategory.FUNCTION,
-    directory = "carpet-porting",
-    name = "carpet-ams",
-    comments = """
-            Gameplay toggles ported from Carpet-AMS-Addition."""
+        category = EnumConfigCategory.FUNCTION,
+        directory = "carpet-porting",
+        name = "carpet-ams",
+        comments = """
+                Gameplay toggles ported from Carpet-AMS-Addition."""
 )
 public class CarpetAmsPortingConfig implements IConfigModule {
     @ConfigInfo(name = "nether-water-placement", comments = """
@@ -152,12 +153,12 @@ public class CarpetAmsPortingConfig implements IConfigModule {
     }
 
     public static float getTntPower(float original) {
-        return tntPowerController < 0.0D ? original : (float)tntPowerController;
+        return tntPowerController < 0.0D ? original : (float) tntPowerController;
     }
 
     public static boolean shouldDropCake(BlockState state) {
         return cakeBlockDropOnBreak
-            && state.hasProperty(BlockStateProperties.BITES)
-            && state.getValue(BlockStateProperties.BITES) == 0;
+                && state.hasProperty(BlockStateProperties.BITES)
+                && state.getValue(BlockStateProperties.BITES) == 0;
     }
 }

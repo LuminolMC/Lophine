@@ -13,9 +13,9 @@ import java.util.Set;
 @ConfigClassInfo(name = "creative_fly_no_clip", category = EnumConfigCategory.FUNCTION)
 public class CreativeFlyNoClipConfig implements IConfigModule {
     @ConfigInfo(name = "enabled", comments = """
-           Whether to enable creative fly no clip.
-           When enabled, players in creative mode will not collide with blocks while flying.
-           This allows them to pass through blocks without obstruction.""")
+            Whether to enable creative fly no clip.
+            When enabled, players in creative mode will not collide with blocks while flying.
+            This allows them to pass through blocks without obstruction.""")
     public static boolean enabled = false;
 
     @Override

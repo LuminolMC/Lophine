@@ -24,7 +24,6 @@ import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import me.earthme.luminol.utils.FoliaServerWaypointManager;
 import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.waypoints.ServerWaypointManager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.command.CommandContext;

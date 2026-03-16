@@ -6,11 +6,11 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
-    category = EnumConfigCategory.FUNCTION,
-    directory = "carpet-porting",
-    name = "carpet",
-    comments = """
-            Gameplay toggles ported from fabric-carpet."""
+        category = EnumConfigCategory.FUNCTION,
+        directory = "carpet-porting",
+        name = "carpet",
+        comments = """
+                Gameplay toggles ported from fabric-carpet."""
 )
 public class CarpetPortingConfig implements IConfigModule {
     @ConfigInfo(name = "persistent-parrots", comments = """

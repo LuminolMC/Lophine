@@ -173,7 +173,7 @@ index c6985d2a9d1093943d754d77089bd4c3d5baf3ee..e4616615473ebbdf94de5344dae602d8
 --- a/net/minecraft/world/entity/Mob.java
 +++ b/net/minecraft/world/entity/Mob.java
 @@ -2,6 +2,7 @@ package net.minecraft.world.entity;
-
+ 
  import com.google.common.annotations.VisibleForTesting;
  import com.google.common.collect.Maps;
 +import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
@@ -234,7 +234,7 @@ index ca68d356e892e0ac8a651ced92aab7dbfd4699b4..1ba85d8a58d679de993a9f13b0fa5502
 +++ b/net/minecraft/world/entity/ambient/Bat.java
 @@ -1,5 +1,6 @@
  package net.minecraft.world.entity.ambient;
-
+ 
 +import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import net.minecraft.core.BlockPos;
  import net.minecraft.network.syncher.EntityDataAccessor;
@@ -271,7 +271,7 @@ index 86b6b94c3e63bb52917fe0f708d24aa813f433c7..14ee41e12b011039453bdfbb506376d3
 +++ b/net/minecraft/world/entity/boss/wither/WitherBoss.java
 @@ -1,6 +1,7 @@
  package net.minecraft.world.entity.boss.wither;
-
+ 
  import com.google.common.collect.ImmutableList;
 +import fun.bm.lophine.config.modules.function.carpet.CarpetOrgPortingConfig;
  import java.util.EnumSet;
@@ -342,7 +342,7 @@ index fd1db18764be58bc5ed5983b98e669c76f7ff427..9658c7273d03c3daaf8eddaeac5abcca
  import net.minecraft.world.level.storage.ValueOutput;
 +import net.minecraft.world.phys.Vec3;
  import org.jspecify.annotations.Nullable;
-
+ 
  // CraftBukkit start
 @@ -58,6 +59,8 @@ public class PrimedTnt extends Entity implements TraceableEntity {
      private boolean usedPortal;

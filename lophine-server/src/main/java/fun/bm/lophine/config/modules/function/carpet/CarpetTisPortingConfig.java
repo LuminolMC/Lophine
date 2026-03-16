@@ -1,6 +1,5 @@
 package fun.bm.lophine.config.modules.function.carpet;
 
-import java.util.Locale;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
@@ -9,12 +8,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.Locale;
+
 @ConfigClassInfo(
-    category = EnumConfigCategory.FUNCTION,
-    directory = "carpet-porting",
-    name = "carpet-tis",
-    comments = """
-            Gameplay toggles ported from carpet-tis-addition."""
+        category = EnumConfigCategory.FUNCTION,
+        directory = "carpet-porting",
+        name = "carpet-tis",
+        comments = """
+                Gameplay toggles ported from carpet-tis-addition."""
 )
 public class CarpetTisPortingConfig implements IConfigModule {
     @ConfigInfo(name = "farmland-trampled-disabled", comments = """
@@ -136,12 +137,12 @@ public class CarpetTisPortingConfig implements IConfigModule {
 
     public static double getVoidRelatedAltitude(Level level) {
         return voidRelatedAltitude == -64.0D
-            ? level.getMinY() + level.getWorld().getVoidDamageMinBuildHeightOffset()
-            : voidRelatedAltitude;
+                ? level.getMinY() + level.getWorld().getVoidDamageMinBuildHeightOffset()
+                : voidRelatedAltitude;
     }
 
     public static float getVoidDamageAmount(Level level) {
-        return voidDamageAmount == 4.0D ? (float)level.getWorld().getVoidDamageAmount() : (float)voidDamageAmount;
+        return voidDamageAmount == 4.0D ? (float) level.getWorld().getVoidDamageAmount() : (float) voidDamageAmount;
     }
 
     public static boolean shouldIgnoreVoidDamage(Player player) {
