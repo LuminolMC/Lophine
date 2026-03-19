@@ -39,4 +39,8 @@ public class CommandConfig implements IConfigModule {
             """
                     Log all process of save-all command to console""")
     public static boolean logAllProcess = false;
+
+    @ConfigInfo(name = "save_all_command_timeout", directory = {"save_all_command"}, comments = """
+            Maximum seconds to save before the chunk report it is timeout.""")
+    public static long saveAllTimeout = 30;
 }
