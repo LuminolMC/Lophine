@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SaveAllUtil {
-    private static final long TIMEOUT = 1000 * 30; // 30 seconds
     public static final Object lock = new Object();
     public static volatile long lastSaveAllTime = 0;
     private static volatile Pair<CommandSourceStack, Boolean> currentSaveAll = null;
@@ -76,7 +75,7 @@ public class SaveAllUtil {
     public static void checkTimeout() {
         Pair<CommandSourceStack, Boolean> currentSaveAll = SaveAllUtil.currentSaveAll;
         if (!isSaving()) return;
-        if (System.currentTimeMillis() - lastSaveAllTime > TIMEOUT) {
+        if (System.currentTimeMillis() - lastSaveAllTime > CommandConfig.saveAllTimeout) {
             currentSaveAll.getFirst().sendFailure(Component.literal("At least one region save data timeout!"));
             currentSaveAll.getFirst().sendFailure(Component.literal("Regions need to save expect is " + regionCount + ", but only " + savedRegionCount.get() + " saved!"));
             SaveAllUtil.currentSaveAll = null;
