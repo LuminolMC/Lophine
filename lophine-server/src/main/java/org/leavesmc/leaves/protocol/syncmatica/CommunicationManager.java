@@ -38,13 +38,14 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @LeavesProtocol.Register(namespace = "syncmatica")
 public class CommunicationManager implements LeavesProtocol {
 
-    protected static final Collection<ExchangeTarget> broadcastTargets = new ArrayList<>();
-    protected static final Map<UUID, Boolean> downloadState = new HashMap<>();
-    protected static final Map<UUID, Exchange> modifyState = new HashMap<>();
+    protected static final Collection<ExchangeTarget> broadcastTargets = new ConcurrentLinkedQueue<>();
+    protected static final Map<UUID, Boolean> downloadState = new ConcurrentHashMap<>();
+    protected static final Map<UUID, Exchange> modifyState = new ConcurrentHashMap<>();
     protected static final Rotation[] rotOrdinals = Rotation.values();
     protected static final Mirror[] mirOrdinals = Mirror.values();
     private static final Map<UUID, List<ServerPlacement>> downloadingFile = new ConcurrentHashMap<>();
