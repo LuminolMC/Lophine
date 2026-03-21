@@ -1,7 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -54,8 +53,8 @@ public class CarpetServerProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return CreativeFlyNoClipConfig.enabled;
-    } // re-edit for creative no clip
+        return CarpetRules.hasRules();
+    }
 
     public static class CarpetRules {
 
@@ -71,6 +70,14 @@ public class CarpetServerProtocol implements LeavesProtocol {
         public static void register(CarpetRule rule) {
             rules.put(rule.name, rule);
         }
+
+        public static void clear() {
+            rules.clear();
+        }
+
+        public static boolean hasRules() {
+            return !rules.isEmpty();
+        }
     }
 
     public record CarpetRule(String identifier, String name, String value) {
@@ -85,6 +92,24 @@ public class CarpetServerProtocol implements LeavesProtocol {
         @Contract("_, _, _ -> new")
         public static CarpetRule of(String identifier, String name, boolean value) {
             return new CarpetRule(identifier, name, Boolean.toString(value));
+        }
+
+        @NotNull
+        @Contract("_, _, _ -> new")
+        public static CarpetRule of(String identifier, String name, int value) {
+            return new CarpetRule(identifier, name, Integer.toString(value));
+        }
+
+        @NotNull
+        @Contract("_, _, _ -> new")
+        public static CarpetRule of(String identifier, String name, long value) {
+            return new CarpetRule(identifier, name, Long.toString(value));
+        }
+
+        @NotNull
+        @Contract("_, _, _ -> new")
+        public static CarpetRule of(String identifier, String name, String value) {
+            return new CarpetRule(identifier, name, value);
         }
 
         public void writeNBT(@NotNull CompoundTag rules) {

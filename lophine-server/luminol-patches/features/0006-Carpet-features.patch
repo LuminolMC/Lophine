@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Sun, 22 Mar 2026 01:39:17 +0800
+Subject: [PATCH] Carpet features
+
+
+diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+index cb1657939b86c039fcfe6403d3f202c2c5879e88..f96baed112a40658a4991959c094f56f0f23ac1d 100644
+--- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
++++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+@@ -1,10 +1,12 @@
+ package me.earthme.luminol.config;
+ 
+ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
++import fun.bm.lophine.config.carpet.CarpetCompatSync;
+ import me.earthme.luminol.commands.CommandRegister;
+ import me.earthme.luminol.config.flags.TransformedConfig;
+ import org.jetbrains.annotations.NotNull;
+ 
++import java.io.File;
+ import java.io.IOException;
+ import java.util.HashSet;
+ import java.util.Map;
+@@ -24,6 +26,13 @@ public class ConfigManager {
+     public static void initConfigs() {
+         configfiles.put("luminol", ConfigsInstance.of("luminol", "me.earthme.luminol.config.modules"));
+         configfiles.put("lophine", ConfigsInstance.of("lophine", "fun.bm.lophine.config.modules")); // add lophine config to global config
++        configfiles.put("lophine_carpet", ConfigsInstance.of(
++                new File("lophine_config"),
++                "lophine_carpet",
++                "lophine_carpet_config.toml",
++                "lophinecarpetconfig",
++                "fun.bm.lophine.config.carpet.modules"
++        ));
+         preLoad();
+     }
+ 
+@@ -39,6 +48,7 @@ public class ConfigManager {
+                 .toArray(CompletableFuture[]::new);
+         CompletableFuture.allOf(futures).join();
+         acceptTransformedConfigs();
++        CarpetCompatSync.apply();
+     }
+ 
+     public static void loadConfigFiles() {
+@@ -97,4 +107,4 @@ public class ConfigManager {
+         toReload.forEach(ConfigsInstance::saveConfigs);
+         needTransformedConfigs.clear(); // free space when all done
+     }
+-}
+\ No newline at end of file
++}
