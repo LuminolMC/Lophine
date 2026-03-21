@@ -10,7 +10,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
         name = "fakeplayer",
         directory = {"carpet"},
         comments = """
-                Carpet fakeplayer compatibility mapped onto Leaves/Lophine fakeplayers.
+                Carpet fakeplayer compatibility mapped onto Lophine fakeplayers.
                 commandPlayer is currently backed by Lophine's /bot command surface."""
 )
 public class CarpetFakePlayerCompatConfig implements IConfigModule {
