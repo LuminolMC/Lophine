@@ -6,9 +6,9 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
-        directory = "carpet-porting",
-        name = "carpet-org",
+        category = EnumConfigCategory.ROOT,
+        directory = "carpet",
+        name = "org",
         comments = """
                 Gameplay toggles ported from Carpet-Org-Addition."""
 )

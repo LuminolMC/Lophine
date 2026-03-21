@@ -13,9 +13,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.Locale;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
-        directory = "carpet-porting",
-        name = "carpet-ams",
+        category = EnumConfigCategory.ROOT,
+        directory = "carpet",
+        name = "ams",
         comments = """
                 Gameplay toggles ported from Carpet-AMS-Addition."""
 )

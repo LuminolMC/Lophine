@@ -11,9 +11,9 @@ import net.minecraft.world.level.Level;
 import java.util.Locale;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
-        directory = "carpet-porting",
-        name = "carpet-tis",
+        category = EnumConfigCategory.ROOT,
+        directory = "carpet",
+        name = "tis",
         comments = """
                 Gameplay toggles ported from carpet-tis-addition."""
 )

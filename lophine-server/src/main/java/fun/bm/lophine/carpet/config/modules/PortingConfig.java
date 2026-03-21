@@ -6,8 +6,8 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
-        directory = "carpet-porting",
+        category = EnumConfigCategory.ROOT,
+        directory = "carpet",
         name = "carpet",
         comments = """
                 Gameplay toggles ported from fabric-carpet."""
