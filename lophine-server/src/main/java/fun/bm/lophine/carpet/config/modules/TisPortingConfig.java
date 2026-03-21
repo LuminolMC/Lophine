@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function.carpet;
+package fun.bm.lophine.carpet.config.modules;
 
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
@@ -17,7 +17,7 @@ import java.util.Locale;
         comments = """
                 Gameplay toggles ported from carpet-tis-addition."""
 )
-public class CarpetTisPortingConfig implements IConfigModule {
+public class TisPortingConfig implements IConfigModule {
     @ConfigInfo(name = "farmland-trampled-disabled", comments = """
             Ported from carpet-tis-addition.
             Farmland will not turn back into dirt when entities land on it.""")

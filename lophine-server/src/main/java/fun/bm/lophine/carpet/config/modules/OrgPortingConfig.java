@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function.carpet;
+package fun.bm.lophine.carpet.config.modules;
 
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
@@ -12,7 +12,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
         comments = """
                 Gameplay toggles ported from Carpet-Org-Addition."""
 )
-public class CarpetOrgPortingConfig implements IConfigModule {
+public class OrgPortingConfig implements IConfigModule {
     @ConfigInfo(name = "disable-bat-can-spawn", comments = """
             Ported from Carpet-Org-Addition.
             Prevents bats from spawning naturally.""")

@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function.carpet;
+package fun.bm.lophine.carpet.config.modules;
 
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
@@ -19,7 +19,7 @@ import java.util.Locale;
         comments = """
                 Gameplay toggles ported from Carpet-AMS-Addition."""
 )
-public class CarpetAmsPortingConfig implements IConfigModule {
+public class AmsPortingConfig implements IConfigModule {
     @ConfigInfo(name = "nether-water-placement", comments = """
             Ported from Carpet-AMS-Addition.
             Players can place water in ultra-warm dimensions.""")

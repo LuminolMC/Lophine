@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Sat, 21 Mar 2026 20:53:55 +0800
+Subject: [PATCH] Carpet features config file
+
+
+diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+index cb1657939b86c039fcfe6403d3f202c2c5879e88..fd58e0d9b8e3cb801a8774355331066752528d0b 100644
+--- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
++++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+@@ -24,6 +24,7 @@ public class ConfigManager {
+     public static void initConfigs() {
+         configfiles.put("luminol", ConfigsInstance.of("luminol", "me.earthme.luminol.config.modules"));
+         configfiles.put("lophine", ConfigsInstance.of("lophine", "fun.bm.lophine.config.modules")); // add lophine config to global config
++        configfiles.put("carpet", ConfigsInstance.of("carpet", "fun.bm.lophine.carpet.config.modules")); // add checkout carpet config to a new generated global config
+         preLoad();
+     }
+ 

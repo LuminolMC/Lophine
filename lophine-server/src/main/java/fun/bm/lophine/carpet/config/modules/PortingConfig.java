@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function.carpet;
+package fun.bm.lophine.carpet.config.modules;
 
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
@@ -12,7 +12,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
         comments = """
                 Gameplay toggles ported from fabric-carpet."""
 )
-public class CarpetPortingConfig implements IConfigModule {
+public class PortingConfig implements IConfigModule {
     @ConfigInfo(name = "persistent-parrots", comments = """
             Ported from fabric-carpet.
             Shoulder parrots are no longer dropped by ordinary damage or movement checks.""")
