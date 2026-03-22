@@ -20,7 +20,7 @@ package org.leavesmc.leaves.bot;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import fun.bm.lophine.LophineLogger;
-import fun.bm.lophine.config.carpet.modules.CarpetFakePlayerCompatConfig;
+import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
@@ -346,10 +346,10 @@ public class ServerBot extends ServerPlayer {
         ItemStack item = this.getItemInHand(hand);
 
         if (!item.isEmpty()) {
-            if (CarpetFakePlayerCompatConfig.fakePlayerAutoReplenishment) {
+            if (FakePlayerCompatConfig.fakePlayerAutoReplenishment) {
                 BotUtil.replenishment(item, getInventory().getNonEquipmentItems());
             }
-            if (CarpetFakePlayerCompatConfig.fakePlayerAutoReplaceTool && BotUtil.isDamage(item, 10)) {
+            if (FakePlayerCompatConfig.fakePlayerAutoReplaceTool && BotUtil.isDamage(item, 10)) {
                 BotUtil.replaceTool(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND, this);
             }
         }
@@ -397,7 +397,7 @@ public class ServerBot extends ServerPlayer {
 
         nbt.store("createStatus", CompoundTag.CODEC, createNbt);
 
-        if (CarpetFakePlayerCompatConfig.fakePlayerReloadAction && !this.actions.isEmpty()) {
+        if (FakePlayerCompatConfig.fakePlayerReloadAction && !this.actions.isEmpty()) {
             ValueOutput.TypedOutputList<CompoundTag> actionNbt = nbt.list("actions", CompoundTag.CODEC);
             for (AbstractBotAction<?> action : this.actions) {
                 actionNbt.add(action.save(new CompoundTag()));
@@ -440,7 +440,7 @@ public class ServerBot extends ServerPlayer {
         this.gameProfile = BotList.createBotProfile(this.getUUID(), this.createState.fullName(), this.createState.skin());
 
 
-        if (CarpetFakePlayerCompatConfig.fakePlayerReloadAction && nbt.list("actions", CompoundTag.CODEC).isPresent()) {
+        if (FakePlayerCompatConfig.fakePlayerReloadAction && nbt.list("actions", CompoundTag.CODEC).isPresent()) {
             ValueInput.TypedInputList<CompoundTag> actionNbt = nbt.list("actions", CompoundTag.CODEC).orElseThrow();
             actionNbt.forEach(actionTag -> {
                 AbstractBotAction<?> action = Actions.getForName(actionTag.getString("actionName").orElseThrow());
@@ -666,7 +666,7 @@ public class ServerBot extends ServerPlayer {
     }
 
     private void tickAutoFish() {
-        if (!CarpetFakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
+        if (!fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
             this.autoFishCooldown = 0;
             return;
         }

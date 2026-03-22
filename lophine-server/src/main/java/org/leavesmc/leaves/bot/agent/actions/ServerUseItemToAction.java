@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.bot.agent.actions;
 
-import fun.bm.lophine.config.carpet.modules.CarpetFakePlayerCompatConfig;
+import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -54,7 +54,7 @@ public class ServerUseItemToAction extends AbstractUseBotAction<ServerUseItemToA
         Vec3 vec3 = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
         bot.updateItemInHand(hand);
         InteractionResult interactionResult = entity.interactAt(bot, vec3, hand);
-        if (CarpetFakePlayerCompatConfig.fakePlayerInteractLikeClient
+        if (FakePlayerCompatConfig.fakePlayerInteractLikeClient
                 && entity instanceof ArmorStand stand
                 && !stand.isMarker()
                 && !bot.isSpectator()

@@ -1,6 +1,6 @@
 package fun.bm.lophine.config.carpet;
 
-import fun.bm.lophine.config.carpet.modules.CarpetGeneralCompatConfig;
+import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,7 +13,7 @@ public final class CarpetCalculatorCompatHelper {
     }
 
     public static boolean handleChat(ServerPlayer player, String rawMessage) {
-        if (!CarpetGeneralCompatConfig.simpleInGameCalculator || !rawMessage.startsWith("=")) {
+        if (!GeneralCompatConfig.simpleInGameCalculator || !rawMessage.startsWith("=")) {
             return false;
         }
 

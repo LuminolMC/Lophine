@@ -6,14 +6,14 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
+        category = EnumConfigCategory.ROOT,
         name = "fakeplayer",
         directory = {"carpet"},
         comments = """
                 Carpet fakeplayer compatibility mapped onto Lophine fakeplayers.
                 commandPlayer is currently backed by Lophine's /bot command surface."""
 )
-public class CarpetFakePlayerCompatConfig implements IConfigModule {
+public class FakePlayerCompatConfig implements IConfigModule {
     @ConfigInfo(name = "commandBot", comments = """
             Enable Lophine's /bot command.""")
     public static boolean commandBot = false;

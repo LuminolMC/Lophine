@@ -8,14 +8,14 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 import java.util.List;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
+        category = EnumConfigCategory.ROOT,
         name = "general",
         directory = {"carpet"},
         comments = """
                 Carpet/AMS/TIS/Org compatibility rules backed by existing Lophine features.
                 Only rules that already have a working server-side implementation are exposed here."""
 )
-public class CarpetGeneralCompatConfig implements IConfigModule {
+public class GeneralCompatConfig implements IConfigModule {
     @ConfigInfo(name = "language", comments = """
             Carpet language value forwarded to lophine.function.language.lang.""")
     public static String language = "zh_cn";

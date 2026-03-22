@@ -6,13 +6,13 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(
-        category = EnumConfigCategory.FUNCTION,
+        category = EnumConfigCategory.ROOT,
         name = "hopper_counter",
         directory = {"carpet"},
         comments = """
                 Hopper counter compatibility mapped onto Lophine's wool hopper counter implementation."""
 )
-public class CarpetCounterCompatConfig implements IConfigModule {
+public class CounterCompatConfig implements IConfigModule {
     @ConfigInfo(name = "hopperCounters", comments = """
             Enable the existing wool hopper counter implementation.""")
     public static boolean hopperCounters = false;

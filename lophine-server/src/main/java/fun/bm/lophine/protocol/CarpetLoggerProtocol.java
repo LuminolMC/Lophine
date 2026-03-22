@@ -1,6 +1,6 @@
 package fun.bm.lophine.protocol;
 
-import fun.bm.lophine.config.carpet.modules.CarpetGeneralCompatConfig;
+import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.minecraft.ChatFormatting;
@@ -38,10 +38,15 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
     private static volatile Map<String, String> configuredSubscriptions = Map.of();
 
     public static void refreshConfiguredDefaults() {
-        Map<String, String> defaults = parseConfiguredDefaults(CarpetGeneralCompatConfig.defaultLoggers);
+        refreshConfiguredDefaults(false);
+    }
+
+    public static void refreshConfiguredDefaults(boolean initial) {
+        Map<String, String> defaults = parseConfiguredDefaults(GeneralCompatConfig.defaultLoggers);
         configuredSubscriptions = defaults;
         if (defaults.isEmpty()) {
             PLAYER_SUBSCRIPTIONS.clear();
+            if (initial) return;
             MinecraftServer server = MinecraftServer.getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {

@@ -1,7 +1,7 @@
 package fun.bm.lophine.protocol.tiscm;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.carpet.modules.CarpetGeneralCompatConfig;
+import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
 import io.papermc.paper.ServerBuildInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -42,7 +42,7 @@ public class TISCMProtocol implements LeavesProtocol {
     }
 
     public static void broadcastMsptSample(long tickCounter, long nanosecond) {
-        if (!CarpetGeneralCompatConfig.tiscmNetworkProtocol || !CarpetGeneralCompatConfig.syncServerMsptMetricsData) {
+        if (!GeneralCompatConfig.tiscmNetworkProtocol || !GeneralCompatConfig.syncServerMsptMetricsData) {
             return;
         }
 
@@ -62,7 +62,7 @@ public class TISCMProtocol implements LeavesProtocol {
 
     @ProtocolHandler.PayloadReceiver(payload = TISCMPayload.class)
     public static void handlePayload(ServerPlayer player, TISCMPayload payload) {
-        if (!CarpetGeneralCompatConfig.tiscmNetworkProtocol) {
+        if (!GeneralCompatConfig.tiscmNetworkProtocol) {
             return;
         }
 
@@ -137,7 +137,7 @@ public class TISCMProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return CarpetGeneralCompatConfig.tiscmNetworkProtocol;
+        return GeneralCompatConfig.tiscmNetworkProtocol;
     }
 
     private interface PayloadBuilder {

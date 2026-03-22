@@ -5,7 +5,7 @@ Subject: [PATCH] Carpet features
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index cb1657939b86c039fcfe6403d3f202c2c5879e88..f96baed112a40658a4991959c094f56f0f23ac1d 100644
+index cb1657939b86c039fcfe6403d3f202c2c5879e88..b1dcc2b7f3dcf9231195bd06c20b2e2cf07b5b6b 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
 @@ -1,10 +1,12 @@
@@ -43,10 +43,3 @@ index cb1657939b86c039fcfe6403d3f202c2c5879e88..f96baed112a40658a4991959c094f56f
      }
  
      public static void loadConfigFiles() {
-@@ -97,4 +107,4 @@ public class ConfigManager {
-         toReload.forEach(ConfigsInstance::saveConfigs);
-         needTransformedConfigs.clear(); // free space when all done
-     }
--}
-\ No newline at end of file
-+}

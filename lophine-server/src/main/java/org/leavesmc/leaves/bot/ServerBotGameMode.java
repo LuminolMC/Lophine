@@ -17,9 +17,10 @@
 
 package org.leavesmc.leaves.bot;
 
-import fun.bm.lophine.config.carpet.modules.CarpetFakePlayerCompatConfig;
+import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.InteractionHand;
@@ -136,6 +137,6 @@ public class ServerBotGameMode extends ServerPlayerGameMode {
     }
 
     private static GameType getInitialGameMode(ServerBot bot) {
-        return CarpetFakePlayerCompatConfig.fakePlayerDefaultSurvivalMode ? GameType.SURVIVAL : net.minecraft.server.MinecraftServer.getServer().getDefaultGameType();
+        return FakePlayerCompatConfig.fakePlayerDefaultSurvivalMode ? GameType.SURVIVAL : MinecraftServer.getServer().getDefaultGameType();
     }
 }

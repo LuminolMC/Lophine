@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.bot;
 
 import com.google.common.base.Charsets;
-import fun.bm.lophine.config.carpet.modules.CarpetFakePlayerCompatConfig;
+import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.NonNullList;
@@ -41,7 +41,7 @@ public class BotUtil {
             if (pullMatchingStack(itemStack, itemStackList, count)) {
                 return;
             }
-            if (CarpetFakePlayerCompatConfig.fakePlayerAutoReplenishmentFormShulkerBox) {
+            if (FakePlayerCompatConfig.fakePlayerAutoReplenishmentFormShulkerBox) {
                 pullMatchingStackFromShulkerBox(itemStack, itemStackList, count);
             }
         }
