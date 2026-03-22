@@ -1,28 +1,32 @@
 package fun.bm.lophine.config.carpet;
 
+import fun.bm.lophine.config.carpet.modules.CoreConfig;
 import fun.bm.lophine.config.carpet.modules.CounterCompatConfig;
 import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
 import fun.bm.lophine.config.modules.experiment.CommandConfig;
+import fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig;
 import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import fun.bm.lophine.config.modules.function.LanguageConfig;
 import fun.bm.lophine.config.modules.function.WoolHopperCounterConfig;
-import fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig;
+import fun.bm.lophine.protocol.CarpetLoggerProtocol;
 import me.earthme.luminol.config.modules.optimizations.OptimizedDragonRespawnConfig;
 import org.leavesmc.leaves.bot.ServerBot;
-import fun.bm.lophine.protocol.CarpetLoggerProtocol;
 import org.leavesmc.leaves.protocol.CarpetServerProtocol;
 
 import java.util.List;
 
 public final class CarpetCompatSync {
+    private static boolean init = false;
 
     public static void apply() {
+        if (!CoreConfig.enabled || init) return;
         applyGeneralRules();
         applyFakePlayerRules();
         applyCounterRules();
         registerProtocolRules();
+        init = true;
     }
 
     private static void applyGeneralRules() {

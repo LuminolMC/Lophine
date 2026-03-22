@@ -230,10 +230,10 @@ public class GeneralCompatConfig implements IConfigModule {
     public static List<String> defaultLoggers = List.of();
 
     public static int normalizedTntFuseDuration() {
-        return Math.max(0, Math.min(tntFuseDuration, Short.MAX_VALUE));
+        return Math.clamp(tntFuseDuration, 0, Short.MAX_VALUE);
     }
 
     public static int normalizedTickCommandPermission() {
-        return Math.max(0, Math.min(tickCommandPermission, 4));
+        return Math.clamp(tickCommandPermission, 0, 4);
     }
 }
