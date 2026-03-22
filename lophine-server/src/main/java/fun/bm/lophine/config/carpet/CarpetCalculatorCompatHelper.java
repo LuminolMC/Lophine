@@ -9,8 +9,6 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 import java.math.BigDecimal;
 
 public final class CarpetCalculatorCompatHelper {
-    private CarpetCalculatorCompatHelper() {
-    }
 
     public static boolean handleChat(ServerPlayer player, String rawMessage) {
         if (!GeneralCompatConfig.simpleInGameCalculator || !rawMessage.startsWith("=")) {

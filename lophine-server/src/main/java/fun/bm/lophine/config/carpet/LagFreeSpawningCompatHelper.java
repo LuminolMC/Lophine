@@ -26,9 +26,6 @@ public final class LagFreeSpawningCompatHelper {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Map<ServerLevel, Map<EntityType<?>, Mob>> PRECOOKED_MOBS = new WeakHashMap<>();
 
-    private LagFreeSpawningCompatHelper() {
-    }
-
     public static boolean hasNoCollision(ServerLevel world, AABB bb) {
         int minX = Mth.floor(bb.minX);
         int minY = Mth.floor(bb.minY);

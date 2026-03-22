@@ -5,9 +5,6 @@ import java.util.function.Supplier;
 public final class InteractionUpdateCompatHelper {
     private static final ThreadLocal<Integer> SUPPRESSED_DEPTH = ThreadLocal.withInitial(() -> 0);
 
-    private InteractionUpdateCompatHelper() {
-    }
-
     public static boolean shouldSkipUpdates() {
         return SUPPRESSED_DEPTH.get() > 0;
     }

@@ -17,8 +17,6 @@ import org.leavesmc.leaves.protocol.CarpetServerProtocol;
 import java.util.List;
 
 public final class CarpetCompatSync {
-    private CarpetCompatSync() {
-    }
 
     public static void apply() {
         applyGeneralRules();
