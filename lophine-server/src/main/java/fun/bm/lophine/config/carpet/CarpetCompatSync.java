@@ -38,7 +38,7 @@ public final class CarpetCompatSync {
         CommandConfig.tick = GeneralCompatConfig.commandTick;
         CreativeFlyNoClipConfig.enabled = GeneralCompatConfig.creativeNoClip;
         OptimizedDragonRespawnConfig.optimizedRespawn = GeneralCompatConfig.optimizedDragonRespawn;
-        CarpetLoggerProtocol.refreshConfiguredDefaults(true);
+        CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
     }
 
     private static void applyFakePlayerRules() {
