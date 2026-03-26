@@ -23,7 +23,7 @@ public class CoreConfig implements IConfigModule {
     public static boolean enabled = false;
 
     @Override
-    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
+    public void beforeFinalLoad() {
         CarpetCompatSync.apply();
     }
 }
