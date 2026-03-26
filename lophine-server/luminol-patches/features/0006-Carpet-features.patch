@@ -5,10 +5,10 @@ Subject: [PATCH] Carpet features
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index da4afbcb097e5853be588842dfda07e279494939..85056f1982f7af1ed1c059f9b34cf2772d85e11b 100644
+index f5fb4e210c07f32e52eb8c1ba166d1571a6778c7..cb8f143b5530e30b96d5af3b23374ee13b5a4497 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-@@ -24,6 +24,13 @@ public class ConfigManager {
+@@ -25,6 +25,13 @@ public class ConfigManager {
      public static void initConfigs() {
          configfiles.put("luminol", ConfigsInstance.of("luminol", "me.earthme.luminol.config.modules"));
          configfiles.put("lophine", ConfigsInstance.of("lophine", "fun.bm.lophine.config.modules")); // add lophine global config
