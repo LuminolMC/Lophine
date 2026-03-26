@@ -19,7 +19,8 @@ public class CoreConfig implements IConfigModule {
     @ConfigInfo(name = "enabled", comments = """
             Enable carpet features.
             If you want to use any function from Carpet modifier,
-            you need to enable it.""")
+            you need to enable it.
+            WARNING: IF YOU ENABLED IT, ORIGINAL CONFIG IN LOPHINE CONFIG WILL BE OVERWRITTEN.""")
     public static boolean enabled = false;
 
     @Override
