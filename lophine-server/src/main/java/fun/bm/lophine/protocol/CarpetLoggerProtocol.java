@@ -257,7 +257,7 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
     private static Map<String, String> parseConfiguredDefaults(List<String> configuredLoggers) {
         LinkedHashMap<String, String> subscriptions = new LinkedHashMap<>();
         if (configuredLoggers == null) {
-            return Map.of();
+            return null;
         }
         for (String entry : configuredLoggers) {
             if (entry == null) {
@@ -275,13 +275,13 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
                     continue;
                 }
                 String option = parts.length == 1 ? defaultOption(loggerName) : parts[1].trim();
-                if (option == null || option.isEmpty()) {
+                if (option.isEmpty()) {
                     option = defaultOption(loggerName);
                 }
                 subscriptions.put(loggerName, option);
             }
         }
-        return subscriptions.isEmpty() ? Map.of() : Map.copyOf(subscriptions);
+        return subscriptions.isEmpty() ? null : Map.copyOf(subscriptions);
     }
 
     private static boolean isSupported(String loggerName) {
