@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CarpetLoggerProtocol implements LeavesProtocol {
     private static final Logger LOGGER = LoggerFactory.getLogger("CarpetLoggerProtocol");
     private static final Map<String, Map<String, String>> PLAYER_SUBSCRIPTIONS = new ConcurrentHashMap<>();
-    private static volatile Map<String, String> configuredSubscriptions;
+    private static volatile Map<String, String> configuredSubscriptions = null;
 
     public static void refreshConfiguredDefaults(boolean initial) {
         Map<String, String> defaults = parseConfiguredDefaults(GeneralCompatConfig.defaultLoggers);
@@ -64,7 +64,7 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
 
     @ProtocolHandler.PlayerJoin
     public static void onPlayerJoin(ServerPlayer player) {
-        if (!configuredSubscriptions.isEmpty()) {
+        if (configuredSubscriptions != null && !configuredSubscriptions.isEmpty()) {
             PLAYER_SUBSCRIPTIONS.putIfAbsent(player.getScoreboardName(), configuredSubscriptions);
         }
     }
