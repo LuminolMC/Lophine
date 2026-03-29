@@ -82,7 +82,7 @@ public class ServerI18nUtil {
         } catch (UnsupportedLanguageException e) {
             logger.warn("Unsupported language: {}", LanguageConfig.lang);
             // Fallback to English
-            final ConfigsInstance configsInstance = ConfigManager.configfiles.get("lophine");
+            final ConfigsInstance configsInstance = ConfigManager.getConfigs("lophine");
             configsInstance.setConfig(new String[]{"function", "language", "lang"}, "en_us");
             configsInstance.reloadAsync(true);
         } catch (Exception e) {
