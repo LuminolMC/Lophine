@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.bot;
 
-import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
+import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;

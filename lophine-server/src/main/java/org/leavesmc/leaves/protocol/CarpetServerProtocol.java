@@ -1,7 +1,7 @@
 package org.leavesmc.leaves.protocol;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.carpet.modules.CoreConfig;
+import fun.bm.lophine.carpet.config.modules.CoreConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

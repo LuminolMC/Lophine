@@ -20,7 +20,7 @@ package org.leavesmc.leaves.bot;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import fun.bm.lophine.LophineLogger;
-import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
+import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
@@ -666,7 +666,7 @@ public class ServerBot extends ServerPlayer {
     }
 
     private void tickAutoFish() {
-        if (!fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
+        if (!fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
             this.autoFishCooldown = 0;
             return;
         }

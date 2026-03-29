@@ -1,7 +1,7 @@
 package fun.bm.lophine.protocol.tiscm;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
+import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import io.papermc.paper.ServerBuildInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

@@ -1,6 +1,6 @@
 package fun.bm.lophine.protocol;
 
-import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
+import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.minecraft.ChatFormatting;

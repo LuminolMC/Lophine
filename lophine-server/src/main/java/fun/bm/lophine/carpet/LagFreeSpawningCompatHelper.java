@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.carpet;
+package fun.bm.lophine.carpet;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
@@ -38,7 +38,7 @@ public final class LagFreeSpawningCompatHelper {
                 blockPos.set(minX, y, minZ);
                 VoxelShape shape = world.getBlockState(blockPos).getCollisionShape(world, blockPos);
                 if (shape != Shapes.empty()) {
-                    return shape == Shapes.block() ? false : world.noCollision(bb);
+                    return shape != Shapes.block() && world.noCollision(bb);
                 }
             }
             return true;
@@ -53,7 +53,7 @@ public final class LagFreeSpawningCompatHelper {
                     blockPos.set(x, y, z);
                     VoxelShape shape = world.getBlockState(blockPos).getCollisionShape(world, blockPos);
                     if (shape != Shapes.empty()) {
-                        return shape == Shapes.block() ? false : world.noCollision(bb);
+                        return shape != Shapes.block() && world.noCollision(bb);
                     }
                 }
             }
@@ -67,7 +67,7 @@ public final class LagFreeSpawningCompatHelper {
                 Block block = state.getBlock();
                 if (state.is(BlockTags.FENCES)
                         || state.is(BlockTags.WALLS)
-                        || block instanceof FenceGateBlock fenceGateBlock && !state.getValue(fenceGateBlock.OPEN)) {
+                        || block instanceof FenceGateBlock && !state.getValue(FenceGateBlock.OPEN)) {
                     if (x == minX || x == maxX || z == minZ || z == maxZ) {
                         return world.noCollision(bb);
                     }

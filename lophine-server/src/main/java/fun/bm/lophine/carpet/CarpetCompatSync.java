@@ -1,9 +1,9 @@
-package fun.bm.lophine.config.carpet;
+package fun.bm.lophine.carpet;
 
-import fun.bm.lophine.config.carpet.modules.CoreConfig;
-import fun.bm.lophine.config.carpet.modules.CounterCompatConfig;
-import fun.bm.lophine.config.carpet.modules.FakePlayerCompatConfig;
-import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
+import fun.bm.lophine.carpet.config.modules.CoreConfig;
+import fun.bm.lophine.carpet.config.modules.CounterCompatConfig;
+import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
+import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import fun.bm.lophine.config.modules.experiment.CommandConfig;
 import fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig;
 import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;

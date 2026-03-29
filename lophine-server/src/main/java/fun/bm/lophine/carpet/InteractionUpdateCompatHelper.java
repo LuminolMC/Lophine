@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.carpet;
+package fun.bm.lophine.carpet;
 
 import java.util.function.Supplier;
 

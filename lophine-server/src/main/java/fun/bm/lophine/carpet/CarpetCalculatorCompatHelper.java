@@ -1,6 +1,6 @@
-package fun.bm.lophine.config.carpet;
+package fun.bm.lophine.carpet;
 
-import fun.bm.lophine.config.carpet.modules.GeneralCompatConfig;
+import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
