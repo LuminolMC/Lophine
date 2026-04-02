@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to disable some check for operators
 
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index bd344bbebc867f89061694edc0feeab9d679c90c..6d0bb9868e2c2ef516de7630442808c04ba47b39 100644
+index 90e044ab3476d91819dddf14054d4626358da363..5c5dfcefd9ce6c9d7f69fb6d03216805b9e63822 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -392,7 +392,7 @@ public class ServerGamePacketListenerImpl
@@ -30,8 +30,8 @@ index bd344bbebc867f89061694edc0feeab9d679c90c..6d0bb9868e2c2ef516de7630442808c0
                  d5 = d2 - rootVehicle.getZ();
                  d7 = d3 * d3 + d4 * d4 + d5 * d5;
                  boolean flag1 = false;
--                if (!me.earthme.luminol.config.modules.misc.DisableMovedWronglyThreshold.enabled && d7 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot
-+                if (!me.earthme.luminol.config.modules.misc.DisableMovedWronglyThreshold.enabled && d7 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !(fun.bm.lophine.config.modules.misc.DisableCheckConfig.disableOpMoveCheck && MinecraftServer.getServer().getPlayerList().isOp(this.player.nameAndId()))) { // Spigot // Lophine - disable move check for operator
+-                if (!me.earthme.luminol.config.modules.misc.DisableWarningConfig.disableMovedWronglyThresholdWarning && d7 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot
++                if (!me.earthme.luminol.config.modules.misc.DisableWarningConfig.disableMovedWronglyThresholdWarning && d7 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !(fun.bm.lophine.config.modules.misc.DisableCheckConfig.disableOpMoveCheck && MinecraftServer.getServer().getPlayerList().isOp(this.player.nameAndId()))) { // Spigot // Lophine - disable move check for operator
                      flag1 = true; // Paper - diff on change, this should be moved wrongly
                      LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", rootVehicle.getPlainTextName(), this.player.getPlainTextName(), Math.sqrt(d7));
                  }
