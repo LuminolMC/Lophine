@@ -112,6 +112,55 @@ index d8a2f8a1fbf0189e86ccbce70a84641a143cdb91..76930a603a5bf07e62e8ef3a41bbb521
          final io.papermc.paper.threadedregions.RegionizedWorldData regionizedWorldData = this.getCurrentWorldData(); // Folia - regionised ticking
          final ca.spottedleaf.leafprofiler.RegionizedProfiler.Handle profiler = io.papermc.paper.threadedregions.TickRegionScheduler.getProfiler(); // Folia - profiler
          ProfilerFiller profilerFiller = Profiler.get();
+diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
+index c6985d2a9d1093943d754d77089bd4c3d5baf3ee..a8807f80f1b11d7f5dae3b96a0e215e3e105fdd0 100644
+--- a/net/minecraft/world/entity/Mob.java
++++ b/net/minecraft/world/entity/Mob.java
+@@ -806,6 +806,44 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
+                 }
+             }
+         } else {
++            // Lophine start - fix some bug if player is cross scheduler >> to remove monster if the region don't have any valid player
++            if (fun.bm.lophine.config.modules.experiment.GlobalEntitiesCounter.enabled) {
++                List<net.minecraft.server.level.ServerPlayer> playerList = this.level().getServer().getPlayerList().getPlayers();
++                if (!playerList.isEmpty()) {
++                    double d = -1.0;
++                    Vec3 vec3 = null;
++                    for (net.minecraft.server.level.ServerPlayer player1 : playerList) {
++                        if (player1.level() != this.level()) continue;
++                        double d1 = player1.distanceToSqr(this.position());
++                        if (d == -1.0 || d1 < d) {
++                            d = d1;
++                            vec3 = player1.position();
++                        }
++                    }
++                    if (vec3 != null) {
++                        // copy from PaperMC
++                        // Paper start - Configurable despawn distances
++                        final io.papermc.paper.configuration.WorldConfiguration.Entities.Spawning.DespawnRangePair despawnRangePair = this.level().paperConfig().entities.spawning.despawnRanges.get(this.getType().getCategory());
++                        final io.papermc.paper.configuration.type.DespawnRange.Shape shape = this.level().paperConfig().entities.spawning.despawnRangeShape;
++                        final double dy = Math.abs(vec3.y - this.getY());
++                        final double dySqr = Mth.square(dy);
++                        final double dxSqr = Mth.square(vec3.x - this.getX());
++                        final double dzSqr = Mth.square(vec3.z - this.getZ());
++                        final double distanceSquared = dxSqr + dzSqr + dySqr;
++                        // Despawn if hard/soft limit is exceeded
++                        if (despawnRangePair.hard().shouldDespawn(shape, dxSqr, dySqr, dzSqr, dy) && this.removeWhenFarAway(distanceSquared)) {
++                            this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
++                        }
++
++                        if (despawnRangePair.soft().shouldDespawn(shape, dxSqr, dySqr, dzSqr, dy)) {
++                            if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && this.removeWhenFarAway(distanceSquared)) {
++                                this.discard(EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
++                            }
++                        }
++                    }
++                }
++            }
++            // Lophine end
+             this.noActionTime = 0;
+         }
+     }
 diff --git a/net/minecraft/world/level/NaturalSpawner.java b/net/minecraft/world/level/NaturalSpawner.java
 index 91f0fbd75bc93355dc872390d91af83c76dc1dce..e7223540a7cef20b661bdb857ffba962d0f5d348 100644
 --- a/net/minecraft/world/level/NaturalSpawner.java
