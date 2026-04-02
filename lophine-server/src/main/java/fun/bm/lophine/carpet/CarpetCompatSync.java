@@ -17,6 +17,7 @@ import org.leavesmc.leaves.protocol.CarpetServerProtocol;
 
 import java.util.List;
 
+// WARNING: THIS FILE NEED TO FULLY REWRITTEN
 public final class CarpetCompatSync {
     private static boolean init = false;
 
