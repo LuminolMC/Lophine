@@ -19,6 +19,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
@@ -35,8 +36,11 @@ public class EntitiesCounterUtil {
 
     private static int lastUsedId = 0;
 
+    private static final int CLEANUP_INTERVAL = 200; // each 200 ids used
+
     public static int generateUniqueId() {
         synchronized (UniqueIds) {
+            if (lastUsedId % CLEANUP_INTERVAL == 0) runCleanUp();
             int id = lastUsedId;
             while (UniqueIds.contains(id)) {
                 id++;
@@ -57,6 +61,21 @@ public class EntitiesCounterUtil {
         }
         synchronized (mobsAreaMap) {
             mobsAreaMap.get(level).remove(uniqueId);
+        }
+    }
+
+    private static void runCleanUp() {
+        int i = lastUsedId;
+        Set<Integer> logged = new HashSet<>();
+        synchronized (globalLoadedEntities) {
+            for (WeakHashMap<Integer, ReferenceList<Entity>> collection : globalLoadedEntities.values()) {
+                logged.addAll(collection.keySet());
+            }
+        }
+
+        for (int num : Set.copyOf(UniqueIds)) {
+            if (logged.contains(num) || num > i) continue;
+            UniqueIds.remove(num);
         }
     }
 
@@ -87,10 +106,19 @@ public class EntitiesCounterUtil {
 
     public static void tick(ServerLevel level) {
         Runnable task = () -> {
-            WeakHashMap<Integer, ReferenceList<Entity>> data0 = globalLoadedEntities.get(level);
+            WeakHashMap<Integer, ReferenceList<Entity>> data0;
+            synchronized (globalLoadedEntities) {
+                data0 = globalLoadedEntities.get(level);
+                if (data0 == null) return;
+            }
             Object2IntOpenHashMap<MobCategory> map = new Object2IntOpenHashMap<>();
-            for (ReferenceList<Entity> data : data0.values()) {
-                for (Entity entity : GlobalEntitiesCounter.enabled ? data.copy() : data) {
+            List<ReferenceList<Entity>> snapshot;
+            synchronized (data0) {
+                snapshot = List.copyOf(data0.values());
+            }
+
+            for (ReferenceList<Entity> data : snapshot) {
+                for (Entity entity : GlobalEntitiesCounter.async ? data.copy() : data) {
                     if (entity == null || entity.isRemoved() || !entity.isAlive()) continue;
                     // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
                     MobCategory category = entity.getType().getCategory();
