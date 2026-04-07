@@ -1,7 +1,6 @@
 package org.leavesmc.leaves.protocol;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.carpet.config.modules.CoreConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -54,7 +53,7 @@ public class CarpetServerProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return CoreConfig.enabled && CarpetRules.hasRules();
+        return CarpetRules.hasRules();
     }
 
     public static class CarpetRules {

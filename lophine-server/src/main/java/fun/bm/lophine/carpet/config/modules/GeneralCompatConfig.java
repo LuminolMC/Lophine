@@ -18,7 +18,7 @@ import java.util.List;
 public class GeneralCompatConfig implements IConfigModule {
     @ConfigInfo(name = "language", comments = """
             Carpet language value forwarded to lophine.function.language.lang.""")
-    public static String language = "zh_cn";
+    public static String language = "en_us";
 
     @ConfigInfo(name = "amsUpdateSuppressionCrashFix", comments = """
             Map AMS update suppression crash protection to Lophine's existing crash fix.""")
@@ -132,7 +132,7 @@ public class GeneralCompatConfig implements IConfigModule {
     @ConfigInfo(name = "interactionUpdates", comments = """
             Control whether player interaction block changes emit normal block updates.
             Set to false to suppress neighbor and shape updates during block use and breaking.""")
-    public static boolean interactionUpdates = false;
+    public static boolean interactionUpdates = true;
 
     @ConfigInfo(name = "xpNoCooldown", comments = """
             Allow players to absorb multiple experience orbs in the same tick without pickup delay.""")
