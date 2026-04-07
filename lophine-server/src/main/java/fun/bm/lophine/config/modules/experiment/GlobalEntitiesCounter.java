@@ -17,4 +17,11 @@ public class GlobalEntitiesCounter implements IConfigModule {
     @HotReloadUnsupported
     @ConfigInfo(name = "async", comments = "Enable Asynchronous(maybe cause bugs)")
     public static boolean async = false;
+
+    @HotReloadUnsupported
+    @ConfigInfo(name = "always_count", comments = """
+            Always count entities.
+            If you want to count entities loaded by chunk loader,
+            you must to enabled it.""")
+    public static boolean alwaysCount = false;
 }
