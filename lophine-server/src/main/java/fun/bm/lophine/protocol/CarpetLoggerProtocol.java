@@ -35,7 +35,7 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
     public static void refreshConfiguredDefaults(boolean initial) {
         Map<String, String> defaults = parseConfiguredDefaults(GeneralCompatConfig.defaultLoggers);
         configuredSubscriptions = defaults;
-        if (defaults.isEmpty()) {
+        if (defaults == null || defaults.isEmpty()) {
             PLAYER_SUBSCRIPTIONS.clear();
             if (initial) return;
             for (ServerPlayer player : MinecraftServer.getServer().getPlayerList().getPlayers()) {
