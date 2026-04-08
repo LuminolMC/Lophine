@@ -4,6 +4,7 @@ import ca.spottedleaf.moonrise.common.list.ReferenceList;
 import ca.spottedleaf.moonrise.common.misc.PositionCountingAreaMap;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.experiment.GlobalEntitiesCounter;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,7 @@ import static net.minecraft.world.level.NaturalSpawner.getRoughBiome;
 
 public class EntitiesCounterUtil {
     private static final Map<ServerLevel, Cache<Integer, ReferenceList<Entity>>> globalLoadedEntities = new ConcurrentHashMap<>();
-    private static final Map<ServerLevel, Object2IntOpenHashMap<MobCategory>> mobsMap = new WeakHashMap<>();
+    private static final Map<ServerLevel, Object2IntOpenHashMap<MobCategory>> mobsMap = Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<ServerLevel, Cache<Integer, PositionCountingAreaMap<ServerPlayer>>> mobsAreaMap = new ConcurrentHashMap<>();
     private static final Map<ServerLevel, Integer> spawnableChunkCount = new ConcurrentHashMap<>();
     private static final Map<ServerLevel, CompletableFuture<Void>> tasks = new ConcurrentHashMap<>();
@@ -54,8 +55,15 @@ public class EntitiesCounterUtil {
 
     public static void onWorldDataUnload(ServerLevel level, int uniqueId) {
         UniqueIds.remove(uniqueId);
-        globalLoadedEntities.get(level).invalidate(uniqueId);
-        mobsAreaMap.get(level).invalidate(uniqueId);
+        Cache<Integer, ReferenceList<Entity>> entitiesCache = globalLoadedEntities.get(level);
+        if (entitiesCache != null) {
+            entitiesCache.invalidate(uniqueId);
+        }
+
+        Cache<Integer, PositionCountingAreaMap<ServerPlayer>> areaCache = mobsAreaMap.get(level);
+        if (areaCache != null) {
+            areaCache.invalidate(uniqueId);
+        }
     }
 
     private static void runCleanUp() {
@@ -97,41 +105,53 @@ public class EntitiesCounterUtil {
 
     public static void tick(ServerLevel level) {
         Runnable task = () -> {
-            Cache<Integer, ReferenceList<Entity>> data0 = globalLoadedEntities.get(level);
-            Object2IntOpenHashMap<MobCategory> map = new Object2IntOpenHashMap<>();
-            Collection<ReferenceList<Entity>> snapshot = data0.asMap().values();
+            try {
+                Cache<Integer, ReferenceList<Entity>> data0 = globalLoadedEntities.get(level);
+                if (data0 == null) return;
 
-            for (ReferenceList<Entity> data : snapshot) {
-                for (Entity entity : GlobalEntitiesCounter.async ? data.copy() : data) {
-                    if (entity == null || entity.isRemoved() || !entity.isAlive()) continue;
-                    // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
-                    MobCategory category = entity.getType().getCategory();
-                    if (category != MobCategory.MISC) {
-                        // Paper start - Only count natural spawns
-                        if (!entity.level().paperConfig().entities.spawning.countAllMobsForSpawning &&
-                                !(entity.spawnReason == CreatureSpawnEvent.SpawnReason.NATURAL ||
-                                        entity.spawnReason == CreatureSpawnEvent.SpawnReason.CHUNK_GEN)) {
-                            continue;
+                Object2IntOpenHashMap<MobCategory> map = new Object2IntOpenHashMap<>();
+                Collection<ReferenceList<Entity>> snapshot = data0.asMap().values();
+
+                for (ReferenceList<Entity> data : snapshot) {
+                    if (data == null) continue;
+                    for (Entity entity : GlobalEntitiesCounter.async ? data.copy() : data) {
+                        if (entity == null || entity.isRemoved() || !entity.isAlive()) continue;
+                        // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
+                        MobCategory category = entity.getType().getCategory();
+                        if (category != MobCategory.MISC) {
+                            // Paper start - Only count natural spawns
+                            if (!entity.level().paperConfig().entities.spawning.countAllMobsForSpawning &&
+                                    !(entity.spawnReason == CreatureSpawnEvent.SpawnReason.NATURAL ||
+                                            entity.spawnReason == CreatureSpawnEvent.SpawnReason.CHUNK_GEN)) {
+                                continue;
+                            }
+                            // Paper end - Only count natural spawns
+                            map.addTo(category, 1);
                         }
-                        // Paper end - Only count natural spawns
-                        map.addTo(category, 1);
                     }
                     // Lophine end - Copy from net/minecraft/world/level/NaturalSpawner
                 }
-            }
-            mobsMap.put(level, map);
-            for (ServerLevel world : mobsAreaMap.keySet()) {
-                int count = 0;
+                mobsMap.put(level, map);
+
                 Cache<Integer, PositionCountingAreaMap<ServerPlayer>> collection = mobsAreaMap.get(level);
-                if (collection == null) continue;
-                for (PositionCountingAreaMap<ServerPlayer> areaMap : collection.asMap().values()) {
-                    count += areaMap.getTotalPositions();
+                if (collection != null) {
+                    int count = 0;
+                    for (PositionCountingAreaMap<ServerPlayer> areaMap : collection.asMap().values()) {
+                        if (areaMap != null) {
+                            count += areaMap.getTotalPositions();
+                        }
+                    }
+                    spawnableChunkCount.put(level, count);
                 }
-                spawnableChunkCount.put(world, count);
+            } catch (Exception e) {
+                LogUtils.getClassLogger().error("Failed to run task", e);
             }
         };
         if (GlobalEntitiesCounter.async) {
-            tasks.put(level, CompletableFuture.runAsync(task));
+            tasks.put(level, CompletableFuture.runAsync(task).exceptionally(ex -> {
+                LogUtils.getClassLogger().error("Failed to run task", ex);
+                return null;
+            }));
         } else {
             task.run();
         }
