@@ -1,5 +1,6 @@
 package fun.bm.lophine.carpet;
 
+import fun.bm.lophine.carpet.config.modules.CoreConfig;
 import fun.bm.lophine.carpet.config.modules.CounterCompatConfig;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
@@ -22,7 +23,7 @@ public final class CarpetCompatSync {
 
     public static void apply() {
         if (init) return;
-        applyGeneralRules();
+        if (CoreConfig.enabled) applyGeneralRules();
         applyFakePlayerRules();
         applyCounterRules();
         registerProtocolRules();
