@@ -14,7 +14,7 @@
 | `viewDistance` | 已移植 | 专用服务器启动视距会被兼容配置覆盖 |
 | `fastRedstoneDust` | 已移植 | 规则启用时，红石粉更新会统一走 Alternate Current 快速更新后端 |
 | `lagFreeSpawning` | 已移植 | 自然生成会使用轻量碰撞检查与预构造实体路径 |
-| `defaultLoggers` | 已移植 | 按 Carpet 默认订阅语义为玩家启用 HUD logger，当前支持 `tps`、`mobcaps`、`counter` |
+| `defaultLoggers` | 已移植 | 按 Carpet 默认订阅语义为玩家启用 HUD logger，当前支持 `tps`、`mobcaps` |
 | `commandPlayer` | 已映射 | 当前由同一套 `/bot` 假人能力承接 |
 | `hopperCounters` | 已映射 | 转发到 Lophine 的羊毛漏斗计数器 |
 

@@ -185,7 +185,7 @@ public class GeneralCompatConfig implements IConfigModule {
     @ConfigInfo(name = "tickCommandPermission", comments = """
             Override the `/tick` command permission level.
             Accepts values in the range 0..4, where 2 matches old Carpet behavior and 3 keeps vanilla.""")
-    public static int tickCommandPermission = 2;
+    public static int tickCommandPermission = 3;
 
     @ConfigInfo(name = "tickFreezeCommandToggleable", comments = """
             Make `/tick freeze` toggle back to running when executed while the server is already frozen.""")
@@ -226,7 +226,7 @@ public class GeneralCompatConfig implements IConfigModule {
 
     @ConfigInfo(name = "defaultLoggers", comments = """
             Carpet-style default logger subscriptions for players.
-            Examples: `tps`, `mobcaps`, `counter white`, or `none`.""")
+            Examples: ["tps", "mob_caps"]""")
     public static List<String> defaultLoggers = List.of();
 
     public static int normalizedTntFuseDuration() {
