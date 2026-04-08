@@ -2,6 +2,8 @@ package fun.bm.lophine.utils;
 
 import ca.spottedleaf.moonrise.common.list.ReferenceList;
 import ca.spottedleaf.moonrise.common.misc.PositionCountingAreaMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fun.bm.lophine.config.modules.experiment.GlobalEntitiesCounter;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -18,21 +20,19 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.minecraft.world.level.NaturalSpawner.getRoughBiome;
 
 public class EntitiesCounterUtil {
-    private static final WeakHashMap<ServerLevel, WeakHashMap<Integer, ReferenceList<Entity>>> globalLoadedEntities = new WeakHashMap<>();
-    private static final WeakHashMap<ServerLevel, Object2IntOpenHashMap<MobCategory>> mobsMap = new WeakHashMap<>();
-    private static final WeakHashMap<ServerLevel, WeakHashMap<Integer, PositionCountingAreaMap<ServerPlayer>>> mobsAreaMap = new WeakHashMap<>();
-    private static final WeakHashMap<ServerLevel, Integer> spawnableChunkCount = new WeakHashMap<>();
-    private static final WeakHashMap<ServerLevel, CompletableFuture<Void>> tasks = new WeakHashMap<>();
-    private static final Set<Integer> UniqueIds = new HashSet<>();
+    private static final Map<ServerLevel, Cache<Integer, ReferenceList<Entity>>> globalLoadedEntities = new ConcurrentHashMap<>();
+    private static final Map<ServerLevel, Object2IntOpenHashMap<MobCategory>> mobsMap = new WeakHashMap<>();
+    private static final Map<ServerLevel, Cache<Integer, PositionCountingAreaMap<ServerPlayer>>> mobsAreaMap = new ConcurrentHashMap<>();
+    private static final Map<ServerLevel, Integer> spawnableChunkCount = new ConcurrentHashMap<>();
+    private static final Map<ServerLevel, CompletableFuture<Void>> tasks = new ConcurrentHashMap<>();
+    private static final Set<Integer> UniqueIds = ConcurrentHashMap.newKeySet();
 
     private static int lastUsedId = 0;
 
@@ -53,41 +53,32 @@ public class EntitiesCounterUtil {
     }
 
     public static void onWorldDataUnload(ServerLevel level, int uniqueId) {
-        synchronized (UniqueIds) {
-            UniqueIds.remove(uniqueId);
-        }
-        synchronized (globalLoadedEntities) {
-            globalLoadedEntities.get(level).remove(uniqueId);
-        }
-        synchronized (mobsAreaMap) {
-            mobsAreaMap.get(level).remove(uniqueId);
-        }
+        UniqueIds.remove(uniqueId);
+        globalLoadedEntities.get(level).invalidate(uniqueId);
+        mobsAreaMap.get(level).invalidate(uniqueId);
     }
 
     private static void runCleanUp() {
-        int i = lastUsedId;
         Set<Integer> logged = new HashSet<>();
-        synchronized (globalLoadedEntities) {
-            for (WeakHashMap<Integer, ReferenceList<Entity>> collection : globalLoadedEntities.values()) {
-                logged.addAll(collection.keySet());
-            }
+        for (Cache<Integer, ReferenceList<Entity>> collection : globalLoadedEntities.values()) {
+            logged.addAll(collection.asMap().keySet());
         }
 
-        for (int num : Set.copyOf(UniqueIds)) {
-            if (logged.contains(num) || num > i) continue;
+        for (int num : UniqueIds) {
+            if (logged.contains(num)) continue;
             UniqueIds.remove(num);
         }
     }
 
     public static void addDataToLoaded(ServerLevel level, ReferenceList<Entity> data, int uniqueId) {
-        WeakHashMap<Integer, ReferenceList<Entity>> data0 = globalLoadedEntities.computeIfAbsent(level, k -> new WeakHashMap<>());
-        if (data0.containsKey(uniqueId)) return;
+        Cache<Integer, ReferenceList<Entity>> data0 = globalLoadedEntities.computeIfAbsent(level, k -> CacheBuilder.newBuilder().concurrencyLevel(16).weakValues().build());
+        if (data0.asMap().containsKey(uniqueId)) return;
         data0.put(uniqueId, data);
     }
 
     public static void reportAreaMap(ServerLevel level, PositionCountingAreaMap<ServerPlayer> areaMap, int uniqueId) {
-        WeakHashMap<Integer, PositionCountingAreaMap<ServerPlayer>> areaMap0 = mobsAreaMap.computeIfAbsent(level, k -> new WeakHashMap<>());
-        if (areaMap0.containsKey(uniqueId)) return;
+        Cache<Integer, PositionCountingAreaMap<ServerPlayer>> areaMap0 = mobsAreaMap.computeIfAbsent(level, k -> CacheBuilder.newBuilder().concurrencyLevel(16).weakValues().build());
+        if (areaMap0.asMap().containsKey(uniqueId)) return;
         areaMap0.put(uniqueId, areaMap);
     }
 
@@ -106,16 +97,9 @@ public class EntitiesCounterUtil {
 
     public static void tick(ServerLevel level) {
         Runnable task = () -> {
-            WeakHashMap<Integer, ReferenceList<Entity>> data0;
-            synchronized (globalLoadedEntities) {
-                data0 = globalLoadedEntities.get(level);
-                if (data0 == null) return;
-            }
+            Cache<Integer, ReferenceList<Entity>> data0 = globalLoadedEntities.get(level);
             Object2IntOpenHashMap<MobCategory> map = new Object2IntOpenHashMap<>();
-            List<ReferenceList<Entity>> snapshot;
-            synchronized (data0) {
-                snapshot = List.copyOf(data0.values());
-            }
+            Collection<ReferenceList<Entity>> snapshot = data0.asMap().values();
 
             for (ReferenceList<Entity> data : snapshot) {
                 for (Entity entity : GlobalEntitiesCounter.async ? data.copy() : data) {
@@ -132,15 +116,15 @@ public class EntitiesCounterUtil {
                         // Paper end - Only count natural spawns
                         map.addTo(category, 1);
                     }
-                    // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
+                    // Lophine end - Copy from net/minecraft/world/level/NaturalSpawner
                 }
             }
             mobsMap.put(level, map);
             for (ServerLevel world : mobsAreaMap.keySet()) {
                 int count = 0;
-                WeakHashMap<Integer, PositionCountingAreaMap<ServerPlayer>> collection = mobsAreaMap.get(level);
+                Cache<Integer, PositionCountingAreaMap<ServerPlayer>> collection = mobsAreaMap.get(level);
                 if (collection == null) continue;
-                for (PositionCountingAreaMap<ServerPlayer> areaMap : collection.values()) {
+                for (PositionCountingAreaMap<ServerPlayer> areaMap : collection.asMap().values()) {
                     count += areaMap.getTotalPositions();
                 }
                 spawnableChunkCount.put(world, count);
