@@ -14,8 +14,9 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 public class CoreConfig implements IConfigModule {
     @ConfigInfo(name = "enabled", comments = """
             Enable carpet features.
-            If you want to use any function in general directory from Carpet modifier,
+            If you want to use some function from Carpet modifier,
             you need to enable it.
+            (some function is not managed by this option)
             
             ONLY GENERAL DIRECTORY WAS CONTROLLED BY THIS OPTION.
             WARNING: IF YOU ENABLED IT, ORIGINAL CONFIG IN LOPHINE CONFIG WILL BE OVERWRITTEN.""")

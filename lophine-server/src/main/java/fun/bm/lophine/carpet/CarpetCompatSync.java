@@ -5,6 +5,7 @@ import fun.bm.lophine.carpet.config.modules.CounterCompatConfig;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import fun.bm.lophine.config.modules.experiment.CommandConfig;
+import fun.bm.lophine.config.modules.experiment.RedStoneConfig;
 import fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig;
 import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
@@ -23,9 +24,12 @@ public final class CarpetCompatSync {
 
     public static void apply() {
         if (init) return;
-        if (CoreConfig.enabled) applyGeneralRules();
-        applyFakePlayerRules();
-        applyCounterRules();
+        if (CoreConfig.enabled) {
+            applyGeneralRules();
+            applyFakePlayerRules();
+            applyCounterRules();
+        }
+        CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
         registerProtocolRules();
         init = true;
     }
@@ -33,13 +37,12 @@ public final class CarpetCompatSync {
     private static void applyGeneralRules() {
         LanguageConfig.lang = GeneralCompatConfig.language;
         UpdateSuppressionCrashFixConfig.enabled = GeneralCompatConfig.amsUpdateSuppressionCrashFix || GeneralCompatConfig.yeetUpdateSuppressionCrash;
-        fun.bm.lophine.config.modules.experiment.RedStoneConfig.redstoneIgnoreUpwardsUpdate = GeneralCompatConfig.dustTrapdoorReintroduced;
-        fun.bm.lophine.config.modules.experiment.RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
-        fun.bm.lophine.config.modules.experiment.RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
+        RedStoneConfig.redstoneIgnoreUpwardsUpdate = GeneralCompatConfig.dustTrapdoorReintroduced;
+        RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
+        RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
         CommandConfig.tick = GeneralCompatConfig.commandTick;
         CreativeFlyNoClipConfig.enabled = GeneralCompatConfig.creativeNoClip;
         OptimizedDragonRespawnConfig.optimizedRespawn = GeneralCompatConfig.optimizedDragonRespawn;
-        CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
     }
 
     private static void applyFakePlayerRules() {
