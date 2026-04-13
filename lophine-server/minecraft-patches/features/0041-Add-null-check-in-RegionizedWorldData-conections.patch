@@ -6,10 +6,10 @@ Subject: [PATCH] Add null check in RegionizedWorldData >> conections
 some of our function patches will crash because of get null in conn.getPlayer(), then when we process player.chunkPosition() will get NPE, so we need to fix it.
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index e166c430938eb22bb90d651298562d704fa8f1d9..bb6e46644f23fcf3d785f20003f01ea22ee75430 100644
+index c5caad99caed20e2bb4475fcf057417ee27d737c..c2e50a03a41958d9b44753adc9a9bf4ea1fb24a4 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -239,14 +239,17 @@ public final class RegionizedWorldData {
+@@ -251,14 +251,17 @@ public final class RegionizedWorldData {
                  regionToData.get(CoordinateUtils.getChunkKey(pos.x >> chunkToRegionShift, pos.z >> chunkToRegionShift)).itemEntityMovementTrackerMap.put(key, tracker);
              }
              // Luminol end
@@ -27,7 +27,7 @@ index e166c430938eb22bb90d651298562d704fa8f1d9..bb6e46644f23fcf3d785f20003f01ea2
              }
              // entities
              for (final ServerPlayer player : from.localPlayers) {
-@@ -257,6 +260,13 @@ public final class RegionizedWorldData {
+@@ -269,6 +272,13 @@ public final class RegionizedWorldData {
                  into.localPlayers.add(player);
                  player.getBukkitEntity().updateRegion(into);
                  into.nearbyPlayers.addPlayer(player);
@@ -41,7 +41,7 @@ index e166c430938eb22bb90d651298562d704fa8f1d9..bb6e46644f23fcf3d785f20003f01ea2
              }
              for (final Entity entity : from.allEntities) {
                  final ChunkPos pos = entity.chunkPosition();
-@@ -624,6 +634,7 @@ public final class RegionizedWorldData {
+@@ -636,6 +646,7 @@ public final class RegionizedWorldData {
      private static void cleanUpConnection(final Connection conn) {
          // note: ALL connections HERE have a player
          final ServerPlayer player = conn.getPlayer();

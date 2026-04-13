@@ -22,7 +22,7 @@ index 7c2d53ca863c2e50c6871938efc426ddefff9b5c..8c1e6837b0328c66fdda322c3c7ceba3
          // Luminol End - Cross Region Damage trace
          }
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 3aa7e5fb13326bd3667d470adbc7df7b7e9b19b4..6de8c1010b57aaeab0c97e2836cee5bf4b087578 100644
+index df66e24c61af9d57d619c91849e28f1bec64a036..8386757c5fd3d8df3ae77a4eeeb25a2f28840cda 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3843,7 +3843,7 @@ public class ServerGamePacketListenerImpl

@@ -41,7 +41,7 @@ index 1281eadb2d0c5b4ce5e3afd51d8205f9a4ef011c..b1446dfb4689174ee9f55cec6080622e
          if (count > i) {
              source.sendFailure(Component.translatable("commands.give.failed.toomanyitems", i, itemStack.getDisplayName()));
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 3acd8d2226d4a7ba8fcecc1cc715b01cc9ce63d1..cc82414e813fe0a97bfd405096d06ad279098479 100644
+index 5c5dfcefd9ce6c9d7f69fb6d03216805b9e63822..d35ef52a6adb9a560138d1a2af32969c3a73f42b 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3170,7 +3170,7 @@ public class ServerGamePacketListenerImpl
@@ -446,7 +446,7 @@ index 8f80c469c309bf61328c4f98037495f47a38c3c1..b4127d4b4386b98205275a9a0ef8067c
      }
  
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index f851e0f7d727cb9dca70c578777d871af424388c..6a51bace3151646afae9de820d9c8977a0221df4 100644
+index 53c50d776e5ca66e5903a464d763a7df5b7672be..6cdb59762b5b223a220d420ff99fa9eadc64f3e0 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -145,7 +145,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
