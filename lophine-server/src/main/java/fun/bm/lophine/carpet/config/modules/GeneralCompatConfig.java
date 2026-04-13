@@ -226,7 +226,7 @@ public class GeneralCompatConfig implements IConfigModule {
 
     @ConfigInfo(name = "defaultLoggers", comments = """
             Carpet-style default logger subscriptions for players.
-            Examples: ["tps", "mob_caps"]""")
+            Examples: ["tps", "mob_caps", "counter white"]""")
     public static List<String> defaultLoggers = List.of();
 
     public static int normalizedTntFuseDuration() {

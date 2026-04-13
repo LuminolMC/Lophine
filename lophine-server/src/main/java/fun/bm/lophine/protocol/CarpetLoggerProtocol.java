@@ -2,6 +2,8 @@ package fun.bm.lophine.protocol;
 
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.threadedregions.RegionizedWorldData;
+import io.papermc.paper.threadedregions.TickRegionScheduler;
 import net.kyori.adventure.text.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
@@ -10,7 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.TimeUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.DyeColor;
@@ -85,10 +86,9 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
             if (subscriptions == null || subscriptions.isEmpty()) {
                 continue;
             }
-            Map<String, String> playerSubscriptions = subscriptions;
             player.getBukkitEntity().taskScheduler.schedule((LivingEntity livingEntity) -> {
                 if (livingEntity instanceof ServerPlayer scheduledPlayer) {
-                    sendHud(server, scheduledPlayer, playerSubscriptions);
+                    sendHud(server, scheduledPlayer, subscriptions);
                 }
             }, null, 1L);
         }
@@ -136,13 +136,12 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
     }
 
     private static net.minecraft.network.chat.Component buildTpsLine(MinecraftServer server) {
-        double mspt = server.getAverageTickTimeNanos() / TimeUtil.NANOSECONDS_PER_MILLISECOND;
-        ServerTickRateManager tickRateManager = server.tickRateManager();
-        double tps = 1000.0D / Math.max(tickRateManager.isSprinting() ? 0.0D : tickRateManager.millisecondsPerTick(), mspt);
-        if (tickRateManager.isFrozen()) {
-            tps = 0.0D;
-        }
-        ChatFormatting color = heatmapColor(mspt, tickRateManager.millisecondsPerTick());
+        ServerTickRateManager tickManager = server.tickRateManager();
+        ca.spottedleaf.moonrise.common.time.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
+        final double tps = tickData.tpsData().segmentAll().average();
+        final double mspt = tickData.timePerTickData().segmentAll().average() / 1.0E6;
+
+        ChatFormatting color = heatmapColor(mspt, tickManager.millisecondsPerTick());
         return net.minecraft.network.chat.Component.empty()
                 .append(net.minecraft.network.chat.Component.literal("TPS: ").withStyle(ChatFormatting.GRAY))
                 .append(net.minecraft.network.chat.Component.literal(String.format(Locale.US, "%.1f", tps)).withStyle(color))
@@ -151,12 +150,17 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
     }
 
     private static net.minecraft.network.chat.Component buildMobcapsLine(ServerPlayer player, String option) {
-        ServerLevel level = resolveMobcapsLevel(player, option);
+        final ServerLevel level = resolveMobcapsLevel(player, option);
         if (level == null) {
             return null;
         }
 
-        NaturalSpawner.SpawnState spawnState = level.getChunkSource().getLastSpawnState();
+        final RegionizedWorldData data = level.getCurrentWorldData();
+        if (data == null) {
+            return null;
+        }
+
+        final NaturalSpawner.SpawnState spawnState = data.lastSpawnState;
         if (spawnState == null) {
             return net.minecraft.network.chat.Component.literal("Mobcaps: unavailable").withStyle(ChatFormatting.DARK_GRAY);
         }
@@ -201,13 +205,13 @@ public class CarpetLoggerProtocol implements LeavesProtocol {
 
     private static ServerLevel resolveMobcapsLevel(ServerPlayer player, String option) {
         if (option == null || option.isBlank() || option.equalsIgnoreCase("dynamic")) {
-            return (ServerLevel) player.level();
+            return player.level();
         }
         return switch (option.toLowerCase(Locale.ROOT)) {
-            case "overworld" -> player.level().dimension() == Level.OVERWORLD ? (ServerLevel) player.level() : null;
-            case "nether" -> player.level().dimension() == Level.NETHER ? (ServerLevel) player.level() : null;
-            case "end" -> player.level().dimension() == Level.END ? (ServerLevel) player.level() : null;
-            default -> (ServerLevel) player.level();
+            case "overworld" -> player.level().dimension() == Level.OVERWORLD ? player.level() : null;
+            case "nether" -> player.level().dimension() == Level.NETHER ? player.level() : null;
+            case "end" -> player.level().dimension() == Level.END ? player.level() : null;
+            default -> player.level();
         };
     }
 
