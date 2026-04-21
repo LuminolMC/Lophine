@@ -5,8 +5,8 @@ import fun.bm.lophine.command.counter.CounterCommand;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.DoNotLoad;
 import me.earthme.luminol.enums.EnumConfigCategory;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -19,13 +19,23 @@ public class WoolHopperCounterConfig implements IConfigModule {
     @ConfigInfo(name = "unlimited-speed")
     public static boolean unlimitedSpeed = false;
 
+    @DoNotLoad
+    private static CounterCommand counterCommand = null;
+
     @Override
     public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
-        if (enabled) new CounterCommand().register();
+        if (enabled) {
+            if (counterCommand == null) {
+                counterCommand = new CounterCommand();
+            }
+            counterCommand.register();
+        }
     }
 
     @Override
     public void onUnloaded(CommentedFileConfig configInstance) {
-        Bukkit.getCommandMap().getKnownCommands().remove("luminol:tpsbar");
+        if (counterCommand != null) {
+            counterCommand.unregister();
+        }
     }
 }

@@ -30,9 +30,7 @@ public class SaveAllUtil {
                 // we need to count how many regions we need to save
                 AtomicInteger count = new AtomicInteger();
                 for (ServerLevel world : source.getServer().getAllLevels()) {
-                    world.regioniser.computeForAllRegions(unused -> {
-                        count.getAndIncrement();
-                    });
+                    world.regioniser.computeForAllRegions(unused -> count.getAndIncrement());
                 }
                 regionCount = count.get();
                 savedRegionCount.set(0);
