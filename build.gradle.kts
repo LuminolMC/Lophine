@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     java // TODO java launcher tasks
-    id("moe.luminolmc.hyacinthusweight.patcher") version "+" // Automatically pulls the latest
+    id("moe.luminolmc.hyacinthusweight.patcher")
 }
 
 paperweight {

@@ -84,6 +84,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
     private static void onPlayerLeave(ServerPlayer player) {
         players.remove(player);
         loggerPlayers.remove(player);
+        DATA.rowMap().values().forEach(row -> row.remove(player));
     }
 
     @ProtocolHandler.PayloadReceiver(payload = HudDataPayload.class)

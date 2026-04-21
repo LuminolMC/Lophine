@@ -81,7 +81,6 @@ public class FakeplayerConfig implements IConfigModule {
     @ConfigInfo(name = "enable-locator-bar", comments = """
             Enable locator bar for fakeplayers""")
     public static boolean enableLocatorBar = false;
-
     public static ServerBot.TickType tickType = ServerBot.TickType.ENTITY_LIST;
 
     private BotCommand command = null;

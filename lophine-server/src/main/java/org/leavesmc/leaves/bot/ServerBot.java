@@ -20,6 +20,7 @@ package org.leavesmc.leaves.bot;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
+import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
@@ -52,9 +53,11 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.vehicle.AbstractBoat;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.GameRules;
@@ -83,6 +86,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class ServerBot extends ServerPlayer {
+    private static final int AUTO_FISH_RECAST_DELAY = 4;
+    private static final int AUTO_FISH_ENTITY_DELAY = 20;
 
     private final List<AbstractBotAction<?>> actions;
     private final Map<String, AbstractBotConfig<?, ?, ?>> configs;
@@ -100,6 +105,7 @@ public class ServerBot extends ServerPlayer {
     public int notSleepTicks;
 
     public int removeTaskId = -1;
+    private int autoFishCooldown = 0;
 
     public ServerBot(MinecraftServer server, ServerLevel world, GameProfile profile) {
         super(server, world, profile, ClientInformation.createDefault());
@@ -248,6 +254,7 @@ public class ServerBot extends ServerPlayer {
         }
 
         this.getCooldowns().tick();
+        this.tickAutoFish();
         this.updatePlayerPose();
     }
 
@@ -306,6 +313,18 @@ public class ServerBot extends ServerPlayer {
             teleportTransition.postTeleportTransition().onTransition(this);
             this.isChangingDimension = false;
 
+            // Lophine - We don't have this
+/*            if (LeavesConfig.modify.netherPortalFix) {
+                final ResourceKey<Level> fromDim = fromLevel.dimension();
+                final ResourceKey<Level> toDim = level().dimension();
+                if (!((fromDim != Level.OVERWORLD || toDim != Level.NETHER) && (fromDim != Level.NETHER || toDim != Level.OVERWORLD))) {
+                    BlockPos fromPortal = org.leavesmc.leaves.util.ReturnPortalManager.findPortalAt(this, fromDim, lastPos);
+                    BlockPos toPos = this.blockPosition();
+                    if (fromPortal != null) {
+                        org.leavesmc.leaves.util.ReturnPortalManager.storeReturnPortal(this, toDim, toPos, fromPortal);
+                    }
+                }
+            }*/
             if (this.isBlocking()) {
                 this.stopUsingItem();
             }
@@ -338,8 +357,10 @@ public class ServerBot extends ServerPlayer {
         ItemStack item = this.getItemInHand(hand);
 
         if (!item.isEmpty()) {
-            BotUtil.replenishment(item, getInventory().getNonEquipmentItems());
-            if (BotUtil.isDamage(item, 10)) {
+            if (FakePlayerCompatConfig.fakePlayerAutoReplenishment) {
+                BotUtil.replenishment(item, getInventory().getNonEquipmentItems());
+            }
+            if (FakePlayerCompatConfig.fakePlayerAutoReplaceTool && BotUtil.isDamage(item, 10)) {
                 BotUtil.replaceTool(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND, this);
             }
         }
@@ -387,7 +408,7 @@ public class ServerBot extends ServerPlayer {
 
         nbt.store("createStatus", CompoundTag.CODEC, createNbt);
 
-        if (!this.actions.isEmpty()) {
+        if (FakePlayerCompatConfig.fakePlayerReloadAction && !this.actions.isEmpty()) {
             ValueOutput.TypedOutputList<CompoundTag> actionNbt = nbt.list("actions", CompoundTag.CODEC);
             for (AbstractBotAction<?> action : this.actions) {
                 actionNbt.add(action.save(new CompoundTag()));
@@ -426,7 +447,7 @@ public class ServerBot extends ServerPlayer {
         this.gameProfile = new BotList.CustomGameProfile(this.getUUID(), this.createState.name(), this.createState.skin());
 
 
-        if (nbt.list("actions", CompoundTag.CODEC).isPresent()) {
+        if (FakePlayerCompatConfig.fakePlayerReloadAction && nbt.list("actions", CompoundTag.CODEC).isPresent()) {
             ValueInput.TypedInputList<CompoundTag> actionNbt = nbt.list("actions", CompoundTag.CODEC).orElseThrow();
             actionNbt.forEach(actionTag -> {
                 AbstractBotAction<?> action = Actions.getForName(actionTag.getString("actionName").orElseThrow());
@@ -443,6 +464,7 @@ public class ServerBot extends ServerPlayer {
             for (CompoundTag configTag : configNbt) {
                 AbstractBotConfig<?, ?, ?> config = Configs.getConfig(configTag.getString("configName").orElseThrow());
                 if (config != null) {
+                    config.setBot(this);
                     config.load(configTag);
                 }
             }
@@ -499,7 +521,7 @@ public class ServerBot extends ServerPlayer {
         Component defaultMessage = this.getCombatTracker().getDeathMessage();
 
         BotDeathEvent event = new BotDeathEvent(this.getBukkitEntity(), PaperAdventure.asAdventure(defaultMessage), flag);
-        MinecraftServer.getServer().server.getPluginManager().callEvent(event);
+        this.getServer().server.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             if (this.getHealth() <= 0) {
@@ -643,6 +665,45 @@ public class ServerBot extends ServerPlayer {
             this.actions.forEach(action -> action.tryTick(this));
             this.actions.removeIf(AbstractBotAction::isCancelled);
         }
+    }
+
+    private void tickAutoFish() {
+        if (!fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
+            this.autoFishCooldown = 0;
+            return;
+        }
+
+        if (this.autoFishCooldown > 0) {
+            this.autoFishCooldown--;
+            return;
+        }
+
+        ItemStack mainHand = this.getMainHandItem();
+        if (mainHand.isEmpty() || !(mainHand.getItem() instanceof FishingRodItem)) {
+            return;
+        }
+
+        FishingHook fishingHook = this.fishing;
+        if (fishingHook != null) {
+            if (fishingHook.currentState == FishingHook.FishHookState.HOOKED_IN_ENTITY) {
+                mainHand.use(this.level(), this, InteractionHand.MAIN_HAND);
+                this.autoFishCooldown = AUTO_FISH_ENTITY_DELAY;
+                return;
+            }
+
+            if (fishingHook.nibble > 0) {
+                mainHand.use(this.level(), this, InteractionHand.MAIN_HAND);
+                this.autoFishCooldown = AUTO_FISH_RECAST_DELAY;
+            }
+            return;
+        }
+
+        mainHand.use(this.level(), this, InteractionHand.MAIN_HAND);
+        this.autoFishCooldown = AUTO_FISH_RECAST_DELAY;
+    }
+
+    private boolean hasActiveAction(String actionName) {
+        return this.actions.stream().anyMatch(action -> !action.isCancelled() && action.getName().equals(actionName));
     }
 
     public boolean addBotAction(AbstractBotAction<?> action, CommandSender sender) {

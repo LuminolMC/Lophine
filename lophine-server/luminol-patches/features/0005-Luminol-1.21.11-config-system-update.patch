@@ -1,0 +1,133 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Wed, 22 Apr 2026 01:30:16 +0800
+Subject: [PATCH] Luminol - 1.21.11: config system update
+
+
+diff --git a/src/main/java/me/earthme/luminol/commands/bar/sub/ConfigEditCommand.java b/src/main/java/me/earthme/luminol/commands/bar/sub/ConfigEditCommand.java
+index aad55088cb1ea2066f7f609b7d600e5ec0e68b8a..865f2ee6e4e63034a240c06b517c084a854141ed 100644
+--- a/src/main/java/me/earthme/luminol/commands/bar/sub/ConfigEditCommand.java
++++ b/src/main/java/me/earthme/luminol/commands/bar/sub/ConfigEditCommand.java
+@@ -57,7 +57,7 @@ public class ConfigEditCommand extends LiteralNode {
+                                 .text("Bar type with " + bar_name + " was already " + (value ? "enabled" : "disabled") + "!")
+                                 .color(TextColor.color(255, 0, 0)));
+             } else {
+-                ConfigsInstance config = ConfigManager.configfiles.get("luminol");
++                ConfigsInstance config = ConfigManager.getConfigs("luminol");
+                 if (config.setConfig(configPath, value)) {
+                     config.reloadAsync(true).thenAccept(nullValue -> context.getSender().sendMessage(
+                             Component
+diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+index 3ba4faad544d2cf05b129a8d6142fc99a284299b..60a73a29ed2a4e0587a7c90186f990189c7da872 100644
+--- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
++++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+@@ -6,15 +6,16 @@ import me.earthme.luminol.config.flags.TransformedConfig;
+ import org.jetbrains.annotations.NotNull;
+ 
+ import java.io.IOException;
+-import java.util.HashSet;
+-import java.util.Map;
+-import java.util.Set;
++import java.util.*;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.concurrent.ConcurrentHashMap;
++import java.util.concurrent.ConcurrentLinkedQueue;
+ 
+ public class ConfigManager {
+-    public static final Map<String, ConfigsInstance> configfiles = new ConcurrentHashMap<>();
+-    public static final Map<TransformedConfig, String[]> needTransformedConfigs = new ConcurrentHashMap<>();
++    private static boolean initialized = false;
++    private static final Map<String, ConfigsInstance> configfiles = new HashMap<>();
++    private static final Collection<Runnable> runnableBeforeFinalLoad = new ConcurrentLinkedQueue<>();
++    private static final Map<TransformedConfig, String[]> needTransformedConfigs = new ConcurrentHashMap<>();
+     // String[]:
+     // 0 -> origin key
+     // 1 -> target key
+@@ -49,21 +50,34 @@ public class ConfigManager {
+     }
+ 
+     public static void loadConfigFiles() {
++        runTaskBeforeFinalLoad();
+         CompletableFuture<?>[] futures = configfiles.values().stream()
+                 .map(config -> CompletableFuture.runAsync(config::finalizeLoadConfig))
+                 .toArray(CompletableFuture[]::new);
+         CompletableFuture.allOf(futures).join();
+         CommandRegister.register(); // register command after config loaded to enable some command didn't depend on config files
++        initialized = true;
++    }
++
++    public static void registerRunnableBeforeFinalLoad(Runnable runnable) {
++        if (initialized) return;
++        runnableBeforeFinalLoad.add(runnable);
+     }
+ 
+     public static void registerTransformedConfig(@NotNull String origin, @NotNull String target, @NotNull String originKey, @NotNull String targetKey, TransformedConfig transformedConfig) {
++        if (initialized) return;
+         needTransformedConfigs.put(transformedConfig, new String[]{origin, target, originKey, targetKey});
+     }
+ 
+-    private static ConfigsInstance getConfigs(String name) {
++    public static ConfigsInstance getConfigs(String name) {
+         return configfiles.get(name);
+     }
+ 
++    private static void runTaskBeforeFinalLoad() {
++        runnableBeforeFinalLoad.forEach(Runnable::run);
++        runnableBeforeFinalLoad.clear();
++    }
++
+     private static void acceptTransformedConfigs() {
+         Set<ConfigsInstance> toReload = new HashSet<>();
+         for (Map.Entry<TransformedConfig, String[]> entry : needTransformedConfigs.entrySet()) {
+diff --git a/src/main/java/me/earthme/luminol/config/ConfigsInstance.java b/src/main/java/me/earthme/luminol/config/ConfigsInstance.java
+index bd9ff74e482906701077f801c3f97bf5bd8f195b..55b01a36f45cf3534ee0b30ba27c9682b078ac1b 100644
+--- a/src/main/java/me/earthme/luminol/config/ConfigsInstance.java
++++ b/src/main/java/me/earthme/luminol/config/ConfigsInstance.java
+@@ -248,7 +248,8 @@ public class ConfigsInstance {
+      */
+     private List<String> buildConfigCategoryPath(ConfigClassInfo configClassInfo) {
+         final List<String> category = new ArrayList<>();
+-        category.add(configClassInfo.category().getBaseKeyName());
++        String category0 = configClassInfo.category().getBaseKeyName();
++        if (category0 != null) category.add(category0);
+         category.addAll(List.of(configClassInfo.directory()));
+         category.add(configClassInfo.name());
+         return category;
+@@ -311,6 +312,9 @@ public class ConfigsInstance {
+             // Handle existing configurations
+             handleExistingConfig(field, fullConfigKeyName, configInfo, doNotReload, keepComments);
+         }
++
++        // handle tasks need processed before config finalized
++        ConfigManager.registerRunnableBeforeFinalLoad(singleConfigModule::beforeFinalLoad);
+     }
+ 
+     /**
+diff --git a/src/main/java/me/earthme/luminol/config/IConfigModule.java b/src/main/java/me/earthme/luminol/config/IConfigModule.java
+index c5fee207479c331575d49cf625164ac2f5362d4a..dc880ce0f1fcec0acc9706324eef9a4a6e16ee17 100644
+--- a/src/main/java/me/earthme/luminol/config/IConfigModule.java
++++ b/src/main/java/me/earthme/luminol/config/IConfigModule.java
+@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
+ import java.util.Set;
+ 
+ public interface IConfigModule {
++    default void beforeFinalLoad() {
++    }
++
+     default void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
+     }
+ 
+diff --git a/src/main/java/me/earthme/luminol/enums/EnumConfigCategory.java b/src/main/java/me/earthme/luminol/enums/EnumConfigCategory.java
+index f79bf3dd37519c61ed0aa87b9b51c7ab7bc02d11..07e33c5e1f2dc9ce3fc18f48580b13f9aef6244a 100644
+--- a/src/main/java/me/earthme/luminol/enums/EnumConfigCategory.java
++++ b/src/main/java/me/earthme/luminol/enums/EnumConfigCategory.java
+@@ -7,7 +7,8 @@ public enum EnumConfigCategory {
+     FUNCTION("function"),             // new functions
+     EXPERIMENT("experiment"),         // experimental features
+     UNSUPPORTED("unsupported"),       // features we do not want anyone to use
+-    REMOVED("removed");               // removed config
++    REMOVED("removed"),               // removed config
++    ROOT(null);
+ 
+     private final String baseKeyName;
+ 

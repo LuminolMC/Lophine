@@ -42,12 +42,13 @@
      }
  }
  val log4jPlugins = sourceSets.create("log4jPlugins") {
-@@ -174,7 +_,7 @@
+@@ -174,7 +_,8 @@
  }
  
  dependencies {
 -    implementation(project(":luminol-api")) // Luminol
 +    implementation(project(":lophine-api")) // Lophine
++    implementation("net.objecthunter:exp4j:0.4.8") // Lophine
      // Luminol start - Dependenices insert
      implementation("com.electronwill.night-config:toml:3.8.2") // Night config
      implementation("com.github.luben:zstd-jni:1.5.4-1")
