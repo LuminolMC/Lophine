@@ -85,7 +85,7 @@ jobs:
           echo "release_exists=${release_exists}" >> $GITHUB_ENV
 
       - name: Check If Branch In Expectations
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.flag_release == 'true'
         run: |
           if [[ "$GITHUB_REF_NAME" == ver/* ]] || [[ "$GITHUB_REF_NAME" == exp/* ]] || [[ "$GITHUB_REF_NAME" == dev/* ]]; then
             echo "Branch is in expected prefixes"
