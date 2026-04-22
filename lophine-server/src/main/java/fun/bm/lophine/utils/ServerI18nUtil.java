@@ -64,7 +64,11 @@ public class ServerI18nUtil {
         langJsonPath = "minecraft/lang/" + LanguageConfig.lang + ".json";
         lophineLangPath = "/assets/lophine/lang/" + LanguageConfig.lang + ".json";
         logger.info("Starting load language: {}", LanguageConfig.lang);
-        preloadTask.thenAcceptAsync(v -> loadI18n(LanguageConfig.lang, 2));
+        if (LanguageConfig.full_blocking_load) {
+            loadI18n(LanguageConfig.lang, 2);
+        } else {
+            preloadTask.thenAcceptAsync(v -> loadI18n(LanguageConfig.lang, 2));
+        }
     }
 
     public static void preInit() {

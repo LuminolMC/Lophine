@@ -13,4 +13,12 @@ public class LanguageConfig implements IConfigModule {
             Please use the key from https://minecraft.wiki/w/Language
             Sample of format: en_us zh_cn zh_hk zh_tw""")
     public static String lang = "en_us";
+
+    @ConfigInfo(name = "full_blocking_load", comments = """
+            Whether to allow blocking server loading when loading localized language.
+            If you want only use your localized language to shown in your terminal,
+            you need to enable it.
+            
+            WARNING: This may slow down the startup speed!""")
+    public static boolean full_blocking_load = false;
 }
