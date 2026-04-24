@@ -1,0 +1,193 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: xiaoyueyoqwq <xiaoyueyoqwq@users.noreply.github.com>
+Date: Fri, 24 Apr 2026 18:03:33 +0800
+Subject: [PATCH] Fix Folia waypoint connection ordering
+
+
+diff --git a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
+index 0e6c9edbceef525bf102ad8f1fc0cb08e789d0e6..f3e7a84cbb0c25ceabc2617c32c3164d545e7620 100755
+--- a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
++++ b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
+@@ -19,6 +19,7 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+     private final Set<WaypointTransmitter> waypoints = ConcurrentHashMap.newKeySet();
+     private final Set<ServerPlayer> trackingPlayers = ConcurrentHashMap.newKeySet();
+     private final Map<ServerPlayer, Map<WaypointTransmitter, WaypointTransmitter.Connection>> connections = new ConcurrentHashMap<>();
++    private final Map<ServerPlayer, Set<WaypointTransmitter>> pendingConnections = new ConcurrentHashMap<>();
+ 
+     public void breakAllConnections() {
+         throw new UnsupportedOperationException("Unused");
+@@ -45,7 +46,9 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+         }
+         // Leaves end - fakeplayer
+ 
+-        this.waypoints.add(waypoint);
++        if (!this.waypoints.add(waypoint)) {
++            return;
++        }
+ 
+         for (ServerPlayer toCreateFor : this.trackingPlayers) {
+             this.createConnection(toCreateFor, waypoint);
+@@ -92,6 +95,10 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+             }
+         }
+ 
++        for (Set<WaypointTransmitter> pendingConnectionsOfCurr : this.pendingConnections.values()) {
++            pendingConnectionsOfCurr.remove(waypoint);
++        }
++
+         this.waypoints.remove(waypoint);
+     }
+ 
+@@ -122,7 +129,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+             return;
+         }
+ 
+-        Sets.SetView<WaypointTransmitter> set = Sets.difference(this.waypoints, connectionsOfCurr.keySet());
++        Set<WaypointTransmitter> pendingConnectionsOfCurr = this.pendingConnections.get(player);
++        Set<WaypointTransmitter> knownWaypoints = Sets.union(
++                connectionsOfCurr.keySet(),
++                pendingConnectionsOfCurr == null ? Set.of() : pendingConnectionsOfCurr
++        );
++        Sets.SetView<WaypointTransmitter> set = Sets.difference(this.waypoints, knownWaypoints);
+ 
+         for (Map.Entry<WaypointTransmitter, WaypointTransmitter.Connection> entry : connectionsOfCurr.entrySet()) {
+             this.updateConnection(player, entry.getKey(), entry.getValue());
+@@ -135,6 +147,7 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+ 
+     public void removePlayer(ServerPlayer player) {
+         final Map<WaypointTransmitter, WaypointTransmitter.Connection> removedConnections = this.connections.remove(player);
++        this.pendingConnections.remove(player);
+ 
+         if (removedConnections != null) {
+             for (WaypointTransmitter.Connection connection : removedConnections.values()) {
+@@ -171,14 +184,45 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+     private void createConnection(ServerPlayer player, WaypointTransmitter waypoint) {
+         if (player != waypoint) {
+             if (isLocatorBarEnabledFor(player)) {
+-                // -> waypoint
+-                scheduleIfOffTarget(waypoint, () -> waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection -> {
+-                    final Map<WaypointTransmitter, WaypointTransmitter.Connection> connectionsOfThisPlayer = this.connections.computeIfAbsent(player, o -> new ConcurrentHashMap<>());
++                if (!this.trackingPlayers.contains(player) || !this.waypoints.contains(waypoint)) {
++                    return;
++                }
+ 
+-                    connectionsOfThisPlayer.put(waypoint, connection);
++                Map<WaypointTransmitter, WaypointTransmitter.Connection> existingConnections = this.connections.get(player);
++                if (existingConnections != null && existingConnections.containsKey(waypoint)) {
++                    return;
++                }
+ 
+-                    scheduleIfOffTarget((Entity) player, connection::connect);
++                if (!this.markConnectionPending(player, waypoint)) {
++                    return;
++                }
++
++                // -> waypoint
++                scheduleIfOffTarget(waypoint, () -> waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection -> {
++                    scheduleIfOffTarget((Entity) player, () -> {
++                        try {
++                            if (!this.isPendingConnection(player, waypoint)) {
++                                return;
++                            }
++
++                            if (!CommandConfig.waypointsAndWaypointCommand || !this.trackingPlayers.contains(player) || !this.waypoints.contains(waypoint) || !isLocatorBarEnabledFor(player)) {
++                                return;
++                            }
++
++                            final Map<WaypointTransmitter, WaypointTransmitter.Connection> connectionsOfThisPlayer = this.connections.computeIfAbsent(player, o -> new ConcurrentHashMap<>());
++                            if (connectionsOfThisPlayer.containsKey(waypoint)) {
++                                return;
++                            }
++
++                            connection.connect();
++                            connectionsOfThisPlayer.put(waypoint, connection);
++                        } finally {
++                            this.clearConnectionPending(player, waypoint);
++                        }
++                    });
+                 }, () -> {
++                    this.clearConnectionPending(player, waypoint);
++
+                     final Map<WaypointTransmitter, WaypointTransmitter.Connection> connectionsOfThisPlayer = this.connections.get(player);
+ 
+                     if (connectionsOfThisPlayer != null) {
+@@ -196,6 +240,11 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+         if (player != waypoint) {
+             if (isLocatorBarEnabledFor(player)) {
+                 scheduleIfOffTarget((Entity) player, () -> {
++                    Map<WaypointTransmitter, WaypointTransmitter.Connection> currentConnections = this.connections.get(player);
++                    if (currentConnections == null || currentConnections.get(waypoint) != connection) {
++                        return;
++                    }
++
+                     if (!connection.isBroken()) {
+                         connection.update();
+                     } else {
+@@ -206,30 +255,32 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+                             };
+ 
+                             waypoint.makeWaypointConnectionWith(player).ifPresentOrElse(connection1 -> {
+-                                final Map<WaypointTransmitter, WaypointTransmitter.Connection> connectionsOfThisPlayer = this.connections.computeIfAbsent(player, o -> new ConcurrentHashMap<>());
+-
+-                                connectionsOfThisPlayer.put(waypoint, connection1);
+-
+-
+                                 ref.target = connection1;
+                                 ref.connectionOrDisconnect = true;
+                             }, () -> {
+-                                final Map<WaypointTransmitter, WaypointTransmitter.Connection> connectionsOfThisPlayer = this.connections.get(player);
+-
+-                                if (connectionsOfThisPlayer != null) {
+-                                    connectionsOfThisPlayer.remove(waypoint);
+-                                }
+-
+                                 ref.target = connection;
+                                 ref.connectionOrDisconnect = false;
+                             });
+ 
+                             scheduleIfOffTarget((Entity) player, () -> {
++                                Map<WaypointTransmitter, WaypointTransmitter.Connection> connectionsOfThisPlayer = this.connections.get(player);
++                                if (connectionsOfThisPlayer == null || connectionsOfThisPlayer.get(waypoint) != connection) {
++                                    return;
++                                }
++
+                                 if (ref.connectionOrDisconnect) {
++                                    if (!CommandConfig.waypointsAndWaypointCommand || !this.trackingPlayers.contains(player) || !this.waypoints.contains(waypoint) || !isLocatorBarEnabledFor(player)) {
++                                        connectionsOfThisPlayer.remove(waypoint, connection);
++                                        connection.disconnect();
++                                        return;
++                                    }
++
+                                     ref.target.connect();
++                                    connectionsOfThisPlayer.replace(waypoint, connection, ref.target);
+                                     return;
+                                 }
+ 
++                                connectionsOfThisPlayer.remove(waypoint, connection);
+                                 ref.target.disconnect();
+                             });
+                         });
+@@ -238,4 +289,23 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+             }
+         }
+     }
++
++    private boolean markConnectionPending(ServerPlayer player, WaypointTransmitter waypoint) {
++        return this.pendingConnections.computeIfAbsent(player, unused -> ConcurrentHashMap.newKeySet()).add(waypoint);
++    }
++
++    private boolean isPendingConnection(ServerPlayer player, WaypointTransmitter waypoint) {
++        Set<WaypointTransmitter> pendingConnectionsOfPlayer = this.pendingConnections.get(player);
++        return pendingConnectionsOfPlayer != null && pendingConnectionsOfPlayer.contains(waypoint);
++    }
++
++    private void clearConnectionPending(ServerPlayer player, WaypointTransmitter waypoint) {
++        Set<WaypointTransmitter> pendingConnectionsOfPlayer = this.pendingConnections.get(player);
++        if (pendingConnectionsOfPlayer != null) {
++            pendingConnectionsOfPlayer.remove(waypoint);
++            if (pendingConnectionsOfPlayer.isEmpty()) {
++                this.pendingConnections.remove(player, pendingConnectionsOfPlayer);
++            }
++        }
++    }
+ }
