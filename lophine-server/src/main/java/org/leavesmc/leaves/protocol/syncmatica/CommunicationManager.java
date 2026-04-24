@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.syncmatica.exchange.*;
@@ -351,8 +352,12 @@ public class CommunicationManager implements LeavesProtocol {
         return downloadState.getOrDefault(syncmatic.getHash(), false);
     }
 
-    public static void setModifier(final @NotNull ServerPlacement syncmatic, final Exchange exchange) {
-        modifyState.put(syncmatic.getHash(), exchange);
+    public static void setModifier(final @NotNull ServerPlacement syncmatic, final @Nullable Exchange exchange) {
+        if (exchange == null) {
+            modifyState.remove(syncmatic.getHash());
+        } else {
+            modifyState.put(syncmatic.getHash(), exchange);
+        }
     }
 
     public static Exchange getModifier(final @NotNull ServerPlacement syncmatic) {
