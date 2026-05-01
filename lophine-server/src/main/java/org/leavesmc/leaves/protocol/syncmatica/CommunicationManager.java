@@ -40,6 +40,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static fun.bm.lophine.LophineLogger.LOGGER;
+
 @LeavesProtocol.Register(namespace = "syncmatica")
 public class CommunicationManager implements LeavesProtocol {
 
@@ -178,6 +180,10 @@ public class CommunicationManager implements LeavesProtocol {
         if (id.equals(PacketType.MODIFY_REQUEST.identifier)) {
             final UUID placementId = packetBuf.readUUID();
             final ModifyExchangeServer modifier = new ModifyExchangeServer(placementId, source);
+            if (modifier.getPlacement() == null) {
+                LOGGER.warn("Could not find placement for modify request {}", placementId);
+                return;
+            }
             startExchange(modifier);
         }
     }
