@@ -1,6 +1,6 @@
 --- a/luminol-server/build.gradle.kts
 +++ b/luminol-server/build.gradle.kts
-@@ -48,7 +_,23 @@
+@@ -50,7 +_,23 @@
          }
      }
  
@@ -24,8 +24,8 @@
 +    activeFork = lophine
  
  
-     spigot {
-@@ -139,12 +_,16 @@
+ 
+@@ -125,12 +_,16 @@
          resources { srcDir("../paper-server/src/main/resources") }
          java { srcDir("../folia-server/src/main/java") }
          resources { srcDir("../folia-server/src/main/resources") }
@@ -42,35 +42,35 @@
      }
  }
  val log4jPlugins = sourceSets.create("log4jPlugins") {
-@@ -172,7 +_,7 @@
+@@ -158,7 +_,7 @@
  }
  
  dependencies {
--    implementation(project(":luminol-api")) // Luminol
-+    implementation(project(":lophine-api")) // Lophine
+-    implementation(project(":luminol-api"))
++    implementation(project(":lophine-api"))
      // Luminol start - Dependenices insert
      implementation("net.objecthunter:exp4j:0.4.8")
-     implementation("io.netty:netty-all:4.2.9.Final") // used for io_uring
-@@ -274,14 +_,14 @@
+     implementation("com.electronwill.night-config:toml:3.8.3") // Night config
+@@ -234,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
--            "Implementation-Title" to "Luminol",
-+            "Implementation-Title" to "Lophine",
+-            "Implementation-Title" to "Luminol", // Luminol - Rebrand
++            "Implementation-Title" to "Lophine", // Luminol - Rebrand
              "Implementation-Version" to implementationVersion,
              "Implementation-Vendor" to date,
--            "Specification-Title" to "Luminol",
-+            "Specification-Title" to "Lophine",
+-            "Specification-Title" to "Luminol", // Luminol - Rebrand
++            "Specification-Title" to "Lophine", // Luminol - Rebrand
              "Specification-Version" to project.version,
-             "Specification-Vendor" to "LuminolMC org",
--            "Brand-Id" to "luminolmc:luminol",
--            "Brand-Name" to "Luminol",
-+            "Brand-Id" to "luminolmc:lophine",
-+            "Brand-Name" to "Lophine",
+             "Specification-Vendor" to "LuminoLMC", // Luminol - Rebrand
+-            "Brand-Id" to "luminolmc:luminol", // Luminol - Rebrand
+-            "Brand-Name" to "Luminol", // Luminol - Rebrand
++            "Brand-Id" to "luminolmc:lophine", // Luminol - Rebrand
++            "Brand-Name" to "Lophine", // Luminol - Rebrand
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -433,7 +_,7 @@
+@@ -393,7 +_,7 @@
  }
  
  fill {
