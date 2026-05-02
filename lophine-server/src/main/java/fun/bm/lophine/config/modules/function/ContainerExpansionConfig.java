@@ -4,16 +4,19 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.CommandSuggestions;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.HotReloadUnsupported;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "container_expansion")
 public class ContainerExpansionConfig implements IConfigModule {
+    @HotReloadUnsupported
     @CommandSuggestions(suggest = {"1", "2", "3", "4", "5", "6"})
     @ConfigInfo(name = "barrel_rows", comments =
             """
                     range: 1~6""")
     public static int barrelRows = 3;
 
+    @HotReloadUnsupported
     @CommandSuggestions(suggest = {"1", "2", "3", "4", "5", "6"})
     @ConfigInfo(name = "enderchest_rows", comments =
             """

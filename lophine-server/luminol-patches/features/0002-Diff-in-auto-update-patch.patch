@@ -5,7 +5,7 @@ Subject: [PATCH] Diff in auto-update patch
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/AutoUpdateConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/AutoUpdateConfig.java
-index ce01352b637547c1cf8308d56d4b3f9c48fcca70..d57c04d839401e8ba88e56d92be2798bb312949f 100644
+index ce01352b637547c1cf8308d56d4b3f9c48fcca70..9b5623ce1de3d68c949c3c00b966cedab3a4c986 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/misc/AutoUpdateConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/misc/AutoUpdateConfig.java
 @@ -16,13 +16,13 @@ import java.util.Set;
@@ -35,15 +35,6 @@ index ce01352b637547c1cf8308d56d4b3f9c48fcca70..d57c04d839401e8ba88e56d92be2798b
              and let Hyacinthusclip switch to it through auto_update/core.path on restart.""")
      public static String targetJarPath = "";
  
-@@ -42,7 +42,7 @@ public class AutoUpdateConfig implements IConfigModule {
- 
-     @Override
-     public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
--        if (enabled) {
-+        if (enabled || fun.bm.lophine.config.modules.misc.AutoUpdateConfig.enabled) {
-             if (instance == null) {
-                 instance = new AutoUpdateHelper();
-             }
 diff --git a/src/main/java/me/earthme/luminol/utils/AutoUpdateHelper.java b/src/main/java/me/earthme/luminol/utils/AutoUpdateHelper.java
 index 94a25cd681c9352d6931edafd9ec67fd7ba8a777..d0d0cf5e5ff8d4b8efa4d9778c27267b41cf8cf8 100644
 --- a/src/main/java/me/earthme/luminol/utils/AutoUpdateHelper.java
