@@ -1,35 +1,35 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Thu, 12 Jun 2025 04:44:24 +0800
-Subject: [PATCH] I18n support
+Subject: [PATCH] Server I18n
 
 
 diff --git a/net/minecraft/locale/Language.java b/net/minecraft/locale/Language.java
-index 7b9e2a1a208b46a69c16e6afd8b502259893574f..c300ae4363298fecef8fa9bf739f01c0a11e145f 100644
+index 49c7f8194be8222e329fc3215a6aa6db0b221b11..c6c968d28e0d14a4c50e66bdd5176a000944b707 100644
 --- a/net/minecraft/locale/Language.java
 +++ b/net/minecraft/locale/Language.java
-@@ -36,6 +36,7 @@ public abstract class Language {
-         Map<String, String> map = new HashMap<>();
-         BiConsumer<String, String> biConsumer = map::put;
-         parseTranslations(biConsumer, "/assets/minecraft/lang/en_us.json");
-+        fun.bm.lophine.utils.ServerI18nUtil.loadLophineI18nDefault(biConsumer);
-         deprecatedTranslationsInfo.applyToMap(map);
-         final Map<String, String> map1 = Map.copyOf(map);
+@@ -37,6 +37,7 @@ public abstract class Language {
+         Map<String, String> loadedData = new HashMap<>();
+         BiConsumer<String, String> output = loadedData::put;
+         parseTranslations(output, "/assets/minecraft/lang/en_us.json");
++        fun.bm.lophine.utils.ServerI18nUtil.loadLophineI18nDefault(output); // Lophine - Server I18n
+         deprecatedInfo.applyToMap(loadedData);
+         final Map<String, String> storage = Map.copyOf(loadedData);
          return new Language() {
-@@ -65,7 +66,7 @@ public abstract class Language {
+@@ -66,7 +67,7 @@ public abstract class Language {
          };
      }
  
--    private static void parseTranslations(BiConsumer<String, String> output, String languagePath) {
-+    public static void parseTranslations(BiConsumer<String, String> output, String languagePath) { // Lophine - private -> public
-         try (InputStream resourceAsStream = Language.class.getResourceAsStream(languagePath)) {
-             loadFromJson(resourceAsStream, output);
+-    private static void parseTranslations(final BiConsumer<String, String> output, final String path) {
++    public static void parseTranslations(final BiConsumer<String, String> output, final String path) { // Lophine - private -> public
+         try (InputStream stream = Language.class.getResourceAsStream(path)) {
+             loadFromJson(stream, output);
          } catch (JsonParseException | IOException var7) {
 diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
-index f41c70c6cb2e9fae43bad9dd66546417fe38f14a..0bb0877011cac3184b881bfa35f10ef83d7341de 100644
+index 5b46b224bb0fea3a7e0f721ce9770657ffe0c71d..44d594da98615a8bbfb2560e0a63d2e7aab3cc7e 100644
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
-@@ -151,6 +151,8 @@ public class Main {
+@@ -154,6 +154,8 @@ public class Main {
                  return;
              }
  
@@ -39,10 +39,10 @@ index f41c70c6cb2e9fae43bad9dd66546417fe38f14a..0bb0877011cac3184b881bfa35f10ef8
              String awtException = io.papermc.paper.util.ServerEnvironment.awtDependencyCheck();
              if (awtException != null) {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 4abfcaae4fe024296961987704e2a11a03ee518b..5fbcb5eac1d5449247da77b6120edbe2f2dd1d58 100644
+index 0905b1c0a0e9954c8fc68649b5721c975febf777..5ef4da46445e6caff4025baf079457348b0d5801 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -262,6 +262,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -283,6 +283,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
          // Paper end - initialize global and world-defaults configuration
          me.earthme.luminol.config.ConfigManager.loadConfigFiles(); // Luminol - load config file
