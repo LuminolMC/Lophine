@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable function command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 4fa276ba05a550cdf7ce48617056c5a4d4a18006..6cb0d4daf0f275b95d5ca09275e40ab32258eb39 100644
+index 4503e62a72e67d35db5b091c91e903058157bdbd..86866a9fa92d2e1ac0026e5764f459cc73e0b266 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -215,7 +215,9 @@ public class Commands {
+@@ -217,7 +217,9 @@ public class Commands {
          FillCommand.register(this.dispatcher, context);
          FillBiomeCommand.register(this.dispatcher, context);
          ForceLoadCommand.register(this.dispatcher);

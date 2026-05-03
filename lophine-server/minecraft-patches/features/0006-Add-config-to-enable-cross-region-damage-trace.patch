@@ -5,26 +5,26 @@ Subject: [PATCH] Add config to enable cross region damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 607ce65a719e333ce2275346a356032327d00ccf..dcdb01fe5333d407a10f9872d09992c7b438ddeb 100644
+index 23149683dfa72f0f8243c08b0f3925bf572de101..4fe7841720e059f2dfc0984a37b3200804875d22 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1445,6 +1445,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
-             this.awardStat(Stats.ENTITY_KILLED_BY.get(killCredit.getType()));
-             killCredit.awardKillScore(this, damageSource);
-             this.createWitherRose(killCredit);
+@@ -1464,6 +1464,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+             this.awardStat(Stats.ENTITY_KILLED_BY.get(killer.getType()));
+             killer.awardKillScore(this, source);
+             this.createWitherRose(killer);
 +        // Luminol Start - Cross Region Damage trace
 +        } else if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +            final LivingEntity entitylivingnew = this.getKillCreditOrigin();
 +            if (entitylivingnew != null) {
-+                this.damageTransferToAsync(entitylivingnew, cause);
++                this.damageTransferToAsync(entitylivingnew, source);
 +            }
-+        // Luminol End - Cross Region Damage trace
++            // Luminol End - Cross Region Damage trace
          }
  
          this.level().broadcastEntityEvent(this, EntityEvent.DEATH);
-@@ -1468,6 +1475,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1478,6 +1485,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         this.connection.markClientUnloadedAfterDeath();
      }
-     // Leaves end - exp fix
  
 +    // Luminol Start - Cross Region Damage trace
 +    private void damageTransferToAsync(LivingEntity entity, DamageSource cause) {
@@ -48,24 +48,24 @@ index 607ce65a719e333ce2275346a356032327d00ccf..dcdb01fe5333d407a10f9872d09992c7
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 7a63f52efca133d9d1a773da2443333009d87113..5bae274f5ee869e540e4330e03af671b6b18313d 100644
+index 5a4ac3406232cecc034f79915642fa2e9f317e1b..6c13c4081b411a6c4d3db01b12d4c4f4c8897960 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1975,6 +1975,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1959,6 +1959,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
              final LivingEntity killer = this.getKillCredit();
              if (killer != null) {
-                 killer.awardKillScore(this, damageSource);
+                 killer.awardKillScore(this, source);
 +            // Luminol Start - Cross Region Damage trace
 +            } else if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +                final LivingEntity killernew = this.getKillCreditOrigin();
 +                if (killernew != null) {
-+                    this.damageTransferToAsync(killernew, damageSource);
++                    this.damageTransferToAsync(killernew, source);
 +                }
 +            // Luminol End - Cross Region Damage trace
              }
          }); // Paper end
          this.postDeathDropItems(deathEvent); // Paper
-@@ -1985,6 +1992,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1969,6 +1976,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          return deathEvent; // Paper
      }
  
@@ -81,10 +81,10 @@ index 7a63f52efca133d9d1a773da2443333009d87113..5bae274f5ee869e540e4330e03af671b
 +    }
 +    // Luminol End - Cross Region Damage trace
 +
-     protected void dropEquipment(ServerLevel level) {
+     protected void dropEquipment(final ServerLevel level) {
      }
      protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {} // Paper - method for post death logic that cannot be ran before the event is potentially cancelled
-@@ -2612,6 +2631,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -2638,6 +2657,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  

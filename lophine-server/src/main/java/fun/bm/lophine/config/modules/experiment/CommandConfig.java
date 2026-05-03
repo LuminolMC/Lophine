@@ -11,16 +11,16 @@ public class CommandConfig implements IConfigModule {
 //            """
 //                    Allow to use tick command""")
 //    public static boolean tick = false;
-//
-//    @ConfigInfo(name = "function_command_enabled", comments =
-//            """
-//                    Allow to use function command""")
-//    public static boolean function = false;
-//
-//    @ConfigInfo(name = "scoreboard_command_enabled", comments =
-//            """
-//                    Allow to use scoreboard command""")
-//    public static boolean scoreboard = false;
+
+    @ConfigInfo(name = "function_command_enabled", comments =
+            """
+                    Allow to use function command""")
+    public static boolean function = false;
+
+    @ConfigInfo(name = "scoreboard_command_enabled", comments =
+            """
+                    Allow to use scoreboard command""")
+    public static boolean scoreboard = false;
 
     @ConfigInfo(name = "enabled", directory = {"save_all_command"}, comments =
             """
