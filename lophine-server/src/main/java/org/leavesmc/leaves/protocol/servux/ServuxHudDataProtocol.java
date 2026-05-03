@@ -54,7 +54,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 2;
 
-    private static final List<ServerPlayer> players = ConcurrentHashMap.newKeySet();
+    private static final Set<ServerPlayer> players = ConcurrentHashMap.newKeySet();
     private static final int updateInterval = 80;
 
     private static final Map<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
@@ -85,7 +85,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
     private static void onPlayerLeave(ServerPlayer player) {
         players.remove(player);
         loggerPlayers.remove(player);
-        DataLogger.Type.VALUES.forEach(type -> DATA.remove(type, player));
+        DATA.rowMap().values().forEach(row -> row.remove(player));
     }
 
     @ProtocolHandler.PayloadReceiver(payload = HudDataPayload.class)
