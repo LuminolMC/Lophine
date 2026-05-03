@@ -5,15 +5,15 @@ Subject: [PATCH] Old zombie reinforcement
 
 
 diff --git a/net/minecraft/world/entity/monster/zombie/Zombie.java b/net/minecraft/world/entity/monster/zombie/Zombie.java
-index 7a9394d4555464312418964f1a7a5d2581496774..3fcd32cc77458ce196ce0e468c1a99f456a57604 100644
+index 0008aa0ca02fc4ea67b795b3f0a0e9656233ce89..2734ffc103ee4760d3521609fdd090ab99df675b 100644
 --- a/net/minecraft/world/entity/monster/zombie/Zombie.java
 +++ b/net/minecraft/world/entity/monster/zombie/Zombie.java
-@@ -314,7 +314,7 @@ public class Zombie extends Monster {
-                 int floor = Mth.floor(this.getX());
-                 int floor1 = Mth.floor(this.getY());
-                 int floor2 = Mth.floor(this.getZ());
+@@ -331,7 +331,7 @@ public class Zombie extends Monster {
+                 int x = Mth.floor(this.getX());
+                 int y = Mth.floor(this.getY());
+                 int z = Mth.floor(this.getZ());
 -                EntityType<? extends Zombie> type = this.getType();
 +                EntityType<? extends Zombie> type = fun.bm.lophine.config.modules.function.OldFeatureConfig.oldZombieReinforcement ? EntityType.ZOMBIE : this.getType(); // Lophine - old zombie reinforcement
-                 Zombie zombie = type.create(level, EntitySpawnReason.REINFORCEMENT);
-                 if (zombie == null) {
+                 Zombie reinforcement = type.create(level, EntitySpawnReason.REINFORCEMENT);
+                 if (reinforcement == null) {
                      return true;

@@ -5,10 +5,10 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index dcdb01fe5333d407a10f9872d09992c7b438ddeb..6df8f98afa7810815b8d7c86b3dac57cd5915682 100644
+index 4fe7841720e059f2dfc0984a37b3200804875d22..6feb00ab2cf81bd0bd36bd0fc7784fc57a79d93d 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -240,6 +240,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -242,6 +242,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      private int lastSentFood = -99999999;
      private boolean lastFoodSaturationZero = true;
      public int lastSentExp = -99999999;
@@ -16,7 +16,7 @@ index dcdb01fe5333d407a10f9872d09992c7b438ddeb..6df8f98afa7810815b8d7c86b3dac57c
      private ChatVisiblity chatVisibility = ChatVisiblity.FULL;
      public ParticleStatus particleStatus = ParticleStatus.ALL;
      private boolean canChatColor = true;
-@@ -898,6 +899,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -920,6 +921,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.connection.tickClientLoadTimeout();
          this.gameMode.tick();
          this.wardenSpawnTracker.tick();
@@ -24,17 +24,17 @@ index dcdb01fe5333d407a10f9872d09992c7b438ddeb..6df8f98afa7810815b8d7c86b3dac57c
          if (this.invulnerableTime > 0) {
              this.invulnerableTime--;
          }
-@@ -1536,6 +1538,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
-         if (this.isInvulnerableTo(level, damageSource)) {
+@@ -1547,6 +1549,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         if (this.isInvulnerableTo(level, source)) {
              return false;
          } else {
 +            // Lophine start - spawn invulnerable time
 +            if (fun.bm.lophine.config.modules.function.OldFeatureConfig.spawnInvulnerableTime) {
-+                if (this.spawnInvulnerableTime > 0 && !damageSource.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
++                if (this.spawnInvulnerableTime > 0 && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 +                    return false;
 +                }
 +            }
 +            // Lophine end - spawn invulnerable time
-             Entity entity = damageSource.getEntity();
+             Entity entity = source.getEntity();
              if (!( // Paper - split the if statement. If below statement is false, hurtServer would not have been evaluated. Return false.
-              !(entity instanceof Player player && !this.canHarmPlayer(player))
+                 !(entity instanceof Player playerx && !this.canHarmPlayer(playerx))
