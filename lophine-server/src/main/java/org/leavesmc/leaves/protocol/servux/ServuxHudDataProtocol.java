@@ -19,6 +19,7 @@ package org.leavesmc.leaves.protocol.servux;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import com.mojang.serialization.DataResult;
 import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
@@ -53,12 +54,12 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 2;
 
-    private static final List<ServerPlayer> players = new ArrayList<>();
+    private static final Set<ServerPlayer> players = ConcurrentHashMap.newKeySet();
     private static final int updateInterval = 80;
 
     private static final Map<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
     private static final Map<DataLogger.Type, DataLogger<?>> LOGGERS = new ConcurrentHashMap<>();
-    private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = HashBasedTable.create();
+    private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = Tables.synchronizedTable(HashBasedTable.create());
 
     public static boolean refreshSpawnMetadata = false;
 
