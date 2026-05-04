@@ -23,12 +23,12 @@ public class ContainerExpansionConfig implements IConfigModule {
                     range: 1~6""")
     public static int enderchestRows = 3;
 
-//    @CommandSuggestions(suggest = {"1", "2", "32", "64"})
-//    @ConfigInfo(name = "shulker_stackable_count", directory = {"shulker_box"}, comments =
-//            """
-//                    range: 1~64""")
-//    public static int shulkerCount = 1;
-//
-//    @ConfigInfo(name = "same_nbt_shulker_stackable", directory = {"shulker_box"})
-//    public static boolean nbtShulkerStackable = false;
+    @CommandSuggestions(suggest = {"1", "2", "32", "64"})
+    @ConfigInfo(name = "shulker_stackable_count", directory = {"shulker_box"}, comments =
+            """
+                    range: 1~64""")
+    public static int shulkerCount = 1;
+
+    @ConfigInfo(name = "same_nbt_shulker_stackable", directory = {"shulker_box"})
+    public static boolean nbtShulkerStackable = false;
 }
