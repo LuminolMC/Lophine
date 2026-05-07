@@ -7,7 +7,6 @@ project_id_b="Lophine"
 
 commitid=$(git log --pretty='%h' -1)
 mcversion=$(prop mcVersion)
-grdversion=$(prop version)
 release=$(prop release)
 release_tag="$mcversion-$commitid"
 jarName="$project_id-$mcversion-paperclip.jar"
@@ -25,7 +24,12 @@ elif [ "$release" = "2" ]; then
   make_latest=true
 fi
 
-mv lophine-server/build/libs/$project_id-paperclip-$grdversion-mojmap.jar $jarName_dir
+actual_jar=$(ls lophine-server/build/libs/$project_id-paperclip-*.jar 2>/dev/null | head -n 1)
+if [ -n "$actual_jar" ]; then
+  mv "$actual_jar" "$jarName_dir"
+else
+  echo "Warning: No paperclip jar found to rename"
+fi
 
 echo "project_id=$project_id" >> $GITHUB_ENV
 echo "project_id_b=$project_id_b" >> $GITHUB_ENV

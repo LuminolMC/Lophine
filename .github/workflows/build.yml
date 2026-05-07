@@ -81,6 +81,7 @@ jobs:
             done
             echo "tag=${{ env.tag }}-${counter}" >> $GITHUB_ENV
             echo "release_count= - ${counter}" >> $GITHUB_ENV
+            release_exists=false
           fi
           echo "release_exists=${release_exists}" >> $GITHUB_ENV
 

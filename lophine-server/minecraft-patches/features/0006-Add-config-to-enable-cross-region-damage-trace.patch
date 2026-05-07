@@ -48,7 +48,7 @@ index 6cedc129f31289eaf4e3580219fc1988c0f3c5a1..5f1fad59a26e3fe29f9000a92be5d6c4
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 9dc9e87e6aed1330501a7f10e062a0e5d36d17f3..c43d0a47a511b0c1612eec038bb35d75f8372a00 100644
+index 17483ffff6cb2a9e86db7079e7c3a9a800654c62..fde9fad11e130cf93205d23da09ad369b35db160 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -1961,6 +1961,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -84,7 +84,7 @@ index 9dc9e87e6aed1330501a7f10e062a0e5d36d17f3..c43d0a47a511b0c1612eec038bb35d75
      protected void dropEquipment(final ServerLevel level) {
      }
      protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {} // Paper - method for post death logic that cannot be ran before the event is potentially cancelled
-@@ -2642,6 +2661,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -2629,6 +2648,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  
