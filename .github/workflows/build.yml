@@ -28,6 +28,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: default
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v6
