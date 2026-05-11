@@ -3,12 +3,13 @@ From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Wed, 21 Jan 2026 21:28:21 +0800
 Subject: [PATCH] Add config to enable tick command
 
+Because of some bug, we disabled sprint command
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 7748e9ac04fbd3f5259d92fc908d90889cba86c8..80b5d151e0dd6fa44794187875b4b80519839d81 100644
+index fc6402dd0a47f5b2792aa8a21703bfee18dd2388..96423a1a429f4fb1c975ad10726fe0e1ff70a6ad 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -332,6 +332,11 @@ public final class RegionizedServer {
+@@ -338,6 +338,11 @@ public final class RegionizedServer {
          this.randomWalk();
           */
          ++this.tickCount;
@@ -20,7 +21,7 @@ index 7748e9ac04fbd3f5259d92fc908d90889cba86c8..80b5d151e0dd6fa44794187875b4b805
          // expire invalid click command callbacks
          io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.ADVENTURE_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
          io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.DIALOG_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
-@@ -357,6 +362,13 @@ public final class RegionizedServer {
+@@ -366,6 +371,13 @@ public final class RegionizedServer {
              this.globalTick(world, tickCount);
          }
  
@@ -34,17 +35,17 @@ index 7748e9ac04fbd3f5259d92fc908d90889cba86c8..80b5d151e0dd6fa44794187875b4b805
          // tick connections
          this.tickConnections();
  
-@@ -492,7 +504,7 @@ public final class RegionizedServer {
+@@ -513,7 +525,7 @@ public final class RegionizedServer {
      }
  
      private void tickTime(final ServerLevel world, final long tickCount) {
 -        if (world.tickTime) {
 +        if ((!fun.bm.lophine.config.modules.experiment.CommandConfig.tick || world.tickRateManager().runsNormally()) && world.tickTime) { // Luminol - Add a config to enable tick command
-             if (world.getGameRules().get(GameRules.ADVANCE_TIME)) {
-                 world.setDayTime(world.levelData.getDayTime() + tickCount);
-             }
+             world.serverLevelData.setGameTime(world.serverLevelData.getGameTime() + tickCount);
+         }
+     }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index 0f4e8ee9438135e24e0f61a1390c59573b9e9c3f..65699d2ad66c686a8b7d1b951787ddd766800a94 100644
+index 8b09834ec36f62a73e388124129afbdfa47e6c25..ce0ace6a0c6b11f124b601d97491fee102b36554 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -40,8 +40,8 @@ public final class TickRegionScheduler {
@@ -58,7 +59,7 @@ index 0f4e8ee9438135e24e0f61a1390c59573b9e9c3f..65699d2ad66c686a8b7d1b951787ddd7
      // Folia start - watchdog
      public static final FoliaWatchdogThread WATCHDOG_THREAD = new FoliaWatchdogThread();
      static {
-@@ -448,8 +448,23 @@ public final class TickRegionScheduler {
+@@ -525,8 +525,23 @@ public final class TickRegionScheduler {
              final long cpuStart = MEASURE_CPU_TIME ? THREAD_MX_BEAN.getCurrentThreadCpuTime() : 0L;
              final long tickStart = System.nanoTime();
  
@@ -84,7 +85,7 @@ index 0f4e8ee9438135e24e0f61a1390c59573b9e9c3f..65699d2ad66c686a8b7d1b951787ddd7
  
              if (!this.tryMarkTicking()) {
                  if (!this.cancelled.get()) {
-@@ -498,6 +513,11 @@ public final class TickRegionScheduler {
+@@ -575,6 +590,11 @@ public final class TickRegionScheduler {
              try {
                  // next start isn't updated until the end of this tick
                  this.tickRegion(tickCount, tickStart, scheduledEnd);
@@ -97,10 +98,10 @@ index 0f4e8ee9438135e24e0f61a1390c59573b9e9c3f..65699d2ad66c686a8b7d1b951787ddd7
                  this.scheduler.regionFailed(this, false, thr);
                  // regionFailed will schedule a shutdown, so we should avoid letting this region tick further
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 91e2f3e9e85622adbd3799473634e716383bbe94..21466c225db02a5be74bf60b5ea831c5bea8a7e8 100644
+index f54f6047f326189329e11338b17105f5555dde12..6f3143deb9e5ff17fae5920b0a4ba34e3d9545c4 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -262,7 +262,11 @@ public class Commands {
+@@ -265,7 +265,11 @@ public class Commands {
          TeleportCommand.register(this.dispatcher);
          TellRawCommand.register(this.dispatcher, context);
          //TestCommand.register(this.dispatcher, context); // Folia - region threading
@@ -110,14 +111,14 @@ index 91e2f3e9e85622adbd3799473634e716383bbe94..21466c225db02a5be74bf60b5ea831c5
 +            TickCommand.register(this.dispatcher); // Folia - region threading - TODO later
 +        }
 +        // Luminol end - Add a config to enable tick command
-         TimeCommand.register(this.dispatcher);
+         TimeCommand.register(this.dispatcher, context);
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 25324d81bbe876dbe47b33bd5749b72e4283bf80..504f21c5f1e3101e7164b97059aecce630d18cee 100644
+index 82315368d5580563fc77548f22a65d04ec73b622..8dcd684189d953aabddc4f62a3ecc5807c949ce6 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -270,7 +270,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -283,7 +283,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      private @Nullable String serverId;
      public MinecraftServer.ReloadableResources resources;
      private final StructureTemplateManager structureTemplateManager;
@@ -127,10 +128,10 @@ index 25324d81bbe876dbe47b33bd5749b72e4283bf80..504f21c5f1e3101e7164b97059aecce6
      protected WorldData worldData;
      private LevelData.RespawnData effectiveRespawnData = LevelData.RespawnData.DEFAULT;
 diff --git a/net/minecraft/server/ServerTickRateManager.java b/net/minecraft/server/ServerTickRateManager.java
-index 4257c47d33e3773fac766817138cc21c55d9ab76..95f6b1cbd5e33151c326689bc72292ff38a48803 100644
+index 8d0f810100a4eac65831913feeb9a9eeb0e6006a..afcab27006558f5d379df723968a612c1cadba60 100644
 --- a/net/minecraft/server/ServerTickRateManager.java
 +++ b/net/minecraft/server/ServerTickRateManager.java
-@@ -106,7 +106,7 @@ public class ServerTickRateManager extends TickRateManager {
+@@ -110,7 +110,7 @@ public class ServerTickRateManager extends TickRateManager {
              return false;
          } else if (this.remainingSprintTicks > 0L) {
              this.sprintTickStartTime = System.nanoTime();
@@ -139,7 +140,7 @@ index 4257c47d33e3773fac766817138cc21c55d9ab76..95f6b1cbd5e33151c326689bc72292ff
              return true;
          } else {
              this.finishTickSprint();
-@@ -114,6 +114,12 @@ public class ServerTickRateManager extends TickRateManager {
+@@ -118,6 +118,12 @@ public class ServerTickRateManager extends TickRateManager {
          }
      }
  
@@ -153,7 +154,7 @@ index 4257c47d33e3773fac766817138cc21c55d9ab76..95f6b1cbd5e33151c326689bc72292ff
          this.sprintTimeSpend = this.sprintTimeSpend + (System.nanoTime() - this.sprintTickStartTime);
      }
 diff --git a/net/minecraft/server/commands/TickCommand.java b/net/minecraft/server/commands/TickCommand.java
-index 14c46d585fc9bfbf9a57340508ea2e5076ac39d6..99096896a4512eed579b234e7fa0c6e9c3e8c246 100644
+index 2dd0a8f2399a83b90356fcf0777bd1aec8eef5a9..c3dcfb633877ef230ab48a455ad4f5a1d601ba48 100644
 --- a/net/minecraft/server/commands/TickCommand.java
 +++ b/net/minecraft/server/commands/TickCommand.java
 @@ -14,7 +14,7 @@ import net.minecraft.server.ServerTickRateManager;
@@ -164,4 +165,22 @@ index 14c46d585fc9bfbf9a57340508ea2e5076ac39d6..99096896a4512eed579b234e7fa0c6e9
 +    public static final float MAX_TICKRATE = 10000.0F; // Luminol - Add tick command support
      private static final String DEFAULT_TICKRATE = String.valueOf(20);
  
-     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+@@ -40,7 +40,7 @@ public class TickCommand {
+                                 .executes(c -> step(c.getSource(), IntegerArgumentType.getInteger(c, "time")))
+                         )
+                 )
+-                .then(
++/*                .then(
+                     Commands.literal("sprint")
+                         .then(Commands.literal("stop").executes(c -> stopSprinting(c.getSource())))
+                         .then(
+@@ -48,7 +48,7 @@ public class TickCommand {
+                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(new String[]{"60s", "1d", "3d"}, b))
+                                 .executes(c -> sprint(c.getSource(), IntegerArgumentType.getInteger(c, "time")))
+                         )
+-                )
++                )*/
+                 .then(Commands.literal("unfreeze").executes(c -> setFreeze(c.getSource(), false)))
+                 .then(Commands.literal("freeze").executes(c -> setFreeze(c.getSource(), true)))
+         );

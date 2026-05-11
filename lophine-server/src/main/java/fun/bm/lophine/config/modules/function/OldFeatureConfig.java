@@ -15,10 +15,10 @@ public class OldFeatureConfig implements IConfigModule {
 
 //    @ConfigInfo(name = "old_explosion_damage_calculator")
 //    public static boolean oldExplosionDamageCalculator = false;
-//
-//    @ConfigInfo(name = "old_raid_behavior")
-//    public static boolean oldRaidBehavior = false;
-//
+
+    @ConfigInfo(name = "old_raid_behavior")
+    public static boolean oldRaidBehavior = false;
+
 //    @ConfigInfo(name = "villager-void-trade", comments =
 //            """
 //                    Allow villager void trade.""")

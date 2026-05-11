@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Mon, 11 May 2026 10:47:42 +0800
+Subject: [PATCH] Add cancel task by task id in FoliaGlobalRegionScheduler
+
+
+diff --git a/src/main/java/io/papermc/paper/threadedregions/scheduler/GlobalRegionScheduler.java b/src/main/java/io/papermc/paper/threadedregions/scheduler/GlobalRegionScheduler.java
+index 57455aca80ecc458b96b44c086cea94ddcecae47..763d27d303b9a588526445c453e07f5886534e82 100644
+--- a/src/main/java/io/papermc/paper/threadedregions/scheduler/GlobalRegionScheduler.java
++++ b/src/main/java/io/papermc/paper/threadedregions/scheduler/GlobalRegionScheduler.java
+@@ -55,4 +55,10 @@ public interface GlobalRegionScheduler {
+      * @param plugin Specified plugin.
+      */
+      void cancelTasks(@NotNull Plugin plugin);
++
++     /**
++     * Attempts to cancel the specified task.
++     * @param taskId The task id.
++     */
++     void cancelTask(final int taskId);
+ }

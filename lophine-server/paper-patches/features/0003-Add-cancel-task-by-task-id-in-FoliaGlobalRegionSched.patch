@@ -5,7 +5,7 @@ Subject: [PATCH] Add cancel task by task id in FoliaGlobalRegionScheduler
 
 
 diff --git a/src/main/java/io/papermc/paper/threadedregions/scheduler/FoliaGlobalRegionScheduler.java b/src/main/java/io/papermc/paper/threadedregions/scheduler/FoliaGlobalRegionScheduler.java
-index 14ffbcb66006878eacf310547dad53718f8308eb..6c108bc7d93196803daeef4751d06cafa6eeec1a 100644
+index 14ffbcb66006878eacf310547dad53718f8308eb..f20f2735fbb4d1e38d576eafe18a0054a45aa59e 100644
 --- a/src/main/java/io/papermc/paper/threadedregions/scheduler/FoliaGlobalRegionScheduler.java
 +++ b/src/main/java/io/papermc/paper/threadedregions/scheduler/FoliaGlobalRegionScheduler.java
 @@ -16,6 +16,8 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
@@ -35,12 +35,13 @@ index 14ffbcb66006878eacf310547dad53718f8308eb..6c108bc7d93196803daeef4751d06caf
  
          this.scheduleInternal(ret, initialDelayTicks);
  
-@@ -133,7 +135,33 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
+@@ -133,7 +135,34 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
          }
      }
  
 -    private final class GlobalScheduledTask implements ScheduledTask, Runnable {
 +    // Lophine start - add cancel task by task id
++    @Override
 +    public void cancelTask(final int taskId) {
 +        synchronized (this.stateLock) {
 +            for (final List<GlobalScheduledTask> tasks : this.tasksByDeadline.values()) {
@@ -70,11 +71,11 @@ index 14ffbcb66006878eacf310547dad53718f8308eb..6c108bc7d93196803daeef4751d06caf
  
          private static final int STATE_IDLE                = 0;
          private static final int STATE_EXECUTING           = 1;
-@@ -145,13 +173,15 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
+@@ -145,13 +174,15 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
          private final long repeatDelay; // in ticks
          private Consumer<ScheduledTask> run;
          private volatile int state;
-+        private int taskId; // Lophine - add task id
++        private final int taskId; // Lophine - add task id
  
          private static final VarHandle STATE_HANDLE = ConcurrentUtil.getVarHandle(GlobalScheduledTask.class, "state", int.class);
  
@@ -87,7 +88,7 @@ index 14ffbcb66006878eacf310547dad53718f8308eb..6c108bc7d93196803daeef4751d06caf
          }
  
          private final int getStateVolatile() {
-@@ -262,5 +292,11 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
+@@ -262,5 +293,11 @@ public class FoliaGlobalRegionScheduler implements GlobalRegionScheduler {
                  }
              }
          }

@@ -7,10 +7,10 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.EXPERIMENT, name = "command")
 public class CommandConfig implements IConfigModule {
-//    @ConfigInfo(name = "tick_command_enabled", comments =
-//            """
-//                    Allow to use tick command""")
-//    public static boolean tick = false;
+    @ConfigInfo(name = "tick_command_enabled", comments =
+            """
+                    Allow to use tick command""")
+    public static boolean tick = false;
 
     @ConfigInfo(name = "function_command_enabled", comments =
             """
