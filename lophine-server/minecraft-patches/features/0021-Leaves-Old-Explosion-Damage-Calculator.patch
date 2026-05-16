@@ -8,14 +8,14 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/3e96b237749a960f2
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/ServerExplosion.java b/net/minecraft/world/level/ServerExplosion.java
-index 08a1be57e1057a9e961eeb8f59cd12e98ed52bab..33ee967d8a7d4ce2c455db9ffaac740cd589e6f3 100644
+index 769dc39e11881d5f81a2405850cbcbd0842c5995..9fc97e8b01f66ada6af1fe76f4e27c9bb1a5dcfc 100644
 --- a/net/minecraft/world/level/ServerExplosion.java
 +++ b/net/minecraft/world/level/ServerExplosion.java
-@@ -717,6 +717,7 @@ public class ServerExplosion implements Explosion {
+@@ -708,6 +708,7 @@ public class ServerExplosion implements Explosion {
      public boolean shouldAffectBlocklikeEntities() {
-         boolean flag = this.level.getGameRules().get(GameRules.MOB_GRIEFING);
-         boolean flag1 = this.source == null || this.source.getType() != EntityType.BREEZE_WIND_CHARGE && this.source.getType() != EntityType.WIND_CHARGE;
-+        if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldExplosionDamageCalculator) flag1 = flag1 && (this.source == null || !this.source.isInWater()); // Leaves - Old MC TNT wet explosion no item damage
-         return flag ? flag1 : this.blockInteraction.shouldAffectBlocklikeEntities() && flag1;
+         boolean mobGriefingEnabled = this.level.getGameRules().get(GameRules.MOB_GRIEFING);
+         boolean isNotWindCharge = this.source == null || !this.source.is(EntityType.BREEZE_WIND_CHARGE) && !this.source.is(EntityType.WIND_CHARGE);
++        if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldExplosionDamageCalculator) isNotWindCharge = isNotWindCharge && (this.source == null || !this.source.isInWater()); // Leaves - Old MC TNT wet explosion no item damage
+         return mobGriefingEnabled ? isNotWindCharge : this.blockInteraction.shouldAffectBlocklikeEntities() && isNotWindCharge;
      }
  

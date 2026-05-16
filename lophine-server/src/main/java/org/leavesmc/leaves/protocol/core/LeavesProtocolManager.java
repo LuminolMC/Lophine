@@ -15,7 +15,6 @@
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package org.leavesmc.leaves.protocol.core;
 
 import com.mojang.logging.LogUtils;
@@ -24,6 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.leavesmc.leaves.protocol.core.invoker.*;
 import org.slf4j.Logger;
@@ -43,6 +43,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class LeavesProtocolManager {
+
     private static final Logger LOGGER = LogUtils.getClassLogger();
 
     private static final Map<Class<? extends LeavesCustomPayload>, PayloadReceiverInvokerHolder> PAYLOAD_RECEIVERS = new HashMap<>();
@@ -264,7 +265,7 @@ public class LeavesProtocolManager {
     }
 
     public static void handleTick() {
-        long currentTime = System.currentTimeMillis() / 50;
+        long currentTime = System.currentTimeMillis() / MinecraftServer.getServer().tickRateManager().nanosecondsPerTick();
         if (currentTime == lastAcceptTime) return;
         lastAcceptTime = currentTime;
         for (var tickerInfo : TICKERS) {

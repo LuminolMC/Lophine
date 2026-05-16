@@ -15,7 +15,6 @@
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package org.leavesmc.leaves.protocol.core;
 
 import com.google.common.cache.Cache;
@@ -47,7 +46,7 @@ public class ProtocolUtils {
     private static final byte[] EMPTY = new byte[0];
 
     public static String buildProtocolVersion(String protocol) {
-        return protocol + "-lophine-" + ServerBuildInfo.buildInfo().asString(ServerBuildInfo.StringRepresentation.VERSION_SIMPLE);
+        return protocol + "-leaves-" + ServerBuildInfo.buildInfo().asString(ServerBuildInfo.StringRepresentation.VERSION_SIMPLE);
     }
 
     public static void sendEmptyPacket(ServerPlayer player, Identifier id) {

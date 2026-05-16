@@ -17,10 +17,10 @@
 
 package org.leavesmc.leaves.protocol.servux;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.mojang.serialization.DataResult;
 import fun.bm.lophine.config.modules.function.protocol.ServuxProtocolConfig;
+import fun.bm.lophine.utils.concurrent.AbstractConcurrentTable;
+import fun.bm.lophine.utils.concurrent.OptimizedConcurrentTable;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -37,6 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.saveddata.WeatherData;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.core.LeavesCustomPayload;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
@@ -53,12 +54,12 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 2;
 
-    private static final List<ServerPlayer> players = new ArrayList<>();
+    private static final Set<ServerPlayer> players = ConcurrentHashMap.newKeySet();
     private static final int updateInterval = 80;
 
     private static final Map<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
     private static final Map<DataLogger.Type, DataLogger<?>> LOGGERS = new ConcurrentHashMap<>();
-    private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = HashBasedTable.create();
+    private static final AbstractConcurrentTable<DataLogger.Type, ServerPlayer, Tag> DATA = new OptimizedConcurrentTable<>(false, false, true);
 
     public static boolean refreshSpawnMetadata = false;
 
@@ -84,7 +85,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
     private static void onPlayerLeave(ServerPlayer player) {
         players.remove(player);
         loggerPlayers.remove(player);
-        DATA.rowMap().values().forEach(row -> row.remove(player));
+        DATA.clearXZ(player);
     }
 
     @ProtocolHandler.PayloadReceiver(payload = HudDataPayload.class)
@@ -150,7 +151,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static void refreshWeatherData(ServerPlayer player) {
         ServerLevel level = MinecraftServer.getServer().overworld();
-        if (!level.getGameRules().get(GameRules.ADVANCE_WEATHER)) {
+        if (!level.getGameRules().get(GameRules.ADVANCE_WEATHER)) { // Leaves - Paper 26.1: RULE_WEATHER_CYCLE -> ADVANCE_WEATHER, getBoolean -> get
             return;
         }
 
@@ -158,22 +159,24 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         nbt.putString("id", HudDataPayload.CHANNEL.toString());
         nbt.putString("servux", ServuxProtocol.SERVUX_STRING);
 
-        if (level.serverLevelData.isRaining() && level.serverLevelData.getRainTime() > -1) {
-            nbt.putInt("SetRaining", level.serverLevelData.getRainTime());
+        // Leaves - Paper 26.1: weather state moved from PaperLevelOverrides to saveddata.WeatherData
+        final WeatherData weatherData = level.getWeatherData();
+        if (weatherData.isRaining() && weatherData.getRainTime() > -1) {
+            nbt.putInt("SetRaining", weatherData.getRainTime());
             nbt.putBoolean("isRaining", true);
         } else {
             nbt.putBoolean("isRaining", false);
         }
 
-        if (level.serverLevelData.isThundering() && level.serverLevelData.getThunderTime() > -1) {
-            nbt.putInt("SetThundering", level.serverLevelData.getThunderTime());
+        if (weatherData.isThundering() && weatherData.getThunderTime() > -1) {
+            nbt.putInt("SetThundering", weatherData.getThunderTime());
             nbt.putBoolean("isThundering", true);
         } else {
             nbt.putBoolean("isThundering", false);
         }
 
-        if (level.serverLevelData.getClearWeatherTime() > -1) {
-            nbt.putInt("SetClear", level.serverLevelData.getClearWeatherTime());
+        if (weatherData.getClearWeatherTime() > -1) {
+            nbt.putInt("SetClear", weatherData.getClearWeatherTime());
         }
 
         sendPacket(player, new HudDataPayload(HudDataPayloadType.PACKET_S2C_WEATHER_TICK, nbt));
@@ -259,10 +262,12 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         loggerPlayers.forEach((player, list) -> {
             CompoundTag nbt = new CompoundTag();
             for (DataLogger.Type type : list) {
-                Tag data = DATA.get(type, player);
+                List<Tag> data0 = DATA.getZ(type, player);
+                if (data0.isEmpty()) continue;
+                Tag data = data0.getFirst();
                 if (data != null) {
                     nbt.put(type.getSerializedName(), data);
-                    DATA.remove(type, player);
+                    DATA.remove(type, player, data);
                 }
             }
             if (!nbt.isEmpty()) {

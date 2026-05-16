@@ -15,7 +15,6 @@
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package org.leavesmc.leaves.protocol.core;
 
 import net.minecraft.server.level.ServerPlayer;

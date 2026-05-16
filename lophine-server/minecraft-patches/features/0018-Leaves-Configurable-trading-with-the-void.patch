@@ -4,14 +4,14 @@ Date: Wed, 29 Oct 2025 00:09:09 +0800
 Subject: [PATCH] Leaves: Configurable trading with the void
 
 Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
-As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/9d2bd3f7b0a48f00df7bc8c74292338ed9c3a458/leaves-server/minecraft-patches/features/0088-Configurable-trading-with-the-void.patch)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index b0546cb4af7291013399e67d98bced98a5fffc0f..bf340425dc2a1545b9069badcf054d4c2f6a405f 100644
+index c380ab9f059da6219691e8bccd4f82b9ec5483b3..b2ea90b0ab461d202d492411471d2412a9c5d303 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -3058,7 +3058,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -3158,7 +3158,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
              // Spigot start
              if (entity.getBukkitEntity() instanceof org.bukkit.inventory.InventoryHolder && (!(entity instanceof ServerPlayer) || entity.getRemovalReason() != Entity.RemovalReason.KILLED)) { // SPIGOT-6876: closeInventory clears death message
                  // Paper start - Fix merchant inventory not closing on entity removal
@@ -21,26 +21,26 @@ index b0546cb4af7291013399e67d98bced98a5fffc0f..bf340425dc2a1545b9069badcf054d4c
                  }
                  // Paper end - Fix merchant inventory not closing on entity removal
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index c8be04b8a50bac52150a1fdd238634e630e1765e..2eb551390aa66d89988df9ca23cf0dd7ccfd6577 100644
+index e6987eaf6e4d36d43cee4ece3ce22d31052a2a2a..168702a5ae51a2bc42c5761e13cb14008a8162c4 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -555,7 +555,7 @@ public abstract class PlayerList {
+@@ -560,7 +560,7 @@ public abstract class PlayerList {
                  player.stopRiding();
-                 rootVehicle.getPassengersAndSelf().forEach(entity -> {
+                 vehicle.getPassengersAndSelf().forEach(e -> {
                      // Paper start - Fix villager boat exploit
--                    if (entity instanceof net.minecraft.world.entity.npc.villager.AbstractVillager villager) {
-+                    if (!fun.bm.lophine.config.modules.function.OldFeatureConfig.villagerVoidTrade && entity instanceof net.minecraft.world.entity.npc.villager.AbstractVillager villager) { // Leaves - Configurable trading with the void
+-                    if (e instanceof net.minecraft.world.entity.npc.villager.AbstractVillager villager) {
++                    if (!fun.bm.lophine.config.modules.function.OldFeatureConfig.villagerVoidTrade && e instanceof net.minecraft.world.entity.npc.villager.AbstractVillager villager) { // Leaves - Configurable trading with the void
                          final net.minecraft.world.entity.player.Player human = villager.getTradingPlayer();
                          if (human != null) {
                              villager.setTradingPlayer(null);
 diff --git a/net/minecraft/world/inventory/MerchantMenu.java b/net/minecraft/world/inventory/MerchantMenu.java
-index 6dfee62a46a5882df7f405e59d762647289d7866..1192a6ab33a9481397b84c9cf0a24fbbcb0ed065 100644
+index 1dd82dfa739957f00d51c8b987289a002815f622..85a329565119d376139a7449e538c0d83dfb079f 100644
 --- a/net/minecraft/world/inventory/MerchantMenu.java
 +++ b/net/minecraft/world/inventory/MerchantMenu.java
 @@ -74,6 +74,7 @@ public class MerchantMenu extends AbstractContainerMenu {
  
      @Override
-     public boolean stillValid(Player player) {
+     public boolean stillValid(final Player player) {
 +        if (fun.bm.lophine.config.modules.function.OldFeatureConfig.villagerVoidTrade) return this.trader.getTradingPlayer() == player; // Leaves - Configurable trading with the void
          if (!checkReachable) return true; // Paper - checkReachable
          return this.trader.stillValid(player);

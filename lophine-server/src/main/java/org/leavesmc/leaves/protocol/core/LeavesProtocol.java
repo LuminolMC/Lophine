@@ -15,34 +15,24 @@
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package org.leavesmc.leaves.protocol.core;
-
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public interface LeavesCustomPayload extends CustomPacketPayload {
+public interface LeavesProtocol {
 
-    Type<? extends CustomPacketPayload> LEAVES_TYPE = new Type<>(Identifier.fromNamespaceAndPath("leaves", "custom_payload"));
+    boolean isActive();
 
-    @Override
-    default @NotNull Type<? extends CustomPacketPayload> type() {
-        return LEAVES_TYPE;
+    default int tickerInterval(String tickerID) {
+        return 1;
     }
 
-    @Target(ElementType.FIELD)
+    @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface ID {
-    }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Codec {
+    @interface Register {
+        String namespace();
     }
 }

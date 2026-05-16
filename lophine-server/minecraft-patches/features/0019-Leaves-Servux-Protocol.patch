@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/ServerTickRateManager.java b/net/minecraft/server/ServerTickRateManager.java
-index 95f6b1cbd5e33151c326689bc72292ff38a48803..e1974bbebbd10b75ea02955d9ced198d54c8a6f1 100644
+index afcab27006558f5d379df723968a612c1cadba60..ddab99a4cc70a1aa365208cb52d8d9b880cdeff6 100644
 --- a/net/minecraft/server/ServerTickRateManager.java
 +++ b/net/minecraft/server/ServerTickRateManager.java
-@@ -135,4 +135,10 @@ public class ServerTickRateManager extends TickRateManager {
+@@ -139,4 +139,10 @@ public class ServerTickRateManager extends TickRateManager {
          player.connection.send(ClientboundTickingStatePacket.from(this));
          player.connection.send(ClientboundTickingStepPacket.from(this));
      }
@@ -23,10 +23,10 @@ index 95f6b1cbd5e33151c326689bc72292ff38a48803..e1974bbebbd10b75ea02955d9ced198d
 +    // Leaves end - servux
  }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index bf340425dc2a1545b9069badcf054d4c2f6a405f..eb5722848d1c77044807510cd6a46a46c5763509 100644
+index b2ea90b0ab461d202d492411471d2412a9c5d303..049339ae33569d627d2a00ef6cab9cad02c4c014 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -2491,6 +2491,8 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2584,6 +2584,8 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
              this.server.updateEffectiveRespawnData();
          }
          // Paper end

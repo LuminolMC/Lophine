@@ -305,8 +305,8 @@ public class SchematicPlacement {
         streamChunkPos(Objects.requireNonNull(enclosingBox.toVanilla())).forEach(chunkPos -> {
                     RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
                             serverWorld,
-                            chunkPos.x,
-                            chunkPos.z,
+                            chunkPos.x(),
+                            chunkPos.z(),
                             () -> {
                                 SchematicPlacingUtils.placeToWorldWithinChunk(serverWorld, chunkPos, this, replaceBehavior, false);
                                 count.getAndIncrement();
