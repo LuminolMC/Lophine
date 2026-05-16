@@ -72,6 +72,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.leavesmc.leaves.LeavesConfig;
 import org.leavesmc.leaves.bot.agent.Actions;
 import org.leavesmc.leaves.bot.agent.Configs;
 import org.leavesmc.leaves.bot.agent.actions.AbstractBotAction;
@@ -357,7 +358,7 @@ public class ServerBot extends ServerPlayer {
     }
 
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull net.minecraft.world.phys.Vec3 location) { // Leaves - Paper 26.1: Entity#interact now takes Vec3
         if (FakeplayerConfig.canOpenInventory) {
             if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
                 BotInventoryOpenEvent event = new BotInventoryOpenEvent(this.getBukkitEntity(), player1.getBukkitEntity());
@@ -368,7 +369,7 @@ public class ServerBot extends ServerPlayer {
                 }
             }
         }
-        return super.interact(player, hand);
+        return super.interact(player, hand, location);
     }
 
     @Override
@@ -666,7 +667,7 @@ public class ServerBot extends ServerPlayer {
     }
 
     private void tickAutoFish() {
-        if (!fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
+        if (!FakePlayerCompatConfig.fakePlayerAutoFish || this.hasActiveAction("fish")) {
             this.autoFishCooldown = 0;
             return;
         }

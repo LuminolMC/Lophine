@@ -3,15 +3,12 @@ From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Wed, 18 Feb 2026 00:15:08 +0800
 Subject: [PATCH] Leaves: Fakeplayer
 
-Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
-As a part of : Leaves (https://github.com/LeavesMC/Leaves)
-Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-index 948730740e151352b4a12a90862f1e16925e52b0..0e6c9edbceef525bf102ad8f1fc0cb08e789d0e6 100644
+index 0a20c6f03625391201e5ced167707e54ed27daa1..2872b22e44cba48442c526f0a53e1fc6c5ce760f 100644
 --- a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
 +++ b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-@@ -39,6 +39,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+@@ -46,6 +46,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
              return;
          }
  
@@ -24,16 +21,18 @@ index 948730740e151352b4a12a90862f1e16925e52b0..0e6c9edbceef525bf102ad8f1fc0cb08
          this.waypoints.add(waypoint);
  
          for (ServerPlayer toCreateFor : this.trackingPlayers) {
-@@ -92,6 +98,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
-     public void addPlayer(ServerPlayer player) {
-         this.trackingPlayers.add(player);
+@@ -101,7 +107,13 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+         scheduleIfOffTarget(player, () -> {
+             this.trackingPlayers.add(player);
  
-+        // Leaves start - fakeplayer
+-            for (WaypointTransmitter transmitter : this.waypoints) {
++            // Leaves start - fakeplayer
 +        if (player instanceof org.leavesmc.leaves.bot.ServerBot) {
 +            return;
 +        }
 +        // Leaves end - fakeplayer
 +
-         for (WaypointTransmitter waypointTransmitter : this.waypoints) {
-             this.createConnection(player, waypointTransmitter);
-         }
++        for (WaypointTransmitter transmitter : this.waypoints) {
+                 this.createConnection(player, transmitter);
+             }
+ 

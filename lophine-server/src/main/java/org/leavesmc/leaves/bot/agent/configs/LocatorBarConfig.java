@@ -19,8 +19,8 @@ package org.leavesmc.leaves.bot.agent.configs;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import fun.bm.lophine.LophineLogger;
-import fun.bm.lophine.config.modules.experiment.CommandConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
+import me.earthme.luminol.config.modules.experiment.CommandConfig;
 import me.earthme.luminol.utils.FoliaServerWaypointManager;
 import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +33,7 @@ public class LocatorBarConfig extends AbstractBotConfig<Boolean, LocatorBarConfi
 
     public LocatorBarConfig() {
         super("enable_locator_bar", BoolArgumentType.bool(), LocatorBarConfig::new);
-        this.value = FakeplayerConfig.enableLocatorBar && CommandConfig.waypoint;
+        this.value = FakeplayerConfig.enableLocatorBar && CommandConfig.waypointsAndWaypointCommand;
     }
 
     @Override
@@ -78,6 +78,6 @@ public class LocatorBarConfig extends AbstractBotConfig<Boolean, LocatorBarConfi
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
-        this.setValue(nbt.getBooleanOr(getName(), FakeplayerConfig.enableLocatorBar && CommandConfig.waypoint));
+        this.setValue(nbt.getBooleanOr(getName(), FakeplayerConfig.enableLocatorBar && CommandConfig.waypointsAndWaypointCommand));
     }
 }

@@ -25,13 +25,6 @@ index 8d32d906f87a1cb866a7497ee0de3045e9adce2c..8dbf7a1f448277cc2a40dec8d9627a85
          org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handleTick(); // Leaves - protocol
  
          // tick connections
-@@ -526,4 +529,4 @@ public final class RegionizedServer {
-     public static final record WorldLevelData(ServerLevel world, long nonRedstoneGameTime, long dayTime) {
- 
-     }
--}
-\ No newline at end of file
-+}
 diff --git a/net/minecraft/commands/arguments/blocks/BlockInput.java b/net/minecraft/commands/arguments/blocks/BlockInput.java
 index f9a5058e50c7fc6ebc2fc311bbc7064bfbd89035..9b737c3fcfae1f6afeee42cd4a4d83ba56f7c3e9 100644
 --- a/net/minecraft/commands/arguments/blocks/BlockInput.java

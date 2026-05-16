@@ -1,3 +1,4 @@
+/*
 package fun.bm.lophine.carpet;
 
 import fun.bm.lophine.carpet.config.modules.CoreConfig;
@@ -136,3 +137,4 @@ public final class CarpetCompatSync {
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "hopperCountersUnlimitedSpeed", CounterCompatConfig.hopperCountersUnlimitedSpeed));
     }
 }
+*/

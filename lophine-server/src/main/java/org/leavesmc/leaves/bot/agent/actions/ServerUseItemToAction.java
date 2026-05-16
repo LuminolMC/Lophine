@@ -53,7 +53,7 @@ public class ServerUseItemToAction extends AbstractUseBotAction<ServerUseItemToA
 
         Vec3 vec3 = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
         bot.updateItemInHand(hand);
-        InteractionResult interactionResult = entity.interactAt(bot, vec3, hand);
+        InteractionResult interactionResult = entity.interact(bot, hand, vec3);
         if (FakePlayerCompatConfig.fakePlayerInteractLikeClient
                 && entity instanceof ArmorStand stand
                 && !stand.isMarker()
@@ -62,7 +62,7 @@ public class ServerUseItemToAction extends AbstractUseBotAction<ServerUseItemToA
             interactionResult = InteractionResult.PASS;
         }
         if (!interactionResult.consumesAction()) {
-            interactionResult = bot.interactOn(hitResult.getEntity(), hand);
+            interactionResult = bot.interactOn(hitResult.getEntity(), hand, vec3);
         }
 
         if (shouldSwing(interactionResult)) {
