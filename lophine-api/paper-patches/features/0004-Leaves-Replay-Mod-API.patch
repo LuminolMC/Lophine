@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 850f65d764030b09d469e33a69409204503d9ca1..78b947352aa32ae0c59101459f420bf8e3497707 100644
+index 592a3c59bf5edbc65c7c0472e2382593b7b22086..838ad878528267b57b69d2938aee0eb6326948eb 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3050,4 +3050,10 @@ public final class Bukkit {
+@@ -3059,4 +3059,10 @@ public final class Bukkit {
          return server.getBotManager();
      }
      // Leaves end - Bot API
@@ -23,10 +23,10 @@ index 850f65d764030b09d469e33a69409204503d9ca1..78b947352aa32ae0c59101459f420bf8
 +    // Leaves end - Photographer API
  }
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index cb8c4e09511f99558eb5af26c08c5cb1f936780d..b770b6f990d46f5325554f5d73c6a2a6ed361158 100644
+index 978e015e91408503b4ec84ec5b3c5193255ba7db..d054926f6082bba7d0b59e610e5d725ff5f9ffa4 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2800,4 +2800,8 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2822,4 +2822,8 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      @NotNull org.leavesmc.leaves.entity.bot.BotManager getBotManager();
      // Leaves end - Bot API

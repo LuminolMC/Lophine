@@ -6,10 +6,10 @@ Subject: [PATCH] Compatibility fix for Raid Revert and Cross Region Damage
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index fde9fad11e130cf93205d23da09ad369b35db160..44956582516ac508681d7ca3e4e04e4270859bd8 100644
+index 29919b8f3c05c8ffaf66f86e441778eeefb293b1..1e820f34636f415ef78cdfbed06c6952a3cf1c0b 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1234,6 +1234,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1234,6 +1234,30 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  
@@ -28,11 +28,12 @@ index fde9fad11e130cf93205d23da09ad369b35db160..44956582516ac508681d7ca3e4e04e42
 +        if (entity != null)
 +            entity.getBukkitEntity().taskScheduler.schedule((Entity nmsEntity) -> {
 +                try {
++                    if (nmsEntity.isRemoved()) return;
 +                    addEffect(effectInstance, nmsEntity, cause, fireEvent);
 +                } catch (Throwable ex) {
 +                    LOGGER.error(ex.getMessage(), ex);
 +                }
-+            }, null, 1L );
++            }, null, 1L);
 +    }
 +    // Lophine End - raid revert adapt Cross Region Damage trace
 +

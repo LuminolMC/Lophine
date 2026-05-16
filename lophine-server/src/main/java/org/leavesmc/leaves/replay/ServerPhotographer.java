@@ -19,6 +19,7 @@ package org.leavesmc.leaves.replay;
 
 import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.authlib.GameProfile;
+import com.mojang.logging.LogUtils;
 import fun.bm.lophine.utils.RandomProfilePool;
 import io.papermc.paper.threadedregions.RegionizedServer;
 import net.minecraft.server.MinecraftServer;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.BotStatsCounter;
 import org.leavesmc.leaves.entity.photographer.CraftPhotographer;
 import org.leavesmc.leaves.entity.photographer.Photographer;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +46,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServerPhotographer extends ServerPlayer {
+
+    private static final Logger LOGGER = LogUtils.getClassLogger();
 
     private static final List<ServerPhotographer> photographers = new CopyOnWriteArrayList<>();
 

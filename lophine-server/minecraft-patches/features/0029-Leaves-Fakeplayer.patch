@@ -544,10 +544,10 @@ index b69698f47ccb0f1ac3eeea05a02ab9d798319b44..b073a91fd67d092713c53db6f3df75c6
          final boolean xZero = movement.x == 0.0;
          final boolean yZero = movement.y == 0.0;
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 44956582516ac508681d7ca3e4e04e4270859bd8..30f287141689b65ce61fdb22214847d0af1ff44e 100644
+index 1e820f34636f415ef78cdfbed06c6952a3cf1c0b..8a8de7f4d62532709805ebde531dc71ad78fa5c9 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -3345,7 +3345,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3347,7 +3347,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      private void travelRidden(final Player controller, final Vec3 selfInput) {
          Vec3 riddenInput = this.getRiddenInput(controller, selfInput);
          this.tickRidden(controller, riddenInput);
@@ -556,7 +556,7 @@ index 44956582516ac508681d7ca3e4e04e4270859bd8..30f287141689b65ce61fdb22214847d0
              this.setSpeed(this.getRiddenSpeed(controller));
              this.travel(riddenInput);
          } else {
-@@ -4268,7 +4268,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4270,7 +4270,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          // Paper start - lag compensate eating
          // we add 1 to the expected time to avoid lag compensating when we should not
          final boolean shouldLagCompensate = this.useItem.has(DataComponents.FOOD) && this.eatStartTime != -1 && (System.nanoTime() - this.eatStartTime) > ((1L + this.totalEatTimeTicks) * 50L * (1000L * 1000L));
@@ -565,7 +565,7 @@ index 44956582516ac508681d7ca3e4e04e4270859bd8..30f287141689b65ce61fdb22214847d0
              this.useItemRemaining = 0;
              // Paper end - lag compensate eating
              this.completeUsingItem();
-@@ -4457,6 +4457,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4459,6 +4459,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          this.stopUsingItem();
      }
  

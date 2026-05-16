@@ -10,20 +10,20 @@ Licensed under: MIT
 This patch is Powered by fabric-carpet(https://github.com/gnembon/fabric-carpet)
 
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 6cdb59762b5b223a220d420ff99fa9eadc64f3e0..fe93f0d6b2b7e8503da068179f5d7667634c7ff3 100644
+index d036018ee64995ee754296014888ee70c0ea5ab3..aa782c6441cdce3eb39aefb28d40f3b1970d4e62 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -229,8 +229,30 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
-                     flag |= validator.getAsBoolean(); // Paper - note: this is not a validator, it's what adds/sucks in items
+@@ -239,8 +239,30 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                     changed |= action.getAsBoolean(); // Paper - note: this is not a validator, it's what adds/sucks in items
                  }
  
 +                // Leaves start - Wool hopper counter
 +                if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
-+                    net.minecraft.world.item.DyeColor woolColor = org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, blockEntity.getBlockPos().relative(state.getValue(HopperBlock.FACING)));
++                    net.minecraft.world.item.DyeColor woolColor = org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, entity.getBlockPos().relative(state.getValue(HopperBlock.FACING)));
 +                    if (woolColor != null) {
 +                        for (int i = 0; i < Short.MAX_VALUE; i++) {
-+                            flag |= suckInItems(level, blockEntity);
-+                            if (!flag) {
++                            changed |= suckInItems(level, entity);
++                            if (!changed) {
 +                                break;
 +                            } else {
 +                                woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos));
@@ -33,32 +33,32 @@ index 6cdb59762b5b223a220d420ff99fa9eadc64f3e0..fe93f0d6b2b7e8503da068179f5d7667
 +                }
 +                // Leaves end - Wool hopper counter
 +
-                 if (flag) {
-                     blockEntity.setCooldown(level.spigotConfig.hopperTransfer); // Spigot
+                 if (changed) {
+                     entity.setCooldown(level.spigotConfig.hopperTransfer); // Spigot
 +                    // Leaves start - Wool hopper counter
 +                    if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
-+                        blockEntity.setCooldown(0);
++                        entity.setCooldown(0);
 +                        return true;
 +                    }
 +                    // Leaves end - Wool hopper counter
                      setChanged(level, pos, state);
                      // Leaves start - Lithium Sleeping Block Entity
                      if (me.earthme.luminol.config.modules.optimizations.LeavesSleepingBlockEntityConfig.enabled
-@@ -462,6 +484,13 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -491,6 +513,13 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      // Paper end - Perf: Optimize Hoppers
  
-     private static boolean ejectItems(Level level, BlockPos pos, HopperBlockEntity blockEntity) {
+     private static boolean ejectItems(final Level level, final BlockPos blockPos, final HopperBlockEntity self) {
 +        // Leaves start - hopper counter
 +        if (org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
-+            if (woolHopperCounter(level, pos, level.getBlockState(pos), HopperBlockEntity.getContainerAt(level, pos))) {
++            if (woolHopperCounter(level, blockPos, level.getBlockState(blockPos), HopperBlockEntity.getContainerAt(level, blockPos))) {
 +                return true;
 +            }
 +        }
 +        // Leaves end - hopper counter
-         Container attachedContainer = me.earthme.luminol.config.modules.optimizations.LeavesSleepingBlockEntityConfig.enabled ? blockEntity.getInsertInventory(level) : getAttachedContainer(level, pos, blockEntity); // Leaves - Lithium Sleeping Block Entity
-         if (attachedContainer == null) {
+         Container container = me.earthme.luminol.config.modules.optimizations.LeavesSleepingBlockEntityConfig.enabled ? self.getInsertInventory(level) : getAttachedContainer(level, blockPos, self); // Leaves - Lithium Sleeping Block Entity
+         if (container == null) {
              return false;
-@@ -537,6 +566,26 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -512,6 +541,26 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          }
      }
  
@@ -82,14 +82,14 @@ index 6cdb59762b5b223a220d420ff99fa9eadc64f3e0..fe93f0d6b2b7e8503da068179f5d7667
 +    }
 +    // Leaves end - hopper counter
 +
-     private static int[] getSlots(Container container, Direction direction) {
+     private static int[] getSlots(final Container container, final Direction direction) {
          if (container instanceof WorldlyContainer worldlyContainer) {
              return worldlyContainer.getSlotsForFace(direction);
-@@ -681,6 +730,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -606,6 +655,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      }
  
-     public static boolean addItem(Container container, ItemEntity item) {
-+        if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && item.isRemoved()) return false; // Leaves - Wool hopper counter
-         boolean flag = false;
+     public static boolean addItem(final Container container, final ItemEntity entity) {
++        if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && entity.isRemoved()) return false; // Leaves - Wool hopper counter
+         boolean changed = false;
          // CraftBukkit start
          if (org.bukkit.event.inventory.InventoryPickupItemEvent.getHandlerList().getRegisteredListeners().length > 0) { // Paper - optimize hoppers

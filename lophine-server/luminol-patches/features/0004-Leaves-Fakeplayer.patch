@@ -36,3 +36,23 @@ index 0a20c6f03625391201e5ced167707e54ed27daa1..2872b22e44cba48442c526f0a53e1fc6
                  this.createConnection(player, transmitter);
              }
  
+diff --git a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
+index 8f0548908a9e43ce29c4476f2707f6898e540aec..8b7c66785a06eb4782de0b0a9b542221d6258220 100644
+--- a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
++++ b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
+@@ -11,14 +11,7 @@ public class ServerFeatureManager implements FeatureManager {
+     private final Set<String> availableFeatures = new HashSet<>();
+ 
+     private ServerFeatureManager() {
+-        if (false) { // Luminol not provide this
+-            availableFeatures.addAll(Set.of(
+-                    FAKEPLAYER,
+-                    PHOTOGRAPHER,
+-                    BYTEBUF,
+-                    UPDATE_SUPPRESSION_EVENT
+-            ));
+-        }
++        availableFeatures.add(FAKEPLAYER); // Lophine - fakeplayer support
+         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
+             availableFeatures.add(MIXIN);
+         }
