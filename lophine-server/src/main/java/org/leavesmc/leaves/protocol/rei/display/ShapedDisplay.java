@@ -21,19 +21,21 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
-import org.apache.commons.lang3.NotImplementedException;
-import org.bukkit.craftbukkit.CraftRegistry;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.rei.ingredient.EntryIngredient;
 
 import java.util.List;
 import java.util.Optional;
 
-public class ShapelessDisplay extends CraftingDisplay {
+/**
+ * see me.shedaniel.rei.plugin.common.displays.crafting.DefaultShapedDisplay#DefaultShapedDisplay(RecipeHolder)
+ */
+public class ShapedDisplay extends CraftingDisplay {
     private static final StreamCodec<RegistryFriendlyByteBuf, CraftingDisplay> CODEC = StreamCodec.composite(
             EntryIngredient.CODEC.apply(ByteBufCodecs.list()),
             CraftingDisplay::getInputEntries,
@@ -41,46 +43,61 @@ public class ShapelessDisplay extends CraftingDisplay {
             CraftingDisplay::getOutputEntries,
             ByteBufCodecs.optional(Identifier.STREAM_CODEC),
             CraftingDisplay::getOptionalLocation,
-            ShapelessDisplay::of
+            ByteBufCodecs.INT,
+            CraftingDisplay::getWidth,
+            ByteBufCodecs.INT,
+            CraftingDisplay::getHeight,
+            ShapedDisplay::of
     );
+    private static final Identifier SERIALIZER_ID = Identifier.tryBuild("minecraft", "default/crafting/shaped");
+    private final int width;
+    private final int height;
 
-    private static final Identifier SERIALIZER_ID = Identifier.tryBuild("minecraft", "default/crafting/shapeless");
-
-    public ShapelessDisplay(@NotNull List<EntryIngredient> inputs,
-                            @NotNull List<EntryIngredient> outputs,
-                            @NotNull Identifier location) {
-        super(inputs, outputs, location);
-    }
-
-    public ShapelessDisplay(@NotNull RecipeHolder<ShapelessRecipe> recipeHolder) {
-        this(
-                recipeHolder.value().placementInfo().ingredients().stream().map(EntryIngredient::ofIngredient).toList(),
-                List.of(EntryIngredient.of(recipeHolder.value().assemble(CraftingInput.EMPTY, CraftRegistry.getMinecraftRegistry()))),
+    public ShapedDisplay(@NotNull RecipeHolder<ShapedRecipe> recipeHolder) {
+        super(
+                ofIngredient(recipeHolder.value()),
+                List.of(EntryIngredient.of(recipeHolder.value().assemble(CraftingInput.EMPTY))), // Leaves - Paper 26.1: assemble no longer takes RegistryAccess
                 recipeHolder.id().identifier()
         );
+        this.width = recipeHolder.value().getWidth();
+        this.height = recipeHolder.value().getHeight();
     }
 
-    public ShapelessDisplay(@NotNull ShapelessCraftingRecipeDisplay recipeDisplay, Identifier id) {
-        this(
-                ofSlotDisplays(recipeDisplay.ingredients()),
+    public ShapedDisplay(@NotNull ShapedCraftingRecipeDisplay recipeDisplay, Identifier id) {
+        super(
+                Display.ofSlotDisplays(recipeDisplay.ingredients()),
                 List.of(ofSlotDisplay(recipeDisplay.result())),
                 id
         );
+        this.width = recipeDisplay.width();
+        this.height = recipeDisplay.height();
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static CraftingDisplay of(List<EntryIngredient> inputs, List<EntryIngredient> outputs, Optional<Identifier> location) {
-        throw new NotImplementedException();
+    private static CraftingDisplay of(List<EntryIngredient> inputs, List<EntryIngredient> outputs, Optional<Identifier> location, int width, int height) {
+        throw new UnsupportedOperationException();
+    }
+
+    private static List<EntryIngredient> ofIngredient(ShapedRecipe recipe) {
+        return recipe.getIngredients().stream().map(ingredient -> {
+            if (ingredient.isEmpty()) {
+                return EntryIngredient.empty();
+            }
+            ItemStack[] itemStacks = ingredient.get().items()
+                    .map(itemHolder -> new ItemStack(itemHolder, 1))
+                    .toArray(ItemStack[]::new);
+            return EntryIngredient.of(itemStacks);
+        }).toList();
     }
 
     @Override
     public int getWidth() {
-        return getInputEntries().size() > 4 ? 3 : 2;
+        return width;
     }
 
     @Override
     public int getHeight() {
-        return getInputEntries().size() > 4 ? 3 : 2;
+        return height;
     }
 
     @Override

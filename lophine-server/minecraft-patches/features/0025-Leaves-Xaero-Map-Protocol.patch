@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: violetc <58360096+s-yh-china@users.noreply.github.com>
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Fri, 7 Feb 2025 14:23:43 +0800
 Subject: [PATCH] Leaves: Xaero Map Protocol
 
@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 3a5319739f0687fc6f09b2ac8ee31716593fe0de..36cd1a0307ff1a734eb5f4f3cc013781692e7ad8 100644
+index 168702a5ae51a2bc42c5761e13cb14008a8162c4..ebd2f2887780d9c6c3c44983bac23eab732cf43f 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1126,6 +1126,7 @@ public abstract class PlayerList {
+@@ -1105,6 +1105,7 @@ public abstract class PlayerList {
          //player.connection.send(new ClientboundSetChunkCacheRadiusPacket(io.papermc.paper.FeatureHooks.getViewDistance(level))); // Paper - rewrite chunk system
          //player.connection.send(new ClientboundSetSimulationDistancePacket(io.papermc.paper.FeatureHooks.getSimulationDistance(level))); // Paper - rewrite chunk system
          // Paper end - view distances

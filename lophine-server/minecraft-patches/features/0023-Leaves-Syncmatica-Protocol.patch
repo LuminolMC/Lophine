@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: violetc <58360096+s-yh-china@users.noreply.github.com>
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Mon, 3 Feb 2025 16:51:01 +0800
 Subject: [PATCH] Leaves: Syncmatica Protocol
 
@@ -9,10 +9,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index d35ef52a6adb9a560138d1a2af32969c3a73f42b..df66e24c61af9d57d619c91849e28f1bec64a036 100644
+index 8e5b79db12882432de575f2a76aa36eac6fc8f51..977a4ac391b8cf8b59c5c77becf9a5951d513526 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -338,9 +338,12 @@ public class ServerGamePacketListenerImpl
+@@ -346,9 +346,12 @@ public class ServerGamePacketListenerImpl
          this.signedMessageDecoder = SignedMessageChain.Decoder.unsigned(player.getUUID(), server::enforceSecureProfile);
          this.chatMessageChain = new FutureChain(server.chatExecutor); // CraftBukkit - async chat
          this.tickEndEvent = new io.papermc.paper.event.packet.ClientTickEndEvent(player.getBukkitEntity()); // Paper - add client tick end event

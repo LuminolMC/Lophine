@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.Fireworks;
-import net.minecraft.world.item.component.ProvidesTrimMaterial;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.*;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
@@ -43,6 +42,8 @@ import org.leavesmc.leaves.protocol.rei.ingredient.EntryIngredient;
 
 import java.util.*;
 import java.util.stream.Stream;
+
+// Leaves - Paper 26.1: CustomRecipe import no longer needed — tipped_arrow is now ImbueRecipe, map_cloning is TransmuteRecipe
 
 /**
  * A display to be used alongside Roughly Enough Items.
@@ -101,7 +102,7 @@ public abstract class Display {
      * see me.shedaniel.rei.plugin.client.categories.crafting.filler.TippedArrowRecipeFiller#apply
      */
     @NotNull
-    public static Collection<Display> ofTippedArrowRecipe(@NotNull RecipeHolder<TippedArrowRecipe> recipeHolder) {
+    public static Collection<Display> ofTippedArrowRecipe(@NotNull RecipeHolder<?> recipeHolder) { // Leaves - Paper 26.1: tipped_arrow is now ImbueRecipe, not CustomRecipe
         EntryIngredient arrowIngredient = EntryIngredient.of(Items.ARROW);
         Set<Identifier> registeredPotions = new HashSet<>();
         List<Display> displays = new ArrayList<>();
@@ -152,7 +153,7 @@ public abstract class Display {
      * see me.shedaniel.rei.plugin.client.categories.crafting.filler.MapCloningRecipeFiller#apply
      */
     @NotNull
-    public static Collection<Display> ofMapCloningRecipe(@NotNull RecipeHolder<MapCloningRecipe> recipeHolder) {
+    public static Collection<Display> ofMapCloningRecipe(@NotNull RecipeHolder<?> recipeHolder) { // Leaves - Paper 26.1: map_cloning is now TransmuteRecipe, not CustomRecipe
         return Collections.singleton(
                 new ShapelessDisplay(
                         List.of(EntryIngredient.of(Items.FILLED_MAP), EntryIngredient.of(Items.MAP)),
@@ -205,15 +206,16 @@ public abstract class Display {
     }
 
     private static Optional<Holder<TrimMaterial>> getMaterialFromIngredient(HolderLookup.Provider provider, Holder<Item> item) {
-        ProvidesTrimMaterial providesTrimMaterial = new ItemStack(item).get(DataComponents.PROVIDES_TRIM_MATERIAL);
-        return providesTrimMaterial != null ? providesTrimMaterial.unwrap(provider) : Optional.empty();
+        Holder<TrimMaterial> providesTrimMaterial = new ItemStack(item).get(DataComponents.PROVIDES_TRIM_MATERIAL); // Leaves - Paper 26.1: PROVIDES_TRIM_MATERIAL now stores Holder<TrimMaterial> directly
+        return providesTrimMaterial != null ? Optional.of(providesTrimMaterial) : Optional.empty(); // Leaves - Paper 26.1: direct holder, no unwrap needed
     }
 
     public static EntryIngredient ofSlotDisplay(SlotDisplay slot) {
         return switch (slot) {
             case SlotDisplay.Empty ignored -> EntryIngredient.empty();
             case SlotDisplay.ItemSlotDisplay s -> EntryIngredient.of(s.item().value());
-            case SlotDisplay.ItemStackSlotDisplay s -> EntryIngredient.of(s.stack());
+            case SlotDisplay.ItemStackSlotDisplay s ->
+                    EntryIngredient.of(s.stack().create()); // Leaves - Paper 26.1: ItemStackSlotDisplay.stack() now returns ItemStackTemplate
             case SlotDisplay.TagSlotDisplay s -> ofItemTag(s.tag());
             case SlotDisplay.Composite s -> {
                 ArrayList<ItemStack> list = new ArrayList<>();
