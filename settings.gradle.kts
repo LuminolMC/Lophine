@@ -20,5 +20,38 @@ plugins {
 
 rootProject.name = "lophine"
 
-include("lophine-api")
-include("lophine-server")
+for (name in listOf("lophine-api", "lophine-server")) {
+    include(name)
+    file(name).mkdirs()
+}
+
+optionalInclude("test-plugin")
+optionalInclude("lophine-generator")
+
+fun optionalInclude(name: String, op: (ProjectDescriptor.() -> Unit)? = null) {
+    val settingsFile = file("$name.settings.gradle.kts")
+    if (settingsFile.exists()) {
+        apply(from = settingsFile)
+        findProject(":$name")?.let { op?.invoke(it) }
+    } else {
+        settingsFile.writeText(
+            """
+            // Uncomment to enable the '$name' project
+            // include(":$name")
+
+            """.trimIndent()
+        )
+    }
+}
+
+gradle.lifecycle.beforeProject {
+    val mcVersion = providers.gradleProperty("mcVersion").get().trim()
+    val lophineVersionChannel = providers.gradleProperty("channel").get().trim()
+    val lophineBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
+    val versionString = if (lophineBuildNumber == null) {
+        "$mcVersion.local-SNAPSHOT"
+    } else {
+        "$mcVersion.build.$lophineBuildNumber-${lophineVersionChannel.lowercase()}"
+    }
+    version = versionString
+}
