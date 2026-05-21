@@ -1,6 +1,7 @@
 package fun.bm.lophine.carpet.config.modules;
 
 //import fun.bm.lophine.carpet.CarpetCompatSync;
+
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
