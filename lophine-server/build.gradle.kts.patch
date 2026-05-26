@@ -70,12 +70,3 @@
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -393,7 +_,7 @@
- }
- 
- fill {
--    project("luminol")
-+    project("lophine")
-     versionFamily(paperweight.minecraftVersion.map { it.split(".", "-").takeWhile { part -> part.toIntOrNull() != null }.take(2).joinToString(".") })
-     version(paperweight.minecraftVersion)
- 
