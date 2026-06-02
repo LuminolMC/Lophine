@@ -1,0 +1,69 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Tue, 2 Jun 2026 20:32:47 +0800
+Subject: [PATCH] Instant Block Updater
+
+
+diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
+index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..dad62b80578f27cc39985ee6ded705bf3cc5d117 100644
+--- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
++++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
+@@ -44,6 +44,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
+ import net.minecraft.world.level.material.Fluid;
+ import net.minecraft.world.level.pathfinder.PathTypeCache;
+ import net.minecraft.world.level.redstone.CollectingNeighborUpdater;
++import net.minecraft.world.level.redstone.InstantNeighborUpdater;
++import net.minecraft.world.level.redstone.NeighborUpdater;
+ import net.minecraft.world.level.saveddata.WanderingTraderData;
+ import net.minecraft.world.ticks.LevelTicks;
+ import org.bukkit.craftbukkit.block.CraftBlockState;
+@@ -506,7 +508,7 @@ public final class RegionizedWorldData {
+     public long lastMidTickExecuteFailure;
+     // From Level
+     public boolean populating;
+-    public final CollectingNeighborUpdater neighborUpdater;
++    public final NeighborUpdater neighborUpdater;
+     public boolean captureBlockStates = false;
+     public boolean captureTreeGeneration = false;
+     public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
+@@ -567,7 +569,9 @@ public final class RegionizedWorldData {
+         this.world = world;
+         this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
+         this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);
+-        this.neighborUpdater = new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
++        this.neighborUpdater = fun.bm.lophine.config.modules.experiment.RedStoneConfig.instantBlockUpdater
++            ? new InstantNeighborUpdater(world)
++            : new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
+         this.nearbyPlayers = new NearbyPlayers(world);
+         this.wireHandler = new alternate.current.wire.WireHandler(world);
+         this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
+@@ -896,4 +900,4 @@ public final class RegionizedWorldData {
+     public int getChunkCount() {
+         return this.chunks.size();
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
+index f44f772628f5705c5dee9cb92295362ba09c20ce..ee10aceeddb59241e4b1d0bea021001787ea2f88 100644
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -999,11 +999,13 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+         // Paper - rewrite chunk system
+         profiler.pop();
+         profiler.push("debugSynchronizers");
+-        if (this.debugSynchronizers.hasAnySubscriberFor(DebugSubscriptions.NEIGHBOR_UPDATES)) {
+-            regionizedWorldData.neighborUpdater // Folia - region threading
+-                .setDebugListener(blockPos -> this.debugSynchronizers.broadcastEventToTracking(blockPos, DebugSubscriptions.NEIGHBOR_UPDATES, blockPos));
+-        } else {
+-            regionizedWorldData.neighborUpdater.setDebugListener(null); // Folia - region threading
++        if (regionizedWorldData.neighborUpdater instanceof net.minecraft.world.level.redstone.CollectingNeighborUpdater neighborUpdater) {
++            if (this.debugSynchronizers.hasAnySubscriberFor(DebugSubscriptions.NEIGHBOR_UPDATES)) {
++                neighborUpdater // Folia - region threading
++                    .setDebugListener(blockPos -> this.debugSynchronizers.broadcastEventToTracking(blockPos, DebugSubscriptions.NEIGHBOR_UPDATES, blockPos));
++            } else {
++                neighborUpdater.setDebugListener(null); // Folia - region threading
++            }
+         }
+ 
+         this.debugSynchronizers.tick(this.server.debugSubscribers());

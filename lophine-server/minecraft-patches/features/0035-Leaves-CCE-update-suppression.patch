@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Tue, 2 Jun 2026 20:06:33 +0800
+Subject: [PATCH] Leaves: CCE update suppression
+
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
+index 80d10b42106749254eb5f757986838acc1c064d2..ffa76dc1338c6c892a42b2148f9f01c933660b98 100644
+--- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
++++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
+@@ -182,7 +182,9 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+     @Override
+     protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos, final Direction direction) {
+         try {
+-            return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
++            return fun.bm.lophine.config.modules.experiment.RedStoneConfig.cce
++                ? AbstractContainerMenu.getRedstoneSignalFromContainer((net.minecraft.world.Container)level.getBlockEntity(pos))
++                : AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
+         } catch (ClassCastException ex) {
+             if (fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig.enabled) {
+                 throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, null, this, null, ex);

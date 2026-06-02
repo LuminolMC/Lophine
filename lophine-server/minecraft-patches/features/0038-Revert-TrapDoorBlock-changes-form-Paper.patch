@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Tue, 2 Jun 2026 20:37:27 +0800
+Subject: [PATCH] Revert TrapDoorBlock changes form Paper
+
+
+diff --git a/net/minecraft/world/level/block/TrapDoorBlock.java b/net/minecraft/world/level/block/TrapDoorBlock.java
+index cfc8b668980e0cba74b3f0d42c4902eb6aa8b01e..da4a39e3e8bf9672614a04fae9834a54555cc9f1 100644
+--- a/net/minecraft/world/level/block/TrapDoorBlock.java
++++ b/net/minecraft/world/level/block/TrapDoorBlock.java
+@@ -133,31 +133,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
+         if (!level.isClientSide()) {
+             boolean signal = level.hasNeighborSignal(pos);
+             if (signal != state.getValue(POWERED)) {
+-                // Paper start - Call BlockRedstoneEvent
+-                if (!org.bukkit.craftbukkit.event.CraftEventFactory.callBinaryRedstoneChange(level, pos, signal)) {
+-                    return;
+-                }
+-                // Paper end - Call BlockRedstoneEvent
+-                // Paper start - break redstone on trapdoors early
+-                boolean open = state.getValue(TrapDoorBlock.OPEN) != signal;
+-                // note: this must run before any state for this block/its neighbours are written to the world
+-                // we allow the redstone event to fire so that plugins can block
+-                if (signal && open) { // if we are now powered and it caused the trap door to open
+-                    // in this case, first check for the redstone on top first
+-                    BlockPos abovePos = pos.above();
+-                    BlockState above = level.getBlockState(abovePos);
+-                    if (above.getBlock() instanceof RedStoneWireBlock) {
+-                        level.setBlock(abovePos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
+-                        Block.popResource(level, abovePos, new ItemStack(net.minecraft.world.item.Items.REDSTONE));
+-                        // now check that this didn't change our state
+-                        if (level.getBlockState(pos) != state) {
+-                            // our state was changed, so we cannot propagate this update
+-                            return;
+-                        }
+-                    }
+-                }
+-                if (open) {
+-                    // Paper end - break redstone on trapdoors early
++                if (state.getValue(OPEN) != signal) {
+                     state = state.setValue(OPEN, signal);
+                     this.playSound(null, level, pos, signal);
+                 }
