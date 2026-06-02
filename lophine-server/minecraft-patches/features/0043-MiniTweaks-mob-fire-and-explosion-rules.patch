@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Wed, 3 Jun 2026 02:20:00 +0800
+Subject: [PATCH] MiniTweaks mob fire and explosion rules
+
+
+diff --git a/net/minecraft/world/entity/monster/Creeper.java b/net/minecraft/world/entity/monster/Creeper.java
+--- a/net/minecraft/world/entity/monster/Creeper.java
++++ b/net/minecraft/world/entity/monster/Creeper.java
+@@ -249,7 +249,8 @@ public class Creeper extends Monster {
+             if (!event.isCancelled()) {
+             // CraftBukkit end
+             this.dead = true;
+-            level.explode(this, this.getX(), this.getY(), this.getZ(), event.getRadius(), event.getFire(), Level.ExplosionInteraction.MOB); // CraftBukkit // Paper - fix DamageSource API (revert to vanilla, no, just no, don't change this)
++            Level.ExplosionInteraction explosionInteraction = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.noCreeperBlockBreaking ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.MOB; // Lophine - MiniTweaks noCreeperBlockBreaking
++            level.explode(this, this.getX(), this.getY(), this.getZ(), event.getRadius(), event.getFire(), explosionInteraction); // CraftBukkit // Paper - fix DamageSource API (revert to vanilla, no, just no, don't change this)
+             this.spawnLingeringCloud();
+             this.triggerOnDeathMobEffects(level, Entity.RemovalReason.KILLED);
+             this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.EXPLODE); // CraftBukkit - add Bukkit remove cause
+diff --git a/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java b/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java
+--- a/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java
++++ b/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java
+@@ -37,7 +37,9 @@ public class LargeFireball extends Fireball {
+             // CraftBukkit start - fire ExplosionPrimeEvent
+             org.bukkit.event.entity.ExplosionPrimeEvent event = new org.bukkit.event.entity.ExplosionPrimeEvent((org.bukkit.entity.Explosive) this.getBukkitEntity());
+             if (event.callEvent()) {
+-                this.level().explode(this, this.getX(), this.getY(), this.getZ(), event.getRadius(), event.getFire(), Level.ExplosionInteraction.MOB);
++                Level.ExplosionInteraction explosionInteraction = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.noGhastBlockBreaking ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.MOB; // Lophine - MiniTweaks noGhastBlockBreaking
++                boolean createFire = event.getFire() && !fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.disableGhastFire; // Lophine - MiniTweaks disableGhastFire
++                this.level().explode(this, this.getX(), this.getY(), this.getZ(), event.getRadius(), createFire, explosionInteraction);
+             }
+             // CraftBukkit end - fire ExplosionPrimeEvent
+             this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause
+diff --git a/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java b/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java
+--- a/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java
++++ b/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java
+@@ -63,7 +63,7 @@ public class SmallFireball extends Fireball {
+         super.onHitBlock(hitResult);
+         if (this.level() instanceof ServerLevel serverLevel) {
+             Entity owner = this.getOwner();
+-            if (this.isIncendiary) { // CraftBukkit
++            if (this.isIncendiary && (!(owner instanceof Mob) || !fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.disableBlazeFire)) { // CraftBukkit // Lophine - MiniTweaks disableBlazeFire
+                 BlockPos pos = hitResult.getBlockPos().relative(hitResult.getDirection());
+                 if (this.level().isEmptyBlock(pos) && !org.bukkit.craftbukkit.event.CraftEventFactory.callBlockIgniteEvent(this.level(), pos, this).isCancelled()) { // CraftBukkit
+                     this.level().setBlockAndUpdate(pos, BaseFireBlock.getState(this.level(), pos));
