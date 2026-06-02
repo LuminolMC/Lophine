@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Bacteriawa <A3167717663@hotmail.com>
-Date: Tue, 2 Jun 2026 20:50:57 +0800
-Subject: [PATCH] Leaves: Do not reset placed block on exception & Do not 
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Tue, 18 Nov 2025 23:26:27 +0800
+Subject: [PATCH] Leaves: Do not reset placed block on exception & Do not
  prevent block entity and entity crash at LevelChunk
 
 Co-authored by: MC_XiaoHei <xiaohei.xor7@outlook.com>
