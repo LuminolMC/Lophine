@@ -10,11 +10,11 @@ on:
   workflow_dispatch:
     inputs:
       force-release:
-        description: "Force disable release if you enter 2, force release if you enter 1, default release if not released else skip release"
+        description: "Force disable release if you enter false, force release if you enter true, default release if not released else skip release"
         required: false
         default: ""
       force-push:
-        description: "Force disable push to repo if you enter 2, force push to repo if you enter 1, default push if not released else skip push repo"
+        description: "Force disable push to repo if you enter false, force push to repo if you enter true, default push if not released else skip push repo"
         required: false
         default: ""
       comments:
@@ -99,7 +99,7 @@ jobs:
           fi
 
       - name: Publish To Repo
-        if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_push_repo == 'true' && !( inputs.force-push == '2' )) || inputs.force-push == '1'
+        if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_push_repo == 'true' && !( inputs.force-push == 'false' )) || inputs.force-push == 'true'
         continue-on-error: true
         run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
         env:
@@ -107,7 +107,7 @@ jobs:
           PRIVATE_MAVEN_REPO_USERNAME: ${{ secrets.PRIVATE_MAVEN_REPO_USERNAME }}
 
       - name: Create Release - Pre Process
-        if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == '2')) || inputs.force-release == '1'
+        if: ( github.event_name != 'pull_request' && !( env.unexpect == 'true' ) && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == 'false')) || inputs.force-release == 'true'
         run: |
           if [ "${{ inputs.comments }}" == "" ]; then
             echo "No comments provided"
