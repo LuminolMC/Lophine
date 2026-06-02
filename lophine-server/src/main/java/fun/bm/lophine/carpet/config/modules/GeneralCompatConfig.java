@@ -113,6 +113,22 @@ public class GeneralCompatConfig implements IConfigModule {
             Let explosions damage entities without breaking blocks.""")
     public static boolean explosionNoBlockDamage = false;
 
+    @ConfigInfo(name = "noCreeperBlockBreaking", comments = """
+            Disables creeper explosion block breaking.""")
+    public static boolean noCreeperBlockBreaking = false;
+
+    @ConfigInfo(name = "noGhastBlockBreaking", comments = """
+            Disables ghast fireball explosion block breaking.""")
+    public static boolean noGhastBlockBreaking = false;
+
+    @ConfigInfo(name = "disableBlazeFire", comments = """
+            Disables fire made from blaze fireballs.""")
+    public static boolean disableBlazeFire = false;
+
+    @ConfigInfo(name = "disableGhastFire", comments = """
+            Disables fire made from ghast fireballs.""")
+    public static boolean disableGhastFire = false;
+
     @ConfigInfo(name = "optimizedTNTHighPriority", comments = """
             Compatibility flag for the already optimized server explosion path carried by the current runtime.""")
     public static boolean optimizedTNTHighPriority = false;
