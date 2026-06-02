@@ -1,0 +1,1145 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Sun, 22 Mar 2026 01:39:15 +0800
+Subject: [PATCH] Carpet features
+
+
+diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
+index 96423a1a429f4fb1c975ad10726fe0e1ff70a6ad..fbeff565c204372846b63fac61f9e0e310522a67 100644
+--- a/io/papermc/paper/threadedregions/RegionizedServer.java
++++ b/io/papermc/paper/threadedregions/RegionizedServer.java
+@@ -337,6 +337,7 @@ public final class RegionizedServer {
+         }
+         this.randomWalk();
+          */
++        final long tickStartNanos = System.nanoTime();
+         ++this.tickCount;
+         // Luminol start - Add a config to enable tick command
+         if (fun.bm.lophine.config.modules.experiment.CommandConfig.tick) {
+@@ -378,6 +379,8 @@ public final class RegionizedServer {
+         }
+         // Luminol end - Add a config to enable tick command
+ 
++        fun.bm.lophine.protocol.tiscm.TISCMProtocol.broadcastMsptSample(this.tickCount, System.nanoTime() - tickStartNanos);
++
+         // tick connections
+         this.tickConnections();
+ 
+diff --git a/net/minecraft/commands/arguments/blocks/BlockInput.java b/net/minecraft/commands/arguments/blocks/BlockInput.java
+index a4b38651340aff56bb3e3ffd85dea0da538a7532..ed0800548e008142ec94875b0de4c4a8ed3e9d26 100644
+--- a/net/minecraft/commands/arguments/blocks/BlockInput.java
++++ b/net/minecraft/commands/arguments/blocks/BlockInput.java
+@@ -65,7 +65,9 @@ public class BlockInput implements Predicate<BlockInWorld> {
+     }
+ 
+     public boolean place(final ServerLevel level, final BlockPos pos, @Block.UpdateFlags final int update) {
+-        BlockState state = (update & Block.UPDATE_KNOWN_SHAPE) != 0 ? this.state : Block.updateFromNeighbourShapes(this.state, level, pos);
++        BlockState state = (update & Block.UPDATE_KNOWN_SHAPE) != 0 || fun.bm.lophine.carpet.InteractionUpdateCompatHelper.shouldSkipUpdates()
++            ? this.state
++            : Block.updateFromNeighbourShapes(this.state, level, pos);
+         if (state.isAir()) {
+             state = this.state;
+         }
+diff --git a/net/minecraft/core/Direction.java b/net/minecraft/core/Direction.java
+index 240fb1346b721e4aaf8517b01fa205760cee4bbd..327d6c7e0f18a88f8c9b9cfc9a972266db03842d 100644
+--- a/net/minecraft/core/Direction.java
++++ b/net/minecraft/core/Direction.java
+@@ -136,7 +136,7 @@ public enum Direction implements StringRepresentable, ca.spottedleaf.moonrise.pa
+ 
+     public static Direction[] orderedByNearest(final Entity entity) {
+         float pitch = entity.getViewXRot(1.0F) * Mth.DEG_TO_RAD;
+-        float yaw = -entity.getViewYRot(1.0F) * Mth.DEG_TO_RAD;
++        float yaw = -(fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.placementRotationFix ? entity.getYRot(1.0F) : entity.getViewYRot(1.0F)) * Mth.DEG_TO_RAD;
+         float pitchSin = Mth.sin(pitch);
+         float pitchCos = Mth.cos(pitch);
+         float yawSin = Mth.sin(yaw);
+diff --git a/net/minecraft/network/chat/SignedMessageValidator.java b/net/minecraft/network/chat/SignedMessageValidator.java
+index 5cb693319169dbd95d87ffdc450bf60bab4021aa..4095c0a6bf24a734945cbf3011271e1a9d0c39f7 100644
+--- a/net/minecraft/network/chat/SignedMessageValidator.java
++++ b/net/minecraft/network/chat/SignedMessageValidator.java
+@@ -31,7 +31,9 @@ public interface SignedMessageValidator {
+         private boolean validateChain(final PlayerChatMessage message) {
+             if (message.equals(this.lastMessage)) {
+                 return true;
+-            } else if (this.lastMessage != null && !message.link().isDescendantOf(this.lastMessage.link())) {
++            } else if (this.lastMessage != null
++                && !fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.yeetOutOfOrderChatKick
++                && !message.link().isDescendantOf(this.lastMessage.link())) {
+                 LOGGER.error(
+                     "Received out-of-order chat message from {}: expected index > {} for session {}, but was {} for session {}",
+                     message.sender(),
+diff --git a/net/minecraft/server/commands/TickCommand.java b/net/minecraft/server/commands/TickCommand.java
+index c3dcfb633877ef230ab48a455ad4f5a1d601ba48..445d55fc0bfe6c8998b983f131c263ad16b71266 100644
+--- a/net/minecraft/server/commands/TickCommand.java
++++ b/net/minecraft/server/commands/TickCommand.java
+@@ -20,7 +20,7 @@ public class TickCommand {
+     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+         dispatcher.register(
+             Commands.literal("tick")
+-                .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
++                .requires(Commands.hasPermission(tickCommandPermissionCheck()))
+                 .then(Commands.literal("query").executes(c -> tickQuery(c.getSource())))
+                 .then(
+                     Commands.literal("rate")
+@@ -106,8 +106,12 @@ public class TickCommand {
+         return 1;
+     }
+ 
+-    private static int setFreeze(final CommandSourceStack source, final boolean freeze) {
++    private static int setFreeze(final CommandSourceStack source, boolean freeze) {
+         ServerTickRateManager manager = source.getServer().tickRateManager();
++        if (freeze && fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.tickFreezeCommandToggleable && manager.isFrozen()) {
++            freeze = false;
++        }
++
+         if (freeze) {
+             if (manager.isSprinting()) {
+                 manager.stopSprinting();
+@@ -163,4 +167,8 @@ public class TickCommand {
+             return 0;
+         }
+     }
++
++    private static net.minecraft.server.permissions.PermissionCheck tickCommandPermissionCheck() {
++        return new net.minecraft.server.permissions.PermissionCheck.Require(new net.minecraft.server.permissions.Permission.HasCommandLevel(net.minecraft.server.permissions.PermissionLevel.byId(fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.normalizedTickCommandPermission())));
++    }
+ }
+diff --git a/net/minecraft/server/dedicated/DedicatedPlayerList.java b/net/minecraft/server/dedicated/DedicatedPlayerList.java
+index 1a2b57a100c997b39f8f25ad3da121e04700d5d2..be345feecfa5b4e27a7b8a88ab5a5e5b18f23cf0 100644
+--- a/net/minecraft/server/dedicated/DedicatedPlayerList.java
++++ b/net/minecraft/server/dedicated/DedicatedPlayerList.java
+@@ -14,7 +14,7 @@ public class DedicatedPlayerList extends PlayerList {
+ 
+     public DedicatedPlayerList(final DedicatedServer server, final LayeredRegistryAccess<RegistryLayer> registries, final PlayerDataStorage playerDataStorage) {
+         super(server, registries, playerDataStorage, server.notificationManager());
+-        this.setViewDistance(server.viewDistance());
++        this.setViewDistance(Math.max(2, fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.viewDistance));
+         this.setSimulationDistance(server.simulationDistance());
+         // Paper start - fix converting txt to json file; moved from constructor
+     }
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 91ec7f6b751159f2935165268166f44d27579426..6e529edc0be2a090f1068384e59817f6a05ba1f9 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -259,6 +259,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+     private int requestedViewDistance = 2;
+     public String language = null; // Paper - default to null
+     public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
++    private @Nullable ClientInformation lastKnownClientInformation;
+     private @Nullable Vec3 startingToFallPosition;
+     private @Nullable Vec3 enteredNetherPosition;
+     private @Nullable Vec3 enteredLavaOnVehiclePosition;
+@@ -2828,6 +2829,9 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         this.setShoulderEntityRight(oldPlayer.getShoulderEntityRight());
+         this.setLastDeathLocation(oldPlayer.getLastDeathLocation());
+         this.waypointIcon().copyFrom(oldPlayer.waypointIcon());
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.clientSettingsLostOnRespawnFix && oldPlayer.lastKnownClientInformation != null) {
++            this.updateOptions(oldPlayer.lastKnownClientInformation);
++        }
+     }
+ 
+     private void transferInventoryXpAndScore(final Player oldPlayer) {
+@@ -3111,6 +3115,9 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         this.particleStatus = information.particleStatus();
+         this.getEntityData().set(DATA_PLAYER_MODE_CUSTOMISATION, (byte)information.modelCustomisation());
+         this.getEntityData().set(DATA_PLAYER_MAIN_HAND, information.mainHand());
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.clientSettingsLostOnRespawnFix) {
++            this.lastKnownClientInformation = information;
++        }
+     }
+ 
+     public ClientInformation clientInformation() {
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 57aff87cc7be0cb7136689412490cd399eff15eb..5a902f36f9157694be4ee65b7687c43f215ae041 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2099,7 +2099,13 @@ public class ServerGamePacketListenerImpl
+                     this.player.gameMode.capturedBlockEntity = false;
+                     this.player.gameMode.captureSentBlockEntities = true;
+                     // Paper end - Send block entities after destroy prediction
+-                    this.player.gameMode.handleBlockBreakAction(pos, action, packet.getDirection(), this.player.level().getMaxY(), packet.getSequence());
++                    if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.interactionUpdates) {
++                        this.player.gameMode.handleBlockBreakAction(pos, action, packet.getDirection(), this.player.level().getMaxY(), packet.getSequence());
++                    } else {
++                        fun.bm.lophine.carpet.InteractionUpdateCompatHelper.runWithSuppressedUpdates(
++                            () -> this.player.gameMode.handleBlockBreakAction(pos, action, packet.getDirection(), this.player.level().getMaxY(), packet.getSequence())
++                        );
++                    }
+                     this.ackBlockChangesUpTo(packet.getSequence());
+                     // Paper start - Send block entities after destroy prediction
+                     this.player.gameMode.captureSentBlockEntities = false;
+@@ -2202,7 +2208,9 @@ public class ServerGamePacketListenerImpl
+                                  if (!me.earthme.luminol.config.modules.fixes.ItemMultitaskConfig.enabled) { // Luminol - Add item multitask config
+                                 this.player.stopUsingItem(); // CraftBukkit - SPIGOT-4706
+                                 } // Luminol - Add item multitask config
+-                                InteractionResult interactionResult = this.player.gameMode.useItemOn(this.player, level, itemStack, hand, blockHit);
++                                InteractionResult interactionResult = this.runInteractionWithConfiguredUpdates(
++                                    () -> this.player.gameMode.useItemOn(this.player, level, itemStack, hand, blockHit)
++                                );
+                                 if (interactionResult.consumesAction()) {
+                                     CriteriaTriggers.ANY_BLOCK_USE.trigger(this.player, blockHit.getBlockPos(), itemStack);
+                                 }
+@@ -2307,7 +2315,8 @@ public class ServerGamePacketListenerImpl
+                 }
+                 // CraftBukkit end
+ 
+-                if (this.player.gameMode.useItem(this.player, level, itemStack, hand) instanceof InteractionResult.Success success
++                ItemStack itemStackToUse = itemStack;
++                if (this.runInteractionWithConfiguredUpdates(() -> this.player.gameMode.useItem(this.player, level, itemStackToUse, hand)) instanceof InteractionResult.Success success
+                     && success.swingSource() == InteractionResult.SwingSource.SERVER) {
+                     this.player.swing(hand, true);
+                 }
+@@ -2315,6 +2324,14 @@ public class ServerGamePacketListenerImpl
+         }
+     }
+ 
++    private <T> T runInteractionWithConfiguredUpdates(final java.util.function.Supplier<T> action) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.interactionUpdates) {
++            return action.get();
++        }
++
++        return fun.bm.lophine.carpet.InteractionUpdateCompatHelper.supplyWithSuppressedUpdates(action);
++    }
++
+     @Override
+     public void handleTeleportToEntityPacket(final ServerboundTeleportToEntityPacket packet) {
+         PacketUtils.ensureRunningOnSameThread(packet, this, this.player.level());
+@@ -2695,6 +2712,8 @@ public class ServerGamePacketListenerImpl
+             if (true) throw new UnsupportedOperationException(); // Folia - region threading
+             final String conversationInput = rawMessage;
+             this.server.processQueue.add(() -> ServerGamePacketListenerImpl.this.getCraftPlayer().acceptConversationInput(conversationInput));
++        } else if (fun.bm.lophine.carpet.CarpetCalculatorCompatHelper.handleChat(this.player, rawMessage)) {
++            return;
+         } else if (this.player.getChatVisibility() == ChatVisiblity.SYSTEM) { // Re-add "Command Only" flag check
+             this.send(new ClientboundSystemChatPacket(Component.translatable("chat.cannotSend").withStyle(ChatFormatting.RED), false));
+         } else {
+@@ -2707,6 +2726,9 @@ public class ServerGamePacketListenerImpl
+ 
+     // Spigot start - spam exclusions
+     private void detectRateSpam(String message) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.antiSpamDisabled) {
++            return;
++        }
+         if (me.earthme.luminol.config.modules.misc.PaperPacketLimiterConfig.forceDisable) return; // Leaves - disable
+         // CraftBukkit start - replaced with thread safe throttle
+         if (org.spigotmc.SpigotConfig.enableSpamExclusions) {
+@@ -3642,8 +3664,10 @@ public class ServerGamePacketListenerImpl
+                 if (org.leavesmc.leaves.util.ItemOverstackUtils.hasOverstackingItem()) this.player.containerMenu.sendSingleSlot(packet.slotNum(), itemStack); // Leaves - item over-stack util - force send carried item
+                 if (io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.updateEquipmentOnPlayerActions) this.player.detectEquipmentUpdates(); // Paper - Force update attributes.
+             } else if (drop && validData) {
+-                if (this.dropSpamThrottler.isUnderThreshold()) {
+-                    this.dropSpamThrottler.increment();
++                if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.antiSpamDisabled || this.dropSpamThrottler.isUnderThreshold()) {
++                    if (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.antiSpamDisabled) {
++                        this.dropSpamThrottler.increment();
++                    }
+                     this.player.drop(itemStack, true);
+                 } else {
+                     LOGGER.warn("Player {} was dropping items too fast in creative mode, ignoring.", this.player.getPlainTextName());
+diff --git a/net/minecraft/world/entity/ExperienceOrb.java b/net/minecraft/world/entity/ExperienceOrb.java
+index 2312803297321f66c9057bc54ce56dd17ecb6f1f..5327a5e33147cde1b0b26083c14433d9e6e5b575 100644
+--- a/net/minecraft/world/entity/ExperienceOrb.java
++++ b/net/minecraft/world/entity/ExperienceOrb.java
+@@ -351,8 +351,23 @@ public class ExperienceOrb extends Entity {
+     @Override
+     public void playerTouch(final Player player) {
+         if (player instanceof ServerPlayer serverPlayer) {
++            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.xpNoCooldown) {
++                player.takeXpDelay = 0;
++            }
++
+             if (player.takeXpDelay == 0 && new com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent(serverPlayer.getBukkitEntity(), (org.bukkit.entity.ExperienceOrb) this.getBukkitEntity()).callEvent()) { // Paper - PlayerPickupExperienceEvent
+-                player.takeXpDelay = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerXpCooldownEvent(player, 2, org.bukkit.event.player.PlayerExpCooldownChangeEvent.ChangeReason.PICKUP_ORB).getNewCooldown(); // CraftBukkit - entity.takeXpDelay = 2;
++                int newCooldown = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerXpCooldownEvent(player, 2, org.bukkit.event.player.PlayerExpCooldownChangeEvent.ChangeReason.PICKUP_ORB).getNewCooldown(); // CraftBukkit - entity.takeXpDelay = 2;
++                player.takeXpDelay = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.xpNoCooldown ? 0 : newCooldown;
++                if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.xpNoCooldown) {
++                    while (this.count > 1) {
++                        int remaining = this.repairPlayerItems(serverPlayer, this.getValue());
++                        if (remaining > 0) {
++                            player.giveExperiencePoints(org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerExpChangeEvent(player, this, remaining).getAmount()); // CraftBukkit - remaining -> event.getAmount() // Paper - supply experience orb
++                        }
++                        this.count--;
++                    }
++                }
++
+                 player.take(this, 1);
+                 int remaining = this.repairPlayerItems(serverPlayer, this.getValue());
+                 if (remaining > 0) {
+@@ -368,6 +383,10 @@ public class ExperienceOrb extends Entity {
+     }
+ 
+     private int repairPlayerItems(final ServerPlayer player, final int amount) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.powerfulExpMending) {
++            return this.repairAllPlayerItems(player, amount);
++        }
++
+         Optional<EnchantedItemInUse> selected = EnchantmentHelper.getRandomItemWith(EnchantmentEffectComponents.REPAIR_WITH_XP, player, ItemStack::isDamaged);
+         if (selected.isPresent()) {
+             ItemStack itemStack = selected.get().itemStack();
+@@ -397,6 +416,76 @@ public class ExperienceOrb extends Entity {
+         }
+     }
+ 
++    private int repairAllPlayerItems(ServerPlayer player, int value) {
++        List<MendingCandidate> candidates = new java.util.ArrayList<>();
++        net.minecraft.world.entity.player.Inventory inventory = player.getInventory();
++
++        for (int slotIndex = 0; slotIndex < inventory.getNonEquipmentItems().size(); slotIndex++) {
++            ItemStack stack = inventory.getNonEquipmentItems().get(slotIndex);
++            EquipmentSlot slot = slotIndex == inventory.getSelectedSlot() ? EquipmentSlot.MAINHAND : null;
++            candidates.add(new MendingCandidate(stack, slot));
++        }
++
++        candidates.add(new MendingCandidate(player.getItemBySlot(EquipmentSlot.HEAD), EquipmentSlot.HEAD));
++        candidates.add(new MendingCandidate(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST));
++        candidates.add(new MendingCandidate(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS));
++        candidates.add(new MendingCandidate(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET));
++        candidates.add(new MendingCandidate(player.getItemBySlot(EquipmentSlot.OFFHAND), EquipmentSlot.OFFHAND));
++
++        java.util.Collections.shuffle(candidates, new java.util.Random(player.getRandom().nextLong()));
++
++        int remaining = value;
++        for (MendingCandidate candidate : candidates) {
++            if (remaining <= 0) {
++                break;
++            }
++
++            ItemStack stack = candidate.stack();
++            if (!this.canRepairWithXp(player, stack)) {
++                continue;
++            }
++
++            int durabilityToRepair = EnchantmentHelper.modifyDurabilityToRepairFromXp(player.level(), stack, remaining);
++            int repairedAmount = Math.min(durabilityToRepair, stack.getDamageValue());
++            if (repairedAmount <= 0) {
++                continue;
++            }
++
++            org.bukkit.event.player.PlayerItemMendEvent event = candidate.slot() != null
++                ? org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerItemMendEvent(
++                    player, this, stack, candidate.slot(), repairedAmount, repairedAmount * remaining / durabilityToRepair
++                )
++                : this.callInventoryItemMendEvent(player, stack, repairedAmount);
++            repairedAmount = event.getRepairAmount();
++            if (event.isCancelled() || repairedAmount <= 0) {
++                continue;
++            }
++
++            stack.setDamageValue(stack.getDamageValue() - repairedAmount);
++            remaining -= repairedAmount * remaining / durabilityToRepair;
++        }
++
++        return remaining;
++    }
++
++    private boolean canRepairWithXp(ServerPlayer player, ItemStack stack) {
++        return !stack.isEmpty() && stack.isDamaged() && EnchantmentHelper.modifyDurabilityToRepairFromXp(player.level(), stack, 1) > 1;
++    }
++
++    private org.bukkit.event.player.PlayerItemMendEvent callInventoryItemMendEvent(ServerPlayer player, ItemStack stack, int repairAmount) {
++        org.bukkit.event.player.PlayerItemMendEvent event = new org.bukkit.event.player.PlayerItemMendEvent(
++            player.getBukkitEntity(),
++            org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(stack),
++            (org.bukkit.entity.ExperienceOrb)this.getBukkitEntity(),
++            repairAmount
++        );
++        player.level().getCraftServer().getPluginManager().callEvent(event);
++        return event;
++    }
++
++    private record MendingCandidate(ItemStack stack, @Nullable EquipmentSlot slot) {
++    }
++
+     public int getValue() {
+         return this.entityData.get(DATA_VALUE);
+     }
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index 167855ad90d0c168a6d49f078ee3409ab84d4bf3..15defe6c740ab7fb3bccc4fb421c0411a4e6a646 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -601,7 +601,8 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+     public boolean broadcastedDeath = false; // Folia - region threading
+     protected void tickDeath() {
+         this.deathTime++;
+-        if (this.deathTime >= 20 && !this.level().isClientSide() && !this.isRemoved()) {
++        int removalDelay = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.entityInstantDeathRemoval ? 1 : 20;
++        if (this.deathTime >= removalDelay && !this.level().isClientSide() && !this.isRemoved()) {
+             this.level().broadcastEntityEvent(this, EntityEvent.POOF); this.broadcastedDeath = true; // Folia - region threading - death has been broadcasted
+             if (!(this instanceof ServerPlayer)) this.remove(Entity.RemovalReason.KILLED, org.bukkit.event.entity.EntityRemoveEvent.Cause.DEATH); // CraftBukkit - add Bukkit remove cause // Folia - region threading - don't remove, we want the tick scheduler to be running
+             if ((this instanceof ServerPlayer)) this.unRide(); // Folia - region threading - unmount player when dead
+diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
+index 42aff39d537aa6b138bc4a76304d49f423212acd..475e5abeeb29fce0f8ae0abc127f2023300ca186 100644
+--- a/net/minecraft/world/entity/item/PrimedTnt.java
++++ b/net/minecraft/world/entity/item/PrimedTnt.java
+@@ -70,8 +70,12 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+         this(EntityType.TNT, level);
+         this.setPos(x, y, z);
+         double rot = this.getRandom().nextDouble() * (float) (Math.PI * 2); // Paper - Don't use level random in entity constructors
+-        this.setDeltaMovement(-Math.sin(rot) * 0.02, 0.2F, -Math.cos(rot) * 0.02);
+-        this.setFuse(80);
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.tntPrimerMomentumRemoved) {
++            this.setDeltaMovement(0.0, 0.20000000298023224, 0.0);
++        } else {
++            this.setDeltaMovement(-Math.sin(rot) * 0.02, 0.2F, -Math.cos(rot) * 0.02);
++        }
++        this.setFuse(getConfiguredFuseTime());
+         this.xo = x;
+         this.yo = y;
+         this.zo = z;
+@@ -80,7 +84,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+ 
+     @Override
+     protected void defineSynchedData(final SynchedEntityData.Builder entityData) {
+-        entityData.define(DATA_FUSE_ID, 80);
++        entityData.define(DATA_FUSE_ID, getConfiguredFuseTime());
+         entityData.define(DATA_BLOCK_STATE_ID, DEFAULT_BLOCK_STATE);
+     }
+ 
+@@ -177,7 +181,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+ 
+     @Override
+     protected void readAdditionalSaveData(final ValueInput input) {
+-        this.setFuse(input.getShortOr("fuse", (short)80));
++        this.setFuse(input.getShortOr("fuse", (short)getConfiguredFuseTime()));
+         this.setBlockState(input.read("block_state", BlockState.CODEC).orElse(DEFAULT_BLOCK_STATE));
+         this.explosionPower = Mth.clamp(input.getFloatOr("explosion_power", 4.0F), 0.0F, 128.0F);
+         this.owner = EntityReference.read(input, "owner");
+@@ -200,6 +204,10 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+         this.entityData.set(DATA_FUSE_ID, time);
+     }
+ 
++    private static int getConfiguredFuseTime() {
++        return fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.normalizedTntFuseDuration();
++    }
++
+     public int getFuse() {
+         return this.entityData.get(DATA_FUSE_ID);
+     }
+diff --git a/net/minecraft/world/entity/monster/EnderMan.java b/net/minecraft/world/entity/monster/EnderMan.java
+index 55a7cac408614d0efdece87a5380bd1fb7406200..0e0fc81e72b1f4950b9072d4b05d6b4b41fee04a 100644
+--- a/net/minecraft/world/entity/monster/EnderMan.java
++++ b/net/minecraft/world/entity/monster/EnderMan.java
+@@ -635,7 +635,7 @@ public class EnderMan extends Monster implements NeutralMob {
+             Vec3 to = new Vec3(xt + 0.5, yt + 0.5, zt + 0.5);
+             BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.enderman));
+             boolean reachable = result.getBlockPos().equals(pos);
+-            if (blockState.is(BlockTags.ENDERMAN_HOLDABLE) && reachable) {
++            if (canPickupBlock(blockState) && reachable) {
+                 if (org.bukkit.craftbukkit.event.CraftEventFactory.callEntityChangeBlockEvent(this.enderman, pos, blockState.getFluidState().createLegacyBlock())) { // Paper - Place event
+                 level.removeBlock(pos, false);
+                 level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(this.enderman, blockState));
+@@ -643,5 +643,13 @@ public class EnderMan extends Monster implements NeutralMob {
+                 } // CraftBukkit
+             }
+         }
++
++        private static boolean canPickupBlock(BlockState state) {
++            if (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.sensibleEnderman) {
++                return state.is(BlockTags.ENDERMAN_HOLDABLE);
++            }
++
++            return state.is(Blocks.MELON) || state.is(Blocks.PUMPKIN);
++        }
+     }
+ }
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 7d514537ee38f9b9366692bc969ff503d883aa16..da0c648cafec4cb4fe1bbb31037204b180fcf4ce 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -555,7 +555,13 @@ public abstract class Player extends Avatar implements ContainerUser {
+             }
+ 
+             if (!orbs.isEmpty()) {
+-                this.touch(Util.getRandom(orbs, this.random));
++                if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.xpNoCooldown) {
++                    for (Entity orb : orbs) {
++                        this.touch(orb);
++                    }
++                } else {
++                    this.touch(Util.getRandom(orbs, this.random));
++                }
+             }
+         }
+ 
+@@ -1066,6 +1072,26 @@ public abstract class Player extends Avatar implements ContainerUser {
+ 
+         if (playerAttackEntityEvent.callEvent() && willAttack) { // Logic moved to willAttack local variable.
+         // Paper end - PlayerAttackEntityEvent
++            if (this.level() instanceof ServerLevel serverLevel
++                && fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeOneHitKill
++                && this.isCreative()
++                && net.minecraft.world.entity.EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity)) {
++                if (this.isShiftKeyDown()) {
++                    for (Entity nearbyEntity : this.level().getEntities(
++                        this,
++                        entity.getBoundingBox().inflate(2.0, 0.5, 2.0),
++                        candidate -> candidate.isAttackable() && net.minecraft.world.entity.EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(candidate)
++                    )) {
++                        this.creativeInstantKill(serverLevel, nearbyEntity);
++                    }
++                    this.playServerSideSound(SoundEvents.PLAYER_ATTACK_SWEEP);
++                } else {
++                    this.creativeInstantKill(serverLevel, entity);
++                    this.playServerSideSound(SoundEvents.PLAYER_ATTACK_CRIT);
++                }
++                return;
++            }
++
+             float baseDamage = this.isAutoSpinAttack() ? this.autoSpinAttackDmg : (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+             ItemStack attackingItemStack = this.getWeaponItem();
+             DamageSource damageSource = this.createAttackSource(attackingItemStack); final DamageSource dmgSourceFinal = damageSource; // Paper - damage events
+@@ -1123,6 +1149,16 @@ public abstract class Player extends Avatar implements ContainerUser {
+         }
+     }
+ 
++    private void creativeInstantKill(final ServerLevel level, final Entity target) {
++        if (target instanceof EnderDragonPart enderDragonPart) {
++            java.util.Arrays.stream(enderDragonPart.parentMob.getSubEntities()).forEach(part -> part.kill(level));
++            enderDragonPart.parentMob.kill(level);
++            return;
++        }
++
++        target.kill(level);
++    }
++
+     private void playServerSideSound(final SoundEvent sound) {
+         sendSoundEffect(this, this.getX(), this.getY(), this.getZ(), sound, this.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
+     }
+diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
+index ca3f31a72060f797115787302d32a019fa8243e0..8d13dab5dcc3a500f9e4faf8168f6d25697ea99f 100644
+--- a/net/minecraft/world/item/BlockItem.java
++++ b/net/minecraft/world/item/BlockItem.java
+@@ -147,8 +147,12 @@ public class BlockItem extends Item {
+         // CraftBukkit start
+         Level world = context.getLevel(); // Paper - Cancel hit for vanished players
+         CollisionContext collisionContext = player == null ? CollisionContext.empty() : CollisionContext.placementContext(player); // Leaves - creative no clip
++        boolean ignoreEntityCollision = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.blockPlacementIgnoreEntity && player != null && player.isCreative();
+         boolean canBuild = (!this.mustSurvive() || stateForPlacement.canSurvive(world, context.getClickedPos()))
+-            && ((fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext) : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true)); // Paper - Cancel hit for vanished players // Leaves - creative no clip
++            && (ignoreEntityCollision
++                || ((fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null)
++                    ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext)
++                    : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true))); // Paper - Cancel hit for vanished players // Leaves - creative no clip
+         org.bukkit.entity.Player bukkitPlayer = (context.getPlayer() instanceof ServerPlayer) ? (org.bukkit.entity.Player) context.getPlayer().getBukkitEntity() : null;
+ 
+         org.bukkit.event.block.BlockCanBuildEvent event = new org.bukkit.event.block.BlockCanBuildEvent(
+diff --git a/net/minecraft/world/item/ServerItemCooldowns.java b/net/minecraft/world/item/ServerItemCooldowns.java
+index cf66ce7cf737b2abd45c76218db55c8d0fc109d4..4da0768c14918d13b7137daa74142a544cf857cb 100644
+--- a/net/minecraft/world/item/ServerItemCooldowns.java
++++ b/net/minecraft/world/item/ServerItemCooldowns.java
+@@ -22,6 +22,9 @@ public class ServerItemCooldowns extends ItemCooldowns {
+ 
+     @Override
+     public void addCooldown(ItemStack item, int duration) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeNoItemCooldown && this.player.isCreative()) {
++            return;
++        }
+         final Identifier cooldownGroup = this.getCooldownGroup(item);
+         final io.papermc.paper.event.player.PlayerItemCooldownEvent event = new io.papermc.paper.event.player.PlayerItemCooldownEvent(
+             this.player.getBukkitEntity(),
+diff --git a/net/minecraft/world/item/crafting/RecipeManager.java b/net/minecraft/world/item/crafting/RecipeManager.java
+index 298908003d5422b8b58de631145fad381e8294c1..b825035f937863c4d485e9534e7b6780788f20de 100644
+--- a/net/minecraft/world/item/crafting/RecipeManager.java
++++ b/net/minecraft/world/item/crafting/RecipeManager.java
+@@ -28,6 +28,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
+ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+ import net.minecraft.util.profiling.ProfilerFiller;
++import net.minecraft.world.item.ItemStackTemplate;
++import net.minecraft.world.item.Items;
+ import net.minecraft.world.flag.FeatureFlagSet;
+ import net.minecraft.world.item.crafting.display.RecipeDisplay;
+ import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+@@ -55,6 +57,9 @@ public class RecipeManager extends SimplePreparableReloadListener<RecipeMap> imp
+         forSingleInput(RecipeType.CAMPFIRE_COOKING)
+     );
+     private static final FileToIdConverter RECIPE_LISTER = FileToIdConverter.registry(Registries.RECIPE);
++    private static final ResourceKey<Recipe<?>> BETTER_CRAFTABLE_BONE_BLOCK_RECIPE = compatRecipeKey("better_craftable_bone_block");
++    private static final ResourceKey<Recipe<?>> BETTER_CRAFTABLE_DISPENSER_SHAPED_RECIPE = compatRecipeKey("better_craftable_dispenser_shaped");
++    private static final ResourceKey<Recipe<?>> BETTER_CRAFTABLE_DISPENSER_SHAPELESS_RECIPE = compatRecipeKey("better_craftable_dispenser_shapeless");
+     private final HolderLookup.Provider registries;
+     public RecipeMap recipes = RecipeMap.EMPTY;
+     private Map<ResourceKey<RecipePropertySet>, RecipePropertySet> propertySets = Map.of();
+@@ -83,10 +88,73 @@ public class RecipeManager extends SimplePreparableReloadListener<RecipeMap> imp
+ 
+     @Override
+     protected void apply(final RecipeMap recipes, final ResourceManager manager, final ProfilerFiller profiler) {
++        this.injectCompatRecipes(recipes);
+         this.recipes = recipes;
+         LOGGER.info("Loaded {} recipes", recipes.values().size());
+     }
+ 
++    private void injectCompatRecipes(final RecipeMap recipeMap) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.betterCraftableBoneBlock) {
++            addCompatRecipe(recipeMap, createBetterCraftableBoneBlockRecipe());
++        }
++
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.betterCraftableDispenser) {
++            addCompatRecipe(recipeMap, createBetterCraftableDispenserShapedRecipe());
++            addCompatRecipe(recipeMap, createBetterCraftableDispenserShapelessRecipe());
++        }
++    }
++
++    private static void addCompatRecipe(final RecipeMap recipeMap, final RecipeHolder<?> recipeHolder) {
++        if (recipeMap.byKey(recipeHolder.id()) == null) {
++            recipeMap.addRecipe(recipeHolder);
++        }
++    }
++
++    private static RecipeHolder<?> createBetterCraftableBoneBlockRecipe() {
++        return new RecipeHolder<>(
++            BETTER_CRAFTABLE_BONE_BLOCK_RECIPE,
++            new ShapedRecipe(
++                new Recipe.CommonInfo(true),
++                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.BUILDING, "carpet_ams_better_bone_block"),
++                ShapedRecipePattern.of(Map.of('#', Ingredient.of(Items.BONE)), "###", "###", "###"),
++                new ItemStackTemplate(Items.BONE_BLOCK, 3)
++            )
++        );
++    }
++
++    private static RecipeHolder<?> createBetterCraftableDispenserShapedRecipe() {
++        return new RecipeHolder<>(
++            BETTER_CRAFTABLE_DISPENSER_SHAPED_RECIPE,
++            new ShapedRecipe(
++                new Recipe.CommonInfo(true),
++                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.REDSTONE, "carpet_ams_better_dispenser"),
++                ShapedRecipePattern.of(
++                    Map.of('S', Ingredient.of(Items.STICK), 'D', Ingredient.of(Items.DROPPER), 'X', Ingredient.of(Items.STRING)),
++                    " SX",
++                    "SDX",
++                    " SX"
++                ),
++                new ItemStackTemplate(Items.DISPENSER)
++            )
++        );
++    }
++
++    private static RecipeHolder<?> createBetterCraftableDispenserShapelessRecipe() {
++        return new RecipeHolder<>(
++            BETTER_CRAFTABLE_DISPENSER_SHAPELESS_RECIPE,
++            new ShapelessRecipe(
++                new Recipe.CommonInfo(true),
++                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.REDSTONE, "carpet_ams_better_dispenser"),
++                new ItemStackTemplate(Items.DISPENSER),
++                List.of(Ingredient.of(Items.BOW), Ingredient.of(Items.DROPPER))
++            )
++        );
++    }
++
++    private static ResourceKey<Recipe<?>> compatRecipeKey(final String path) {
++        return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("lophine", path));
++    }
++
+     // CraftBukkit start
+     public void addRecipe(RecipeHolder<?> holder) {
+         org.spigotmc.AsyncCatcher.catchOp("Recipe Add"); // Spigot
+diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
+index e06e48dd9c997ac1dc6e404aa0bc590c851e1ba8..aba2f23951a79d32238dcf948a9232d43726a43d 100644
+--- a/net/minecraft/world/level/Level.java
++++ b/net/minecraft/world/level/Level.java
+@@ -1176,6 +1176,10 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+         BlockState state = newState;
+         BlockState blockState = oldState;
+         BlockState blockState1 = currentState;
++        boolean skipInteractionUpdates = fun.bm.lophine.carpet.InteractionUpdateCompatHelper.shouldSkipUpdates();
++        if (skipInteractionUpdates) {
++            flags &= ~Block.UPDATE_NEIGHBORS;
++        }
+         if (blockState1 == state) {
+             if (blockState != blockState1) {
+                 this.setBlocksDirty(pos, blockState, blockState1);
+@@ -1192,7 +1196,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+                 }
+             }
+ 
+-            if ((flags & Block.UPDATE_KNOWN_SHAPE) == 0 && recursionLeft > 0) {
++            if (!skipInteractionUpdates && (flags & Block.UPDATE_KNOWN_SHAPE) == 0 && recursionLeft > 0) {
+                 int i = flags & ~(Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_NEIGHBORS);
+ 
+                 // CraftBukkit start
+diff --git a/net/minecraft/world/level/NaturalSpawner.java b/net/minecraft/world/level/NaturalSpawner.java
+index cd20d10ee4cd2fe98131c9a93367ae133f96b8d4..b9443bd4a7ee46fa9faea9f7db6352e4c6a6bd0f 100644
+--- a/net/minecraft/world/level/NaturalSpawner.java
++++ b/net/minecraft/world/level/NaturalSpawner.java
+@@ -292,6 +292,10 @@ public final class NaturalSpawner {
+                     Player nearestPlayer = level.getNearestPlayer(xx, yStart, zz, -1.0, false);
+                     if (nearestPlayer != null) {
+                         double nearestPlayerDistanceSqr = nearestPlayer.distanceToSqr(xx, yStart, zz);
++                        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.lagFreeSpawning) {
++                            nearestPlayerDistanceSqr = fun.bm.lophine.carpet.LagFreeSpawningCompatHelper.limitDistanceSq(mobCategory, nearestPlayerDistanceSqr);
++                        }
++
+                         if (level.isLoadedAndInBounds(pos) && isRightDistanceToPlayerAndSpawnPoint(level, chunk, pos, nearestPlayerDistanceSqr)) { // Paper - don't load chunks for mob spawn
+                             if (currentSpawnData == null) {
+                                 Optional<MobSpawnSettings.SpawnerData> nextSpawnData = getRandomSpawnMobAt(
+@@ -332,6 +336,10 @@ public final class NaturalSpawner {
+                                     // SPIGOT-7045: Give ocelot babies back their special spawn reason. Note: This is the only modification required as ocelots count as monsters which means they only spawn during normal chunk ticking and do not spawn during chunk generation as starter mobs.
+                                     level.addFreshEntityWithPassengers(mob, (mob instanceof net.minecraft.world.entity.animal.feline.Ocelot && !((org.bukkit.entity.Ageable) mob.getBukkitEntity()).isAdult()) ? org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.OCELOT_BABY : org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.NATURAL);
+                                     if (!mob.isRemoved()) {
++                                        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.lagFreeSpawning) {
++                                            fun.bm.lophine.carpet.LagFreeSpawningCompatHelper.markSpawned(level, mob.getType());
++                                        }
++
+                                         clusterSize++;
+                                         groupSize++;
+                                         spawnCallback.run(mob, chunk);
+@@ -411,11 +419,20 @@ public final class NaturalSpawner {
+             && canSpawnMobAt(level, structureManager, generator, mobCategory, currentSpawnData, pos)
+             && SpawnPlacements.isSpawnPositionOk(type, level, pos)
+             && SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.NATURAL, pos, level.random)
+-            && level.noCollision(type.getSpawnAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
++            && (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.lagFreeSpawning
++                ? fun.bm.lophine.carpet.LagFreeSpawningCompatHelper.hasNoCollision(level, type.getSpawnAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5))
++                : level.noCollision(type.getSpawnAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)));
+         return success ? PreSpawnStatus.SUCCESS : PreSpawnStatus.FAIL; // Paper - PreCreatureSpawnEvent
+     }
+ 
+     private static @Nullable Mob getMobForSpawn(final ServerLevel level, final EntityType<?> type) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.lagFreeSpawning) {
++            Mob cachedMob = fun.bm.lophine.carpet.LagFreeSpawningCompatHelper.getOrCreateMob(level, type);
++            if (cachedMob != null) {
++                return cachedMob;
++            }
++        }
++
+         try {
+             if (type.create(level, EntitySpawnReason.NATURAL) instanceof Mob mob) {
+                 return mob;
+@@ -536,7 +553,9 @@ public final class NaturalSpawner {
+                                 float width = spawnerData.type().getWidth();
+                                 double fx = Mth.clamp((double)x, (double)xo + width, xo + 16.0 - width);
+                                 double fz = Mth.clamp((double)z, (double)zo + width, zo + 16.0 - width);
+-                                if (!level.noCollision(spawnerData.type().getSpawnAABB(fx, pos.getY(), fz))
++                                if (!(fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.lagFreeSpawning
++                                        ? fun.bm.lophine.carpet.LagFreeSpawningCompatHelper.hasNoCollision(level.getLevel(), spawnerData.type().getSpawnAABB(fx, pos.getY(), fz))
++                                        : level.noCollision(spawnerData.type().getSpawnAABB(fx, pos.getY(), fz)))
+                                     || !SpawnPlacements.checkSpawnRules(
+                                         spawnerData.type(),
+                                         level,
+@@ -568,6 +587,9 @@ public final class NaturalSpawner {
+                                         level, level.getCurrentDifficultyAt(mob.blockPosition()), EntitySpawnReason.CHUNK_GENERATION, groupSpawnData
+                                     );
+                                     level.addFreshEntityWithPassengers(mob, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CHUNK_GEN); // CraftBukkit
++                                    if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.lagFreeSpawning) {
++                                        fun.bm.lophine.carpet.LagFreeSpawningCompatHelper.markSpawned(level.getLevel(), mob.getType());
++                                    }
+                                     success = true;
+                                 }
+                             }
+diff --git a/net/minecraft/world/level/ServerExplosion.java b/net/minecraft/world/level/ServerExplosion.java
+index 9fc97e8b01f66ada6af1fe76f4e27c9bb1a5dcfc..3d5bb6a0893db1cac5cff61e4a3607de9536c9a3 100644
+--- a/net/minecraft/world/level/ServerExplosion.java
++++ b/net/minecraft/world/level/ServerExplosion.java
+@@ -371,6 +371,10 @@ public class ServerExplosion implements Explosion {
+     }
+ 
+     private List<BlockPos> calculateExplodedPositions() {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.explosionNoBlockDamage) {
++            return List.of();
++        }
++
+         // Paper start - collision optimisations
+         final ObjectArrayList<BlockPos> ret = new ObjectArrayList<>();
+ 
+diff --git a/net/minecraft/world/level/block/CarvedPumpkinBlock.java b/net/minecraft/world/level/block/CarvedPumpkinBlock.java
+index a63dddd01ced6ba23067a113d871f2351bb690fc..6f67b18005ad9b877d7f680ff9b4afc7abed62d1 100644
+--- a/net/minecraft/world/level/block/CarvedPumpkinBlock.java
++++ b/net/minecraft/world/level/block/CarvedPumpkinBlock.java
+@@ -59,7 +59,8 @@ public class CarvedPumpkinBlock extends HorizontalDirectionalBlock {
+     public boolean canSpawnGolem(final LevelReader level, final BlockPos topPos) {
+         return this.getOrCreateSnowGolemBase().find(level, topPos) != null
+             || this.getOrCreateIronGolemBase().find(level, topPos) != null
+-            || this.getOrCreateCopperGolemBase().find(level, topPos) != null;
++            || this.getOrCreateCopperGolemBase().find(level, topPos) != null
++            || this.canSpawnShulkerGolem(level, topPos);
+     }
+ 
+     private void trySpawnGolem(final Level level, final BlockPos topPos) {
+@@ -92,6 +93,8 @@ public class CarvedPumpkinBlock extends HorizontalDirectionalBlock {
+                 copperGolem.spawn(this.getWeatherStateFromPattern(copperGolemMatch));
+             }
+         }
++
++        this.trySpawnShulkerGolem(level, topPos);
+     }
+ 
+     private WeatheringCopper.WeatherState getWeatherStateFromPattern(final BlockPattern.BlockPatternMatch copperGolemMatch) {
+@@ -159,6 +162,42 @@ public class CarvedPumpkinBlock extends HorizontalDirectionalBlock {
+         builder.add(FACING);
+     }
+ 
++    private boolean canSpawnShulkerGolem(LevelReader level, BlockPos pos) {
++        return fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.shulkerGolem
++            && PUMPKINS_PREDICATE.test(level.getBlockState(pos))
++            && level.getBlockState(pos.below()).is(BlockTags.SHULKER_BOXES);
++    }
++
++    private void trySpawnShulkerGolem(Level level, BlockPos pos) {
++        if (!this.canSpawnShulkerGolem(level, pos)) {
++            return;
++        }
++
++        net.minecraft.world.entity.monster.Shulker shulker = EntityType.SHULKER.create(level, EntitySpawnReason.TRIGGERED);
++        if (shulker == null) {
++            return;
++        }
++
++        BlockPos bodyPos = pos.below();
++        BlockState headState = level.getBlockState(pos);
++        BlockState bodyState = level.getBlockState(bodyPos);
++        shulker.snapTo(bodyPos.getX() + 0.5, bodyPos.getY(), bodyPos.getZ() + 0.5, 0.0F, 0.0F);
++        if (!level.addFreshEntity(shulker, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BUILD_IRONGOLEM)) {
++            return;
++        }
++
++        level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
++        level.setBlock(bodyPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
++        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(headState));
++        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, bodyPos, Block.getId(bodyState));
++        level.updateNeighborsAt(pos, Blocks.AIR);
++        level.updateNeighborsAt(bodyPos, Blocks.AIR);
++
++        for (ServerPlayer serverPlayer : level.getEntitiesOfClass(ServerPlayer.class, shulker.getBoundingBox().inflate(5.0))) {
++            CriteriaTriggers.SUMMONED_ENTITY.trigger(serverPlayer, shulker);
++        }
++    }
++
+     private BlockPattern getOrCreateSnowGolemBase() {
+         if (this.snowGolemBase == null) {
+             this.snowGolemBase = BlockPatternBuilder.start()
+diff --git a/net/minecraft/world/level/block/ChestBlock.java b/net/minecraft/world/level/block/ChestBlock.java
+index b5595d87339e4d313c5691a06c2b1b3d1b40b6de..cceb2e8170bf56c6d34520e69968ea6568a5878e 100644
+--- a/net/minecraft/world/level/block/ChestBlock.java
++++ b/net/minecraft/world/level/block/ChestBlock.java
+@@ -276,7 +276,8 @@ public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements
+         final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult
+     ) {
+         if (level instanceof ServerLevel serverLevel) {
+-            MenuProvider menuProvider = this.getMenuProvider(state, level, pos);
++            boolean ignoreObstructions = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeOpenContainerForcibly && player.isCreative();
++            MenuProvider menuProvider = this.getMenuProvider(state, level, pos, ignoreObstructions);
+             if (menuProvider != null && player.openMenu(menuProvider).isPresent()) { // Paper - Fix InventoryOpenEvent cancellation
+                 player.awardStat(this.getOpenChestStat());
+                 PiglinAi.angerNearbyPiglins(serverLevel, player, true);
+diff --git a/net/minecraft/world/level/block/EnderChestBlock.java b/net/minecraft/world/level/block/EnderChestBlock.java
+index a9f511a549681a76a962855c26b9af5980f36df7..26a5330b53f3381896e64c0b65147d69f6369773 100644
+--- a/net/minecraft/world/level/block/EnderChestBlock.java
++++ b/net/minecraft/world/level/block/EnderChestBlock.java
+@@ -82,7 +82,8 @@ public class EnderChestBlock extends AbstractChestBlock<EnderChestBlockEntity> i
+         PlayerEnderChestContainer container = player.getEnderChestInventory();
+         if (container != null && level.getBlockEntity(pos) instanceof EnderChestBlockEntity enderChest) {
+             BlockPos above = pos.above();
+-            if (level.getBlockState(above).isRedstoneConductor(level, above)) { // Paper - diff on change; make sure that EnderChest#isBlocked uses the same logic
++            boolean canOpenForcibly = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeOpenContainerForcibly && player.isCreative();
++            if (!canOpenForcibly && level.getBlockState(above).isRedstoneConductor(level, above)) { // Paper - diff on change; make sure that EnderChest#isBlocked uses the same logic
+                 return InteractionResult.SUCCESS;
+             } else {
+                 // Paper start - Fix InventoryOpenEvent cancellation - moved up;
+diff --git a/net/minecraft/world/level/block/FarmlandBlock.java b/net/minecraft/world/level/block/FarmlandBlock.java
+index ef55faf83e39c8dfd6bbe33c4943ed88bc473715..3d083f390f4dffc43e1a7f09fad87b05f296e6b8 100644
+--- a/net/minecraft/world/level/block/FarmlandBlock.java
++++ b/net/minecraft/world/level/block/FarmlandBlock.java
+@@ -132,7 +132,9 @@ public class FarmlandBlock extends Block {
+                 return;
+             }
+             // CraftBukkit end
+-            turnToDirt(entity, state, level, pos);
++            if (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.farmlandTrampledDisabled) {
++                turnToDirt(entity, state, level, pos);
++            }
+         }
+ 
+         // super.fallOn(level, state, pos, entity, fallDistance); // CraftBukkit - moved up
+diff --git a/net/minecraft/world/level/block/ObserverBlock.java b/net/minecraft/world/level/block/ObserverBlock.java
+index be572eff561ffdd961a9602eaa6136761c4d48a4..f11f0669bfbd5bb037cd17298563694316597772 100644
+--- a/net/minecraft/world/level/block/ObserverBlock.java
++++ b/net/minecraft/world/level/block/ObserverBlock.java
+@@ -89,6 +89,10 @@ public class ObserverBlock extends DirectionalBlock {
+     }
+ 
+     private void startSignal(final LevelReader level, final ScheduledTickAccess ticks, final BlockPos pos) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.observerNoDetection) {
++            return;
++        }
++
+         if (!level.isClientSide() && !ticks.getBlockTicks().hasScheduledTick(pos, this)) {
+             ticks.scheduleTick(pos, this, 2);
+         }
+diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
+index 1de86856f4a27346d7003ca9eb24a36074a2a4a3..e8291bb18e24a2a1772a91404403f902e301107a 100644
+--- a/net/minecraft/world/level/block/RedStoneWireBlock.java
++++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
+@@ -288,7 +288,8 @@ public class RedStoneWireBlock extends Block {
+      * Note: Added 'source' argument so as to help determine direction of information flow
+      */
+     private void updateSurroundingRedstone(Level worldIn, BlockPos pos, BlockState state, @Nullable Orientation orientation, boolean blockAdded) {
+-        if (worldIn.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.EIGENCRAFT) {
++        if (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.fastRedstoneDust
++            && worldIn.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.EIGENCRAFT) {
+             // since 24w33a the source pos is no longer given, but instead an Orientation parameter
+             // when this is not null, it can be used to find the source pos, which the turbo uses
+             // to find the direction of information flow
+@@ -363,7 +364,8 @@ public class RedStoneWireBlock extends Block {
+     protected void onPlace(final BlockState state, final Level level, final BlockPos pos, final BlockState oldState, final boolean movedByPiston) {
+         if (!oldState.is(state.getBlock()) && !level.isClientSide()) {
+             // Paper start - optimize redstone - replace call to updatePowerStrength
+-            if (level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
++            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.fastRedstoneDust
++                || level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
+                 level.getWireHandler().onWireAdded(pos, state); // Alternate Current
+             } else {
+                 this.updateSurroundingRedstone(level, pos, state, null, true); // Vanilla/Eigencraft
+@@ -388,7 +390,8 @@ public class RedStoneWireBlock extends Block {
+             }
+ 
+             // Paper start - optimize redstone - replace call to updatePowerStrength
+-            if (level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
++            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.fastRedstoneDust
++                || level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
+                 level.getWireHandler().onWireRemoved(pos, state); // Alternate Current
+             } else {
+                 this.updateSurroundingRedstone(level, pos, state, null, false); // Vanilla/Eigencraft
+@@ -408,7 +411,8 @@ public class RedStoneWireBlock extends Block {
+             }
+ 
+             // Paper start - optimize redstone - replace call to updatePowerStrength
+-            if (level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
++            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.fastRedstoneDust
++                || level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
+                 level.getWireHandler().onWireRemoved(pos, state); // Alternate Current
+             } else {
+                 this.updateSurroundingRedstone(level, pos, state, null, false); // Vanilla/Eigencraft
+@@ -440,7 +444,8 @@ public class RedStoneWireBlock extends Block {
+         if (!level.isClientSide()) {
+             // Paper start - optimize redstone (Alternate Current)
+             // Alternate Current handles breaking of redstone wires in the WireHandler.
+-            if (level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
++            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.fastRedstoneDust
++                || level.paperConfig().misc.redstoneImplementation == io.papermc.paper.configuration.WorldConfiguration.Misc.RedstoneImplementation.ALTERNATE_CURRENT) {
+                 level.getWireHandler().onWireUpdated(pos, state, orientation);
+             } else
+                 // Paper end - optimize redstone (Alternate Current)
+diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
+index 7bf2cde59c112f4babb87476585207dacebef341..fac01e0398f1042b6bc680e967c101063a3023cd 100644
+--- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
++++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
+@@ -74,9 +74,10 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+     protected InteractionResult useWithoutItem(
+         final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult
+     ) {
++        boolean canOpenForcibly = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeOpenContainerForcibly && player.isCreative();
+         if (level instanceof ServerLevel serverLevel
+             && level.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity
+-            && canOpen(state, level, pos, shulkerBoxBlockEntity) // Paper - Fix InventoryOpenEvent cancellation - expand if for belows check
++            && (canOpen(state, level, pos, shulkerBoxBlockEntity) || canOpenForcibly) // Paper - Fix InventoryOpenEvent cancellation - expand if for belows check
+             && player.openMenu(shulkerBoxBlockEntity).isPresent()) { // Paper - Fix InventoryOpenEvent cancellation
+             player.awardStat(Stats.OPEN_SHULKER_BOX);
+             PiglinAi.angerNearbyPiglins(serverLevel, player, true);
+diff --git a/net/minecraft/world/level/block/TntBlock.java b/net/minecraft/world/level/block/TntBlock.java
+index 58142c276c976b16100e14ee9adb547f74e4cb41..7a6a05813216d0a0dcc1f4a546b51c021b07714a 100644
+--- a/net/minecraft/world/level/block/TntBlock.java
++++ b/net/minecraft/world/level/block/TntBlock.java
+@@ -47,7 +47,8 @@ public class TntBlock extends Block {
+     @Override
+     protected void onPlace(final BlockState state, final Level level, final BlockPos pos, final BlockState oldState, final boolean movedByPiston) {
+         if (!oldState.is(state.getBlock())) {
+-            if (level.hasNeighborSignal(pos) && prime(level, pos, () -> org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(level, pos, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.REDSTONE, null, null))) { // CraftBukkit - TNTPrimeEvent
++            if (shouldPrimeFromRedstone(level, pos)
++                && prime(level, pos, () -> org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(level, pos, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.REDSTONE, null, null))) { // CraftBukkit - TNTPrimeEvent
+                 level.removeBlock(pos, false);
+             }
+         }
+@@ -57,7 +58,9 @@ public class TntBlock extends Block {
+     protected void neighborChanged(
+         final BlockState state, final Level level, final BlockPos pos, final Block block, final @Nullable Orientation orientation, final boolean movedByPiston
+     ) {
+-        if (level.hasNeighborSignal(pos) && prime(level, pos, () -> org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(level, pos, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.REDSTONE, null, null))) { // CraftBukkit - TNTPrimeEvent
++        if (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.tntIgnoreRedstoneSignal
++            && level.hasNeighborSignal(pos)
++            && prime(level, pos, () -> org.bukkit.craftbukkit.event.CraftEventFactory.callTNTPrimeEvent(level, pos, org.bukkit.event.block.TNTPrimeEvent.PrimeCause.REDSTONE, null, null))) { // CraftBukkit - TNTPrimeEvent
+             level.removeBlock(pos, false);
+         }
+     }
+@@ -76,7 +79,7 @@ public class TntBlock extends Block {
+         if (level.getGameRules().get(GameRules.TNT_EXPLODES)) {
+             PrimedTnt primed = new PrimedTnt(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, explosion.getIndirectSourceEntity());
+             int fuse = primed.getFuse();
+-            primed.setFuse((short)(level.getRandom().nextInt(fuse / 4) + fuse / 8));
++            primed.setFuse(level.getRandom().nextInt(Math.max(fuse / 4, 1)) + fuse / 8);
+             level.addFreshEntity(primed);
+         }
+     }
+@@ -156,4 +159,10 @@ public class TntBlock extends Block {
+     protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
+         builder.add(UNSTABLE);
+     }
++
++    private static boolean shouldPrimeFromRedstone(final Level level, final BlockPos pos) {
++        return !fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.tntDoNotUpdate
++            && !fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.tntIgnoreRedstoneSignal
++            && level.hasNeighborSignal(pos);
++    }
+ }
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index aa782c6441cdce3eb39aefb28d40f3b1970d4e62..3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -296,6 +296,8 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+     private static boolean hopperPush(final Level level, final Container destination, final Direction direction, final HopperBlockEntity hopper) {
+         io.papermc.paper.threadedregions.RegionizedWorldData worldData = level.getCurrentWorldData(); // Folia - region threading
+         worldData.skipPushModeEventFire = worldData.skipHopperEvents; // Folia - region threading
++        boolean noItemCost = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.hopperNoItemCost
++            && org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, hopper.getBlockPos().above()) != null;
+         boolean foundItem = false;
+         for (int i = 0; i < hopper.getContainerSize(); ++i) {
+             final ItemStack item = hopper.getItem(i);
+@@ -321,6 +323,13 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                 final ItemStack remainingItem = addItem(hopper, destination, movedItem, direction);
+                 final int remainingItemCount = remainingItem.getCount();
+                 if (remainingItemCount != movedItemCount) {
++                    if (noItemCost) {
++                        origItemStack.setCount(originalItemCount);
++                        hopper.setItem(i, origItemStack);
++                        destination.setChanged();
++                        return true;
++                    }
++
+                     origItemStack = origItemStack.copy(true);
+                     origItemStack.setCount(originalItemCount);
+                     if (!origItemStack.isEmpty()) {
+diff --git a/net/minecraft/world/level/block/piston/PistonBaseBlock.java b/net/minecraft/world/level/block/piston/PistonBaseBlock.java
+index 5ae07ece1046dda464f284c1dd13b2780f831e02..a4d8ed890fc6bea1e961df814c00d22ae147734f 100644
+--- a/net/minecraft/world/level/block/piston/PistonBaseBlock.java
++++ b/net/minecraft/world/level/block/piston/PistonBaseBlock.java
+@@ -379,7 +379,7 @@ public class PistonBaseBlock extends DirectionalBlock {
+ 
+             for (int i = toPush.size() - 1; i >= 0; i--) {
+                 // Paper start - fix a variety of piston desync dupes
+-                boolean allowDesync = io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.allowPistonDuplication;
++                boolean allowDesync = !fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.tntDupingFix;
+                 BlockPos oldPos = toPush.get(i);
+                 BlockPos pos = oldPos;
+                 BlockState blockState = allowDesync ? level.getBlockState(oldPos) : null;
+diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
+index ff1471f40b73582df68efbf2996a854c6aa37d65..668f59f94efb34490bdd7d6aac62fb37dd64a485 100644
+--- a/net/minecraft/world/level/block/state/BlockBehaviour.java
++++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
+@@ -848,6 +848,10 @@ public abstract class BlockBehaviour implements FeatureElement, org.leavesmc.lea
+         }
+ 
+         public Vec3 getOffset(final BlockPos pos) {
++            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.bambooModelNoOffset && (this.getBlock() == Blocks.BAMBOO || this.getBlock() == Blocks.BAMBOO_SAPLING)) {
++                return Vec3.ZERO;
++            }
++
+             BlockBehaviour.OffsetFunction function = this.offsetFunction;
+             return function != null ? function.evaluate(this.asState(), pos) : Vec3.ZERO;
+         }
+diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
+index 6b5ad391eda92cdbb47ab78a4c27d7e6a3b098a8..ecf24df6c7c8f3576634e017b0bfd22163f729a2 100644
+--- a/net/minecraft/world/level/chunk/LevelChunk.java
++++ b/net/minecraft/world/level/chunk/LevelChunk.java
+@@ -408,10 +408,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+                 boolean blockChanged = !oldState.is(newBlock);
+                 boolean movedByPiston = (flags & Block.UPDATE_MOVE_BY_PISTON) != 0;
+                 boolean sideEffects = (flags & Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS) == 0;
++                boolean skipInteractionUpdates = fun.bm.lophine.carpet.InteractionUpdateCompatHelper.shouldSkipUpdates();
+                 // Leaves start - behaviour 1.21.1-
+                 if (!fun.bm.lophine.config.modules.experiment.RedStoneConfig.oldBlockRemoveBehaviour) {
+                     if (blockChanged && oldState.hasBlockEntity() && !state.shouldChangedStateKeepBlockEntity(oldState)) {
+-                        if (!this.level.isClientSide() && sideEffects) {
++                        if (!this.level.isClientSide() && sideEffects && !skipInteractionUpdates) {
+                             BlockEntity blockEntity = this.level.getBlockEntity(pos);
+                             if (blockEntity != null) {
+                                 blockEntity.preRemoveSideEffects(pos, oldState);
+@@ -423,6 +424,7 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+ 
+                     if ((blockChanged || newBlock instanceof BaseRailBlock)
+                         && this.level instanceof ServerLevel serverLevel
++                        && !skipInteractionUpdates
+                         && ((flags & Block.UPDATE_NEIGHBORS) != 0 || movedByPiston)) {
+                         oldState.affectNeighborsAfterRemoval(serverLevel, pos, movedByPiston);
+                     }
+@@ -434,7 +436,10 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+                 if (!section.getBlockState(localX, localY, localZ).is(newBlock)) {
+                     return null;
+                 } else {
+-                    if (!this.level.isClientSide() && (flags & Block.UPDATE_SKIP_ON_PLACE) == 0 && (!this.level.getCurrentWorldData().captureBlockStates || newBlock instanceof net.minecraft.world.level.block.BaseEntityBlock)) { // CraftBukkit - Don't place while processing the BlockPlaceEvent, unless it's a BlockContainer. Prevents blocks such as TNT from activating when cancelled. // Folia - region threading
++                    if (!this.level.isClientSide()
++                        && !skipInteractionUpdates
++                        && (flags & Block.UPDATE_SKIP_ON_PLACE) == 0
++                        && (!this.level.getCurrentWorldData().captureBlockStates || newBlock instanceof net.minecraft.world.level.block.BaseEntityBlock)) { // CraftBukkit - Don't place while processing the BlockPlaceEvent, unless it's a BlockContainer. Prevents blocks such as TNT from activating when cancelled. // Folia - region threading
+                         state.onPlace(this.level, pos, oldState, movedByPiston);
+                     }
+ 
+diff --git a/net/minecraft/world/level/dimension/end/DragonRespawnStage.java b/net/minecraft/world/level/dimension/end/DragonRespawnStage.java
+index e02f5432d90866a06c48a58895908f7178ef1051..5573df701aef5e1fb77d1ff57c1459c142dad638 100644
+--- a/net/minecraft/world/level/dimension/end/DragonRespawnStage.java
++++ b/net/minecraft/world/level/dimension/end/DragonRespawnStage.java
+@@ -55,16 +55,17 @@ public enum DragonRespawnStage implements StringRepresentable {
+                             respawnCrystal.setBeamTarget(new BlockPos(spike.getCenterX(), spike.getHeight() + 1, spike.getCenterZ()));
+                         }
+                     } else {
+-                        int radius = 10;
++                        if (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.preventEndSpikeRespawn) {
++                            for (BlockPos pos : BlockPos.betweenClosed(
++                                new BlockPos(spike.getCenterX() - 10, spike.getHeight() - 10, spike.getCenterZ() - 10),
++                                new BlockPos(spike.getCenterX() + 10, spike.getHeight() + 10, spike.getCenterZ() + 10)
++                            )) {
++                                level.removeBlock(pos, false);
++                            }
+ 
+-                        for (BlockPos pos : BlockPos.betweenClosed(
+-                            new BlockPos(spike.getCenterX() - 10, spike.getHeight() - 10, spike.getCenterZ() - 10),
+-                            new BlockPos(spike.getCenterX() + 10, spike.getHeight() + 10, spike.getCenterZ() + 10)
+-                        )) {
+-                            level.removeBlock(pos, false);
++                            level.explode(null, spike.getCenterX() + 0.5F, spike.getHeight(), spike.getCenterZ() + 0.5F, 5.0F, Level.ExplosionInteraction.BLOCK);
+                         }
+ 
+-                        level.explode(null, spike.getCenterX() + 0.5F, spike.getHeight(), spike.getCenterZ() + 0.5F, 5.0F, Level.ExplosionInteraction.BLOCK);
+                         EndSpikeConfiguration configuration = new EndSpikeConfiguration(true, ImmutableList.of(spike), new BlockPos(0, 128, 0));
+                         Feature.END_SPIKE
+                             .place(
+diff --git a/net/minecraft/world/level/levelgen/feature/EndSpikeFeature.java b/net/minecraft/world/level/levelgen/feature/EndSpikeFeature.java
+index 3fdf80e32bdcaab4daac8f1c7329a2bc7b2bd625..284cec8401eb75076b2d80581059f489aa4022f9 100644
+--- a/net/minecraft/world/level/levelgen/feature/EndSpikeFeature.java
++++ b/net/minecraft/world/level/levelgen/feature/EndSpikeFeature.java
+@@ -68,6 +68,10 @@ public class EndSpikeFeature extends Feature<EndSpikeConfiguration> {
+     private void placeSpike(
+         final ServerLevelAccessor level, final RandomSource random, final EndSpikeConfiguration config, final EndSpikeFeature.EndSpike spike
+     ) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.preventEndSpikeRespawn && config.getCrystalBeamTarget() != null) {
++            return;
++        }
++
+         int radius = spike.getRadius();
+ 
+         for (BlockPos pos : BlockPos.betweenClosed(
+diff --git a/net/minecraft/world/level/redstone/NeighborUpdater.java b/net/minecraft/world/level/redstone/NeighborUpdater.java
+index 44731e230869f0df058f6a426277befbb0d559e4..a74b13bdd9145e3c54340aa959ee138c044ee433 100644
+--- a/net/minecraft/world/level/redstone/NeighborUpdater.java
++++ b/net/minecraft/world/level/redstone/NeighborUpdater.java
+@@ -42,6 +42,10 @@ public interface NeighborUpdater {
+         @Block.UpdateFlags final int updateFlags,
+         final int updateLimit
+     ) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.totallyNoBlockUpdate) {
++            return;
++        }
++
+         BlockState currentState = level.getBlockState(pos);
+         if ((updateFlags & Block.UPDATE_SKIP_SHAPE_UPDATE_ON_WIRE) == 0 || !currentState.is(Blocks.REDSTONE_WIRE)) {
+             try {
+@@ -72,6 +76,10 @@ public interface NeighborUpdater {
+ 
+     static void executeUpdate(Level level, BlockState state, BlockPos pos, Block changedBlock, @Nullable Orientation orientation, boolean movedByPiston, BlockPos sourcePos) {
+         // Paper end - Add source block to BlockPhysicsEvent
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.totallyNoBlockUpdate) {
++            return;
++        }
++
+         try {
+             // CraftBukkit start
+             org.bukkit.event.block.BlockPhysicsEvent event = new org.bukkit.event.block.BlockPhysicsEvent(org.bukkit.craftbukkit.block.CraftBlock.at(level, pos), state.asBlockData(), org.bukkit.craftbukkit.block.CraftBlock.at(level, sourcePos)); // Paper - Add source block to BlockPhysicsEvent
