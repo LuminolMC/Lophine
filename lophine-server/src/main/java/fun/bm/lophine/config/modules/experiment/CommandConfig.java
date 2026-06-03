@@ -12,6 +12,11 @@ public class CommandConfig implements IConfigModule {
                     Allow to use tick command""")
     public static boolean tick = false;
 
+    @ConfigInfo(name = "trigger_command_enabled", comments =
+            """
+                    Allow to use trigger command""")
+    public static boolean trigger = false;
+
     @ConfigInfo(name = "function_command_enabled", comments =
             """
                     Allow to use function command""")

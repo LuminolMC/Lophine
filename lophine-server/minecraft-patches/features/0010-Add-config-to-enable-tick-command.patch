@@ -98,7 +98,7 @@ index 8b09834ec36f62a73e388124129afbdfa47e6c25..ce0ace6a0c6b11f124b601d97491fee1
                  this.scheduler.regionFailed(this, false, thr);
                  // regionFailed will schedule a shutdown, so we should avoid letting this region tick further
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index f54f6047f326189329e11338b17105f5555dde12..6f3143deb9e5ff17fae5920b0a4ba34e3d9545c4 100644
+index 0d34c0a6187805a250d44c8a2d39a7d313c158e5..732ac0451d71c22a2ab2ebeab056a9016f0f2e67 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -265,7 +265,11 @@ public class Commands {
@@ -113,7 +113,7 @@ index f54f6047f326189329e11338b17105f5555dde12..6f3143deb9e5ff17fae5920b0a4ba34e
 +        // Luminol end - Add a config to enable tick command
          TimeCommand.register(this.dispatcher, context);
          TitleCommand.register(this.dispatcher, context);
-         //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
+         // Lophine start - Add a config to enable trigger command
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
 index 82315368d5580563fc77548f22a65d04ec73b622..8dcd684189d953aabddc4f62a3ecc5807c949ce6 100644
 --- a/net/minecraft/server/MinecraftServer.java
