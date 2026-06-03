@@ -5,10 +5,10 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 33d186d660ce3e3dc8cf26cd521fa99291ff78a5..ce1918d12b88835ea79a5c0dc90e0315c408830b 100644
+index 111fd492351601a22cd29391bc4e3602709adb54..166089c786210d645c22f96569f266cc50fe7d6c 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -494,7 +494,7 @@ public final class RegionizedWorldData {
+@@ -484,7 +484,7 @@ public final class RegionizedWorldData {
      public long lastMidTickExecuteFailure;
      // From Level
      public boolean populating;
@@ -17,7 +17,7 @@ index 33d186d660ce3e3dc8cf26cd521fa99291ff78a5..ce1918d12b88835ea79a5c0dc90e0315
      public boolean captureBlockStates = false;
      public boolean captureTreeGeneration = false;
      public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
-@@ -582,7 +582,7 @@ public final class RegionizedWorldData {
+@@ -572,7 +572,7 @@ public final class RegionizedWorldData {
          this.world = world;
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);

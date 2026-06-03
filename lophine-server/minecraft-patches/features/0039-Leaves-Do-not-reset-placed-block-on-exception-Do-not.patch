@@ -46,10 +46,10 @@ index a5d3caab2072b2c9bf8fdcbdb7c52c2dee16cfaf..4bb36d2965785fadf628a9bfac4fa2aa
                          // CraftBukkit start
                          if (bukkitState != null) {
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 73dd8e67938fbfff745b189c06a93174976ba1bf..8e56c2237f9d49d0b09b62c0933283f77aaae679 100644
+index 318725a0c9b2bdece7e6287cd521844af81aaf69..b1829ac08ba90e8e1522ee790b7f96515da2b9c4 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -1001,12 +1001,14 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -1005,12 +1005,14 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
  
                          profilerFiller.pop();
                      } catch (Throwable var5) {

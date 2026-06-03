@@ -154,7 +154,7 @@ index e6ec0788b88d3431c06134c879b4bae9c769dac1..bc94a9094e3cee5d5d4c5b919bf4c2a1
  
      public ClientInformation clientInformation() {
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 4a079d3033908f3b732c70eddab3c8e86d2c3e78..4d95e36855aecc8be0133c1d6f7d6a58bf26b0a0 100644
+index fd74636d911596daae8cfe563c2dd5e3d37a1549..555cdf2558dec481d6f11c0b1c33da1637e89224 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2050,7 +2050,13 @@ public class ServerGamePacketListenerImpl
@@ -980,10 +980,10 @@ index 00da328f21e5ce5de6f968323b14a7832a6cbd62..a68ffb1197a19173f00577f656b5894f
 +    }
  }
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 474ca0ce0d3095fc586f8f9e9a584ed4f7c91471..07c2b0fb1fa2dd299687d389d7fe91c5fd5b5b91 100644
+index ed906ec726fa0eb12c0108dc751af2dcadf2bfb1..0942fd82d4ea32f5c75f255ecd6c7b160851706e 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -513,6 +513,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -523,6 +523,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
                  for (int i = 0; i < blockEntity.getContainerSize(); i++) {
                      ItemStack item = blockEntity.getItem(i);
                      if (!item.isEmpty()) {
@@ -991,7 +991,7 @@ index 474ca0ce0d3095fc586f8f9e9a584ed4f7c91471..07c2b0fb1fa2dd299687d389d7fe91c5
                          int count = item.getCount();
                          // CraftBukkit start - Call event when pushing items into other inventories
                          ItemStack original = item.copy();
-@@ -544,15 +545,23 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -554,15 +555,23 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
                          int origCount = event.getItem().getAmount(); // Spigot
                          ItemStack itemStack = HopperBlockEntity.addItem(blockEntity, attachedContainer, org.bukkit.craftbukkit.inventory.CraftItemStack.asNMSCopy(event.getItem()), opposite);
                          // CraftBukkit end
@@ -1045,7 +1045,7 @@ index 0de2f6627fb6295d7927ac3e37026f4daf68cfd3..727abe6be81fdaa0753035bbf89ffead
              return offsetFunction != null ? offsetFunction.evaluate(this.asState(), pos) : Vec3.ZERO;
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 8e56c2237f9d49d0b09b62c0933283f77aaae679..64bd2da70f4a0beb0efbb8a74478eef95ca013f2 100644
+index b1829ac08ba90e8e1522ee790b7f96515da2b9c4..8f5e19a15f42aadedfe7c998568f846657a5ec8c 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -406,10 +406,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
