@@ -1,6 +1,8 @@
 package fun.bm.lophine.carpet;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.logging.LogUtils;
+import io.papermc.paper.threadedregions.RegionizedWorldData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -24,9 +26,10 @@ import java.util.WeakHashMap;
 
 public final class LagFreeSpawningCompatHelper {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Map<ServerLevel, Map<EntityType<?>, Mob>> PRECOOKED_MOBS = new WeakHashMap<>();
+    private static final Map<RegionizedWorldData, Map<EntityType<?>, Mob>> PRECOOKED_MOBS = new WeakHashMap<>();
 
     public static boolean hasNoCollision(ServerLevel world, AABB bb) {
+        if (!TickThread.isTickThreadFor(world, bb)) return world.noCollision(bb);
         int minX = Mth.floor(bb.minX);
         int minY = Mth.floor(bb.minY);
         int minZ = Mth.floor(bb.minZ);
@@ -84,15 +87,22 @@ public final class LagFreeSpawningCompatHelper {
     }
 
     public static @Nullable Mob getOrCreateMob(ServerLevel level, EntityType<?> entityType) {
-        Map<EntityType<?>, Mob> cache = PRECOOKED_MOBS.computeIfAbsent(level, key -> new HashMap<>());
+        RegionizedWorldData data = level.getCurrentWorldData();
+        if (data == null) return createMob(level, entityType);
+        Map<EntityType<?>, Mob> cache = PRECOOKED_MOBS.computeIfAbsent(level.getCurrentWorldData(), key -> new HashMap<>());
         Mob mob = cache.get(entityType);
         if (mob != null && !mob.isRemoved()) {
+            if (!TickThread.isTickThreadFor(mob)) return createMob(level, entityType);
             return mob;
         }
 
+        return createMob(level, entityType);
+    }
+
+    public static @Nullable Mob createMob(ServerLevel level, EntityType<?> entityType) {
         try {
             if (entityType.create(level, EntitySpawnReason.NATURAL) instanceof Mob created) {
-                cache.put(entityType, created);
+                PRECOOKED_MOBS.get(level.getCurrentWorldData()).put(entityType, created);
                 return created;
             }
             LOGGER.warn("Can't precook non-mob entity type: {}", entityType);
@@ -104,7 +114,7 @@ public final class LagFreeSpawningCompatHelper {
     }
 
     public static void markSpawned(ServerLevel level, EntityType<?> entityType) {
-        Map<EntityType<?>, Mob> cache = PRECOOKED_MOBS.get(level);
+        Map<EntityType<?>, Mob> cache = PRECOOKED_MOBS.get(level.getCurrentWorldData());
         if (cache != null) {
             cache.remove(entityType);
         }
