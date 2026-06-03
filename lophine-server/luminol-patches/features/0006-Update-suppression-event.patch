@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Wed, 3 Jun 2026 13:49:39 +0800
+Subject: [PATCH] Update suppression event
+
+
+diff --git a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
+index 1f3fe7f786bb8f7c59e3a0235dcc572f3171ee6b..5bae7e78f4b16f399e261d95527ba9f40b0e90c4 100644
+--- a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
++++ b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
+@@ -13,6 +13,7 @@ public class ServerFeatureManager implements FeatureManager {
+     private ServerFeatureManager() {
+         availableFeatures.add(FAKEPLAYER); // Lophine - fakeplayer support
+         availableFeatures.add(PHOTOGRAPHER); // Lophine - Replay Mod API support
++        availableFeatures.add(UPDATE_SUPPRESSION_EVENT); // Lophine - update suppression event support
+         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
+             availableFeatures.add(MIXIN);
+         }
