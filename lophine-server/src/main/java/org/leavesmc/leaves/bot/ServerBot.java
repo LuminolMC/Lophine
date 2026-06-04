@@ -357,13 +357,26 @@ public class ServerBot extends ServerPlayer {
     }
 
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull net.minecraft.world.phys.Vec3 location) { // Leaves - Paper 26.1: Entity#interact now takes Vec3
-        if (FakeplayerConfig.canOpenInventory) {
-            if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull net.minecraft.world.phys.Vec3 location) {
+        if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
+            boolean isSneaking = player.isShiftKeyDown();
+            boolean enabled1Only = FakeplayerConfig.canOpenInventory ^ FakeplayerConfig.canOpenActionGui;
+            boolean openInventory = enabled1Only ? FakeplayerConfig.canOpenInventory : FakeplayerConfig.canOpenInventory && isSneaking;
+            boolean openActionGui = enabled1Only ? FakeplayerConfig.canOpenActionGui : FakeplayerConfig.canOpenActionGui && isSneaking;
+
+            if (openInventory) {
                 BotInventoryOpenEvent event = new BotInventoryOpenEvent(this.getBukkitEntity(), player1.getBukkitEntity());
                 getServer().server.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     player.openMenu(new SimpleMenuProvider((i, inventory, p) -> ChestMenu.sixRows(i, inventory, this.container), this.getDisplayName()));
+                    return InteractionResult.SUCCESS;
+                }
+            } else if (openActionGui) {
+                BotActionGuiOpenEvent event = new BotActionGuiOpenEvent(this.getBukkitEntity(), player1.getBukkitEntity());
+                getServer().server.getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    BotActionGuiContainer container = new BotActionGuiContainer(this.getBukkitEntity(), player1.getBukkitEntity());
+                    player.openMenu(new SimpleMenuProvider((i, inventory, p) -> ChestMenu.sixRows(i, inventory, container), this.getDisplayName()));
                     return InteractionResult.SUCCESS;
                 }
             }

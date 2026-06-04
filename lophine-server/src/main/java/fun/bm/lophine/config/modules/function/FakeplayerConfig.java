@@ -46,6 +46,10 @@ public class FakeplayerConfig implements IConfigModule {
             Allow opening fakeplayer inventory""")
     public static boolean canOpenInventory = false;
 
+    @ConfigInfo(name = "open-action-gui", comments = """
+            Allow opening fakeplayer action gui""")
+    public static boolean canOpenActionGui = false;
+
     @ConfigInfo(name = "use-action", comments = """
             Allow fakeplayers to use actions""")
     public static boolean canUseAction = true;

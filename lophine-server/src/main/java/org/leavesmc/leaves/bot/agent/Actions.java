@@ -40,14 +40,14 @@ public class Actions {
         register(new ServerJumpAction(), JumpAction.class);
         register(new ServerSneakAction(), SneakAction.class);
         register(new ServerUseItemAutoAction(), UseItemAutoAction.class);
-        register(new ServerUseItemAction(), UseItemAction.class);
-        register(new ServerUseItemOnAction(), UseItemOnAction.class);
-        register(new ServerUseItemToAction(), UseItemToAction.class);
-        register(new ServerUseItemOffhandAction(), UseItemOffhandAction.class);
-        register(new ServerUseItemOnOffhandAction(), UseItemOnOffhandAction.class);
-        register(new ServerUseItemToOffhandAction(), UseItemToOffhandAction.class);
+        register(new ServerUseItemAction(), UseItemAction.class, false);
+        register(new ServerUseItemOnAction(), UseItemOnAction.class, false);
+        register(new ServerUseItemToAction(), UseItemToAction.class, false);
+        register(new ServerUseItemOffhandAction(), UseItemOffhandAction.class, false);
+        register(new ServerUseItemOnOffhandAction(), UseItemOnOffhandAction.class, false);
+        register(new ServerUseItemToOffhandAction(), UseItemToOffhandAction.class, false);
         register(new ServerLookAction(), LookAction.class);
-        register(new ServerFishAction(), FishAction.class);
+        register(new ServerFishAction(), FishAction.class, false);
         register(new ServerSwimAction(), SwimAction.class);
         register(new ServerRotationAction(), RotationAction.class);
         register(new ServerMoveAction(), MoveAction.class);
@@ -56,6 +56,10 @@ public class Actions {
     }
 
     public static boolean register(@NotNull AbstractBotAction<?> action, Class<?> type) {
+        return register(action, type, true);
+    }
+
+    public static boolean register(@NotNull AbstractBotAction<?> action, Class<?> type, boolean registerToGui) {
         if (!actionsByName.containsKey(action.getName())) {
             actionsByName.put(action.getName(), action);
             actionsByClass.put(type, action);
