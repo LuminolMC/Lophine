@@ -309,19 +309,10 @@ index 049339ae33569d627d2a00ef6cab9cad02c4c014..e05705884a285143b8a3ebad00cb489e
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f3afab1100a35cc9ab091944de93d1f30ef040a7..7f6d4118ede7e02fdea8961fd736d00ce41c64bb 100644
+index f3afab1100a35cc9ab091944de93d1f30ef040a7..423652d0ccef5c6a3b93480401c3d0f672bbf8a5 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -23,6 +23,8 @@ import java.util.Set;
- import java.util.UUID;
- import java.util.concurrent.CompletableFuture;
- import java.util.stream.Collectors;
-+
-+import fun.bm.lophine.config.modules.function.FakeplayerConfig;
- import net.minecraft.ChatFormatting;
- import net.minecraft.CrashReport;
- import net.minecraft.CrashReportCategory;
-@@ -229,7 +231,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -229,7 +229,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      private static final boolean DEFAULT_SPAWN_EXTRA_PARTICLES_ON_FALL = false;
      public ServerGamePacketListenerImpl connection;
      private final MinecraftServer server;
@@ -330,7 +321,7 @@ index f3afab1100a35cc9ab091944de93d1f30ef040a7..7f6d4118ede7e02fdea8961fd736d00c
      private final PlayerAdvancements advancements;
      private final ServerStatsCounter stats;
      private float lastRecordedHealthAndAbsorption = Float.MIN_VALUE;
-@@ -250,7 +252,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -250,7 +250,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      private @Nullable Entity camera;
      public boolean isChangingDimension;
      public boolean seenCredits = false;
@@ -339,7 +330,7 @@ index f3afab1100a35cc9ab091944de93d1f30ef040a7..7f6d4118ede7e02fdea8961fd736d00c
      private @Nullable Vec3 levitationStartPos;
      private int levitationStartTime;
      private boolean disconnected;
-@@ -1514,7 +1516,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1514,7 +1514,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
      // Luminol End - Cross Region Damage trace
  
@@ -348,12 +339,12 @@ index f3afab1100a35cc9ab091944de93d1f30ef040a7..7f6d4118ede7e02fdea8961fd736d00c
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
              .getEntitiesOfClass(Mob.class, aabb, EntitySelector.NO_SPECTATORS)
-@@ -2180,6 +2182,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2180,6 +2180,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  this.lastSentHealth = -1.0F;
                  this.lastSentFood = -1;
                  this.teleportSpectators(transition, oldLevel);
 +                // Leaves start - bot support
-+                if (FakeplayerConfig.enable) {
++                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +                    this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(this, true)); // Leaves - render bot
 +                }
 +                // Leaves end - bot support
@@ -426,24 +417,15 @@ index 484714beb5f7cdf8178834c5edd4f847fb06ebb8..ba7a280aad07f36366c15cd158b36ca9
  
      // Paper start - utility method for common conversion back to the game profile
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index ebd2f2887780d9c6c3c44983bac23eab732cf43f..4edc952087c3255ca488b140402621bbf6495770 100644
+index ebd2f2887780d9c6c3c44983bac23eab732cf43f..14be3d21cc1a613b1d9164ecc699073f0da2047c 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -22,6 +22,8 @@ import java.util.Set;
- import java.util.UUID;
- import java.util.function.Function;
- import java.util.function.Predicate;
-+
-+import fun.bm.lophine.config.modules.function.FakeplayerConfig;
- import net.minecraft.ChatFormatting;
- import net.minecraft.commands.CommandSourceStack;
- import net.minecraft.core.BlockPos;
-@@ -319,6 +321,19 @@ public abstract class PlayerList {
+@@ -319,6 +319,19 @@ public abstract class PlayerList {
  
          org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
  
 +        // Leaves start - bot support
-+        if (FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +            org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
 +            if (bot != null) {
 +                this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
@@ -458,19 +440,19 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..4edc952087c3255ca488b140402621bb
          final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
          if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -791,6 +806,11 @@ public abstract class PlayerList {
+@@ -791,6 +804,11 @@ public abstract class PlayerList {
              respawnReason
          ).callEvent();
          // Paper end
 +        // Leaves start - bot support
-+        if (FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +            this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(player, true)); // Leaves - render bot
 +        }
 +        // Leaves end - bot support
  
          return player;
      }
-@@ -893,11 +913,16 @@ public abstract class PlayerList {
+@@ -893,11 +911,16 @@ public abstract class PlayerList {
  
      public String[] getPlayerNamesArray() {
          List<ServerPlayer> players = new java.util.ArrayList<>(this.players); // Folia - region threading
@@ -488,7 +470,7 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..4edc952087c3255ca488b140402621bb
  
          return names;
      }
-@@ -1016,8 +1041,15 @@ public abstract class PlayerList {
+@@ -1016,8 +1039,15 @@ public abstract class PlayerList {
              || this.allowCommandsForAllPlayers;
      }
  
@@ -506,7 +488,7 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..4edc952087c3255ca488b140402621bb
      }
  
      public void broadcast(
-@@ -1360,7 +1392,13 @@ public abstract class PlayerList {
+@@ -1360,7 +1390,13 @@ public abstract class PlayerList {
      }
  
      public @Nullable ServerPlayer getPlayer(final UUID uuid) {

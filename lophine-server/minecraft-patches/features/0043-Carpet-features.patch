@@ -118,10 +118,10 @@ index 1a2b57a100c997b39f8f25ad3da121e04700d5d2..be345feecfa5b4e27a7b8a88ab5a5e5b
          // Paper start - fix converting txt to json file; moved from constructor
      }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 91ec7f6b751159f2935165268166f44d27579426..6e529edc0be2a090f1068384e59817f6a05ba1f9 100644
+index 65965089d184695588c74294afb2f5c0b28bbf17..5ebff729bb7e75e1c84449c0e3021b972ad0d936 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -259,6 +259,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -257,6 +257,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      private int requestedViewDistance = 2;
      public String language = null; // Paper - default to null
      public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
@@ -129,7 +129,7 @@ index 91ec7f6b751159f2935165268166f44d27579426..6e529edc0be2a090f1068384e59817f6
      private @Nullable Vec3 startingToFallPosition;
      private @Nullable Vec3 enteredNetherPosition;
      private @Nullable Vec3 enteredLavaOnVehiclePosition;
-@@ -2828,6 +2829,9 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2826,6 +2827,9 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.setShoulderEntityRight(oldPlayer.getShoulderEntityRight());
          this.setLastDeathLocation(oldPlayer.getLastDeathLocation());
          this.waypointIcon().copyFrom(oldPlayer.waypointIcon());
@@ -139,7 +139,7 @@ index 91ec7f6b751159f2935165268166f44d27579426..6e529edc0be2a090f1068384e59817f6
      }
  
      private void transferInventoryXpAndScore(final Player oldPlayer) {
-@@ -3111,6 +3115,9 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -3109,6 +3113,9 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.particleStatus = information.particleStatus();
          this.getEntityData().set(DATA_PLAYER_MODE_CUSTOMISATION, (byte)information.modelCustomisation());
          this.getEntityData().set(DATA_PLAYER_MAIN_HAND, information.mainHand());
