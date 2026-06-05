@@ -60,7 +60,7 @@ index d5d499226d0b2c2adfae7bbb4c28c96c80411c44..cb0a4a9865df69e5504a86de6c144bc4
                      stateForPlacement = possibleState;
                      break;
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index 0cdd88e530c660b65f3eb331b37cbd2c69fc2ff5..62dec122c5e23150dc107d3fab5a552f86d34565 100644
+index c5f4e0570a82dfcc2ba88023f3301f69afa41cc5..30f7e8f5e3e9440713e36ee25c90150b6b93c6ff 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
 @@ -516,6 +516,32 @@ public class Block extends BlockBehaviour implements ItemLike {

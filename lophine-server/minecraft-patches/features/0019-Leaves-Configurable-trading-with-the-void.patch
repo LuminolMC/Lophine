@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/9d2bd3f7b0a48f00d
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index c380ab9f059da6219691e8bccd4f82b9ec5483b3..b2ea90b0ab461d202d492411471d2412a9c5d303 100644
+index 047c605eb087667e10da557864ad931dadebd274..e9547fb9be40c3e999a9172acb48037595439396 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -3158,7 +3158,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet

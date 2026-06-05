@@ -5,7 +5,7 @@ Subject: [PATCH] Update suppression event
 
 
 diff --git a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
-index 1f3fe7f786bb8f7c59e3a0235dcc572f3171ee6b..5bae7e78f4b16f399e261d95527ba9f40b0e90c4 100644
+index 0ac9edfa36833a7ebe0353c4aff40955ab3ddf8c..c3db6c5281728fa1a2b4d84f9ebff9fcfd696698 100644
 --- a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
 +++ b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
 @@ -13,6 +13,7 @@ public class ServerFeatureManager implements FeatureManager {
@@ -13,6 +13,6 @@ index 1f3fe7f786bb8f7c59e3a0235dcc572f3171ee6b..5bae7e78f4b16f399e261d95527ba9f4
          availableFeatures.add(FAKEPLAYER); // Lophine - fakeplayer support
          availableFeatures.add(PHOTOGRAPHER); // Lophine - Replay Mod API support
 +        availableFeatures.add(UPDATE_SUPPRESSION_EVENT); // Lophine - update suppression event support
-         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
+         if (Boolean.getBoolean("leavesclip.enable.mixin") || Boolean.getBoolean("hyacinthusclip.enable.mixin")) {
              availableFeatures.add(MIXIN);
          }

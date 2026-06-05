@@ -84,7 +84,7 @@ index 7e3912b8b29e40eb3347f1451b0fd3ebee2af4f1..0834e402e6af7028e08851378e15390e
                              result.add(player);
                              if (result.size() >= limit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 86393793dd1b90f033c93c70933e1e4a7546eb15..48f7d57f6d3ef4250e6b3cf42055d29d94d3f6e3 100644
+index 54eaf4f7f8cf728d5d02d88de8d57d88504bc46d..269b884ff30d908f772d1c0cf05076e359bcdd7e 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1921,7 +1921,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -285,7 +285,7 @@ index 37c9f983ae89c497f44a1b7967d741abf909e0a0..d7fb2505f2a86ca0d81f144624ef2e1a
  
              this.setListData(players);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index e05705884a285143b8a3ebad00cb489efe47d532..c51b0075cd650085cd991bc89396f605cb520442 100644
+index 8bfb2afd7199b2739ccfbab4ad68e030e722db7e..8d6a5d2ab4589f81abdd4ae939f197051e9523fc 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -3100,7 +3100,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
@@ -307,7 +307,7 @@ index e05705884a285143b8a3ebad00cb489efe47d532..c51b0075cd650085cd991bc89396f605
                  }
                  // Leaves end - skip
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 14be3d21cc1a613b1d9164ecc699073f0da2047c..9fa7d9ae8c4c4d408a98c8a2425569f9777c0fca 100644
+index 14be3d21cc1a613b1d9164ecc699073f0da2047c..baa295f3dd8cf10bf7347ee4d1c249b1f82c9279 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -130,6 +130,7 @@ public abstract class PlayerList {
@@ -387,7 +387,7 @@ index 14be3d21cc1a613b1d9164ecc699073f0da2047c..9fa7d9ae8c4c4d408a98c8a2425569f9
 +        // org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
 +
 +        // Leaves start - bot support
-+        if (FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +            org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
 +            if (bot != null) {
 +                this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);

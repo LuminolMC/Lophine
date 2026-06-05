@@ -18,7 +18,7 @@ index 0c0775bbb0c0ba0c37d1b884bb106b5250e94750..0dfb25ad032429a2aea7aa441dd5fd18
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 0e543348e48fdf2131dfa1460e37db238d02988c..b69698f47ccb0f1ac3eeea05a02ab9d798319b44 100644
+index 694c2c4c48bde264fb2436fdf02750fcc20f7fac..5bb8481341a0f2ced987bee478b306b8ac80684f 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -167,7 +167,7 @@ public abstract class Entity
@@ -30,7 +30,7 @@ index 0e543348e48fdf2131dfa1460e37db238d02988c..b69698f47ccb0f1ac3eeea05a02ab9d7
      // CraftBukkit start
      private static final int CURRENT_LEVEL = 2;
      static boolean isLevelAtLeast(ValueInput input, int level) {
-@@ -6412,4 +6412,46 @@ public abstract class Entity
+@@ -6421,4 +6421,46 @@ public abstract class Entity
      // Paper end - Expose entity id counter
  
      public boolean shouldTickHot() { return this.tickCount > 20 * 10 && this.isAlive(); } // KioCG

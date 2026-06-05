@@ -21,7 +21,7 @@ index e1f456b31ffda9370b63e51f343847d6f9f62263..8a0f85241cc1530aacccc8b6ea24b9de
          }
          // Leaves end - skip bot
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 054d9f4a09035771a329d6d561249d206b5dbee3..8fc75ef37f273433fb11cc1e0beee87484c3e18f 100644
+index 60362385861f7bac2773692344aea2986dec2f6d..0aacbb75751addf46b40f2dc916b7282a635ed11 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -304,6 +304,7 @@ public final class CraftServer implements Server {
@@ -41,7 +41,7 @@ index 054d9f4a09035771a329d6d561249d206b5dbee3..8fc75ef37f273433fb11cc1e0beee874
              @Override
              public CraftPlayer apply(ServerPlayer player) {
                  return player.getBukkitEntity();
-@@ -3128,4 +3129,11 @@ public final class CraftServer implements Server {
+@@ -3179,4 +3180,11 @@ public final class CraftServer implements Server {
          }
      }
      // Folia end - region TPS API

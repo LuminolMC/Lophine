@@ -1,0 +1,123 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Wed, 21 Jan 2026 21:28:21 +0800
+Subject: [PATCH] Add tick rate support
+
+
+diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
+index 981f63b75584dbcb4bb0d5672e8c8bb140c52f9d..0a7a23b996d1380ea7ff4a28422fab82f748c5cb 100644
+--- a/io/papermc/paper/threadedregions/RegionizedServer.java
++++ b/io/papermc/paper/threadedregions/RegionizedServer.java
+@@ -371,6 +371,14 @@ public final class RegionizedServer {
+             this.globalTick(world, tickCount);
+         }
+ 
++        // Lophine start - Add a config to enable tick command
++        if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
++            net.minecraft.server.ServerTickRateManager rateManager = MinecraftServer.getServer().tickRateManager();
++            rateManager.reduceSprintTicks();
++            rateManager.endTickWork();
++        }
++        // Lophine end - Add a config to enable tick command
++
+         // tick connections
+         this.tickConnections();
+ 
+diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
+index eb5c0e77537056a13f445ec5d96b1c92de8f25af..7a01fb6073867be17958407d4d2f6eb84621cf99 100644
+--- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
++++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
+@@ -40,8 +40,8 @@ public final class TickRegionScheduler {
+         }
+     }
+ 
+-    public static final int TICK_RATE = 20;
+-    public static final long TIME_BETWEEN_TICKS = 1_000_000_000L / TICK_RATE; // ns
++    public static float TICK_RATE = 20; // Lophine - Add tick command support
++    public static long TIME_BETWEEN_TICKS = (long) (1_000_000_000L / TICK_RATE); // ns // Lophine - Add tick command support
+     // Folia start - watchdog
+     public static final FoliaWatchdogThread WATCHDOG_THREAD = new FoliaWatchdogThread();
+     static {
+@@ -528,8 +528,24 @@ public final class TickRegionScheduler {
+             final long cpuStart = MEASURE_CPU_TIME ? THREAD_MX_BEAN.getCurrentThreadCpuTime() : 0L;
+             final long tickStart = System.nanoTime();
+ 
+-            // use max(), don't assume that tickStart >= scheduledStart
+-            final long tickCount = Math.max(1L, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
++            // Lophine start - Add a config to enable tick command
++            final long tickCount;
++            if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
++                net.minecraft.server.ServerTickRateManager rateManager = MinecraftServer.getServer().tickRateManager();
++                if (rateManager.isSprinting() && rateManager.checkShouldSprintThisTick()) {
++                    TICK_RATE = net.minecraft.server.commands.TickCommand.MAX_TICKRATE;
++                    TIME_BETWEEN_TICKS = (long) (1_000_000_000L / TICK_RATE);
++                    tickCount = 1;
++                } else {
++                    TICK_RATE = rateManager.tickrate();
++                    TIME_BETWEEN_TICKS = (long) (1_000_000_000L / TICK_RATE);
++                    tickCount = Math.max(1L, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
++                }
++            } else {
++                // use max(), don't assume that tickStart >= scheduledStart
++                tickCount = Math.max(1L, this.tickSchedule.getPeriodsAhead(TIME_BETWEEN_TICKS, tickStart));
++            }
++            // Lophine end - Add tick command support
+ 
+             if (!this.tryMarkTicking()) {
+                 if (!this.cancelled.get()) {
+diff --git a/net/minecraft/server/ServerTickRateManager.java b/net/minecraft/server/ServerTickRateManager.java
+index 8d0f810100a4eac65831913feeb9a9eeb0e6006a..ca35415e152dc63cb9f4ae8da8b06766600922fd 100644
+--- a/net/minecraft/server/ServerTickRateManager.java
++++ b/net/minecraft/server/ServerTickRateManager.java
+@@ -110,7 +110,7 @@ public class ServerTickRateManager extends TickRateManager {
+             return false;
+         } else if (this.remainingSprintTicks > 0L) {
+             this.sprintTickStartTime = System.nanoTime();
+-            this.remainingSprintTicks--;
++            // this.remainingSprintTicks--; // Luminol - Add tick command support
+             return true;
+         } else {
+             this.finishTickSprint();
+@@ -118,6 +118,12 @@ public class ServerTickRateManager extends TickRateManager {
+         }
+     }
+ 
++    // Lophine start - Add tick command support
++    public void reduceSprintTicks() {
++        this.remainingSprintTicks--;
++    }
++    // Lophine end - Add tick command support
++
+     public void endTickWork() {
+         this.sprintTimeSpend = this.sprintTimeSpend + (System.nanoTime() - this.sprintTickStartTime);
+     }
+diff --git a/net/minecraft/server/commands/TickCommand.java b/net/minecraft/server/commands/TickCommand.java
+index cae943bae4701f74b46a49d68da83ae797841590..d8f5f1b2f75a4e23556fb016ad47f2cefe1309ce 100644
+--- a/net/minecraft/server/commands/TickCommand.java
++++ b/net/minecraft/server/commands/TickCommand.java
+@@ -14,7 +14,7 @@ import net.minecraft.server.ServerTickRateManager;
+ import net.minecraft.util.TimeUtil;
+ 
+ public class TickCommand {
+-    private static final float MAX_TICKRATE = 10000.0F;
++    public static final float MAX_TICKRATE = 10000.0F; // Lophine - Add tick command support
+     private static final String DEFAULT_TICKRATE = String.valueOf(20);
+ 
+     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+@@ -22,14 +22,14 @@ public class TickCommand {
+             Commands.literal("tick")
+                 .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
+                 .then(Commands.literal("query").executes(c -> tickQuery(c.getSource())))
+-/*                .then(
++                .then(
+                     Commands.literal("rate")
+                         .then(
+                             Commands.argument("rate", FloatArgumentType.floatArg(1.0F, 10000.0F))
+                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(new String[]{DEFAULT_TICKRATE}, b))
+                                 .executes(c -> setTickingRate(c.getSource(), FloatArgumentType.getFloat(c, "rate")))
+                         )
+-                )*/
++                )
+                 .then(
+                     Commands.literal("step")
+                         .executes(c -> step(c.getSource(), 1))

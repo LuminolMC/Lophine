@@ -353,7 +353,7 @@ index ee86a63c8d0d4c798ad09da87598d22c0e516840..57061d97bd368bfe934157293471fd54
  
      public @Nullable Identifier getNoItemIcon() {
 diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
-index fa588ab87f978b8aeaef0f1849aa532e5a4ad940..dd4a92a0ea94d16669535bde9b6728515dafe7f4 100644
+index 718a7786d73852368b6e911716fb494cc4770ef1..61466aa6d11af2858fa2898ef5b4b7515f4365df 100644
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
 @@ -160,7 +160,7 @@ public final class ItemStack implements DataComponentHolder, ItemInstance, Chang

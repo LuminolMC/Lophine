@@ -37,7 +37,7 @@ index 0a20c6f03625391201e5ced167707e54ed27daa1..2872b22e44cba48442c526f0a53e1fc6
              }
  
 diff --git a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
-index 8f0548908a9e43ce29c4476f2707f6898e540aec..8b7c66785a06eb4782de0b0a9b542221d6258220 100644
+index 063cc27df9c8f3ad5c8db5cedcaa3d2bccf6dc24..5ad6aab5e72e27bb402494873770ab5822601939 100644
 --- a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
 +++ b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
 @@ -11,14 +11,7 @@ public class ServerFeatureManager implements FeatureManager {
@@ -53,6 +53,6 @@ index 8f0548908a9e43ce29c4476f2707f6898e540aec..8b7c66785a06eb4782de0b0a9b542221
 -            ));
 -        }
 +        availableFeatures.add(FAKEPLAYER); // Lophine - fakeplayer support
-         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
+         if (Boolean.getBoolean("leavesclip.enable.mixin") || Boolean.getBoolean("hyacinthusclip.enable.mixin")) {
              availableFeatures.add(MIXIN);
          }

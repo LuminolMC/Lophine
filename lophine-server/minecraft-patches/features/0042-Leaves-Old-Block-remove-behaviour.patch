@@ -797,10 +797,10 @@ index 0fbdf810c785c8a596d461e7651361fdedbb6217..ff1471f40b73582df68efbf2996a854c
              this.getBlock().affectNeighborsAfterRemoval(this.asState(), level, pos, movedByPiston);
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index b7ba4d8ed2cc65ba0e85a3cdf8b6568a7c9c02f1..6b5ad391eda92cdbb47ab78a4c27d7e6a3b098a8 100644
+index c4a0e388fff7ee62ff57bc400df5b0a200028d21..eae282928d24a8303b7cdfe151d6e1c58ee9fce1 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -408,22 +408,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -423,22 +423,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
                  boolean blockChanged = !oldState.is(newBlock);
                  boolean movedByPiston = (flags & Block.UPDATE_MOVE_BY_PISTON) != 0;
                  boolean sideEffects = (flags & Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS) == 0;
