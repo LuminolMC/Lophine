@@ -150,7 +150,7 @@ index 65965089d184695588c74294afb2f5c0b28bbf17..5ebff729bb7e75e1c84449c0e3021b97
  
      public ClientInformation clientInformation() {
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 57aff87cc7be0cb7136689412490cd399eff15eb..5a902f36f9157694be4ee65b7687c43f215ae041 100644
+index 96088ba53f043c8bc6971bc62e5dcccd98523698..749ba2e7fa6f7bb9c6e8916a25f04fb63f88aac3 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2099,7 +2099,13 @@ public class ServerGamePacketListenerImpl
@@ -1037,7 +1037,7 @@ index ff1471f40b73582df68efbf2996a854c6aa37d65..668f59f94efb34490bdd7d6aac62fb37
              return function != null ? function.evaluate(this.asState(), pos) : Vec3.ZERO;
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index eae282928d24a8303b7cdfe151d6e1c58ee9fce1..1f0d59e7b682b3d022533b20a11658a99a8e6f7b 100644
+index 11f0f5e1b8ee9ce7e6833d46ccb557d896674431..5a0271b29589db3e02f87b935a787d180b3696f0 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -423,10 +423,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot

@@ -797,7 +797,7 @@ index 0fbdf810c785c8a596d461e7651361fdedbb6217..ff1471f40b73582df68efbf2996a854c
              this.getBlock().affectNeighborsAfterRemoval(this.asState(), level, pos, movedByPiston);
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index c4a0e388fff7ee62ff57bc400df5b0a200028d21..eae282928d24a8303b7cdfe151d6e1c58ee9fce1 100644
+index ef3508dc4c8b3a9c8a6c7ff520cf51a68d6a13d9..11f0f5e1b8ee9ce7e6833d46ccb557d896674431 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -423,22 +423,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot

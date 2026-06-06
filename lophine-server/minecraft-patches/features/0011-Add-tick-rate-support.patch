@@ -24,7 +24,7 @@ index 981f63b75584dbcb4bb0d5672e8c8bb140c52f9d..0a7a23b996d1380ea7ff4a28422fab82
          this.tickConnections();
  
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index eb5c0e77537056a13f445ec5d96b1c92de8f25af..7a01fb6073867be17958407d4d2f6eb84621cf99 100644
+index f60b3b40c7dc5820abc726abc8d094ed873edf6c..6be8f4862e62a021602f7fc4ba5bdd6d3759d71e 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -40,8 +40,8 @@ public final class TickRegionScheduler {

@@ -103,7 +103,7 @@ index 423652d0ccef5c6a3b93480401c3d0f672bbf8a5..65965089d184695588c74294afb2f5c0
              CrashReport report = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory category = report.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 1b998686108254c63d33a19e725ada2abececd8a..366813b9c8ae0d9e86da33c10e3f3bf7aeecc4b0 100644
+index d6fb495ffe5fa54e37515f6c5202c9f36bea9470..a08b78097bb3b549e5c151ee1ed0480042d87d7d 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1459,7 +1459,15 @@ public abstract class Entity
@@ -164,7 +164,7 @@ index b72861c0164ebb13b6fc3e78cd7ce0a2c484f22d..a359d9ce555b9c8ec01ed71b305ab8ef
      }
  
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 244db62e425064563eb98c4ac6328222c74dc38f..b9a93eff68fb9a7960439741d7cea30249fae92a 100644
+index 3708f9ffc46a5b1c038c0e7b2ce84802e2b22397..7760a711f4c49fc3499bf71fabb59ee8b4c85083 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -400,6 +400,7 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
