@@ -34,10 +34,10 @@ index 06160c24f1ffbe1445284bc81598cabb3ad20477..ca3f31a72060f797115787302d32a019
                          // CraftBukkit start - special case for handling block placement with water lilies, frog spawn and snow buckets
                          if (player != null && (this instanceof PlaceOnWaterBlockItem || this instanceof SolidBucketItem)) {
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 7e7292dd8fcb27fdb8e69e42e5383b6c22154747..b7ba4d8ed2cc65ba0e85a3cdf8b6568a7c9c02f1 100644
+index 7760a711f4c49fc3499bf71fabb59ee8b4c85083..ef3508dc4c8b3a9c8a6c7ff520cf51a68d6a13d9 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -1000,12 +1000,6 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -1015,12 +1015,6 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
  
                          profiler.pop();
                      } catch (Throwable var5) {

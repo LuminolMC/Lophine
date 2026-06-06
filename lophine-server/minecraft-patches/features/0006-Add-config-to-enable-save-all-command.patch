@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable save-all command
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 3416445888860746c15a978f401c87245609b64a..fc6402dd0a47f5b2792aa8a21703bfee18dd2388 100644
+index 11cacb26ce260373476dad764014ba1852477831..981f63b75584dbcb4bb0d5672e8c8bb140c52f9d 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -359,6 +359,8 @@ public final class RegionizedServer {
+@@ -364,6 +364,8 @@ public final class RegionizedServer {
          // tick player ping sample
          this.tickPlayerSample();
  
@@ -31,10 +31,10 @@ index 02c004bc7f9a0203523ce4b27cd766d6bdc478c0..3d86e21198f2888422330b6f7c27712f
          private final Reference2ReferenceOpenHashMap<RegionizedData<?>, Object> regionizedData = new Reference2ReferenceOpenHashMap<>();
  
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index bcb1a5ec17269529ef0f9556043a7183df846eab..4503e62a72e67d35db5b091c91e903058157bdbd 100644
+index 89f61f5715942d2b521e04b9fdc8b1b379c0c957..2c2487e1c1c65438119a13bd705a9e44697955ed 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -295,7 +295,11 @@ public class Commands {
+@@ -299,7 +299,11 @@ public class Commands {
              PardonCommand.register(this.dispatcher);
              PardonIpCommand.register(this.dispatcher);
              //PerfCommand.register(this.dispatcher); // Folia - region threading - TODO later
@@ -48,7 +48,7 @@ index bcb1a5ec17269529ef0f9556043a7183df846eab..4503e62a72e67d35db5b091c91e90305
              SaveOnCommand.register(this.dispatcher);
              SetPlayerIdleTimeoutCommand.register(this.dispatcher);
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index f993a4de22558e7b9598aa7500cd3cc1225e4c5b..82315368d5580563fc77548f22a65d04ec73b622 100644
+index ef898f5b60219be00471f9ea227103dfcea5b202..4991b8a925d9431d80f42a4480d76d6602a85347 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1683,6 +1683,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

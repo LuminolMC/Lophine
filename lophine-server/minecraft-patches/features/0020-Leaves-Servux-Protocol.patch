@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/ServerTickRateManager.java b/net/minecraft/server/ServerTickRateManager.java
-index afcab27006558f5d379df723968a612c1cadba60..ddab99a4cc70a1aa365208cb52d8d9b880cdeff6 100644
+index ca35415e152dc63cb9f4ae8da8b06766600922fd..033715812acb8f98a7c7d895d115043e232d5161 100644
 --- a/net/minecraft/server/ServerTickRateManager.java
 +++ b/net/minecraft/server/ServerTickRateManager.java
 @@ -139,4 +139,10 @@ public class ServerTickRateManager extends TickRateManager {
@@ -23,7 +23,7 @@ index afcab27006558f5d379df723968a612c1cadba60..ddab99a4cc70a1aa365208cb52d8d9b8
 +    // Leaves end - servux
  }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index b2ea90b0ab461d202d492411471d2412a9c5d303..049339ae33569d627d2a00ef6cab9cad02c4c014 100644
+index e9547fb9be40c3e999a9172acb48037595439396..0ff635e6956a9935ad6d11e5c7bac189c51244b6 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -2584,6 +2584,8 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet

@@ -5,7 +5,7 @@ Subject: [PATCH] Leaves: Replay Mod API
 
 
 diff --git a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
-index 8b7c66785a06eb4782de0b0a9b542221d6258220..1f3fe7f786bb8f7c59e3a0235dcc572f3171ee6b 100644
+index 5ad6aab5e72e27bb402494873770ab5822601939..0ac9edfa36833a7ebe0353c4aff40955ab3ddf8c 100644
 --- a/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
 +++ b/src/main/java/org/leavesmc/leaves/plugin/ServerFeatureManager.java
 @@ -12,6 +12,7 @@ public class ServerFeatureManager implements FeatureManager {
@@ -13,6 +13,6 @@ index 8b7c66785a06eb4782de0b0a9b542221d6258220..1f3fe7f786bb8f7c59e3a0235dcc572f
      private ServerFeatureManager() {
          availableFeatures.add(FAKEPLAYER); // Lophine - fakeplayer support
 +        availableFeatures.add(PHOTOGRAPHER); // Lophine - Replay Mod API support
-         if (Boolean.getBoolean("leavesclip.enable.mixin")) {
+         if (Boolean.getBoolean("leavesclip.enable.mixin") || Boolean.getBoolean("hyacinthusclip.enable.mixin")) {
              availableFeatures.add(MIXIN);
          }

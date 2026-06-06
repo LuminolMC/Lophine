@@ -23,15 +23,13 @@ import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.bot.agent.actions.*;
 import org.leavesmc.leaves.entity.bot.action.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Actions {
 
     private static final Map<String, AbstractBotAction<?>> actionsByName = new HashMap<>();
     private static final Map<Class<?>, AbstractBotAction<?>> actionsByClass = new HashMap<>();
+    private static final Set<String> guiRegistered = new HashSet<>();
 
     static {
         register(new ServerAttackAction(), AttackAction.class);
@@ -60,6 +58,9 @@ public class Actions {
     }
 
     public static boolean register(@NotNull AbstractBotAction<?> action, Class<?> type, boolean registerToGui) {
+        if (registerToGui) {
+            guiRegistered.add(action.getName());
+        }
         if (!actionsByName.containsKey(action.getName())) {
             actionsByName.put(action.getName(), action);
             actionsByClass.put(type, action);
