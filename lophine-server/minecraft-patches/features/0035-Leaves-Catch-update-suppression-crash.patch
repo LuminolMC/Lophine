@@ -103,7 +103,7 @@ index 423652d0ccef5c6a3b93480401c3d0f672bbf8a5..65965089d184695588c74294afb2f5c0
              CrashReport report = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory category = report.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index d6fb495ffe5fa54e37515f6c5202c9f36bea9470..a08b78097bb3b549e5c151ee1ed0480042d87d7d 100644
+index 07c5fed7b0bf3ecefb54ccb0bfb922c2f11f7939..8a92d1748464ef8d1d33e51163a3e0d74120e5a7 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1459,7 +1459,15 @@ public abstract class Entity
