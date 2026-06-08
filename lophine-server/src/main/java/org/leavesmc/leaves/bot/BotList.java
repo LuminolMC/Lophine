@@ -292,7 +292,7 @@ public class BotList {
                 this.manualSaveDataStorage.save(bot);
             }
         } else {
-            bot.dropAll(true);
+            if (!TickThread.isShutdownThread()) bot.dropAll(true);
             botsNameByWorldUuid.getOrDefault(bot.level().uuid.toString(), new HashSet<>()).remove(bot.getBukkitEntity().getName());
         }
 
@@ -307,7 +307,7 @@ public class BotList {
                             villager.setTradingPlayer(null);
                         }
                     }
-                    entity1.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+                    if (!TickThread.isShutdownThread()) entity1.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
                 });
             }
         }
@@ -315,14 +315,16 @@ public class BotList {
         bot.unRide();
         for (ThrownEnderpearl thrownEnderpearl : bot.getEnderPearls()) {
             if (!thrownEnderpearl.level().paperConfig().misc.legacyEnderPearlBehavior) {
-                thrownEnderpearl.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER, EntityRemoveEvent.Cause.PLAYER_QUIT);
+                if (!TickThread.isShutdownThread()) thrownEnderpearl.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER, EntityRemoveEvent.Cause.PLAYER_QUIT);
             } else {
                 thrownEnderpearl.setOwner(null);
             }
         }
 
-        if (!TickThread.isShutdownThread()) bot.level().getCurrentWorldData().connections.remove(bot.connection.connection);
-        bot.level().removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+        if (!TickThread.isShutdownThread()) {
+            bot.level().getCurrentWorldData().connections.remove(bot.connection.connection);
+            bot.level().removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+        }
         bot.retireScheduler();
 
         this.bots.remove(bot);
