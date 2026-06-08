@@ -45,7 +45,7 @@ git clone https://github.com/LuminolMC/Lophine.git
 cd Lophine
 
 # Apply patches and build Paperclip JAR
-./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
+./gradlew applyAllPatches && ./gradlew :lophine-server:createPaperclipJar
 ```
 
 After building, you can find the generated JAR file in the `lophine-server/build/libs` directory.
