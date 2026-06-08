@@ -400,15 +400,25 @@ public class REIServerProtocol implements LeavesProtocol {
     private static List<List<ItemStack>> readInputs(RegistryAccess registryAccess, ListTag tag) {
         List<List<ItemStack>> items = new ArrayList<>();
         for (Tag t : tag) {
-            CompoundTag compoundTag = (CompoundTag) t;
-            compoundTag.getInt("Index").orElseThrow();
+            if (!(t instanceof CompoundTag compoundTag)) {
+                throw new IllegalStateException("Invalid REI input entry");
+            }
+            if (compoundTag.getInt("Index").isEmpty()) {
+                throw new IllegalStateException("Missing REI input index");
+            }
             ListTag ingredientList = compoundTag.getListOrEmpty("Ingredient");
             List<ItemStack> slotItems = new ArrayList<>();
             for (Tag ingredient : ingredientList) {
-                CompoundTag ingredientTag = (CompoundTag) ingredient;
+                if (!(ingredient instanceof CompoundTag ingredientTag)) {
+                    throw new IllegalStateException("Invalid REI ingredient entry");
+                }
+                Tag value = ingredientTag.get("value");
+                if (value == null) {
+                    throw new IllegalStateException("Missing REI ingredient value");
+                }
                 ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(
                         registryAccess.createSerializationContext(NbtOps.INSTANCE),
-                        ingredientTag.get("value")
+                        value
                 ).getOrThrow();
                 slotItems.add(stack);
             }
@@ -420,16 +430,28 @@ public class REIServerProtocol implements LeavesProtocol {
     private static List<SlotAccessor> readSlots(AbstractContainerMenu menu, ServerPlayer player, ListTag tag) {
         List<SlotAccessor> slots = new ArrayList<>();
         for (Tag t : tag) {
-            CompoundTag compoundTag = (CompoundTag) t;
-            String id = compoundTag.getString("id").orElseThrow();
+            if (!(t instanceof CompoundTag compoundTag)) {
+                throw new IllegalStateException("Invalid REI slot entry");
+            }
+            String id = compoundTag.getString("id").orElseThrow(() -> new IllegalStateException("Missing REI slot id"));
             if (!id.startsWith(PROTOCOL_ID + ":")) {
                 throw new IllegalStateException("Invalid slot id: " + id + ", expected to start with '" + PROTOCOL_ID + ":'");
             }
             id = id.substring((PROTOCOL_ID + ":").length());
-            int slot = compoundTag.getInt("Slot").orElseThrow();
+            int slot = compoundTag.getInt("Slot").orElseThrow(() -> new IllegalStateException("Missing REI slot index"));
             SlotAccessor accessor = switch (id) {
-                case "vanilla" -> new VanillaSlotAccessor(menu.slots.get(slot));
-                case "player" -> new PlayerInventorySlotAccessor(player, slot);
+                case "vanilla" -> {
+                    if (slot < 0 || slot >= menu.slots.size()) {
+                        throw new IllegalStateException("Invalid vanilla slot index: " + slot);
+                    }
+                    yield new VanillaSlotAccessor(menu.slots.get(slot));
+                }
+                case "player" -> {
+                    if (slot < 0 || slot >= player.getInventory().getContainerSize()) {
+                        throw new IllegalStateException("Invalid player slot index: " + slot);
+                    }
+                    yield new PlayerInventorySlotAccessor(player, slot);
+                }
                 default -> throw new IllegalStateException("Unknown container id: " + id);
             };
             slots.add(accessor);

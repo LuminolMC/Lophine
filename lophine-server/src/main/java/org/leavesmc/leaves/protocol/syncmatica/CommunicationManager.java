@@ -51,6 +51,7 @@ public class CommunicationManager implements LeavesProtocol {
     protected static final Map<UUID, Exchange> modifyState = new ConcurrentHashMap<>();
     protected static final Rotation[] rotOrdinals = Rotation.values();
     protected static final Mirror[] mirOrdinals = Mirror.values();
+    private static final int MAX_SUB_REGION_MODIFICATIONS = 4096;
     private static final Map<UUID, List<ServerPlacement>> downloadingFile = new ConcurrentHashMap<>();
     private static final Map<ExchangeTarget, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
@@ -87,7 +88,11 @@ public class CommunicationManager implements LeavesProtocol {
 
     @ProtocolHandler.PayloadReceiver(payload = SyncmaticaPayload.class)
     public static void onPacketGet(ServerPlayer player, SyncmaticaPayload payload) {
-        onPacket(player.connection.exchangeTarget, payload.packetType(), payload.data());
+        try {
+            onPacket(player.connection.exchangeTarget, payload.packetType(), payload.data());
+        } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
+            LOGGER.warn("Rejected malformed Syncmatica packet {} from {}", payload.packetType(), player.getScoreboardName(), exception);
+        }
     }
 
     public static void onPacket(final @NotNull ExchangeTarget source, final Identifier id, final FriendlyByteBuf packetBuf) {
@@ -326,18 +331,28 @@ public class CommunicationManager implements LeavesProtocol {
     public static void receivePositionData(final @NotNull ServerPlacement placement, final @NotNull FriendlyByteBuf buf, final @NotNull ExchangeTarget exchangeTarget) {
         final BlockPos pos = buf.readBlockPos();
         final String dimensionId = buf.readUtf(32767);
-        final Rotation rot = rotOrdinals[buf.readInt()];
-        final Mirror mir = mirOrdinals[buf.readInt()];
+        final Rotation rot = readOrdinal(rotOrdinals, buf.readInt(), "rotation");
+        final Mirror mir = readOrdinal(mirOrdinals, buf.readInt(), "mirror");
         placement.move(dimensionId, pos, rot, mir);
 
         if (exchangeTarget.getFeatureSet().hasFeature(Feature.CORE_EX)) {
             final SubRegionData subRegionData = placement.getSubRegionData();
             subRegionData.reset();
             final int limit = buf.readInt();
+            if (limit < 0 || limit > MAX_SUB_REGION_MODIFICATIONS) {
+                throw new IllegalArgumentException("Invalid sub-region modification count: " + limit);
+            }
             for (int i = 0; i < limit; i++) {
-                subRegionData.modify(buf.readUtf(32767), buf.readBlockPos(), rotOrdinals[buf.readInt()], mirOrdinals[buf.readInt()]);
+                subRegionData.modify(buf.readUtf(32767), buf.readBlockPos(), readOrdinal(rotOrdinals, buf.readInt(), "sub-region rotation"), readOrdinal(mirOrdinals, buf.readInt(), "sub-region mirror"));
             }
         }
+    }
+
+    private static <T> T readOrdinal(T[] values, int ordinal, String name) {
+        if (ordinal < 0 || ordinal >= values.length) {
+            throw new IllegalArgumentException("Invalid " + name + " ordinal: " + ordinal);
+        }
+        return values[ordinal];
     }
 
     public static void download(final ServerPlacement syncmatic, final ExchangeTarget source) throws NoSuchAlgorithmException, IOException {

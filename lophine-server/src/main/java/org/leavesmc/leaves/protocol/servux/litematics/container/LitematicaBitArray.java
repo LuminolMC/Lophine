@@ -47,11 +47,19 @@ public class LitematicaBitArray {
 
     public LitematicaBitArray(int bitsPerEntryIn, long arraySizeIn, @Nullable long[] longArrayIn) {
         Validate.inclusiveBetween(1L, 32L, bitsPerEntryIn);
+        Validate.isTrue(arraySizeIn >= 0L, "arraySize must not be negative");
         this.arraySize = arraySizeIn;
         this.bitsPerEntry = bitsPerEntryIn;
         this.maxEntryValue = (1L << bitsPerEntryIn) - 1L;
 
-        this.longArray = Objects.requireNonNullElseGet(longArrayIn, () -> new long[(int) (roundUp(arraySizeIn * bitsPerEntryIn, 64L) / 64L)]);
+        long backingLength = roundUp(Math.multiplyExact(arraySizeIn, bitsPerEntryIn), 64L) / 64L;
+        Validate.isTrue(backingLength <= Integer.MAX_VALUE, "BitArray backing storage is too large");
+        if (longArrayIn != null) {
+            Validate.isTrue(longArrayIn.length >= backingLength, "BitArray backing storage is too small");
+            this.longArray = longArrayIn;
+        } else {
+            this.longArray = new long[(int) backingLength];
+        }
     }
 
     public static long roundUp(long value, long interval) {
@@ -71,6 +79,7 @@ public class LitematicaBitArray {
     }
 
     public void setAt(long index, int value) {
+        this.checkIndex(index);
         long startOffset = index * (long) this.bitsPerEntry;
         int startArrIndex = (int) (startOffset >> 6); // startOffset / 64
         int endArrIndex = (int) (((index + 1L) * (long) this.bitsPerEntry - 1L) >> 6);
@@ -85,6 +94,7 @@ public class LitematicaBitArray {
     }
 
     public int getAt(long index) {
+        this.checkIndex(index);
         long startOffset = index * (long) this.bitsPerEntry;
         int startArrIndex = (int) (startOffset >> 6); // startOffset / 64
         int endArrIndex = (int) (((index + 1L) * (long) this.bitsPerEntry - 1L) >> 6);
@@ -100,5 +110,11 @@ public class LitematicaBitArray {
 
     public long size() {
         return this.arraySize;
+    }
+
+    private void checkIndex(long index) {
+        if (index < 0L || index >= this.arraySize) {
+            throw new IndexOutOfBoundsException("BitArray index " + index + " out of bounds for length " + this.arraySize);
+        }
     }
 }

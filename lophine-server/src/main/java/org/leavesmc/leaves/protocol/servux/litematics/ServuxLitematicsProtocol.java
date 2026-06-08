@@ -264,12 +264,17 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
         }
 
         if (tags.getStringOr("Task", "").equals("LitematicaPaste")) {
-            ServuxProtocol.LOGGER.debug("litematic_data: Servux Paste request from player {}", player.getName().getString());
-            ServerLevel serverLevel = player.level();
-            long timeStart = System.currentTimeMillis();
-            SchematicPlacement placement = SchematicPlacement.createFromNbt(tags);
-            ReplaceBehavior replaceMode = ReplaceBehavior.fromStringStatic(tags.getStringOr("ReplaceMode", ReplaceBehavior.NONE.name()));
-            placement.pasteTo(serverLevel, replaceMode, player, timeStart);
+            try {
+                ServuxProtocol.LOGGER.debug("litematic_data: Servux Paste request from player {}", player.getName().getString());
+                ServerLevel serverLevel = player.level();
+                long timeStart = System.currentTimeMillis();
+                SchematicPlacement placement = SchematicPlacement.createFromNbt(tags);
+                ReplaceBehavior replaceMode = ReplaceBehavior.fromStringStatic(tags.getStringOr("ReplaceMode", ReplaceBehavior.NONE.name()));
+                placement.pasteTo(serverLevel, replaceMode, player, timeStart);
+            } catch (RuntimeException exception) {
+                player.getBukkitEntity().sendActionBar(Component.text("Invalid Litematica paste data", NamedTextColor.RED));
+                ServuxProtocol.LOGGER.warn("Rejected invalid Litematica paste request from {}", player.getScoreboardName(), exception);
+            }
         }
     }
 

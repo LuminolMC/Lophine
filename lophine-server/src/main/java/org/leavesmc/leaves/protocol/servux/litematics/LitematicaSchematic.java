@@ -51,17 +51,21 @@ public record LitematicaSchematic(Map<String, SubRegion> subRegions, SchematicMe
 
     public static final int MINECRAFT_DATA_VERSION = SharedConstants.getProtocolVersion();
     public static final int SCHEMATIC_VERSION = 7;
+    private static final long MAX_REGION_VOLUME = 16_777_216L;
 
     @NotNull
     @Contract("_ -> new")
     public static LitematicaSchematic readFromNBT(@NotNull CompoundTag nbt) {
         if (nbt.contains("Version")) {
             final int version = nbt.getIntOr("Version", -1);
-            final int minecraftDataVersion = nbt.contains("MinecraftDataVersion") ? nbt.getInt("MinecraftDataVersion").orElseThrow() : SharedConstants.getProtocolVersion();
+            final int minecraftDataVersion = nbt.getIntOr("MinecraftDataVersion", SharedConstants.getProtocolVersion());
 
             if (version >= 1 && version <= SCHEMATIC_VERSION) {
                 SchematicMetadata metadata = SchematicMetadata.readFromNBT(nbt.getCompoundOrEmpty("Metadata"), version, minecraftDataVersion, FileType.LITEMATICA_SCHEMATIC);
                 Map<String, SubRegion> subRegions = readSubRegionsFromNBT(nbt.getCompoundOrEmpty("Regions"), version, minecraftDataVersion);
+                if (subRegions.isEmpty()) {
+                    throw new IllegalArgumentException("Schematic has no regions");
+                }
                 return new LitematicaSchematic(subRegions, metadata);
             } else {
                 throw new RuntimeException("Unsupported or future schematic version");
@@ -116,6 +120,7 @@ public record LitematicaSchematic(Map<String, SubRegion> subRegions, SchematicMe
             if (position == null || size == null) {
                 throw new IllegalArgumentException("Invalid region");
             }
+            validateRegionSize(size);
 
             Map<BlockPos, CompoundTag> tileEntities;
             List<EntityInfo> entities;
@@ -141,6 +146,9 @@ public record LitematicaSchematic(Map<String, SubRegion> subRegions, SchematicMe
             Tag blockState = regionTag.get("BlockStates");
             if (blockState != null && blockState.getId() == Tag.TAG_LONG_ARRAY) {
                 ListTag palette = regionTag.getListOrEmpty("BlockStatePalette");
+                if (palette.isEmpty()) {
+                    throw new IllegalArgumentException("Missing block state palette");
+                }
                 long[] blockStateArr = ((LongArrayTag) blockState).getAsLongArray();
                 BlockPos posEndRel = PositionUtils.getRelativeEndPositionFromAreaSize(size).offset(position);
                 BlockPos posMin = PositionUtils.getMinCorner(position, posEndRel);
@@ -153,6 +161,19 @@ public record LitematicaSchematic(Map<String, SubRegion> subRegions, SchematicMe
             }
 
             return new SubRegion(blockContainers, tileEntities, pendingBlockTicks, pendingFluidTicks, entities, position, size);
+        }
+
+        private static void validateRegionSize(BlockPos size) {
+            long x = Math.abs((long) size.getX());
+            long y = Math.abs((long) size.getY());
+            long z = Math.abs((long) size.getZ());
+            if (x == 0 || y == 0 || z == 0) {
+                throw new IllegalArgumentException("Region has zero size");
+            }
+            long volume = Math.multiplyExact(Math.multiplyExact(x, y), z);
+            if (volume > MAX_REGION_VOLUME) {
+                throw new IllegalArgumentException("Region volume too large: " + volume);
+            }
         }
 
         private static List<EntityInfo> readEntitiesFromNBT(ListTag tagList) {

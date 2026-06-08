@@ -62,26 +62,44 @@ public class SchematicPlacement {
     }
 
     public static SchematicPlacement createFromNbt(CompoundTag tags) {
+        if (!tags.contains("Schematics")) {
+            throw new IllegalArgumentException("Missing Schematics tag");
+        }
+        BlockPos origin = NbtUtils.readBlockPosFromArrayTag(tags, "Origin");
+        if (origin == null) {
+            throw new IllegalArgumentException("Missing or invalid Origin tag");
+        }
         SchematicPlacement placement = new SchematicPlacement(
                 LitematicaSchematic.readFromNBT(tags.getCompoundOrEmpty("Schematics")),
-                NbtUtils.readBlockPosFromArrayTag(tags, "Origin"),
+                origin,
                 tags.getStringOr("Name", "")
         );
-        placement.mirror = Mirror.values()[tags.getIntOr("Mirror", 0)];
-        placement.rotation = Rotation.values()[tags.getIntOr("Rotation", 0)];
+        placement.mirror = enumByOrdinal(Mirror.values(), tags.getIntOr("Mirror", 0), "Mirror");
+        placement.rotation = enumByOrdinal(Rotation.values(), tags.getIntOr("Rotation", 0), "Rotation");
         for (String name : tags.getCompoundOrEmpty("SubRegions").keySet()) {
             CompoundTag compound = tags.getCompoundOrEmpty("SubRegions").getCompoundOrEmpty(name);
+            BlockPos pos = NbtUtils.readBlockPosFromArrayTag(compound, "Pos");
+            if (pos == null) {
+                throw new IllegalArgumentException("Missing or invalid Pos tag for sub-region " + name);
+            }
             var sub = new SubRegionPlacement(
                     compound.getStringOr("Name", "?"),
-                    NbtUtils.readBlockPosFromArrayTag(compound, "Pos"),
-                    Rotation.values()[compound.getIntOr("Rotation", 0)],
-                    Mirror.values()[compound.getIntOr("Mirror", 0)],
+                    pos,
+                    enumByOrdinal(Rotation.values(), compound.getIntOr("Rotation", 0), "SubRegions." + name + ".Rotation"),
+                    enumByOrdinal(Mirror.values(), compound.getIntOr("Mirror", 0), "SubRegions." + name + ".Mirror"),
                     compound.getBooleanOr("Enabled", true),
                     compound.getBooleanOr("IgnoreEntities", false)
             );
             placement.relativeSubRegionPlacements.put(name, sub);
         }
         return placement;
+    }
+
+    private static <T> T enumByOrdinal(T[] values, int ordinal, String tagName) {
+        if (ordinal < 0 || ordinal >= values.length) {
+            throw new IllegalArgumentException("Invalid " + tagName + " ordinal: " + ordinal);
+        }
+        return values[ordinal];
     }
 
     public static IntBoundingBox getBoundsWithinChunkForBox(Box box, int chunkX, int chunkZ) {
@@ -302,7 +320,13 @@ public class SchematicPlacement {
         AtomicInteger count_full = new AtomicInteger();
         AtomicInteger count = new AtomicInteger();
 
-        streamChunkPos(Objects.requireNonNull(enclosingBox.toVanilla())).forEach(chunkPos -> {
+        BlockBox vanillaBox = enclosingBox.toVanilla();
+        if (vanillaBox == null) {
+            ServuxProtocol.LOGGER.error("receiver a null vanilla enclosing box");
+            return;
+        }
+
+        streamChunkPos(vanillaBox).forEach(chunkPos -> {
                     RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
                             serverWorld,
                             chunkPos.x(),

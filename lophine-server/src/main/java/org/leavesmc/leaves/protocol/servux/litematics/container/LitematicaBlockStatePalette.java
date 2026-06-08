@@ -49,7 +49,9 @@ public interface LitematicaBlockStatePalette {
         final int size = tagList.size();
 
         for (int i = 0; i < size; ++i) {
-            CompoundTag tag = tagList.getCompound(i).orElseThrow();
+            final int paletteIndex = i;
+            CompoundTag tag = tagList.getCompound(i)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid block state palette entry at index " + paletteIndex));
             BlockState state = NbtUtils.readBlockState(lookup, tag);
 
             if (i > 0 || state != LitematicaBlockStateContainer.AIR_BLOCK_STATE) {
