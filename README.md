@@ -45,7 +45,7 @@ git clone https://github.com/LuminolMC/Lophine.git
 cd Lophine
 
 # 应用补丁并构建 Paperclip JAR
-./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
+./gradlew applyAllPatches && ./gradlew createPaperclipJar
 ```
 
 构建完成后，您可以在 `lophine-server/build/libs` 目录中找到生成的 JAR 文件。

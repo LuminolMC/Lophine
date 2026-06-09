@@ -50,10 +50,12 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.EntityRemoveEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.event.bot.*;
+import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -190,7 +192,11 @@ public class BotList {
         bot.isRealPlayer = true;
         bot.loginTime = System.currentTimeMillis();
         bot.connection = new ServerBotPacketListenerImpl(this.server, bot);
+        if (bot.connection.connection.getPlayer() != bot) {
+            throw new IllegalStateException("Bot connection is not bound to its bot player");
+        }
         bot.connection.markClientLoaded();
+        bot.getBukkitEntity().setMetadata("NPC", new FixedMetadataValue(MinecraftInternalPlugin.INSTANCE, true));
         bot.setServerLevel(world);
 
         BotSpawnLocationEvent event = new BotSpawnLocationEvent(bot.getBukkitEntity(), location);
@@ -315,7 +321,7 @@ public class BotList {
             }
         }
 
-        if (!TickThread.isShutdownThread()) bot.level().getCurrentWorldData().connections.remove(bot.connection.connection);
+        bot.level().getCurrentWorldData().connections.remove(bot.connection.connection);
         bot.level().removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
         bot.retireScheduler();
 
