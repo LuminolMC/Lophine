@@ -45,6 +45,7 @@ import java.util.jar.JarFile;
 public class LeavesProtocolManager {
 
     private static final Logger LOGGER = LogUtils.getClassLogger();
+    private static final LeavesCustomPayload INVALID_PAYLOAD = new InvalidPayload();
 
     private static final Map<Class<? extends LeavesCustomPayload>, PayloadReceiverInvokerHolder> PAYLOAD_RECEIVERS = new HashMap<>();
     private static final Map<Class<? extends LeavesCustomPayload>, Identifier> IDS = new HashMap<>();
@@ -217,8 +218,8 @@ public class LeavesProtocolManager {
         try {
             return codec.decode(ProtocolUtils.decorate(buf));
         } catch (Exception e) {
-            LOGGER.error("Failed to decode payload {}", location, e);
-            throw e;
+            LOGGER.warn("Rejected malformed Leaves payload {}", location, e);
+            return INVALID_PAYLOAD;
         }
     }
 
@@ -238,9 +239,16 @@ public class LeavesProtocolManager {
     }
 
     public static void handlePayload(IdentifierSelector selector, LeavesCustomPayload payload) {
+        if (payload == INVALID_PAYLOAD) {
+            return;
+        }
         PayloadReceiverInvokerHolder holder;
         if ((holder = PAYLOAD_RECEIVERS.get(payload.getClass())) != null) {
-            holder.invoke(selector, payload);
+            try {
+                holder.invoke(selector, payload);
+            } catch (RuntimeException exception) {
+                LOGGER.warn("Rejected malformed Leaves payload {} from {}", payload.getClass().getName(), describeSelector(selector), exception);
+            }
         }
     }
 
@@ -248,20 +256,42 @@ public class LeavesProtocolManager {
         RegistryFriendlyByteBuf buf1 = ProtocolUtils.decorate(buf);
         BytebufReceiverInvokerHolder holder;
         if ((holder = STRICT_BYTEBUF_RECEIVERS.get(location.toString())) != null) {
-            holder.invoke(selector, buf1);
+            safeInvokeBytebuf(holder, selector, location, buf1);
             return true;
         }
         if ((holder = NAMESPACED_BYTEBUF_RECEIVERS.get(location.getNamespace())) != null) {
-            if (holder.invoke(selector, buf1)) {
+            if (safeInvokeBytebuf(holder, selector, location, buf1)) {
                 return true;
             }
         }
         for (var holder1 : GENERIC_BYTEBUF_RECEIVERS) {
-            if (holder1.invoke(selector, buf1)) {
+            if (safeInvokeBytebuf(holder1, selector, location, buf1)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static boolean safeInvokeBytebuf(BytebufReceiverInvokerHolder holder, IdentifierSelector selector, Identifier location, RegistryFriendlyByteBuf buf) {
+        try {
+            return holder.invoke(selector, buf);
+        } catch (RuntimeException exception) {
+            LOGGER.warn("Rejected malformed bytebuf payload {} from {}", location, describeSelector(selector), exception);
+            return true;
+        }
+    }
+
+    private static String describeSelector(IdentifierSelector selector) {
+        if (selector.player() != null) {
+            return selector.player().getScoreboardName();
+        }
+        if (selector.context() != null) {
+            return selector.context().profile().name();
+        }
+        return "unknown";
+    }
+
+    private record InvalidPayload() implements LeavesCustomPayload {
     }
 
     public static void handleTick() {

@@ -430,23 +430,31 @@ public class ServerBot extends ServerPlayer {
         super.readAdditionalSaveData(nbt);
         this.setShiftKeyDown(nbt.getBooleanOr("isShiftKeyDown", false));
 
-        CompoundTag createNbt = nbt.read("createStatus", CompoundTag.CODEC).orElseThrow();
+        CompoundTag createNbt = nbt.read("createStatus", CompoundTag.CODEC)
+                .orElseThrow(() -> new IllegalArgumentException("Missing bot createStatus"));
+        String rawName = createNbt.getString("rawName")
+                .orElseGet(() -> createNbt.getString("realName")
+                        .orElseThrow(() -> new IllegalArgumentException("Missing bot rawName")));
+        String name = createNbt.getString("name")
+                .orElseThrow(() -> new IllegalArgumentException("Missing bot name"));
+        String skinName = createNbt.getStringOr("skinName", rawName);
         BotCreateState.Builder createBuilder = BotCreateState
-                .builder(createNbt.getString("rawName")
-                        .orElseGet(() -> createNbt.getString("realName")
-                                .orElseThrow()), null) // Convert from legacy version, consider to use ca.spottedleaf.dataconverter.minecraft.MCDataConverter instead for release version
-                .name(createNbt.getString("name").orElseThrow());
+                .builder(rawName, null) // Convert from legacy version, consider to use ca.spottedleaf.dataconverter.minecraft.MCDataConverter instead for release version
+                .name(name);
 
         String[] skin = null;
         if (createNbt.contains("skin")) {
-            ListTag skinTag = createNbt.getList("skin").orElseThrow();
+            ListTag skinTag = createNbt.getList("skin")
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid bot skin list"));
             skin = new String[skinTag.size()];
             for (int i = 0; i < skinTag.size(); i++) {
-                skin[i] = skinTag.getString(i).orElseThrow();
+                final int skinIndex = i;
+                skin[i] = skinTag.getString(i)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid bot skin entry at index " + skinIndex));
             }
         }
 
-        createBuilder.skinName(createNbt.getString("skinName").orElseThrow()).skin(skin);
+        createBuilder.skinName(skinName).skin(skin);
         createBuilder.createReason(BotCreateEvent.CreateReason.INTERNAL).creator(null);
 
         this.createState = createBuilder.build();
@@ -456,11 +464,17 @@ public class ServerBot extends ServerPlayer {
         if (FakePlayerCompatConfig.fakePlayerReloadAction && nbt.list("actions", CompoundTag.CODEC).isPresent()) {
             ValueInput.TypedInputList<CompoundTag> actionNbt = nbt.list("actions", CompoundTag.CODEC).orElseThrow();
             actionNbt.forEach(actionTag -> {
-                AbstractBotAction<?> action = Actions.getForName(actionTag.getString("actionName").orElseThrow());
-                if (action != null) {
-                    AbstractBotAction<?> newAction = action.create();
-                    newAction.load(actionTag);
-                    this.actions.add(newAction);
+                try {
+                    String actionName = actionTag.getString("actionName")
+                            .orElseThrow(() -> new IllegalArgumentException("Missing actionName"));
+                    AbstractBotAction<?> action = Actions.getForName(actionName);
+                    if (action != null) {
+                        AbstractBotAction<?> newAction = action.create();
+                        newAction.load(actionTag);
+                        this.actions.add(newAction);
+                    }
+                } catch (RuntimeException exception) {
+                    LophineLogger.LOGGER.warn("Skipped invalid saved action for bot {}", this.getScoreboardName(), exception);
                 }
             });
         }
@@ -468,10 +482,16 @@ public class ServerBot extends ServerPlayer {
         if (nbt.list("configs", CompoundTag.CODEC).isPresent()) {
             ValueInput.TypedInputList<CompoundTag> configNbt = nbt.list("configs", CompoundTag.CODEC).orElseThrow();
             for (CompoundTag configTag : configNbt) {
-                AbstractBotConfig<?, ?> config = Configs.getConfig(configTag.getString("configName").orElseThrow());
-                if (config != null) {
-                    config.setBot(this);
-                    config.load(configTag);
+                try {
+                    String configName = configTag.getString("configName")
+                            .orElseThrow(() -> new IllegalArgumentException("Missing configName"));
+                    AbstractBotConfig<?, ?> config = Configs.getConfig(configName);
+                    if (config != null) {
+                        config.setBot(this);
+                        config.load(configTag);
+                    }
+                } catch (RuntimeException exception) {
+                    LophineLogger.LOGGER.warn("Skipped invalid saved config for bot {}", this.getScoreboardName(), exception);
                 }
             }
         }
