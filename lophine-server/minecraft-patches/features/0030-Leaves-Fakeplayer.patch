@@ -33,7 +33,7 @@ index efbbc1a40d203a2818eeda2a4e938b9a6117f1c3..6b85a5ad9af0c57a0d4d5b55f62b82c5
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 9e290fa626caffac148920c54479a75ad0919e70..54eaf4f7f8cf728d5d02d88de8d57d88504bc46d 100644
+index 9e290fa626caffac148920c54479a75ad0919e70..75d93d7d8bc6077dd80e499cd43327a4afe58f51 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -297,6 +297,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -45,15 +45,24 @@ index 9e290fa626caffac148920c54479a75ad0919e70..54eaf4f7f8cf728d5d02d88de8d57d88
      public static <S extends MinecraftServer> S spin(final Function<Thread, S> factory) {
          ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry.init(); // Paper - rewrite data converter system
          AtomicReference<S> serverReference = new AtomicReference<>();
-@@ -1120,6 +1122,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
- 
-         LOGGER.info("Stopping server");
-         Commands.COMMAND_SENDING_POOL.shutdownNow(); // Paper - Perf: Async command map building; Shutdown and don't bother finishing
-+        this.getBotList().removeAll(); // Leaves - save or remove bot
-         // CraftBukkit start
-         if (this.server != null) {
-             if (false) this.server.spark.disable(); // Paper - spark // Luminol - Force disable builtin spark
-@@ -1695,7 +1698,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1226,6 +1228,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         this.safeShutdown(wait, false);
+     }
+     public void safeShutdown(final boolean wait, final boolean isRestarting) {
++        // Lophine start - Folia changes
++        safeShutdown(wait, isRestarting, false);
++    }
++
++    public void safeShutdown(final boolean wait, final boolean isRestarting, boolean force) {
++        if (!force && !this.getBotList().forceShutdown && !this.getBotList().removeAll()) { // Leaves - save or remove bot
++            this.getPlayerList().broadcastSystemMessage(Component.literal("Bot Still need to save, please wait! If you want to shuntdown without bot data saving, please use /stop force"), false);
++            return;
++        }
++        // Lophine end - Folia changes
+         this.isRestarting = isRestarting;
+         this.hasLoggedStop = true; // Paper - Debugging
+         if (this.isDebugging()) io.papermc.paper.util.TraceUtil.dumpTraceForThread("Server stopped"); // Paper - Debugging
+@@ -1695,7 +1707,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int emptyTickThreshold = this.pauseWhenEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
          if (false && emptyTickThreshold > 0) { // Folia - region threading - this is complicated to implement, and even if done correctly is messy
@@ -62,7 +71,7 @@ index 9e290fa626caffac148920c54479a75ad0919e70..54eaf4f7f8cf728d5d02d88de8d57d88
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1827,6 +1830,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1827,6 +1839,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              this.isSaving = true;
              if (playerSaveInterval > 0) {
                  this.playerList.saveAll(playerSaveInterval);
@@ -70,7 +79,7 @@ index 9e290fa626caffac148920c54479a75ad0919e70..54eaf4f7f8cf728d5d02d88de8d57d88
              }
              if (region == null && fullSave) { // Folia - region threading - don't auto save level data
                  this.saveGlobalData(false);
-@@ -2065,6 +2069,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2065,6 +2078,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      protected void tickConnection() {
          this.getConnection().tick();
@@ -78,7 +87,7 @@ index 9e290fa626caffac148920c54479a75ad0919e70..54eaf4f7f8cf728d5d02d88de8d57d88
      }
  
      public void forceGameTimeSynchronization() {
-@@ -3270,6 +3275,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3270,6 +3284,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.debugSubscribers;
      }
  
@@ -213,6 +222,22 @@ index 636f56bfc0e9075b257e2eb14e858975bdedd801..20cbc0e65fea3fc2d0033259c2f35e15
              if (!list.isOp(player)) {
                  list.op(player);
                  count++;
+diff --git a/net/minecraft/server/commands/StopCommand.java b/net/minecraft/server/commands/StopCommand.java
+index e9c9a468f046832e8eaa999bb57da261b4633604..2efe24c0378a80dd2750b10a54c1887816236c1a 100644
+--- a/net/minecraft/server/commands/StopCommand.java
++++ b/net/minecraft/server/commands/StopCommand.java
+@@ -11,6 +11,10 @@ public class StopCommand {
+             c.getSource().sendSuccess(() -> Component.translatable("commands.stop.stopping"), true);
+             c.getSource().getServer().halt(false);
+             return 1;
+-        }));
++        }).then(Commands.literal("force").requires(Commands.hasPermission(Commands.LEVEL_OWNERS)).executes(c -> {
++            c.getSource().sendSuccess(() -> Component.translatable("commands.stop.stopping"), true);
++            c.getSource().getServer().safeShutdown(false, false, true);
++            return 1;
++        })));
+     }
+ }
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
 index 1bc1e9a77dca7acfe5f989f6439f185d0d2e20a6..1790e8c141a8d3f7ccf4b11f9a28b3582325e317 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
