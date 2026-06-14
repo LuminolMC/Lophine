@@ -14,8 +14,8 @@ public class RedirectedConfigs {
     }
 
     private static void updateSuppressionCrashFix() {
+        ConfigsInstance config = ConfigManager.getConfigs("lophine");
         try {
-            ConfigsInstance config = ConfigManager.getConfigs("lophine");
             boolean updateSuppressionCrashFixEnabled = config.getConfigOrigin("fixes.update-suppression-crash-fix.enabled");
             if (updateSuppressionCrashFixEnabled) {
                 GeneralCompatConfig.amsUpdateSuppressionCrashFix = true;
@@ -52,8 +52,8 @@ public class RedirectedConfigs {
     }
 
     private static void optimizedDragonRespawn() {
+        ConfigsInstance config = ConfigManager.getConfigs("luminol");
         try {
-            ConfigsInstance config = ConfigManager.getConfigs("luminol");
             boolean optimizedDragonRespawnEnabled = config.getConfigOrigin("optimizations.end_dragon.optimized_dragon_respawn");
             if (optimizedDragonRespawnEnabled) {
                 GeneralCompatConfig.optimizedDragonRespawn = true;
@@ -64,8 +64,8 @@ public class RedirectedConfigs {
     }
 
     private static void woolHopperCounter() {
+        ConfigsInstance config = ConfigManager.getConfigs("lophine");
         try {
-            ConfigsInstance config = ConfigManager.getConfigs("lophine");
             boolean woolHopperCounterEnabled = config.getConfigOrigin("function.wool-hopper-counter.enabled");
             boolean woolHopperCounterUnlimitedSpeed = config.getConfigOrigin("function.wool-hopper-counter.unlimited-speed");
             if (woolHopperCounterEnabled) {
@@ -78,5 +78,21 @@ public class RedirectedConfigs {
             config.removeConfig("unlimited-speed", new String[]{"function", "wool-hopper-counter"});
         } catch (Exception ignored) {
         }
+    }
+
+    private static void fakeplayer() {
+        ConfigsInstance carpetConfig = ConfigManager.getConfigs("lophine_carpet");
+        ConfigsInstance lophineConfig = ConfigManager.getConfigs("lophine");
+        try {
+            boolean bot = carpetConfig.getConfigOrigin("carpet.fakeplayer.commandBot");
+            if (bot) {
+                try {
+                    lophineConfig.setConfig("function.fakeplayer.enable", true);
+                } catch (Exception ignored) {
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        carpetConfig.removeConfig("commandBot", new String[]{"carpet", "fakeplayer"});
     }
 }

@@ -52,6 +52,50 @@ index bb5059a77741bf1d9e73bd8c7f0da6681ec63f67..270ee3c01ad0b351bee068a507b09a9d
              TickCommand.register(this.dispatcher); // Folia - region threading - TODO later
          }
          // Luminol end - Add a config to enable tick command
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 5ebff729bb7e75e1c84449c0e3021b972ad0d936..d35cc60b1f4a59ab1b74da5d8d55d63c94a9055b 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -2186,7 +2186,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 this.lastSentFood = -1;
+                 this.teleportSpectators(transition, oldLevel);
+                 // Leaves start - bot support
+-                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+                     this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(this, true)); // Leaves - render bot
+                 }
+                 // Leaves end - bot support
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index baa295f3dd8cf10bf7347ee4d1c249b1f82c9279..1d5376650d0f5eeb23fde8d7116b47cfae37576f 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -280,7 +280,7 @@ public abstract class PlayerList {
+         // org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
+ 
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
+             if (bot != null) {
+                 this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
+@@ -441,7 +441,7 @@ public abstract class PlayerList {
+         org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
+ 
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
+             if (bot != null) {
+                 this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
+@@ -969,7 +969,7 @@ public abstract class PlayerList {
+         ).callEvent();
+         // Paper end
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(player, true)); // Leaves - render bot
+         }
+         // Leaves end - bot support
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4eadcf559 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java

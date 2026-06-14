@@ -8,7 +8,6 @@ import fun.bm.lophine.config.modules.experiment.RedStoneConfig;
 import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import fun.bm.lophine.protocol.CarpetLoggerProtocol;
-import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.protocol.CarpetServerProtocol;
 
 import java.util.List;
@@ -21,7 +20,6 @@ public final class CarpetCompatSync {
         if (init) return;
         if (CoreConfig.enabled) {
             applyGeneralRules();
-            applyFakePlayerRules();
         }
         CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
         registerProtocolRules();
@@ -33,15 +31,6 @@ public final class CarpetCompatSync {
         RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
         RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
         CreativeFlyNoClipConfig.enabled = GeneralCompatConfig.creativeNoClip;
-    }
-
-    private static void applyFakePlayerRules() {
-        FakeplayerConfig.enable = FakePlayerCompatConfig.commandBot || FakePlayerCompatConfig.commandPlayer;
-        FakeplayerConfig.canResident = FakePlayerCompatConfig.fakePlayerResident;
-        FakeplayerConfig.canOpenInventory = FakePlayerCompatConfig.openFakePlayerInventory;
-        FakeplayerConfig.tickType = FakePlayerCompatConfig.fakePlayerTicksLikeRealPlayer
-                ? ServerBot.TickType.NETWORK
-                : ServerBot.TickType.ENTITY_LIST;
     }
 
     private static List<String> sanitizeDefaultLoggers(List<String> configuredLoggers) {
@@ -104,7 +93,7 @@ public final class CarpetCompatSync {
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "tntFuseDuration", GeneralCompatConfig.normalizedTntFuseDuration()));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "defaultLoggers", CarpetLoggerProtocol.serializeConfiguredDefaults(sanitizeDefaultLoggers(GeneralCompatConfig.defaultLoggers))));
 
-        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "commandBot", FakePlayerCompatConfig.commandBot));
+        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "commandBot", FakeplayerConfig.enable));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "commandPlayer", FakePlayerCompatConfig.commandPlayer));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "fakePlayerResident", FakePlayerCompatConfig.fakePlayerResident));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "openFakePlayerInventory", FakePlayerCompatConfig.openFakePlayerInventory));

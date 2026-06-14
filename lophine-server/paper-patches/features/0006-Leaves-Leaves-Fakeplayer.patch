@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
-index 9180f23529a31b6b0a5b38bb7cda3e32d487f691..e1f456b31ffda9370b63e51f343847d6f9f62263 100644
+index 9180f23529a31b6b0a5b38bb7cda3e32d487f691..d0b763f07aee56f69a67c87d7dd15a44b6f44db7 100644
 --- a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
 +++ b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
 @@ -36,6 +36,15 @@ class PaperEventManager {
@@ -16,7 +16,7 @@ index 9180f23529a31b6b0a5b38bb7cda3e32d487f691..e1f456b31ffda9370b63e51f343847d6
      // SimplePluginManager
      public void callEvent(@NotNull Event event) {
 +        // Leaves start - process bot load/save
-+        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable && fun.bm.lophine.config.modules.function.FakeplayerConfig.canResident) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled() && fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig.fakePlayerResident) {
 +            if (event instanceof org.bukkit.event.world.WorldLoadEvent worldLoadEvent) {
 +                org.leavesmc.leaves.bot.BotList.INSTANCE.loadResume(worldLoadEvent.getWorld().getUID().toString());
 +            } else if (event instanceof org.bukkit.event.world.WorldUnloadEvent worldUnloadEvent) {

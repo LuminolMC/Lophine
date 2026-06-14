@@ -1,6 +1,7 @@
 package fun.bm.lophine.config.modules.function;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
@@ -15,7 +16,7 @@ import java.util.Set;
 @ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "fakeplayer")
 public class FakeplayerConfig implements IConfigModule {
     @ConfigInfo(name = "enable", comments = """
-            Enable fakeplayer functionality""")
+            Enable fakeplayer functionality (/bot command)""")
     public static boolean enable = true;
 
     @ConfigInfo(name = "unable-fakeplayer-names", comments = """
@@ -37,14 +38,6 @@ public class FakeplayerConfig implements IConfigModule {
     @ConfigInfo(name = "regen-amount", comments = """
             Regeneration amount for fakeplayers""")
     public static double regenAmount = 0.0;
-
-    @ConfigInfo(name = "resident-fakeplayer", comments = """
-            Allow fakeplayers to be resident""")
-    public static boolean canResident = false;
-
-    @ConfigInfo(name = "open-fakeplayer-inventory", comments = """
-            Allow opening fakeplayer inventory""")
-    public static boolean canOpenInventory = false;
 
     @ConfigInfo(name = "use-action", comments = """
             Allow fakeplayers to use actions""")
@@ -81,28 +74,34 @@ public class FakeplayerConfig implements IConfigModule {
     @ConfigInfo(name = "enable-locator-bar", comments = """
             Enable locator bar for fakeplayers""")
     public static boolean enableLocatorBar = false;
-    public static ServerBot.TickType tickType = ServerBot.TickType.ENTITY_LIST;
 
     private BotCommand command = null;
-
-    private boolean registered = false;
 
     public static int getSimulationDistance(ServerBot bot) {
         return simulationDistance == -1 ? bot.getBukkitEntity().getSimulationDistance() : simulationDistance;
     }
 
+    public static ServerBot.TickType tickType() {
+        return FakePlayerCompatConfig.fakePlayerTicksLikeRealPlayer
+                ? ServerBot.TickType.NETWORK
+                : ServerBot.TickType.ENTITY_LIST;
+    }
+
+    public static boolean checkEnabled() {
+        return enable || FakePlayerCompatConfig.commandPlayer;
+    }
+
     @Override
     public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
         if (enable) {
-            command = new BotCommand();
+            command = new BotCommand("bot");
             command.register();
-            registered = true;
         }
     }
 
     @Override
     public void onUnloaded(CommentedFileConfig configInstance) {
-        if (registered) {
+        if (command != null) {
             command.unregister();
             command = null;
         }
