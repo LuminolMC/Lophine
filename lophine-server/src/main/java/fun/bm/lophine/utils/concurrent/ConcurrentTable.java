@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Predicate;
 
-public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
+public class ConcurrentTable<X, Y, Z> implements AbstractConcurrentTable<X, Y, Z> {
     protected final ConcurrentLinkedDeque<TableEntry<X, Y, Z>> data = new ConcurrentLinkedDeque<>();
     protected final boolean flagX;
     protected final boolean flagY;
@@ -60,88 +60,88 @@ public class ConcurrentTable<X, Y, Z> extends AbstractConcurrentTable<X, Y, Z> {
 
     @Override
     public void remove(X x, Y y, Z z) {
-        data.removeIf(entry -> entry.getX().equals(x) && entry.getY().equals(y) && entry.getZ().equals(z));
+        data.removeIf(entry -> entry.x().equals(x) && entry.y().equals(y) && entry.z().equals(z));
     }
 
     @Override
     public List<Z> getZ(X x, Y y) {
         return filterAndCollect(
-                entry -> entry.getX().equals(x) && entry.getY().equals(y),
-                TableEntry::getZ
+                entry -> entry.x().equals(x) && entry.y().equals(y),
+                TableEntry::z
         );
     }
 
     @Override
     public List<Y> getY(X x, Z z) {
         return filterAndCollect(
-                entry -> entry.getX().equals(x) && entry.getZ().equals(z),
-                TableEntry::getY
+                entry -> entry.x().equals(x) && entry.z().equals(z),
+                TableEntry::y
         );
     }
 
     @Override
     public List<X> getX(Y y, Z z) {
         return filterAndCollect(
-                entry -> entry.getY().equals(y) && entry.getZ().equals(z),
-                TableEntry::getX
+                entry -> entry.y().equals(y) && entry.z().equals(z),
+                TableEntry::x
         );
     }
 
     @Override
     public Map<X, Y> getXY(Z z) {
         return filterAndMap(
-                entry -> entry.getZ().equals(z),
-                TableEntry::getX,
-                TableEntry::getY
+                entry -> entry.z().equals(z),
+                TableEntry::x,
+                TableEntry::y
         );
     }
 
     @Override
     public Map<Y, Z> getYZ(X x) {
         return filterAndMap(
-                entry -> entry.getX().equals(x),
-                TableEntry::getY,
-                TableEntry::getZ
+                entry -> entry.x().equals(x),
+                TableEntry::y,
+                TableEntry::z
         );
     }
 
     @Override
     public Map<X, Z> getXZ(Y y) {
         return filterAndMap(
-                entry -> entry.getY().equals(y),
-                TableEntry::getX,
-                TableEntry::getZ
+                entry -> entry.y().equals(y),
+                TableEntry::x,
+                TableEntry::z
         );
     }
 
     @Override
     public List<X> getAllX() {
-        return collectAll(TableEntry::getX);
+        return collectAll(TableEntry::x);
     }
 
     @Override
     public List<Y> getAllY() {
-        return collectAll(TableEntry::getY);
+        return collectAll(TableEntry::y);
     }
 
     @Override
     public List<Z> getAllZ() {
-        return collectAll(TableEntry::getZ);
+        return collectAll(TableEntry::z);
     }
 
     @Override
     public void clearXY(Z z) {
-        data.removeIf(entry -> entry.getZ().equals(z));
+        data.removeIf(entry -> entry.z().equals(z));
     }
 
     @Override
     public void clearYZ(X x) {
-        data.removeIf(entry -> entry.getX().equals(x));
+        data.removeIf(entry -> entry.x().equals(x));
     }
 
     @Override
     public void clearXZ(Y y) {
-        data.removeIf(entry -> entry.getY().equals(y));
+        data.removeIf(entry -> entry.y().equals(y));
     }
 
     @Override

@@ -3,34 +3,34 @@ package fun.bm.lophine.utils.concurrent;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractConcurrentTable<X, Y, Z> {
-    public abstract void put(X x, Y y, Z z);
+public interface AbstractConcurrentTable<X, Y, Z> {
+    void put(X x, Y y, Z z);
 
-    public abstract void remove(X x, Y y, Z z);
+    void remove(X x, Y y, Z z);
 
-    public abstract List<Z> getZ(X x, Y y);
+    List<Z> getZ(X x, Y y);
 
-    public abstract List<Y> getY(X x, Z z);
+    List<Y> getY(X x, Z z);
 
-    public abstract List<X> getX(Y y, Z z);
+    List<X> getX(Y y, Z z);
 
-    public abstract Map<X, Y> getXY(Z z);
+    Map<X, Y> getXY(Z z);
 
-    public abstract Map<Y, Z> getYZ(X x);
+    Map<Y, Z> getYZ(X x);
 
-    public abstract Map<X, Z> getXZ(Y y);
+    Map<X, Z> getXZ(Y y);
 
-    public abstract List<X> getAllX();
+    List<X> getAllX();
 
-    public abstract List<Y> getAllY();
+    List<Y> getAllY();
 
-    public abstract List<Z> getAllZ();
+    List<Z> getAllZ();
 
-    public abstract void clearXY(Z z);
+    void clearXY(Z z);
 
-    public abstract void clearYZ(X x);
+    void clearYZ(X x);
 
-    public abstract void clearXZ(Y y);
+    void clearXZ(Y y);
 
-    public abstract void clearAll();
+    void clearAll();
 }

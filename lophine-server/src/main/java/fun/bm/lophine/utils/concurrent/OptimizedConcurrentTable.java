@@ -76,9 +76,9 @@ public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> 
         data.removeIf(entry -> {
             boolean shouldRemove = predicate.test(entry);
             if (shouldRemove) {
-                removeFromIndex(xyIndex, entry.getX(), entry.getY(), entry.getZ());
-                removeFromIndex(yzIndex, entry.getY(), entry.getZ(), entry.getX());
-                removeFromIndex(zxIndex, entry.getZ(), entry.getX(), entry.getY());
+                removeFromIndex(xyIndex, entry.x(), entry.y(), entry.z());
+                removeFromIndex(yzIndex, entry.y(), entry.z(), entry.x());
+                removeFromIndex(zxIndex, entry.z(), entry.x(), entry.y());
             }
             return shouldRemove;
         });
@@ -86,9 +86,9 @@ public class OptimizedConcurrentTable<X, Y, Z> extends ConcurrentTable<X, Y, Z> 
 
     public boolean putIfAbsent(X x, Y y, Z z) {
         if (data.stream().anyMatch(entry ->
-                Objects.equals(entry.getX(), x) &&
-                        Objects.equals(entry.getY(), y) &&
-                        Objects.equals(entry.getZ(), z))) {
+                Objects.equals(entry.x(), x) &&
+                        Objects.equals(entry.y(), y) &&
+                        Objects.equals(entry.z(), z))) {
             return false;
         }
         put(x, y, z);
