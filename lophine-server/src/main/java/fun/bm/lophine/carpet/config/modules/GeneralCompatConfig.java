@@ -1,5 +1,7 @@
 package fun.bm.lophine.carpet.config.modules;
 
+import fun.bm.lophine.carpet.CarpetCompatSync;
+import fun.bm.lophine.carpet.RedirectedConfigs;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
@@ -260,5 +262,13 @@ public class GeneralCompatConfig implements IConfigModule {
 
     public static int normalizedTickCommandPermission() {
         return Math.clamp(tickCommandPermission, 0, 4);
+    }
+
+    @Override
+    public void beforeFinalLoad() {
+        CarpetCompatSync.apply();
+
+        // Should remove in next Minecraft version update
+        RedirectedConfigs.redirect();
     }
 }

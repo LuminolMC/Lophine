@@ -1,6 +1,5 @@
 package fun.bm.lophine.carpet;
 
-import fun.bm.lophine.carpet.config.modules.CoreConfig;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
@@ -17,9 +16,7 @@ public final class CarpetCompatSync {
 
     public static void apply() {
         if (init) return;
-        if (CoreConfig.enabled) {
-            applyGeneralRules();
-        }
+        applyGeneralRules();
         CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
         registerProtocolRules();
         init = true;
