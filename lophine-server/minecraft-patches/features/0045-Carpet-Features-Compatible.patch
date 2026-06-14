@@ -128,18 +128,10 @@ index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4
          // CraftBukkit start
          if (org.bukkit.event.inventory.InventoryPickupItemEvent.getHandlerList().getRegisteredListeners().length > 0) { // Paper - optimize hoppers
 diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
-index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..b6f0ef6fa1656cd9aa2627003a00d8208271d5c3 100644
+index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..4274f22710035b547f5aca617c80c5c99f3a4dc8 100644
 --- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 +++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
-@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
- import com.mojang.logging.LogUtils;
- import com.mojang.serialization.Codec;
- import com.mojang.serialization.codecs.RecordCodecBuilder;
-+import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
- import it.unimi.dsi.fastutil.objects.ObjectArrayList;
- import java.util.ArrayList;
- import java.util.List;
-@@ -323,7 +324,7 @@ public class EnderDragonFight extends SavedData {
+@@ -323,7 +323,7 @@ public class EnderDragonFight extends SavedData {
      private int cachePortalOriginIteratorY = -1;
  
      public BlockPattern.@Nullable BlockPatternMatch findExitPortal() {
