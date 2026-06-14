@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Mon, 15 Jun 2026 01:33:32 +0800
+Subject: [PATCH] TEMP: Temporarily transform config between different config
+ system
+
+Should be removed in Minecraft 26.2 Update
+
+diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+index 697cc65e8487fe78a4f8ae0435c22c9ef8cdc80c..c2b0dd4573c9825d8902aabb3da312e9b8075bcf 100644
+--- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
++++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
+@@ -58,6 +58,8 @@ public class ConfigManager {
+         CompletableFuture.allOf(futures).join();
+         CommandRegister.register(); // register command after config loaded to enable some command didn't depend on config files
+         initialized = true;
++
++        configfiles.values().forEach((config) -> config.reloadAsync(true));
+     }
+ 
+     public static void registerRunnableBeforeFinalLoad(Runnable runnable) {

@@ -14,8 +14,6 @@ public class RedirectedConfigs {
         woolHopperCounter();
         fakeplayer();
         creativeFlyNoClip();
-        ConfigManager.reApplyStagedConfigs();
-        ConfigManager.saveConfigs();
     }
 
     private static void updateSuppressionCrashFix() {

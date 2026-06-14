@@ -5,7 +5,7 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..dad62b80578f27cc39985ee6ded705bf3cc5d117 100644
+index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..67961139423546c3a8e1a61723eca8de0a4bfd0a 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -44,6 +44,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
@@ -31,7 +31,7 @@ index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..dad62b80578f27cc39985ee6ded705bf
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);
 -        this.neighborUpdater = new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
-+        this.neighborUpdater = fun.bm.lophine.config.modules.experiment.RedStoneConfig.instantBlockUpdater
++        this.neighborUpdater = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.dustTrapdoorReintroduced
 +            ? new InstantNeighborUpdater(world)
 +            : new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
          this.nearbyPlayers = new NearbyPlayers(world);

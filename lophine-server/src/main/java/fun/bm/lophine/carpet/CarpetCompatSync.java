@@ -3,7 +3,6 @@ package fun.bm.lophine.carpet;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
-import fun.bm.lophine.config.modules.experiment.RedStoneConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import fun.bm.lophine.protocol.CarpetLoggerProtocol;
 import org.leavesmc.leaves.protocol.CarpetServerProtocol;
@@ -15,17 +14,9 @@ public final class CarpetCompatSync {
     private static boolean init = false;
 
     public static void apply() {
-        if (init) return;
-        applyGeneralRules();
         CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
         registerProtocolRules();
         init = true;
-    }
-
-    private static void applyGeneralRules() {
-        RedStoneConfig.redstoneIgnoreUpwardsUpdate = GeneralCompatConfig.dustTrapdoorReintroduced;
-        RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
-        RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
     }
 
     private static List<String> sanitizeDefaultLoggers(List<String> configuredLoggers) {
