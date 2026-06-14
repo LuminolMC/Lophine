@@ -13,6 +13,7 @@ public class RedirectedConfigs {
         optimizedDragonRespawn();
         woolHopperCounter();
         fakeplayer();
+        creativeFlyNoClip();
     }
 
     private static void updateSuppressionCrashFix() {
@@ -95,5 +96,17 @@ public class RedirectedConfigs {
         } catch (Exception ignored) {
         }
         carpetConfig.removeConfig("commandBot", new String[]{"carpet", "fakeplayer"});
+    }
+
+    private static void creativeFlyNoClip() {
+        ConfigsInstance config = ConfigManager.getConfigs("lophine");
+        try {
+            boolean creativeFlyNoClipEnabled = config.getConfigOrigin("function.creative_fly_no_clip.enabled");
+            if (creativeFlyNoClipEnabled) {
+                GeneralCompatConfig.creativeNoClip = true;
+            }
+            config.removeConfig("enabled", new String[]{"function", "creative_fly_no_clip"});
+        } catch (Exception ignored) {
+        }
     }
 }

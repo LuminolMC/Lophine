@@ -48,11 +48,13 @@ public class GeneralCompatConfig implements IConfigModule {
     public static boolean commandTick = false;
 
     @ConfigInfo(name = "creativeNoClip", comments = """
-            Enable the existing creative fly no clip implementation.""")
+            Whether to enable creative fly no clip.
+            When enabled, players in creative mode will not collide with blocks while flying.
+            This allows them to pass through blocks without obstruction.""")
     public static boolean creativeNoClip = false;
 
     @ConfigInfo(name = "optimizedDragonRespawn", comments = """
-            Enable the existing optimized dragon respawn.""")
+            Enable optimized dragon respawn.""")
     public static boolean optimizedDragonRespawn = false;
 
     @ConfigInfo(name = "antiSpamDisabled", comments = """

@@ -443,7 +443,7 @@ index 459a05ca83583538f995f45c4d2c977c6d6fcd00..474004edeae737873db88b3cce79408e
      }
  }
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 7d514537ee38f9b9366692bc969ff503d883aa16..da0c648cafec4cb4fe1bbb31037204b180fcf4ce 100644
+index ea5de9aca4908ed972c4f44bff635f2cc423a04f..04707a48b1ad9f0c580213e5837e93ad849d1b47 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -555,7 +555,13 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -506,7 +506,7 @@ index 7d514537ee38f9b9366692bc969ff503d883aa16..da0c648cafec4cb4fe1bbb31037204b1
          sendSoundEffect(this, this.getX(), this.getY(), this.getZ(), sound, this.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
      }
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
-index ca3f31a72060f797115787302d32a019fa8243e0..8d13dab5dcc3a500f9e4faf8168f6d25697ea99f 100644
+index 9c016e7d93e4c44ddf2df520e5c57d92a0e085b3..3413fe84a40b00e98565cdf7aa93fc1c7da6f128 100644
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
 @@ -147,8 +147,12 @@ public class BlockItem extends Item {
@@ -515,9 +515,9 @@ index ca3f31a72060f797115787302d32a019fa8243e0..8d13dab5dcc3a500f9e4faf8168f6d25
          CollisionContext collisionContext = player == null ? CollisionContext.empty() : CollisionContext.placementContext(player); // Leaves - creative no clip
 +        boolean ignoreEntityCollision = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.blockPlacementIgnoreEntity && player != null && player.isCreative();
          boolean canBuild = (!this.mustSurvive() || stateForPlacement.canSurvive(world, context.getClickedPos()))
--            && ((fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext) : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true)); // Paper - Cancel hit for vanished players // Leaves - creative no clip
+-            && ((fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeNoClip && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext) : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true)); // Paper - Cancel hit for vanished players // Leaves - creative no clip
 +            && (ignoreEntityCollision
-+                || ((fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null)
++            || ((fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeNoClip && context.getPlayer() != null)
 +                    ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext)
 +                    : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true))); // Paper - Cancel hit for vanished players // Leaves - creative no clip
          org.bukkit.entity.Player bukkitPlayer = (context.getPlayer() instanceof ServerPlayer) ? (org.bukkit.entity.Player) context.getPlayer().getBukkitEntity() : null;
@@ -538,19 +538,10 @@ index cf66ce7cf737b2abd45c76218db55c8d0fc109d4..4da0768c14918d13b7137daa74142a54
          final io.papermc.paper.event.player.PlayerItemCooldownEvent event = new io.papermc.paper.event.player.PlayerItemCooldownEvent(
              this.player.getBukkitEntity(),
 diff --git a/net/minecraft/world/item/crafting/RecipeManager.java b/net/minecraft/world/item/crafting/RecipeManager.java
-index 298908003d5422b8b58de631145fad381e8294c1..b825035f937863c4d485e9534e7b6780788f20de 100644
+index 298908003d5422b8b58de631145fad381e8294c1..becd64cb00dddda42a9494f6ab36362466e5f18a 100644
 --- a/net/minecraft/world/item/crafting/RecipeManager.java
 +++ b/net/minecraft/world/item/crafting/RecipeManager.java
-@@ -28,6 +28,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
- import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
- import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
- import net.minecraft.util.profiling.ProfilerFiller;
-+import net.minecraft.world.item.ItemStackTemplate;
-+import net.minecraft.world.item.Items;
- import net.minecraft.world.flag.FeatureFlagSet;
- import net.minecraft.world.item.crafting.display.RecipeDisplay;
- import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
-@@ -55,6 +57,9 @@ public class RecipeManager extends SimplePreparableReloadListener<RecipeMap> imp
+@@ -55,6 +55,9 @@ public class RecipeManager extends SimplePreparableReloadListener<RecipeMap> imp
          forSingleInput(RecipeType.CAMPFIRE_COOKING)
      );
      private static final FileToIdConverter RECIPE_LISTER = FileToIdConverter.registry(Registries.RECIPE);
@@ -560,7 +551,7 @@ index 298908003d5422b8b58de631145fad381e8294c1..b825035f937863c4d485e9534e7b6780
      private final HolderLookup.Provider registries;
      public RecipeMap recipes = RecipeMap.EMPTY;
      private Map<ResourceKey<RecipePropertySet>, RecipePropertySet> propertySets = Map.of();
-@@ -83,10 +88,73 @@ public class RecipeManager extends SimplePreparableReloadListener<RecipeMap> imp
+@@ -83,10 +86,73 @@ public class RecipeManager extends SimplePreparableReloadListener<RecipeMap> imp
  
      @Override
      protected void apply(final RecipeMap recipes, final ResourceManager manager, final ProfilerFiller profiler) {
@@ -592,8 +583,8 @@ index 298908003d5422b8b58de631145fad381e8294c1..b825035f937863c4d485e9534e7b6780
 +            new ShapedRecipe(
 +                new Recipe.CommonInfo(true),
 +                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.BUILDING, "carpet_ams_better_bone_block"),
-+                ShapedRecipePattern.of(Map.of('#', Ingredient.of(Items.BONE)), "###", "###", "###"),
-+                new ItemStackTemplate(Items.BONE_BLOCK, 3)
++                ShapedRecipePattern.of(Map.of('#', Ingredient.of(net.minecraft.world.item.Items.BONE)), "###", "###", "###"),
++                new net.minecraft.world.item.ItemStackTemplate(net.minecraft.world.item.Items.BONE_BLOCK, 3)
 +            )
 +        );
 +    }
@@ -605,12 +596,12 @@ index 298908003d5422b8b58de631145fad381e8294c1..b825035f937863c4d485e9534e7b6780
 +                new Recipe.CommonInfo(true),
 +                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.REDSTONE, "carpet_ams_better_dispenser"),
 +                ShapedRecipePattern.of(
-+                    Map.of('S', Ingredient.of(Items.STICK), 'D', Ingredient.of(Items.DROPPER), 'X', Ingredient.of(Items.STRING)),
++                    Map.of('S', Ingredient.of(net.minecraft.world.item.Items.STICK), 'D', Ingredient.of(net.minecraft.world.item.Items.DROPPER), 'X', Ingredient.of(net.minecraft.world.item.Items.STRING)),
 +                    " SX",
 +                    "SDX",
 +                    " SX"
 +                ),
-+                new ItemStackTemplate(Items.DISPENSER)
++                new net.minecraft.world.item.ItemStackTemplate(net.minecraft.world.item.Items.DISPENSER)
 +            )
 +        );
 +    }
@@ -621,8 +612,8 @@ index 298908003d5422b8b58de631145fad381e8294c1..b825035f937863c4d485e9534e7b6780
 +            new ShapelessRecipe(
 +                new Recipe.CommonInfo(true),
 +                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.REDSTONE, "carpet_ams_better_dispenser"),
-+                new ItemStackTemplate(Items.DISPENSER),
-+                List.of(Ingredient.of(Items.BOW), Ingredient.of(Items.DROPPER))
++                new net.minecraft.world.item.ItemStackTemplate(net.minecraft.world.item.Items.DISPENSER),
++                List.of(Ingredient.of(net.minecraft.world.item.Items.BOW), Ingredient.of(net.minecraft.world.item.Items.DROPPER))
 +            )
 +        );
 +    }
