@@ -4,7 +4,7 @@ import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.ConfigsInstance;
 
-public class RedirectConfig {
+public class RedirectedConfigs {
     public static void redirect() {
         updateSuppressionCrashFix();
         commandTick();
