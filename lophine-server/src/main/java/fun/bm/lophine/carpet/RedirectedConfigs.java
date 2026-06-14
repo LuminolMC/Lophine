@@ -2,6 +2,7 @@ package fun.bm.lophine.carpet;
 
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
+import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.ConfigsInstance;
 
@@ -83,12 +84,11 @@ public class RedirectedConfigs {
 
     private static void fakeplayer() {
         ConfigsInstance carpetConfig = ConfigManager.getConfigs("lophine_carpet");
-        ConfigsInstance lophineConfig = ConfigManager.getConfigs("lophine");
         try {
             boolean bot = carpetConfig.getConfigOrigin("carpet.fakeplayer.commandBot");
             if (bot) {
                 try {
-                    lophineConfig.setConfig("function.fakeplayer.enable", true);
+                    FakeplayerConfig.enable = true;
                 } catch (Exception ignored) {
                 }
             }
