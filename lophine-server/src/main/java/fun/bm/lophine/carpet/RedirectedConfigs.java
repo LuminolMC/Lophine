@@ -11,6 +11,7 @@ public class RedirectedConfigs {
         commandTick();
         optimizedDragonRespawn();
         woolHopperCounter();
+        fakeplayer();
     }
 
     private static void updateSuppressionCrashFix() {
