@@ -5,9 +5,18 @@ Subject: [PATCH] Carpet Features Compatible
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8b05860d2787a40495f8a025bc0bc43789d6a6af..3d737fbaca7194bc282500797c0cce748a2def03 100644
+index 8b05860d2787a40495f8a025bc0bc43789d6a6af..2ef6a7fb5a9c3452dfff70a67542e2ca2531c897 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
+@@ -340,7 +340,7 @@ public final class RegionizedServer {
+         final long tickStartNanos = System.nanoTime();
+         ++this.tickCount;
+         // Luminol start - Add a config to enable tick command
+-        if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.commandTick) { // Lophine - redirect
+             MinecraftServer.getServer().tickRateManager().tick();
+         }
+         // Luminol end - Add a config to enable tick command
 @@ -529,7 +529,7 @@ public final class RegionizedServer {
      }
  

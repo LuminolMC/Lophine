@@ -10,6 +10,7 @@ public class RedirectedConfigs {
         updateSuppressionCrashFix();
         commandTick();
         optimizedDragonRespawn();
+        woolHopperCounter();
     }
 
     private static void updateSuppressionCrashFix() {
