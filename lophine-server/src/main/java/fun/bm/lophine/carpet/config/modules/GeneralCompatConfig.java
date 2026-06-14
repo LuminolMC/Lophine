@@ -266,9 +266,10 @@ public class GeneralCompatConfig implements IConfigModule {
 
     @Override
     public void beforeFinalLoad() {
-        CarpetCompatSync.apply();
-
         // Should remove in next Minecraft version update
         RedirectedConfigs.redirect();
+
+        // after all config updated, send changes to client
+        CarpetCompatSync.apply();
     }
 }
