@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.util;
 
-import fun.bm.lophine.config.modules.function.WoolHopperCounterConfig;
+import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.kyori.adventure.text.Component;
@@ -351,6 +351,6 @@ public class HopperCounter {
     }
 
     public static boolean isEnabled() {
-        return WoolHopperCounterConfig.enabled && enabled;
+        return WoolHopperCounterConfig.hopperCounters && enabled;
     }
 }

@@ -1,6 +1,7 @@
 package fun.bm.lophine.carpet;
 
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
+import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
 import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.ConfigsInstance;
 
@@ -57,6 +58,23 @@ public class RedirectedConfigs {
                 GeneralCompatConfig.optimizedDragonRespawn = true;
             }
             config.removeConfig("optimized_dragon_respawn", new String[]{"optimizations", "end_dragon"});
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void woolHopperCounter() {
+        try {
+            ConfigsInstance config = ConfigManager.getConfigs("lophine");
+            boolean woolHopperCounterEnabled = config.getConfigOrigin("function.wool-hopper-counter.enabled");
+            boolean woolHopperCounterUnlimitedSpeed = config.getConfigOrigin("function.wool-hopper-counter.unlimited-speed");
+            if (woolHopperCounterEnabled) {
+                WoolHopperCounterConfig.hopperCounters = true;
+            }
+            config.removeConfig("enabled", new String[]{"function", "wool-hopper-counter"});
+            if (woolHopperCounterUnlimitedSpeed) {
+                WoolHopperCounterConfig.hopperCountersUnlimitedSpeed = true;
+            }
+            config.removeConfig("unlimited-speed", new String[]{"function", "wool-hopper-counter"});
         } catch (Exception ignored) {
         }
     }

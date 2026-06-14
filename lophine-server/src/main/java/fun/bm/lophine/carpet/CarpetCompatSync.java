@@ -1,13 +1,12 @@
 package fun.bm.lophine.carpet;
 
 import fun.bm.lophine.carpet.config.modules.CoreConfig;
-import fun.bm.lophine.carpet.config.modules.CounterCompatConfig;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
+import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
 import fun.bm.lophine.config.modules.experiment.RedStoneConfig;
 import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
-import fun.bm.lophine.config.modules.function.WoolHopperCounterConfig;
 import fun.bm.lophine.protocol.CarpetLoggerProtocol;
 import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.protocol.CarpetServerProtocol;
@@ -23,7 +22,6 @@ public final class CarpetCompatSync {
         if (CoreConfig.enabled) {
             applyGeneralRules();
             applyFakePlayerRules();
-            applyCounterRules();
         }
         CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
         registerProtocolRules();
@@ -44,11 +42,6 @@ public final class CarpetCompatSync {
         FakeplayerConfig.tickType = FakePlayerCompatConfig.fakePlayerTicksLikeRealPlayer
                 ? ServerBot.TickType.NETWORK
                 : ServerBot.TickType.ENTITY_LIST;
-    }
-
-    private static void applyCounterRules() {
-        WoolHopperCounterConfig.enabled = CounterCompatConfig.hopperCounters;
-        WoolHopperCounterConfig.unlimitedSpeed = CounterCompatConfig.hopperCountersUnlimitedSpeed;
     }
 
     private static List<String> sanitizeDefaultLoggers(List<String> configuredLoggers) {
@@ -124,7 +117,7 @@ public final class CarpetCompatSync {
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "fakePlayerAutoFish", FakePlayerCompatConfig.fakePlayerAutoFish));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "fakePlayerReloadAction", FakePlayerCompatConfig.fakePlayerReloadAction));
 
-        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "hopperCounters", CounterCompatConfig.hopperCounters));
-        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "hopperCountersUnlimitedSpeed", CounterCompatConfig.hopperCountersUnlimitedSpeed));
+        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "hopperCounters", WoolHopperCounterConfig.hopperCounters));
+        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "hopperCountersUnlimitedSpeed", WoolHopperCounterConfig.hopperCountersUnlimitedSpeed));
     }
 }

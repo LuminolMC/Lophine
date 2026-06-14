@@ -43,6 +43,37 @@ index bb5059a77741bf1d9e73bd8c7f0da6681ec63f67..270ee3c01ad0b351bee068a507b09a9d
              TickCommand.register(this.dispatcher); // Folia - region threading - TODO later
          }
          // Luminol end - Add a config to enable tick command
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4eadcf559 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -240,7 +240,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                 }
+ 
+                 // Leaves start - Wool hopper counter
+-                if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
++                if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
+                     net.minecraft.world.item.DyeColor woolColor = org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, entity.getBlockPos().relative(state.getValue(HopperBlock.FACING)));
+                     if (woolColor != null) {
+                         for (int i = 0; i < Short.MAX_VALUE; i++) {
+@@ -258,7 +258,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                 if (changed) {
+                     entity.setCooldown(level.spigotConfig.hopperTransfer); // Spigot
+                     // Leaves start - Wool hopper counter
+-                    if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
++                    if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
+                         entity.setCooldown(0);
+                         return true;
+                     }
+@@ -664,7 +664,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+     }
+ 
+     public static boolean addItem(final Container container, final ItemEntity entity) {
+-        if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && entity.isRemoved()) return false; // Leaves - Wool hopper counter
++        if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && entity.isRemoved()) return false; // Leaves - Wool hopper counter
+         boolean changed = false;
+         // CraftBukkit start
+         if (org.bukkit.event.inventory.InventoryPickupItemEvent.getHandlerList().getRegisteredListeners().length > 0) { // Paper - optimize hoppers
 diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..b6f0ef6fa1656cd9aa2627003a00d8208271d5c3 100644
 --- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
