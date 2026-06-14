@@ -6,6 +6,11 @@ import me.earthme.luminol.config.ConfigsInstance;
 
 public class RedirectConfig {
     public static void redirect() {
+        updateSuppressionCrashFix();
+        commandTick();
+    }
+
+    private static void updateSuppressionCrashFix() {
         try {
             ConfigsInstance config = ConfigManager.getConfigs("lophine");
             boolean updateSuppressionCrashFixEnabled = config.getConfigOrigin("fixes.update-suppression-crash-fix.enabled");
@@ -14,6 +19,31 @@ public class RedirectConfig {
                 GeneralCompatConfig.yeetUpdateSuppressionCrash = true;
             }
             config.removeConfig("enabled", new String[]{"fixes", "update-suppression-crash-fix"});
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void commandTick() {
+        try {
+            boolean shouldEnabled = false;
+            // first check lophine
+            try {
+                ConfigsInstance config = ConfigManager.getConfigs("lophine");
+                shouldEnabled = config.getConfigOrigin("experiment.command.tick_command_enabled");
+                config.removeConfig("tick_command_enabled", new String[]{"experiment", "command"});
+            } catch (Exception ignored) {
+            }
+            // then check luminol
+            try {
+                ConfigsInstance config = ConfigManager.getConfigs("luminol");
+                shouldEnabled = shouldEnabled || (boolean) config.getConfigOrigin("experiment.command.enable_tick_command");
+                config.removeConfig("enable_tick_command", new String[]{"experiment", "command"});
+            } catch (Exception ignored) {
+            }
+
+            if (shouldEnabled) {
+                GeneralCompatConfig.commandTick = true;
+            }
         } catch (Exception ignored) {
         }
     }

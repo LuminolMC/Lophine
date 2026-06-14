@@ -1,11 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Fri, 5 Jun 2026 16:10:25 +0800
-Subject: [PATCH] Tick command transform
+Subject: [PATCH] Redirect tick command option to carpet config system
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
-index f079a1cd99d648dc7ca97fb65406b7a42ad5a74e..e8ac356822a11ca2cf03363c93afd5abe01a2563 100644
+index f079a1cd99d648dc7ca97fb65406b7a42ad5a74e..74efa3826e5fd2bf7ec7cdbc0f4044d4e80af935 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandConfig.java
 @@ -4,6 +4,7 @@ import me.earthme.luminol.config.IConfigModule;
@@ -16,15 +16,13 @@ index f079a1cd99d648dc7ca97fb65406b7a42ad5a74e..e8ac356822a11ca2cf03363c93afd5ab
  import me.earthme.luminol.enums.EnumConfigCategory;
  
  @ConfigClassInfo(category = EnumConfigCategory.EXPERIMENT, name = "command")
-@@ -22,9 +23,10 @@ public class CommandConfig implements IConfigModule {
-             WARN: Still under testing
+@@ -23,9 +24,4 @@ public class CommandConfig implements IConfigModule {
              """)
      @HotReloadUnsupported
-+    @TransformedConfig(name = "tick_command_enabled", directory = {"experiment", "command"}, originInstance = "lophine")
      public static boolean waypointsAndWaypointCommand = false;
-     @ConfigInfo(name = "enable_tick_command", comments = """
+-    @ConfigInfo(name = "enable_tick_command", comments = """
 -            Only freeze/unfreeze/step/query command is allowed if you enabled it.
-+            Only freeze/unfreeze/step/query/rate command is allowed if you enabled it.
-             WARN: This should disabled in production environment!
-             """)
-     public static boolean tick = false;
+-            WARN: This should disabled in production environment!
+-            """)
+-    public static boolean tick = false;
+ }

@@ -5,7 +5,7 @@ Subject: [PATCH] Carpet features
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 0a7a23b996d1380ea7ff4a28422fab82f748c5cb..196b84489b25142b4368ca39ff118077c4d66dab 100644
+index ec12b000ee96c742ffc03a28aa713e988a65d955..2ef6a7fb5a9c3452dfff70a67542e2ca2531c897 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -337,6 +337,7 @@ public final class RegionizedServer {
@@ -15,7 +15,7 @@ index 0a7a23b996d1380ea7ff4a28422fab82f748c5cb..196b84489b25142b4368ca39ff118077
 +        final long tickStartNanos = System.nanoTime();
          ++this.tickCount;
          // Luminol start - Add a config to enable tick command
-         if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
+         if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.commandTick) { // Lophine - redirect
 @@ -379,6 +380,8 @@ public final class RegionizedServer {
          }
          // Lophine end - Add a config to enable tick command
