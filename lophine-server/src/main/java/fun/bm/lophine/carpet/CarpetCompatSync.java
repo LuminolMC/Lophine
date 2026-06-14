@@ -9,7 +9,6 @@ import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import fun.bm.lophine.config.modules.function.WoolHopperCounterConfig;
 import fun.bm.lophine.protocol.CarpetLoggerProtocol;
-import me.earthme.luminol.config.modules.optimizations.OptimizedDragonRespawnConfig;
 import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.protocol.CarpetServerProtocol;
 
@@ -36,7 +35,6 @@ public final class CarpetCompatSync {
         RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
         RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
         CreativeFlyNoClipConfig.enabled = GeneralCompatConfig.creativeNoClip;
-        OptimizedDragonRespawnConfig.optimizedRespawn = GeneralCompatConfig.optimizedDragonRespawn;
     }
 
     private static void applyFakePlayerRules() {

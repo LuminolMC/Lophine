@@ -1,17 +1,12 @@
 package fun.bm.lophine.carpet.config.modules;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import fun.bm.lophine.carpet.RedirectConfig;
-import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 @ConfigClassInfo(
         category = EnumConfigCategory.ROOT,
@@ -49,7 +44,7 @@ public class GeneralCompatConfig implements IConfigModule {
     public static boolean instantBlockUpdaterReintroduced = false;
 
     @ConfigInfo(name = "commandTick", comments = """
-            Enable the tick command support already patched into Lophine.""")
+            Enable the tick command support.""")
     public static boolean commandTick = false;
 
     @ConfigInfo(name = "creativeNoClip", comments = """
@@ -57,7 +52,7 @@ public class GeneralCompatConfig implements IConfigModule {
     public static boolean creativeNoClip = false;
 
     @ConfigInfo(name = "optimizedDragonRespawn", comments = """
-            Enable the existing optimized dragon respawn implementation from Luminol.""")
+            Enable the existing optimized dragon respawn.""")
     public static boolean optimizedDragonRespawn = false;
 
     @ConfigInfo(name = "antiSpamDisabled", comments = """
@@ -263,11 +258,5 @@ public class GeneralCompatConfig implements IConfigModule {
 
     public static int normalizedTickCommandPermission() {
         return Math.clamp(tickCommandPermission, 0, 4);
-    }
-
-    // Should remove in next Minecraft version update
-    @Override
-    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
-        ConfigManager.registerRunnableBeforeFinalLoad(RedirectConfig::redirect);
     }
 }

@@ -8,6 +8,7 @@ public class RedirectConfig {
     public static void redirect() {
         updateSuppressionCrashFix();
         commandTick();
+        optimizedDragonRespawn();
     }
 
     private static void updateSuppressionCrashFix() {
@@ -44,6 +45,18 @@ public class RedirectConfig {
             if (shouldEnabled) {
                 GeneralCompatConfig.commandTick = true;
             }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void optimizedDragonRespawn() {
+        try {
+            ConfigsInstance config = ConfigManager.getConfigs("luminol");
+            boolean optimizedDragonRespawnEnabled = config.getConfigOrigin("optimizations.end_dragon.optimized_dragon_respawn");
+            if (optimizedDragonRespawnEnabled) {
+                GeneralCompatConfig.optimizedDragonRespawn = true;
+            }
+            config.removeConfig("optimized_dragon_respawn", new String[]{"optimizations", "end_dragon"});
         } catch (Exception ignored) {
         }
     }

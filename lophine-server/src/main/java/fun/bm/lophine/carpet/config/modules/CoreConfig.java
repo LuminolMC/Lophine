@@ -1,6 +1,7 @@
 package fun.bm.lophine.carpet.config.modules;
 
 import fun.bm.lophine.carpet.CarpetCompatSync;
+import fun.bm.lophine.carpet.RedirectConfig;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
@@ -25,5 +26,8 @@ public class CoreConfig implements IConfigModule {
     @Override
     public void beforeFinalLoad() {
         CarpetCompatSync.apply();
+
+        // Should remove in next Minecraft version update
+        RedirectConfig.redirect();
     }
 }
