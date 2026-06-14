@@ -35,7 +35,6 @@ public final class CarpetCompatSync {
     }
 
     private static void applyGeneralRules() {
-        LanguageConfig.lang = GeneralCompatConfig.language;
         UpdateSuppressionCrashFixConfig.enabled = GeneralCompatConfig.amsUpdateSuppressionCrashFix || GeneralCompatConfig.yeetUpdateSuppressionCrash;
         RedStoneConfig.redstoneIgnoreUpwardsUpdate = GeneralCompatConfig.dustTrapdoorReintroduced;
         RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
