@@ -20,7 +20,6 @@ package org.leavesmc.leaves.protocol.servux.litematics.container;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class LitematicaBitArray {
     /**

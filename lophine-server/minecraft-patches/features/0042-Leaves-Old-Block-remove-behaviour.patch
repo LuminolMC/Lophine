@@ -622,7 +622,7 @@ index d7e5ec23c64b60c47ab6b54cbf282e88c3a4a045..037aa3592a963bbb142465d31040f60e
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (state.getValue(SHRIEKING)) {
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index ffa76dc1338c6c892a42b2148f9f01c933660b98..7bf2cde59c112f4babb87476585207dacebef341 100644
+index 800291cbd2ef76be9932d18ef07b8bc475da64ac..7ce12683333990a0837ce7459194d7c06cfd92e4 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 @@ -150,6 +150,20 @@ public class ShulkerBoxBlock extends BaseEntityBlock {

@@ -1,12 +1,17 @@
 package fun.bm.lophine.carpet.config.modules;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import fun.bm.lophine.carpet.RedirectConfig;
+import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 @ConfigClassInfo(
         category = EnumConfigCategory.ROOT,
@@ -24,11 +29,11 @@ public class GeneralCompatConfig implements IConfigModule {
     public static String language = "en_us";
 
     @ConfigInfo(name = "amsUpdateSuppressionCrashFix", comments = """
-            Map AMS update suppression crash protection to Lophine's existing crash fix.""")
+            Update suppression crash protection.""")
     public static boolean amsUpdateSuppressionCrashFix = false;
 
     @ConfigInfo(name = "yeetUpdateSuppressionCrash", comments = """
-            Map TIS update suppression crash yeeting to the same Lophine crash fix.""")
+            Update suppression crash yeeting.""")
     public static boolean yeetUpdateSuppressionCrash = false;
 
     @ConfigInfo(name = "dustTrapdoorReintroduced", comments = """
@@ -248,11 +253,21 @@ public class GeneralCompatConfig implements IConfigModule {
             Examples: ["tps", "mob_caps", "counter white"]""")
     public static List<String> defaultLoggers = List.of();
 
+    public static boolean mergedUpdateSuppressionCrashEnabled() {
+        return amsUpdateSuppressionCrashFix || yeetUpdateSuppressionCrash;
+    }
+
     public static int normalizedTntFuseDuration() {
         return Math.clamp(tntFuseDuration, 0, Short.MAX_VALUE);
     }
 
     public static int normalizedTickCommandPermission() {
         return Math.clamp(tickCommandPermission, 0, 4);
+    }
+
+    // Should remove in next Minecraft version update
+    @Override
+    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
+        ConfigManager.registerRunnableBeforeFinalLoad(RedirectConfig::redirect);
     }
 }

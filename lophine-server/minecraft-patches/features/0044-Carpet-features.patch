@@ -921,7 +921,7 @@ index 1de86856f4a27346d7003ca9eb24a36074a2a4a3..e8291bb18e24a2a1772a91404403f902
              } else
                  // Paper end - optimize redstone (Alternate Current)
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index 7bf2cde59c112f4babb87476585207dacebef341..fac01e0398f1042b6bc680e967c101063a3023cd 100644
+index 7ce12683333990a0837ce7459194d7c06cfd92e4..74c9c159871022cd7fdc6445e71e4c8bc2d30319 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 @@ -74,9 +74,10 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
@@ -1118,7 +1118,7 @@ index 3fdf80e32bdcaab4daac8f1c7329a2bc7b2bd625..284cec8401eb75076b2d80581059f489
  
          for (BlockPos pos : BlockPos.betweenClosed(
 diff --git a/net/minecraft/world/level/redstone/NeighborUpdater.java b/net/minecraft/world/level/redstone/NeighborUpdater.java
-index 44731e230869f0df058f6a426277befbb0d559e4..a74b13bdd9145e3c54340aa959ee138c044ee433 100644
+index 6d25139a94df7c0442cc9fea96d5839ce8a23d54..a6a85a8eccff59c8cedab70341baba06dad687be 100644
 --- a/net/minecraft/world/level/redstone/NeighborUpdater.java
 +++ b/net/minecraft/world/level/redstone/NeighborUpdater.java
 @@ -42,6 +42,10 @@ public interface NeighborUpdater {

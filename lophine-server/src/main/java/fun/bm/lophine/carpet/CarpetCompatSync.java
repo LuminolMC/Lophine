@@ -5,10 +5,8 @@ import fun.bm.lophine.carpet.config.modules.CounterCompatConfig;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
 import fun.bm.lophine.config.modules.experiment.RedStoneConfig;
-import fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig;
 import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
-import fun.bm.lophine.config.modules.function.LanguageConfig;
 import fun.bm.lophine.config.modules.function.WoolHopperCounterConfig;
 import fun.bm.lophine.protocol.CarpetLoggerProtocol;
 import me.earthme.luminol.config.modules.experiment.CommandConfig;
@@ -35,7 +33,6 @@ public final class CarpetCompatSync {
     }
 
     private static void applyGeneralRules() {
-        UpdateSuppressionCrashFixConfig.enabled = GeneralCompatConfig.amsUpdateSuppressionCrashFix || GeneralCompatConfig.yeetUpdateSuppressionCrash;
         RedStoneConfig.redstoneIgnoreUpwardsUpdate = GeneralCompatConfig.dustTrapdoorReintroduced;
         RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
         RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
