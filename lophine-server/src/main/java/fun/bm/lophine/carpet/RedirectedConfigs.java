@@ -14,6 +14,7 @@ public class RedirectedConfigs {
         woolHopperCounter();
         fakeplayer();
         creativeFlyNoClip();
+        redstoneChanges();
     }
 
     private static void updateSuppressionCrashFix() {
