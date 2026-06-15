@@ -5,6 +5,7 @@ import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.DoNotLoad;
 import me.earthme.luminol.enums.EnumConfigCategory;
 import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.bot.ServerBot;
@@ -75,6 +76,7 @@ public class FakeplayerConfig implements IConfigModule {
             Enable locator bar for fakeplayers""")
     public static boolean enableLocatorBar = false;
 
+    @DoNotLoad
     private BotCommand command = null;
 
     public static int getSimulationDistance(ServerBot bot) {

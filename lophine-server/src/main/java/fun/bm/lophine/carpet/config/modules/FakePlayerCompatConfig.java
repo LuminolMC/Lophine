@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.DoNotLoad;
 import me.earthme.luminol.enums.EnumConfigCategory;
 import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.command.bot.BotCommand;
@@ -64,6 +65,7 @@ public class FakePlayerCompatConfig implements IConfigModule {
             Persist queued fakeplayer actions across save and reload.""")
     public static boolean fakePlayerReloadAction = false;
 
+    @DoNotLoad
     private BotCommand command = null;
 
     @Override
