@@ -75,15 +75,18 @@ public class RedirectedConfigs {
 
     private static void woolHopperCounter() {
         ConfigsInstance config = ConfigManager.getConfigs("lophine");
+        ConfigsInstance carpetConfig = ConfigManager.getConfigs("lophine_carpet");
         try {
             boolean woolHopperCounterEnabled = config.getConfigOrigin("function.wool-hopper-counter.enabled");
-            boolean woolHopperCounterUnlimitedSpeed = config.getConfigOrigin("function.wool-hopper-counter.unlimited-speed");
-            ConfigsInstance carpetConfig = ConfigManager.getConfigs("lophine_carpet");
             if (woolHopperCounterEnabled) {
                 WoolHopperCounterConfig.hopperCounters = true;
                 carpetConfig.setConfig(new String[]{"carpet", "hopper_counter", "hopperCounters"}, true);
             }
             config.removeConfig(new String[]{"function", "wool-hopper-counter", "enabled"});
+        } catch (Exception ignored) {
+        }
+        try {
+            boolean woolHopperCounterUnlimitedSpeed = config.getConfigOrigin("function.wool-hopper-counter.unlimited-speed");
             if (woolHopperCounterUnlimitedSpeed) {
                 WoolHopperCounterConfig.hopperCountersUnlimitedSpeed = true;
                 carpetConfig.setConfig(new String[]{"carpet", "hopper_counter", "hopperCountersUnlimitedSpeed"}, true);
@@ -120,6 +123,38 @@ public class RedirectedConfigs {
                 carpetConfig.setConfig(new String[]{"carpet", "general", "creativeNoClip"}, true);
             }
             config.removeConfig(new String[]{"function", "creative_fly_no_clip", "enabled"});
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void redstoneChanges() {
+        ConfigsInstance config = ConfigManager.getConfigs("lophine");
+        ConfigsInstance carpetConfig = ConfigManager.getConfigs("lophine_carpet");
+        try {
+            boolean dustTrapdoorReintroduced = config.getConfigOrigin("experiment.redstone.redstone-ignore-upwards-update");
+            if (dustTrapdoorReintroduced) {
+                GeneralCompatConfig.dustTrapdoorReintroduced = true;
+                carpetConfig.setConfig(new String[]{"carpet", "general", "dustTrapdoorReintroduced"}, true);
+            }
+            config.removeConfig(new String[]{"experiment", "redstone", "redstone-ignore-upwards-update"});
+        } catch (Exception ignored) {
+        }
+        try {
+            boolean shulkerBoxCCEReintroduced = config.getConfigOrigin("experiment.redstone.cce-update-suppression");
+            if (shulkerBoxCCEReintroduced) {
+                GeneralCompatConfig.shulkerBoxCCEReintroduced = true;
+                carpetConfig.setConfig(new String[]{"carpet", "general", "shulkerBoxCCEReintroduced"}, true);
+            }
+            config.removeConfig(new String[]{"experiment", "redstone", "cce-update-suppression"});
+        } catch (Exception ignored) {
+        }
+        try {
+            boolean instantBlockUpdaterReintroduced = config.getConfigOrigin("experiment.redstone.instant-block-updater");
+            if (instantBlockUpdaterReintroduced) {
+                GeneralCompatConfig.instantBlockUpdaterReintroduced = true;
+                carpetConfig.setConfig(new String[]{"carpet", "general", "instantBlockUpdaterReintroduced"}, true);
+            }
+            config.removeConfig(new String[]{"experiment", "redstone", "instant-block-updater"});
         } catch (Exception ignored) {
         }
     }

@@ -34,15 +34,18 @@ public class GeneralCompatConfig implements IConfigModule {
     public static boolean yeetUpdateSuppressionCrash = false;
 
     @ConfigInfo(name = "dustTrapdoorReintroduced", comments = """
-            Map dust-on-open-trapdoor behavior to Lophine's redstone-ignore-upwards-update option.""")
+            Should the pre-1.20 mechanism be reintroduced:
+            Redstone dust does not connect to adjacent redstone dust on trapdoors that are open
+            Pre-1.20.2 mechanism: Redstone dust, redstone repeaters,
+            and redstone comparators do not check for attachment when receiving status updates from below.""")
     public static boolean dustTrapdoorReintroduced = false;
 
     @ConfigInfo(name = "shulkerBoxCCEReintroduced", comments = """
-            Map shulker-box CCE update suppression to Lophine's cce-update-suppression option.""")
+            Use ClassCastException for update suppression.""")
     public static boolean shulkerBoxCCEReintroduced = false;
 
     @ConfigInfo(name = "instantBlockUpdaterReintroduced", comments = """
-            Enable the existing instant block updater patch already carried by Lophine.""")
+            Instant block updater.""")
     public static boolean instantBlockUpdaterReintroduced = false;
 
     @ConfigInfo(name = "commandTick", comments = """
