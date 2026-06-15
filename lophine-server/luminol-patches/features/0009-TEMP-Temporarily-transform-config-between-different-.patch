@@ -7,17 +7,17 @@ Subject: [PATCH] TEMP: Temporarily transform config between different config
 Should be removed in Minecraft 26.2 Update
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index 697cc65e8487fe78a4f8ae0435c22c9ef8cdc80c..0a2922564aef4943a530ea72d9ba2d7e1e8676e7 100644
+index da9ff49be1c7a12ea93d665c37e828afd24d7070..dc6e6d38ebe0c4f7f481da571ab116015fd08cd2 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-@@ -58,6 +58,10 @@ public class ConfigManager {
+@@ -62,6 +62,10 @@ public class ConfigManager {
          CompletableFuture.allOf(futures).join();
          CommandRegister.register(); // register command after config loaded to enable some command didn't depend on config files
          initialized = true;
 +
 +        reApplyStagedConfigs();
 +        saveConfigs();
-+        configfiles.values().forEach((config) -> config.reloadAsync(true));
++        configfiles.values().forEach((config) -> config.reload(true, false));
      }
  
      public static void registerRunnableBeforeFinalLoad(Runnable runnable) {
