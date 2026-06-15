@@ -9,7 +9,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
-index 06160c24f1ffbe1445284bc81598cabb3ad20477..ca3f31a72060f797115787302d32a019fa8243e0 100644
+index 07b84bd0144e133d13e8e033a8998f3cf674f746..9c016e7d93e4c44ddf2df520e5c57d92a0e085b3 100644
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
 @@ -69,20 +69,8 @@ public class BlockItem extends Item {

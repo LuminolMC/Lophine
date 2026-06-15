@@ -50,7 +50,7 @@
 +    implementation(project(":lophine-api"))
      // Luminol start - Dependenices insert
      implementation("net.objecthunter:exp4j:0.4.8")
-     implementation("com.electronwill.night-config:toml:3.8.3") // Night config
+     implementation("com.electronwill.night-config:toml:3.9.0") // Night config
 @@ -234,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(

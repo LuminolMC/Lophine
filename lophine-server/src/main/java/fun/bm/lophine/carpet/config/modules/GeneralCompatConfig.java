@@ -1,8 +1,11 @@
 package fun.bm.lophine.carpet.config.modules;
 
+import fun.bm.lophine.carpet.CarpetCompatSync;
+import fun.bm.lophine.carpet.RedirectedConfigs;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 import java.util.List;
@@ -16,40 +19,47 @@ import java.util.List;
                 Only rules that already have a working server-side implementation are exposed here."""
 )
 public class GeneralCompatConfig implements IConfigModule {
+    @TransformedConfig(name = "language", directory = {"carpet", "general"}, transformComments = false)
     @ConfigInfo(name = "language", comments = """
-            Carpet language value forwarded to lophine.function.language.lang.""")
+            Carpet language value.
+            ATTENTION: This config will not update in Lophine global now!""")
     public static String language = "en_us";
 
     @ConfigInfo(name = "amsUpdateSuppressionCrashFix", comments = """
-            Map AMS update suppression crash protection to Lophine's existing crash fix.""")
+            Update suppression crash protection.""")
     public static boolean amsUpdateSuppressionCrashFix = false;
 
     @ConfigInfo(name = "yeetUpdateSuppressionCrash", comments = """
-            Map TIS update suppression crash yeeting to the same Lophine crash fix.""")
+            Update suppression crash yeeting.""")
     public static boolean yeetUpdateSuppressionCrash = false;
 
     @ConfigInfo(name = "dustTrapdoorReintroduced", comments = """
-            Map dust-on-open-trapdoor behavior to Lophine's redstone-ignore-upwards-update option.""")
+            Should the pre-1.20 mechanism be reintroduced:
+            Redstone dust does not connect to adjacent redstone dust on trapdoors that are open
+            Pre-1.20.2 mechanism: Redstone dust, redstone repeaters,
+            and redstone comparators do not check for attachment when receiving status updates from below.""")
     public static boolean dustTrapdoorReintroduced = false;
 
     @ConfigInfo(name = "shulkerBoxCCEReintroduced", comments = """
-            Map shulker-box CCE update suppression to Lophine's cce-update-suppression option.""")
+            Use ClassCastException for update suppression.""")
     public static boolean shulkerBoxCCEReintroduced = false;
 
     @ConfigInfo(name = "instantBlockUpdaterReintroduced", comments = """
-            Enable the existing instant block updater patch already carried by Lophine.""")
+            Instant block updater.""")
     public static boolean instantBlockUpdaterReintroduced = false;
 
     @ConfigInfo(name = "commandTick", comments = """
-            Enable the tick command support already patched into Lophine.""")
+            Enable the tick command support.""")
     public static boolean commandTick = false;
 
     @ConfigInfo(name = "creativeNoClip", comments = """
-            Enable the existing creative fly no clip implementation.""")
+            Whether to enable creative fly no clip.
+            When enabled, players in creative mode will not collide with blocks while flying.
+            This allows them to pass through blocks without obstruction.""")
     public static boolean creativeNoClip = false;
 
     @ConfigInfo(name = "optimizedDragonRespawn", comments = """
-            Enable the existing optimized dragon respawn implementation from Luminol.""")
+            Enable optimized dragon respawn.""")
     public static boolean optimizedDragonRespawn = false;
 
     @ConfigInfo(name = "antiSpamDisabled", comments = """
@@ -245,11 +255,24 @@ public class GeneralCompatConfig implements IConfigModule {
             Examples: ["tps", "mob_caps", "counter white"]""")
     public static List<String> defaultLoggers = List.of();
 
+    public static boolean mergedUpdateSuppressionCrashEnabled() {
+        return amsUpdateSuppressionCrashFix || yeetUpdateSuppressionCrash;
+    }
+
     public static int normalizedTntFuseDuration() {
         return Math.clamp(tntFuseDuration, 0, Short.MAX_VALUE);
     }
 
     public static int normalizedTickCommandPermission() {
         return Math.clamp(tickCommandPermission, 0, 4);
+    }
+
+    @Override
+    public void beforeFinalLoad() {
+        // Should remove in next Minecraft version update
+        RedirectedConfigs.redirect();
+
+        // after all config updated, send changes to client
+        CarpetCompatSync.apply();
     }
 }

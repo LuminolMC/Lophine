@@ -1,9 +1,15 @@
 package fun.bm.lophine.carpet.config.modules;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.DoNotLoad;
 import me.earthme.luminol.enums.EnumConfigCategory;
+import org.jetbrains.annotations.Nullable;
+import org.leavesmc.leaves.command.bot.BotCommand;
+
+import java.util.Set;
 
 @ConfigClassInfo(
         category = EnumConfigCategory.ROOT,
@@ -14,12 +20,9 @@ import me.earthme.luminol.enums.EnumConfigCategory;
                 commandPlayer is currently backed by Lophine's /bot command surface."""
 )
 public class FakePlayerCompatConfig implements IConfigModule {
-    @ConfigInfo(name = "commandBot", comments = """
-            Enable Lophine's /bot command.""")
-    public static boolean commandBot = false;
-
     @ConfigInfo(name = "commandPlayer", comments = """
-            Map Carpet's commandPlayer rule to the same fakeplayer command surface used by /bot.""")
+            Enable /player command.(not remapped)
+            If you want to enable bot command, please see lophine global config.""")
     public static boolean commandPlayer = false;
 
     @ConfigInfo(name = "fakePlayerResident", comments = """
@@ -61,4 +64,23 @@ public class FakePlayerCompatConfig implements IConfigModule {
     @ConfigInfo(name = "fakePlayerReloadAction", comments = """
             Persist queued fakeplayer actions across save and reload.""")
     public static boolean fakePlayerReloadAction = false;
+
+    @DoNotLoad
+    private BotCommand command = null;
+
+    @Override
+    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
+        if (commandPlayer) {
+            command = new BotCommand("player");
+            command.register();
+        }
+    }
+
+    @Override
+    public void onUnloaded(CommentedFileConfig configInstance) {
+        if (command != null) {
+            command.unregister();
+            command = null;
+        }
+    }
 }

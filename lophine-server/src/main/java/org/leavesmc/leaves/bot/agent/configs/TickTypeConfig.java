@@ -31,7 +31,7 @@ public class TickTypeConfig extends AbstractBotConfig<ServerBot.TickType, TickTy
 
     public TickTypeConfig() {
         super("tick_type", EnumArgumentType.fromEnum(ServerBot.TickType.class), TickTypeConfig::new);
-        this.value = FakeplayerConfig.tickType;
+        this.value = FakeplayerConfig.tickType();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TickTypeConfig extends AbstractBotConfig<ServerBot.TickType, TickTy
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
-        String raw = nbt.getStringOr(getName(), FakeplayerConfig.tickType.name());
+        String raw = nbt.getStringOr(getName(), FakeplayerConfig.tickType().name());
         this.setValue(switch (raw.toLowerCase(Locale.ROOT)) {
             case "network" -> ServerBot.TickType.NETWORK;
             case "entity_list" -> ServerBot.TickType.ENTITY_LIST;

@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.function;
+package fun.bm.lophine.carpet.config.modules;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import fun.bm.lophine.command.counter.CounterCommand;
@@ -11,20 +11,29 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-@ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "wool-hopper-counter")
+@ConfigClassInfo(
+        category = EnumConfigCategory.ROOT,
+        name = "hopper_counter",
+        directory = {"carpet"},
+        comments = """
+                Hopper counter functions."""
+)
 public class WoolHopperCounterConfig implements IConfigModule {
-    @ConfigInfo(name = "enabled")
-    public static boolean enabled = false;
+    @ConfigInfo(name = "hopperCounters", comments = """
+            Enable the existing wool hopper counter implementation.""")
+    public static boolean hopperCounters = false;
 
-    @ConfigInfo(name = "unlimited-speed")
-    public static boolean unlimitedSpeed = false;
+    @ConfigInfo(name = "hopperCountersUnlimitedSpeed", comments = """
+            Remove the hopper transfer speed limit for counters.
+            Only effective when hopperCounters is enabled.""")
+    public static boolean hopperCountersUnlimitedSpeed = false;
 
     @DoNotLoad
     private static CounterCommand counterCommand = null;
 
     @Override
     public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> exs) {
-        if (enabled) {
+        if (hopperCounters) {
             if (counterCommand == null) {
                 counterCommand = new CounterCommand();
             }
