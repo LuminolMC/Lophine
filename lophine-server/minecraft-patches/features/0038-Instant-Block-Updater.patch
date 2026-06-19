@@ -5,39 +5,30 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..dad62b80578f27cc39985ee6ded705bf3cc5d117 100644
+index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..1a426e1aa456a8ea432f62483c3be5c328b97953 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-@@ -44,6 +44,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
- import net.minecraft.world.level.material.Fluid;
- import net.minecraft.world.level.pathfinder.PathTypeCache;
- import net.minecraft.world.level.redstone.CollectingNeighborUpdater;
-+import net.minecraft.world.level.redstone.InstantNeighborUpdater;
-+import net.minecraft.world.level.redstone.NeighborUpdater;
- import net.minecraft.world.level.saveddata.WanderingTraderData;
- import net.minecraft.world.ticks.LevelTicks;
- import org.bukkit.craftbukkit.block.CraftBlockState;
-@@ -506,7 +508,7 @@ public final class RegionizedWorldData {
+@@ -506,7 +506,7 @@ public final class RegionizedWorldData {
      public long lastMidTickExecuteFailure;
      // From Level
      public boolean populating;
 -    public final CollectingNeighborUpdater neighborUpdater;
-+    public final NeighborUpdater neighborUpdater;
++    public final net.minecraft.world.level.redstone.NeighborUpdater neighborUpdater;
      public boolean captureBlockStates = false;
      public boolean captureTreeGeneration = false;
      public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
-@@ -567,7 +569,9 @@ public final class RegionizedWorldData {
+@@ -567,7 +567,9 @@ public final class RegionizedWorldData {
          this.world = world;
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);
 -        this.neighborUpdater = new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
-+        this.neighborUpdater = fun.bm.lophine.config.modules.experiment.RedStoneConfig.instantBlockUpdater
-+            ? new InstantNeighborUpdater(world)
++        this.neighborUpdater = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.instantBlockUpdaterReintroduced
++            ? new net.minecraft.world.level.redstone.InstantNeighborUpdater(world)
 +            : new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
          this.nearbyPlayers = new NearbyPlayers(world);
          this.wireHandler = new alternate.current.wire.WireHandler(world);
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
-@@ -896,4 +900,4 @@ public final class RegionizedWorldData {
+@@ -896,4 +898,4 @@ public final class RegionizedWorldData {
      public int getChunkCount() {
          return this.chunks.size();
      }
@@ -45,7 +36,7 @@ index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..dad62b80578f27cc39985ee6ded705bf
 \ No newline at end of file
 +}
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 003d0330956b75d93d62e0c0caed56f2408984fc..7dfcf2bed9446fcf0804e304bc88d0fd44521228 100644
+index 3496696c6b023e7df95027917b3391557dddd8d0..d8718805a965db11dfce8ed7f5ea65a638cc4510 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -999,11 +999,13 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet

@@ -1,19 +1,10 @@
 package fun.bm.lophine.carpet;
 
-import fun.bm.lophine.carpet.config.modules.CoreConfig;
-import fun.bm.lophine.carpet.config.modules.CounterCompatConfig;
 import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.carpet.config.modules.GeneralCompatConfig;
-import fun.bm.lophine.config.modules.experiment.RedStoneConfig;
-import fun.bm.lophine.config.modules.fixes.UpdateSuppressionCrashFixConfig;
-import fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig;
+import fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
-import fun.bm.lophine.config.modules.function.LanguageConfig;
-import fun.bm.lophine.config.modules.function.WoolHopperCounterConfig;
 import fun.bm.lophine.protocol.CarpetLoggerProtocol;
-import me.earthme.luminol.config.modules.experiment.CommandConfig;
-import me.earthme.luminol.config.modules.optimizations.OptimizedDragonRespawnConfig;
-import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.protocol.CarpetServerProtocol;
 
 import java.util.List;
@@ -23,40 +14,9 @@ public final class CarpetCompatSync {
     private static boolean init = false;
 
     public static void apply() {
-        if (init) return;
-        if (CoreConfig.enabled) {
-            applyGeneralRules();
-            applyFakePlayerRules();
-            applyCounterRules();
-        }
         CarpetLoggerProtocol.refreshConfiguredDefaults(!init);
         registerProtocolRules();
         init = true;
-    }
-
-    private static void applyGeneralRules() {
-        LanguageConfig.lang = GeneralCompatConfig.language;
-        UpdateSuppressionCrashFixConfig.enabled = GeneralCompatConfig.amsUpdateSuppressionCrashFix || GeneralCompatConfig.yeetUpdateSuppressionCrash;
-        RedStoneConfig.redstoneIgnoreUpwardsUpdate = GeneralCompatConfig.dustTrapdoorReintroduced;
-        RedStoneConfig.cce = GeneralCompatConfig.shulkerBoxCCEReintroduced;
-        RedStoneConfig.instantBlockUpdater = GeneralCompatConfig.instantBlockUpdaterReintroduced;
-        CommandConfig.tick = GeneralCompatConfig.commandTick;
-        CreativeFlyNoClipConfig.enabled = GeneralCompatConfig.creativeNoClip;
-        OptimizedDragonRespawnConfig.optimizedRespawn = GeneralCompatConfig.optimizedDragonRespawn;
-    }
-
-    private static void applyFakePlayerRules() {
-        FakeplayerConfig.enable = FakePlayerCompatConfig.commandBot || FakePlayerCompatConfig.commandPlayer;
-        FakeplayerConfig.canResident = FakePlayerCompatConfig.fakePlayerResident;
-        FakeplayerConfig.canOpenInventory = FakePlayerCompatConfig.openFakePlayerInventory;
-        FakeplayerConfig.tickType = FakePlayerCompatConfig.fakePlayerTicksLikeRealPlayer
-                ? ServerBot.TickType.NETWORK
-                : ServerBot.TickType.ENTITY_LIST;
-    }
-
-    private static void applyCounterRules() {
-        WoolHopperCounterConfig.enabled = CounterCompatConfig.hopperCounters;
-        WoolHopperCounterConfig.unlimitedSpeed = CounterCompatConfig.hopperCountersUnlimitedSpeed;
     }
 
     private static List<String> sanitizeDefaultLoggers(List<String> configuredLoggers) {
@@ -119,7 +79,7 @@ public final class CarpetCompatSync {
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "tntFuseDuration", GeneralCompatConfig.normalizedTntFuseDuration()));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "defaultLoggers", CarpetLoggerProtocol.serializeConfiguredDefaults(sanitizeDefaultLoggers(GeneralCompatConfig.defaultLoggers))));
 
-        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "commandBot", FakePlayerCompatConfig.commandBot));
+        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "commandBot", FakeplayerConfig.enable));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "commandPlayer", FakePlayerCompatConfig.commandPlayer));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "fakePlayerResident", FakePlayerCompatConfig.fakePlayerResident));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "openFakePlayerInventory", FakePlayerCompatConfig.openFakePlayerInventory));
@@ -132,7 +92,7 @@ public final class CarpetCompatSync {
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "fakePlayerAutoFish", FakePlayerCompatConfig.fakePlayerAutoFish));
         CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("lophine", "fakePlayerReloadAction", FakePlayerCompatConfig.fakePlayerReloadAction));
 
-        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "hopperCounters", CounterCompatConfig.hopperCounters));
-        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "hopperCountersUnlimitedSpeed", CounterCompatConfig.hopperCountersUnlimitedSpeed));
+        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpet", "hopperCounters", WoolHopperCounterConfig.hopperCounters));
+        CarpetServerProtocol.CarpetRules.register(CarpetServerProtocol.CarpetRule.of("carpettisaddition", "hopperCountersUnlimitedSpeed", WoolHopperCounterConfig.hopperCountersUnlimitedSpeed));
     }
 }

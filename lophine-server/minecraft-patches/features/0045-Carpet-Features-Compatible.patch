@@ -1,0 +1,142 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Wed, 21 Jan 2026 21:28:21 +0800
+Subject: [PATCH] Carpet Features Compatible
+
+
+diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
+index 8b05860d2787a40495f8a025bc0bc43789d6a6af..2ef6a7fb5a9c3452dfff70a67542e2ca2531c897 100644
+--- a/io/papermc/paper/threadedregions/RegionizedServer.java
++++ b/io/papermc/paper/threadedregions/RegionizedServer.java
+@@ -340,7 +340,7 @@ public final class RegionizedServer {
+         final long tickStartNanos = System.nanoTime();
+         ++this.tickCount;
+         // Luminol start - Add a config to enable tick command
+-        if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.commandTick) { // Lophine - redirect
+             MinecraftServer.getServer().tickRateManager().tick();
+         }
+         // Luminol end - Add a config to enable tick command
+@@ -529,7 +529,7 @@ public final class RegionizedServer {
+     }
+ 
+     private void tickTime(final ServerLevel world, final long tickCount) {
+-        if ((!me.earthme.luminol.config.modules.experiment.CommandConfig.tick || world.tickRateManager().runsNormally()) && world.tickTime) { // Luminol - Add a config to enable tick command
++        if ((!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.commandTick || world.tickRateManager().runsNormally()) && world.tickTime) { // Luminol - Add a config to enable tick command // Lophine - redirect
+             world.serverLevelData.setGameTime(world.serverLevelData.getGameTime() + tickCount);
+         }
+     }
+diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
+index 917d6965e91527fc79d545c041765f78a357eac2..19ddbee489e9b17ef0bf794fa6cc3c10cc0ed565 100644
+--- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
++++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
+@@ -595,7 +595,7 @@ public final class TickRegionScheduler {
+                 // next start isn't updated until the end of this tick
+                 this.tickRegion(tickCount, tickStart, scheduledEnd);
+                 // Luminol start - Add a config to enable tick command
+-                if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
++                if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.commandTick) { // Lophine - redirect
+                     MinecraftServer.getServer().tickRateManager().endTickWork();
+                 }
+                 // Luminol end - Add a config to enable tick command
+diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
+index bb5059a77741bf1d9e73bd8c7f0da6681ec63f67..270ee3c01ad0b351bee068a507b09a9d0041ae9c 100644
+--- a/net/minecraft/commands/Commands.java
++++ b/net/minecraft/commands/Commands.java
+@@ -266,7 +266,7 @@ public class Commands {
+         TellRawCommand.register(this.dispatcher, context);
+         //TestCommand.register(this.dispatcher, context); // Folia - region threading
+         // Luminol start - Add a config to enable tick command
+-        if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.commandTick) { // Lophine - redirect
+             TickCommand.register(this.dispatcher); // Folia - region threading - TODO later
+         }
+         // Luminol end - Add a config to enable tick command
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 5ebff729bb7e75e1c84449c0e3021b972ad0d936..d35cc60b1f4a59ab1b74da5d8d55d63c94a9055b 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -2186,7 +2186,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+                 this.lastSentFood = -1;
+                 this.teleportSpectators(transition, oldLevel);
+                 // Leaves start - bot support
+-                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+                     this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(this, true)); // Leaves - render bot
+                 }
+                 // Leaves end - bot support
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index baa295f3dd8cf10bf7347ee4d1c249b1f82c9279..1d5376650d0f5eeb23fde8d7116b47cfae37576f 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -280,7 +280,7 @@ public abstract class PlayerList {
+         // org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
+ 
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
+             if (bot != null) {
+                 this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
+@@ -441,7 +441,7 @@ public abstract class PlayerList {
+         org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
+ 
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
+             if (bot != null) {
+                 this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
+@@ -969,7 +969,7 @@ public abstract class PlayerList {
+         ).callEvent();
+         // Paper end
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(player, true)); // Leaves - render bot
+         }
+         // Leaves end - bot support
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4eadcf559 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -240,7 +240,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                 }
+ 
+                 // Leaves start - Wool hopper counter
+-                if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
++                if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
+                     net.minecraft.world.item.DyeColor woolColor = org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, entity.getBlockPos().relative(state.getValue(HopperBlock.FACING)));
+                     if (woolColor != null) {
+                         for (int i = 0; i < Short.MAX_VALUE; i++) {
+@@ -258,7 +258,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+                 if (changed) {
+                     entity.setCooldown(level.spigotConfig.hopperTransfer); // Spigot
+                     // Leaves start - Wool hopper counter
+-                    if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
++                    if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
+                         entity.setCooldown(0);
+                         return true;
+                     }
+@@ -664,7 +664,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+     }
+ 
+     public static boolean addItem(final Container container, final ItemEntity entity) {
+-        if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && entity.isRemoved()) return false; // Leaves - Wool hopper counter
++        if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && entity.isRemoved()) return false; // Leaves - Wool hopper counter
+         boolean changed = false;
+         // CraftBukkit start
+         if (org.bukkit.event.inventory.InventoryPickupItemEvent.getHandlerList().getRegisteredListeners().length > 0) { // Paper - optimize hoppers
+diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
+index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..4274f22710035b547f5aca617c80c5c99f3a4dc8 100644
+--- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
++++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
+@@ -323,7 +323,7 @@ public class EnderDragonFight extends SavedData {
+     private int cachePortalOriginIteratorY = -1;
+ 
+     public BlockPattern.@Nullable BlockPatternMatch findExitPortal() {
+-        if (me.earthme.luminol.config.modules.optimizations.OptimizedDragonRespawnConfig.optimizedRespawn) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.optimizedDragonRespawn) {
+             int i, j;
+             for (i = cachePortalChunkIteratorX; i <= 8; ++i) {
+                 for (j = cachePortalChunkIteratorZ; j <= 8; ++j) {

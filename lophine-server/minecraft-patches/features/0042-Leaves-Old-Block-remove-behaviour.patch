@@ -522,7 +522,7 @@ index 6a3413ca875ce78f48cd8d3ce2cfe7798be1a19e..be572eff561ffdd961a9602eaa613676
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (state.getValue(POWERED) && level.getBlockTicks().hasScheduledTick(pos, this)) {
 diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
-index 66a05f099a263b0c9220f1416f3cf1221422cc20..1de86856f4a27346d7003ca9eb24a36074a2a4a3 100644
+index 619f5e37919693fc5976aedefed3bb5428395439..ed190e16df7c6b80fd90561e7c2fdd53c745e54a 100644
 --- a/net/minecraft/world/level/block/RedStoneWireBlock.java
 +++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
 @@ -378,6 +378,28 @@ public class RedStoneWireBlock extends Block {
@@ -622,7 +622,7 @@ index d7e5ec23c64b60c47ab6b54cbf282e88c3a4a045..037aa3592a963bbb142465d31040f60e
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (state.getValue(SHRIEKING)) {
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index ffa76dc1338c6c892a42b2148f9f01c933660b98..7bf2cde59c112f4babb87476585207dacebef341 100644
+index 8259f530ec50554906c254b60f1e964b52c02852..59ad645785bc99758f4bc124c56e39d87c4b75c2 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 @@ -150,6 +150,20 @@ public class ShulkerBoxBlock extends BaseEntityBlock {

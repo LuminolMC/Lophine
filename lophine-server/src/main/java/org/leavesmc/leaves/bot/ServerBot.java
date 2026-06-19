@@ -360,8 +360,8 @@ public class ServerBot extends ServerPlayer {
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull net.minecraft.world.phys.Vec3 location) {
         if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
             boolean isSneaking = player.isShiftKeyDown();
-            boolean enabled1Only = FakeplayerConfig.canOpenInventory ^ FakeplayerConfig.canOpenActionGui;
-            boolean openInventory = enabled1Only ? FakeplayerConfig.canOpenInventory : FakeplayerConfig.canOpenInventory && isSneaking;
+            boolean enabled1Only = FakePlayerCompatConfig.openFakePlayerInventory ^ FakeplayerConfig.canOpenActionGui;
+            boolean openInventory = enabled1Only ? FakePlayerCompatConfig.openFakePlayerInventory : FakePlayerCompatConfig.openFakePlayerInventory && isSneaking;
             boolean openActionGui = enabled1Only ? FakeplayerConfig.canOpenActionGui : FakeplayerConfig.canOpenActionGui && isSneaking;
 
             if (openInventory) {

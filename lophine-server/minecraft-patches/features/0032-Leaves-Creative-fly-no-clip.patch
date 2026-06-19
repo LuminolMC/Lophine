@@ -21,7 +21,7 @@ index e302c6198d71782b524391329aa5c89d2b3e0ccf..2312803297321f66c9057bc54ce56dd1
              } else {
                  this.followingPlayer = null;
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 38689fa466a20c64f9916ee32a57a9fdb58d9403..7d514537ee38f9b9366692bc969ff503d883aa16 100644
+index 38689fa466a20c64f9916ee32a57a9fdb58d9403..ea5de9aca4908ed972c4f44bff635f2cc423a04f 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -279,8 +279,8 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -59,7 +59,7 @@ index 38689fa466a20c64f9916ee32a57a9fdb58d9403..7d514537ee38f9b9366692bc969ff503
  
 +    // Leaves start - creative no clip
 +    public boolean isCreativeFlyOrSpectator() {
-+        return isSpectator() || (fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && isCreative() && getAbilities().flying);
++        return isSpectator() || (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeNoClip && isCreative() && getAbilities().flying);
 +    }
 +
 +    public boolean canSpectatingPlace(final net.minecraft.world.level.LevelReader world, final BlockState state, final BlockPos pos, final net.minecraft.world.phys.shapes.CollisionContext context) {
@@ -81,7 +81,7 @@ index 38689fa466a20c64f9916ee32a57a9fdb58d9403..7d514537ee38f9b9366692bc969ff503
      public boolean isPickable() {
          return !this.isSpectator() && super.isPickable();
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
-index 2e2a8af12f249ec5bd0935fd13f5acbd0a777b5f..06160c24f1ffbe1445284bc81598cabb3ad20477 100644
+index 2e2a8af12f249ec5bd0935fd13f5acbd0a777b5f..07b84bd0144e133d13e8e033a8998f3cf674f746 100644
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
 @@ -158,8 +158,9 @@ public class BlockItem extends Item {
@@ -91,12 +91,12 @@ index 2e2a8af12f249ec5bd0935fd13f5acbd0a777b5f..06160c24f1ffbe1445284bc81598cabb
 +        CollisionContext collisionContext = player == null ? CollisionContext.empty() : CollisionContext.placementContext(player); // Leaves - creative no clip
          boolean canBuild = (!this.mustSurvive() || stateForPlacement.canSurvive(world, context.getClickedPos()))
 -            && world.checkEntityCollision(stateForPlacement, player, CollisionContext.placementContext(player), context.getClickedPos(), true); // Paper - Cancel hit for vanished players
-+            && ((fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext) : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true)); // Paper - Cancel hit for vanished players // Leaves - creative no clip
++            && ((fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeNoClip && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(world, stateForPlacement, context.getClickedPos(), collisionContext) : world.checkEntityCollision(stateForPlacement, player, collisionContext, context.getClickedPos(), true)); // Paper - Cancel hit for vanished players // Leaves - creative no clip
          org.bukkit.entity.Player bukkitPlayer = (context.getPlayer() instanceof ServerPlayer) ? (org.bukkit.entity.Player) context.getPlayer().getBukkitEntity() : null;
  
          org.bukkit.event.block.BlockCanBuildEvent event = new org.bukkit.event.block.BlockCanBuildEvent(
 diff --git a/net/minecraft/world/item/StandingAndWallBlockItem.java b/net/minecraft/world/item/StandingAndWallBlockItem.java
-index cb0a4a9865df69e5504a86de6c144bc4450bd19a..a40a98bb48bb14c49670ba55d2a2e8d7e9d0d178 100644
+index cb0a4a9865df69e5504a86de6c144bc4450bd19a..596fb91fccb4c8d6854fa859f9ee357c6d22a81e 100644
 --- a/net/minecraft/world/item/StandingAndWallBlockItem.java
 +++ b/net/minecraft/world/item/StandingAndWallBlockItem.java
 @@ -44,7 +44,7 @@ public class StandingAndWallBlockItem extends BlockItem {
@@ -104,7 +104,7 @@ index cb0a4a9865df69e5504a86de6c144bc4450bd19a..a40a98bb48bb14c49670ba55d2a2e8d7
          // CraftBukkit start
          if (stateForPlacement != null) {
 -            boolean defaultReturn = level.isUnobstructed(stateForPlacement, pos, CollisionContext.empty());
-+            boolean defaultReturn = (fun.bm.lophine.config.modules.function.CreativeFlyNoClipConfig.enabled && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(level, stateForPlacement, pos, CollisionContext.empty()) : level.isUnobstructed(stateForPlacement, pos, CollisionContext.empty()); // Leaves - creative no clip
++            boolean defaultReturn = (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.creativeNoClip && context.getPlayer() != null) ? context.getPlayer().canSpectatingPlace(level, stateForPlacement, pos, CollisionContext.empty()) : level.isUnobstructed(stateForPlacement, pos, CollisionContext.empty()); // Leaves - creative no clip
              org.bukkit.entity.Player player = (context.getPlayer() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) ? serverPlayer.getBukkitEntity() : null;
  
              org.bukkit.event.block.BlockCanBuildEvent event = new org.bukkit.event.block.BlockCanBuildEvent(org.bukkit.craftbukkit.block.CraftBlock.at(context.getLevel(), pos), player, stateForPlacement.asBlockData(), defaultReturn, org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(context.getHand())); // Paper - Expose hand in BlockCanBuildEvent

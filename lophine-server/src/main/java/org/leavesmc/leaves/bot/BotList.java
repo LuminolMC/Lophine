@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.logging.LogUtils;
+import fun.bm.lophine.carpet.config.modules.FakePlayerCompatConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import fun.bm.lophine.config.modules.function.OldFeatureConfig;
 import io.papermc.paper.adventure.PaperAdventure;
@@ -102,7 +103,7 @@ public class BotList {
     }
 
     public void saveAllResumeBots() {
-        if (!FakeplayerConfig.enable || !FakeplayerConfig.canResident) {
+        if (!FakeplayerConfig.checkEnabled() || !FakePlayerCompatConfig.fakePlayerResident) {
             return;
         }
         for (ServerBot bot : this.bots) {
@@ -353,7 +354,7 @@ public class BotList {
         for (String fullName : this.botsNameByWorldUuid.getOrDefault(worldUuid, new HashSet<>())) {
             ServerBot bot = this.getBotByName(fullName);
             if (bot != null) {
-                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident, FakeplayerConfig.canResident);
+                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakePlayerCompatConfig.fakePlayerResident, FakePlayerCompatConfig.fakePlayerResident);
             }
         }
     }
@@ -363,9 +364,9 @@ public class BotList {
         AtomicInteger check = new AtomicInteger();
         AtomicInteger received = new AtomicInteger();
         for (ServerBot bot : this.bots) {
-            bot.resume = FakeplayerConfig.canResident;
+            bot.resume = FakePlayerCompatConfig.fakePlayerResident;
             if (TickThread.isTickThreadFor(bot.level(), bot.getX(), bot.getZ())) {
-                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident, FakeplayerConfig.canResident);
+                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakePlayerCompatConfig.fakePlayerResident, FakePlayerCompatConfig.fakePlayerResident);
             } else {
                 finished = false;
                 check.getAndIncrement();
@@ -382,7 +383,7 @@ public class BotList {
             }
             counter.getAndIncrement();
             try {
-                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident, FakeplayerConfig.canResident);
+                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakePlayerCompatConfig.fakePlayerResident, FakePlayerCompatConfig.fakePlayerResident);
                 received.getAndIncrement();
             } catch (Exception e) {
                 this.removeBot(bot, check, received, counter);
@@ -395,7 +396,7 @@ public class BotList {
     }
 
     public void loadResumeBotInfo() {
-        if (!FakeplayerConfig.enable || !FakeplayerConfig.canResident) {
+        if (!FakeplayerConfig.checkEnabled() || !FakePlayerCompatConfig.fakePlayerResident) {
             return;
         }
         CompoundTag savedBotList = this.getResumeBotList().copy();
@@ -431,7 +432,7 @@ public class BotList {
     }
 
     public void loadResume(String worldUuid) {
-        if (!FakeplayerConfig.enable || !FakeplayerConfig.canResident) {
+        if (!FakeplayerConfig.checkEnabled() || !FakePlayerCompatConfig.fakePlayerResident) {
             return;
         }
         new HashSet<>(this.botsNameByWorldUuid.getOrDefault(worldUuid, new HashSet<>())).forEach(this::loadNewResumeBot);

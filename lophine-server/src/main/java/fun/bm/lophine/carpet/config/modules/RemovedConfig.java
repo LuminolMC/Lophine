@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.removed;
+package fun.bm.lophine.carpet.config.modules;
 
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
@@ -8,8 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.REMOVED, name = "removed_config")
 public class RemovedConfig implements IConfigModule {
-    @TransformedConfig(name = "always_count", directory = {"experiment", "global_entities_counter"})
-    @TransformedConfig(name = "enabled", directory = {"misc", "auto_update"})
+    @TransformedConfig(name = "enabled", directory = {"carpet", "core"})
     @ConfigInfo(name = "removed", comments =
             """
                     RemovedConfig redirect to here, no any function.""")

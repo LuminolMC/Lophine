@@ -29,8 +29,8 @@ import static org.leavesmc.leaves.command.CommandUtils.registerPermissions;
 public class BotCommand extends RootNode {
     private static final String PERM_BASE = "bukkit.command.bot";
 
-    public BotCommand() {
-        super("bot", PERM_BASE);
+    public BotCommand(String key) {
+        super(key, PERM_BASE);
         this.children(
                 ListCommand::new,
                 ConfigCommand::new,
