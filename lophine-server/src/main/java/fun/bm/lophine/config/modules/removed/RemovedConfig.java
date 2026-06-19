@@ -8,6 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.REMOVED, name = "removed_config")
 public class RemovedConfig implements IConfigModule {
+    @TransformedConfig(name = "always_count", directory = {"experiment", "global_entities_counter"})
     @TransformedConfig(name = "enabled", directory = {"misc", "auto_update"})
     @ConfigInfo(name = "removed", comments =
             """

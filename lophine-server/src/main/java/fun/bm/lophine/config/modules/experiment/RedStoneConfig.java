@@ -11,7 +11,6 @@ import me.earthme.luminol.enums.EnumConfigCategory;
  */
 @ConfigClassInfo(category = EnumConfigCategory.EXPERIMENT, name = "redstone")
 public class RedStoneConfig implements IConfigModule {
-
     @ConfigInfo(name = "old-block-remove-behaviour")
     public static boolean oldBlockRemoveBehaviour = false;
 }
