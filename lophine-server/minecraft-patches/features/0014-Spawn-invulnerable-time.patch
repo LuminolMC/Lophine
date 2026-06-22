@@ -5,7 +5,7 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 5f1fad59a26e3fe29f9000a92be5d6c4422dcd01..f3afab1100a35cc9ab091944de93d1f30ef040a7 100644
+index 37956ca0f114657347ba53cfde50f8e8591b2571..eb461febb88f4135be14397d0d5e96fd3483e4e2 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -242,6 +242,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc

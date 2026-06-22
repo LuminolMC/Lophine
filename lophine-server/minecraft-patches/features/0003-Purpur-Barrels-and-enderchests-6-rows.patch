@@ -23,7 +23,7 @@ index 63b81f30b8d813a7986ae72842fdc2d3097fa103..527c495bb4f6007aee760b99cc0e9aa5
  
      // Paper start - whitelist verify event / login event
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index c157aa170d5879206810f4852a96120396b69db7..b9cc33198efceb75dfef333c018b1296944451cb 100644
+index 1413286ddc63c5978e745eb26f6012230e4b1cd6..234124cc64e5175c20f9e9f0f482c9c677bca563 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -174,6 +174,7 @@ public abstract class Player extends Avatar implements ContainerUser {

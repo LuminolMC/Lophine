@@ -38,7 +38,7 @@ index c147a1acd4fd9f94c73bee69febf651ca00c28ce..f8004bf74edeabce871515fb73fa00f3
          if (count > maxAllowedCount) {
              source.sendFailure(Component.translatable("commands.give.failed.toomanyitems", maxAllowedCount, prototypeItemStack.getDisplayName()));
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 15470867ed0f668fd3ba9c1fa24f84b3de8cb756..4f243a4d3143bae799619e2ec76366c961c62da6 100644
+index 0b5f2060062a354bd6cafa8f53a5734dc83d062d..e15be199d690954d99d710de4046e721a943b3a9 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3229,7 +3229,7 @@ public class ServerGamePacketListenerImpl
@@ -353,7 +353,7 @@ index ee86a63c8d0d4c798ad09da87598d22c0e516840..57061d97bd368bfe934157293471fd54
  
      public @Nullable Identifier getNoItemIcon() {
 diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
-index 718a7786d73852368b6e911716fb494cc4770ef1..61466aa6d11af2858fa2898ef5b4b7515f4365df 100644
+index 65d5c766eb9bfade4d8259bda418a7f0e413edbe..b052bc0107d93cd65a6c92914d6b3d02d6cc5ccb 100644
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
 @@ -160,7 +160,7 @@ public final class ItemStack implements DataComponentHolder, ItemInstance, Chang
@@ -414,7 +414,7 @@ index 15ed625105539f402fb39275b292531fe388a7a0..2b97fd6af1c4956eb173b8c66c2a3efc
              org.bukkit.craftbukkit.inventory.CraftItemStack oitemstack = org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(remaining);
  
 diff --git a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-index 72a258f046c67c8970c91b8da31c0e745ec1e7ae..86a13f11fa6730f85add3e2ff47781d0fbcae170 100644
+index 06d55281bb782cc064255c7b56acd6cd332b9085..d926be9a0c4954746032e3e96cf50a8cba5f26b3 100644
 --- a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 @@ -397,7 +397,7 @@ public abstract class AbstractFurnaceBlockEntity extends BaseContainerBlockEntit

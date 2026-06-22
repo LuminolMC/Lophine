@@ -546,7 +546,7 @@ index 14be3d21cc1a613b1d9164ecc699073f0da2047c..baa295f3dd8cf10bf7347ee4d1c249b1
          // Leaves end - fakeplayer support
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 8a8de7f4d62532709805ebde531dc71ad78fa5c9..167855ad90d0c168a6d49f078ee3409ab84d4bf3 100644
+index a5b80dec06e906886b1d4fbee64d556a9a0402bd..5389f974eb688021f131f73d6d74f989906ef3d4 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -261,7 +261,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

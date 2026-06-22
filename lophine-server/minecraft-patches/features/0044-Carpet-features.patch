@@ -118,7 +118,7 @@ index 1a2b57a100c997b39f8f25ad3da121e04700d5d2..be345feecfa5b4e27a7b8a88ab5a5e5b
          // Paper start - fix converting txt to json file; moved from constructor
      }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 65965089d184695588c74294afb2f5c0b28bbf17..5ebff729bb7e75e1c84449c0e3021b972ad0d936 100644
+index 83e14731a591063a38b14a7d7490efb56dda5403..3e4d035890b24483aefe664efff92f23b7c537b7 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -257,6 +257,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -150,7 +150,7 @@ index 65965089d184695588c74294afb2f5c0b28bbf17..5ebff729bb7e75e1c84449c0e3021b97
  
      public ClientInformation clientInformation() {
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 96088ba53f043c8bc6971bc62e5dcccd98523698..749ba2e7fa6f7bb9c6e8916a25f04fb63f88aac3 100644
+index 83c9418ea45b8d7f639c6bf5e134bad90d9ac039..a60d664ce93bc56f2a518a79a5602b0a83733bfc 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2099,7 +2099,13 @@ public class ServerGamePacketListenerImpl
@@ -354,7 +354,7 @@ index 2312803297321f66c9057bc54ce56dd17ecb6f1f..5327a5e33147cde1b0b26083c14433d9
          return this.entityData.get(DATA_VALUE);
      }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 167855ad90d0c168a6d49f078ee3409ab84d4bf3..15defe6c740ab7fb3bccc4fb421c0411a4e6a646 100644
+index 5389f974eb688021f131f73d6d74f989906ef3d4..9a80c25944e203775f976afb7d14d0abb8cd4d71 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -601,7 +601,8 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -443,7 +443,7 @@ index 459a05ca83583538f995f45c4d2c977c6d6fcd00..474004edeae737873db88b3cce79408e
      }
  }
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index ea5de9aca4908ed972c4f44bff635f2cc423a04f..04707a48b1ad9f0c580213e5837e93ad849d1b47 100644
+index 5e7e99410c7597ec5330cc82e441fa30c53c9532..049fcf9ce2806cd0ae270cdfbe63a830912d3d5a 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -555,7 +555,13 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -626,7 +626,7 @@ index 298908003d5422b8b58de631145fad381e8294c1..becd64cb00dddda42a9494f6ab363624
      public void addRecipe(RecipeHolder<?> holder) {
          org.spigotmc.AsyncCatcher.catchOp("Recipe Add"); // Spigot
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index e06e48dd9c997ac1dc6e404aa0bc590c851e1ba8..aba2f23951a79d32238dcf948a9232d43726a43d 100644
+index f0ae87545bd38c38cffbc2217acb9008a4183531..9df41fe63e3b3b502ba7a62b13febddb29861ccd 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
 @@ -1176,6 +1176,10 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
