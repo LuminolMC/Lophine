@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/252a16955f6e1e31a
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/SimpleContainer.java b/net/minecraft/world/SimpleContainer.java
-index 049c6ab6472415479435f2caab0444c3cbd33902..20faf31b832e11019414f606f131cccec2d40567 100644
+index 049c6ab6472415479435f2caab0444c3cbd33902..d9bb641c07e2e8d3780fadac44ff5e3ee0e35c8b 100644
 --- a/net/minecraft/world/SimpleContainer.java
 +++ b/net/minecraft/world/SimpleContainer.java
 @@ -199,6 +199,11 @@ public class SimpleContainer implements Container, StackedContentsCompatible {
@@ -16,7 +16,7 @@ index 049c6ab6472415479435f2caab0444c3cbd33902..20faf31b832e11019414f606f131ccce
      @Override
      public void setChanged() {
 +        // Leaves start - PCA sync protocol
-+        if (fun.bm.Leaves.config.modules.function.protocol.PcaSyncProtocolConfig.enabled && this.getOwner() instanceof org.bukkit.craftbukkit.entity.CraftEntity entity) {
++        if (fun.bm.lophine.config.modules.function.protocol.PcaSyncProtocolConfig.enabled && this.getOwner() instanceof org.bukkit.craftbukkit.entity.CraftEntity entity) {
 +            org.leavesmc.leaves.protocol.PcaSyncProtocol.syncEntityToClient(entity.getHandle());
 +        }
 +        // Leaves end - PCA sync protocol
@@ -24,7 +24,7 @@ index 049c6ab6472415479435f2caab0444c3cbd33902..20faf31b832e11019414f606f131ccce
  
      @Override
 diff --git a/net/minecraft/world/entity/vehicle/boat/AbstractChestBoat.java b/net/minecraft/world/entity/vehicle/boat/AbstractChestBoat.java
-index 8da479d04c04366561549617c477b0811a9b3d7c..f0846f2151f047e115294be4756d21cd03ca4918 100644
+index 8da479d04c04366561549617c477b0811a9b3d7c..345f63ccac2579acf4cf4ee9507c231da12b03ba 100644
 --- a/net/minecraft/world/entity/vehicle/boat/AbstractChestBoat.java
 +++ b/net/minecraft/world/entity/vehicle/boat/AbstractChestBoat.java
 @@ -140,6 +140,11 @@ public abstract class AbstractChestBoat extends AbstractBoat implements HasCusto
@@ -32,7 +32,7 @@ index 8da479d04c04366561549617c477b0811a9b3d7c..f0846f2151f047e115294be4756d21cd
      @Override
      public void setChanged() {
 +        // Leaves start - PCA sync protocol
-+        if (fun.bm.Leaves.config.modules.function.protocol.PcaSyncProtocolConfig.enabled) {
++        if (fun.bm.lophine.config.modules.function.protocol.PcaSyncProtocolConfig.enabled) {
 +            org.leavesmc.leaves.protocol.PcaSyncProtocol.syncEntityToClient(this);
 +        }
 +        // Leaves end - PCA sync protocol
@@ -40,7 +40,7 @@ index 8da479d04c04366561549617c477b0811a9b3d7c..f0846f2151f047e115294be4756d21cd
  
      @Override
 diff --git a/net/minecraft/world/entity/vehicle/minecart/AbstractMinecartContainer.java b/net/minecraft/world/entity/vehicle/minecart/AbstractMinecartContainer.java
-index d2c4b47b2f95c8e6bafc93e436041143e68ffa4f..d1f68d30b2998a53fe0e638a56f07c03e11d29c4 100644
+index d2c4b47b2f95c8e6bafc93e436041143e68ffa4f..12938642aa58b6b64d7536575712dc3eadfb6e13 100644
 --- a/net/minecraft/world/entity/vehicle/minecart/AbstractMinecartContainer.java
 +++ b/net/minecraft/world/entity/vehicle/minecart/AbstractMinecartContainer.java
 @@ -66,6 +66,11 @@ public abstract class AbstractMinecartContainer extends AbstractMinecart impleme
@@ -48,7 +48,7 @@ index d2c4b47b2f95c8e6bafc93e436041143e68ffa4f..d1f68d30b2998a53fe0e638a56f07c03
      @Override
      public void setChanged() {
 +        // Leaves start - PCA sync protocol
-+        if (fun.bm.Leaves.config.modules.function.protocol.PcaSyncProtocolConfig.enabled) {
++        if (fun.bm.lophine.config.modules.function.protocol.PcaSyncProtocolConfig.enabled) {
 +            org.leavesmc.leaves.protocol.PcaSyncProtocol.syncEntityToClient(this);
 +        }
 +        // Leaves end - PCA sync protocol
@@ -56,7 +56,7 @@ index d2c4b47b2f95c8e6bafc93e436041143e68ffa4f..d1f68d30b2998a53fe0e638a56f07c03
  
      @Override
 diff --git a/net/minecraft/world/level/block/entity/BlockEntity.java b/net/minecraft/world/level/block/entity/BlockEntity.java
-index 5e7612ad30c218fcbb7c9cdd66ecb69d78d8875d..00e96eed699011cb706773cf5452a2f925e90a06 100644
+index 5e7612ad30c218fcbb7c9cdd66ecb69d78d8875d..0fa8f720e3b386a5466b3a94d18d5dbbd0d48836 100644
 --- a/net/minecraft/world/level/block/entity/BlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BlockEntity.java
 @@ -256,6 +256,14 @@ public abstract class BlockEntity implements DebugValueSource, TypedInstance<Blo
@@ -64,7 +64,7 @@ index 5e7612ad30c218fcbb7c9cdd66ecb69d78d8875d..00e96eed699011cb706773cf5452a2f9
              level.updateNeighbourForOutputSignal(worldPosition, blockState.getBlock());
          }
 +        // Leaves start - PCA sync protocol
-+        if (fun.bm.Leaves.config.modules.function.protocol.PcaSyncProtocolConfig.enabled && !level.isClientSide()) {
++        if (fun.bm.lophine.config.modules.function.protocol.PcaSyncProtocolConfig.enabled && !level.isClientSide()) {
 +            BlockEntity blockEntity = level.getBlockEntity(worldPosition);
 +            if (blockEntity != null) {
 +                org.leavesmc.leaves.protocol.PcaSyncProtocol.syncBlockEntityToClient(blockEntity);
