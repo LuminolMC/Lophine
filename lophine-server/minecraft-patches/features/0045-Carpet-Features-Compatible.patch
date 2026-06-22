@@ -5,11 +5,11 @@ Subject: [PATCH] Carpet Features Compatible
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8b05860d2787a40495f8a025bc0bc43789d6a6af..2ef6a7fb5a9c3452dfff70a67542e2ca2531c897 100644
+index 4bd923b42d1c98ce7178e05f9324f46d99ffc933..55bd9581c8c4bd3b1b7ba75cc80c94cf7548638a 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -340,7 +340,7 @@ public final class RegionizedServer {
-         final long tickStartNanos = System.nanoTime();
+         final long tickStartNanos = System.nanoTime(); // Lophine - Carpet features
          ++this.tickCount;
          // Luminol start - Add a config to enable tick command
 -        if (me.earthme.luminol.config.modules.experiment.CommandConfig.tick) {
@@ -17,7 +17,7 @@ index 8b05860d2787a40495f8a025bc0bc43789d6a6af..2ef6a7fb5a9c3452dfff70a67542e2ca
              MinecraftServer.getServer().tickRateManager().tick();
          }
          // Luminol end - Add a config to enable tick command
-@@ -529,7 +529,7 @@ public final class RegionizedServer {
+@@ -531,7 +531,7 @@ public final class RegionizedServer {
      }
  
      private void tickTime(final ServerLevel world, final long tickCount) {
@@ -27,7 +27,7 @@ index 8b05860d2787a40495f8a025bc0bc43789d6a6af..2ef6a7fb5a9c3452dfff70a67542e2ca
          }
      }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index 6fe5107751fe448ab374bf57b1ef6859f481f17e..b8d01d95bc44bd70f2c85ca2b923d16dc705161f 100644
+index a37f392146ccc0319cf56ee0058ae8782b598fe3..2223f0b38e8f628af64d1c916fb2310c4704a407 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -576,7 +576,7 @@ public final class TickRegionScheduler {
@@ -40,10 +40,10 @@ index 6fe5107751fe448ab374bf57b1ef6859f481f17e..b8d01d95bc44bd70f2c85ca2b923d16d
                  }
                  // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index bb5059a77741bf1d9e73bd8c7f0da6681ec63f67..270ee3c01ad0b351bee068a507b09a9d0041ae9c 100644
+index 74ef76058e5a410d12f88aa09450e7d90f63b5e6..1761167da363cd074a26499caadeaeb916461706 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -266,7 +266,7 @@ public class Commands {
+@@ -268,7 +268,7 @@ public class Commands {
          TellRawCommand.register(this.dispatcher, context);
          //TestCommand.register(this.dispatcher, context); // Folia - region threading
          // Luminol start - Add a config to enable tick command
@@ -53,10 +53,10 @@ index bb5059a77741bf1d9e73bd8c7f0da6681ec63f67..270ee3c01ad0b351bee068a507b09a9d
          }
          // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 3e4d035890b24483aefe664efff92f23b7c537b7..7cb190b61661c31e6fd5c0a6fbec98f55ef94f12 100644
+index be948a57431dcd4bb3b23a742e71957be58cee2d..d3b24d2f94b1edeb02a4bd4fb2271093c7597a09 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -2186,7 +2186,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2188,7 +2188,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  this.lastSentFood = -1;
                  this.teleportSpectators(transition, oldLevel);
                  // Leaves start - bot support
@@ -97,7 +97,7 @@ index baa295f3dd8cf10bf7347ee4d1c249b1f82c9279..1d5376650d0f5eeb23fde8d7116b47cf
          }
          // Leaves end - bot support
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4eadcf559 100644
+index ac5b419169f8574f92ff7195bfa76c9978bc8a63..8066cdcaba8d2fcfa2e9ba3b040a2867dbbc6978 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -240,7 +240,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -118,7 +118,7 @@ index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4
                          entity.setCooldown(0);
                          return true;
                      }
-@@ -664,7 +664,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -668,7 +668,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      }
  
      public static boolean addItem(final Container container, final ItemEntity entity) {
@@ -128,7 +128,7 @@ index 3e4fae7a5ae7f8a26bf78727e81c4a87e8fed332..1340ef0ba7660a0e3c4cce105a90fcc4
          // CraftBukkit start
          if (org.bukkit.event.inventory.InventoryPickupItemEvent.getHandlerList().getRegisteredListeners().length > 0) { // Paper - optimize hoppers
 diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
-index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..4274f22710035b547f5aca617c80c5c99f3a4dc8 100644
+index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..125d5f59bdfdee5aa4bae2aa4756db363ee17f4b 100644
 --- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 +++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 @@ -323,7 +323,7 @@ public class EnderDragonFight extends SavedData {
@@ -136,7 +136,7 @@ index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..4274f22710035b547f5aca617c80c5c9
  
      public BlockPattern.@Nullable BlockPatternMatch findExitPortal() {
 -        if (me.earthme.luminol.config.modules.optimizations.OptimizedDragonRespawnConfig.optimizedRespawn) {
-+        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.optimizedDragonRespawn) {
++        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.optimizedDragonRespawn) { // Lophine - Carpet Features Compatible
              int i, j;
              for (i = cachePortalChunkIteratorX; i <= 8; ++i) {
                  for (j = cachePortalChunkIteratorZ; j <= 8; ++j) {

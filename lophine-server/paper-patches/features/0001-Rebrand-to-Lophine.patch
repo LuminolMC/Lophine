@@ -50,7 +50,7 @@ index a5f2e4454258886536251288c3694f58386c7420..28371ecf31d5fc280aaa03ed9a86f5b5
      private static final String USER_AGENT = BUILD_INFO.brandName() + "/" + BUILD_INFO.asString(VERSION_SIMPLE) + " (https://papermc.io)";
      private static final Gson GSON = new Gson();
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-index 4ada790812957657d580cb748077c4961987d0cb..3a539df860305e777e85ed6dc72b5effe76734b4 100644
+index 4ada790812957657d580cb748077c4961987d0cb..ddf3ad20e7ce967d9e096345f99c55abf066c3b3 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 @@ -31,7 +31,7 @@ public record ServerBuildInfoImpl(
@@ -58,7 +58,7 @@ index 4ada790812957657d580cb748077c4961987d0cb..3a539df860305e777e85ed6dc72b5eff
  
      private static final String BRAND_PAPER_NAME = "Paper";
 -    private static final String BRAND_LUMINOL_NAME = "Luminol";
-+    private static final String BRAND_LOPHINE_NAME = "Lophine";
++    private static final String BRAND_LOPHINE_NAME = "Lophine"; // Lophine - Rebrand to Lophine
  
      private static final String BUILD_DEV = "DEV";
  

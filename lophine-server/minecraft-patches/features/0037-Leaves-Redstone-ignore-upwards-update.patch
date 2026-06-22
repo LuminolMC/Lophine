@@ -10,55 +10,63 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/block/ComparatorBlock.java b/net/minecraft/world/level/block/ComparatorBlock.java
-index 45e11737bc2558a4ebfffe133d43111f45dd7d16..d3bcef3fa3228c3869041754b2c18dfc987aac35 100644
+index 45e11737bc2558a4ebfffe133d43111f45dd7d16..db80f0b400c7356c5524ea799354e6c44de14700 100644
 --- a/net/minecraft/world/level/block/ComparatorBlock.java
 +++ b/net/minecraft/world/level/block/ComparatorBlock.java
-@@ -59,6 +59,9 @@ public class ComparatorBlock extends DiodeBlock implements EntityBlock {
+@@ -59,6 +59,11 @@ public class ComparatorBlock extends DiodeBlock implements EntityBlock {
          final BlockState neighbourState,
          final RandomSource random
      ) {
++        // Lophine start - redstone ignore upwards update
 +        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.dustTrapdoorReintroduced && directionToNeighbour == Direction.DOWN) {
 +            return state;
 +        }
++        // Lophine end - redstone ignore upwards update
          return directionToNeighbour == Direction.DOWN && !this.canSurviveOn(level, neighbourPos, neighbourState)
              ? Blocks.AIR.defaultBlockState()
              : super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
 diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
-index 759eb347299813c20226cc2fc5dc7718d12b7f56..619f5e37919693fc5976aedefed3bb5428395439 100644
+index 759eb347299813c20226cc2fc5dc7718d12b7f56..30a7208a698a8bd3ba8a08ace6f23b206d90f6a3 100644
 --- a/net/minecraft/world/level/block/RedStoneWireBlock.java
 +++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
-@@ -179,7 +179,9 @@ public class RedStoneWireBlock extends Block {
+@@ -179,7 +179,11 @@ public class RedStoneWireBlock extends Block {
          final RandomSource random
      ) {
          if (directionToNeighbour == Direction.DOWN) {
 -            return !this.canSurviveOn(level, neighbourPos, neighbourState) ? Blocks.AIR.defaultBlockState() : state;
++            // Lophine start - redstone ignore upwards update
 +            return fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.dustTrapdoorReintroduced
 +                ? state
 +                : !this.canSurviveOn(level, neighbourPos, neighbourState) ? Blocks.AIR.defaultBlockState() : state;
++            // Lophine end - redstone ignore upwards update
          } else if (directionToNeighbour == Direction.UP) {
              return this.getConnectionState(level, state, pos);
          } else {
-@@ -243,7 +245,8 @@ public class RedStoneWireBlock extends Block {
+@@ -243,7 +247,10 @@ public class RedStoneWireBlock extends Block {
          BlockPos relativePos = pos.relative(direction);
          BlockState relativeState = level.getBlockState(relativePos);
          if (canConnectUp) {
 -            boolean isPlaceableAbove = relativeState.getBlock() instanceof TrapDoorBlock || this.canSurviveOn(level, relativePos, relativeState);
++            // Lophine start - redstone ignore upwards update
 +            boolean isPlaceableAbove = (!fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.dustTrapdoorReintroduced && relativeState.getBlock() instanceof TrapDoorBlock)
 +                || this.canSurviveOn(level, relativePos, relativeState);
++            // Lophine end - redstone ignore upwards update
              if (isPlaceableAbove && shouldConnectTo(level.getBlockState(relativePos.above()))) {
                  if (relativeState.isFaceSturdy(level, relativePos, direction.getOpposite())) {
                      return RedstoneSide.UP;
 diff --git a/net/minecraft/world/level/block/RepeaterBlock.java b/net/minecraft/world/level/block/RepeaterBlock.java
-index d301ca4c91e75d715998aa7ed155fd44ccd64785..cc2694d0fc3c9bbe5e91771b3aef8ffb749515b4 100644
+index d301ca4c91e75d715998aa7ed155fd44ccd64785..1985602b11a584fc70b1bb9ca4c643757d4c0ed3 100644
 --- a/net/minecraft/world/level/block/RepeaterBlock.java
 +++ b/net/minecraft/world/level/block/RepeaterBlock.java
-@@ -70,6 +70,9 @@ public class RepeaterBlock extends DiodeBlock {
+@@ -70,6 +70,11 @@ public class RepeaterBlock extends DiodeBlock {
          final BlockState neighbourState,
          final RandomSource random
      ) {
++        // Lophine start - redstone ignore upwards update
 +        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.dustTrapdoorReintroduced && directionToNeighbour == Direction.DOWN) {
 +            return state;
 +        }
++        // Lophine end - redstone ignore upwards update
          if (directionToNeighbour == Direction.DOWN && !this.canSurviveOn(level, neighbourPos, neighbourState)) {
              return Blocks.AIR.defaultBlockState();
          } else {

@@ -522,10 +522,10 @@ index 6a3413ca875ce78f48cd8d3ce2cfe7798be1a19e..be572eff561ffdd961a9602eaa613676
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (state.getValue(POWERED) && level.getBlockTicks().hasScheduledTick(pos, this)) {
 diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
-index 619f5e37919693fc5976aedefed3bb5428395439..ed190e16df7c6b80fd90561e7c2fdd53c745e54a 100644
+index 30a7208a698a8bd3ba8a08ace6f23b206d90f6a3..7f5b77cd9cb78e693bbe1efd3d5fd7256d7700c5 100644
 --- a/net/minecraft/world/level/block/RedStoneWireBlock.java
 +++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
-@@ -378,6 +378,28 @@ public class RedStoneWireBlock extends Block {
+@@ -382,6 +382,28 @@ public class RedStoneWireBlock extends Block {
          }
      }
  
@@ -622,7 +622,7 @@ index d7e5ec23c64b60c47ab6b54cbf282e88c3a4a045..037aa3592a963bbb142465d31040f60e
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (state.getValue(SHRIEKING)) {
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index 8259f530ec50554906c254b60f1e964b52c02852..59ad645785bc99758f4bc124c56e39d87c4b75c2 100644
+index 722ce78461b2303f99493c309345697cfc98fb99..45dc3e8484842265b26d387d518831ff23da4b5e 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
 @@ -150,6 +150,20 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
@@ -797,10 +797,10 @@ index 0fbdf810c785c8a596d461e7651361fdedbb6217..ff1471f40b73582df68efbf2996a854c
              this.getBlock().affectNeighborsAfterRemoval(this.asState(), level, pos, movedByPiston);
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index ef3508dc4c8b3a9c8a6c7ff520cf51a68d6a13d9..11f0f5e1b8ee9ce7e6833d46ccb557d896674431 100644
+index 316b8d45b0902b1bf01a77307e24fc9a47d1283b..9b3775b0cbca782964e03935331d1bfdd1af140d 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -423,22 +423,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -424,22 +424,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
                  boolean blockChanged = !oldState.is(newBlock);
                  boolean movedByPiston = (flags & Block.UPDATE_MOVE_BY_PISTON) != 0;
                  boolean sideEffects = (flags & Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS) == 0;
