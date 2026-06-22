@@ -27,10 +27,10 @@ index 8b05860d2787a40495f8a025bc0bc43789d6a6af..2ef6a7fb5a9c3452dfff70a67542e2ca
          }
      }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index 917d6965e91527fc79d545c041765f78a357eac2..19ddbee489e9b17ef0bf794fa6cc3c10cc0ed565 100644
+index 6fe5107751fe448ab374bf57b1ef6859f481f17e..b8d01d95bc44bd70f2c85ca2b923d16dc705161f 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-@@ -595,7 +595,7 @@ public final class TickRegionScheduler {
+@@ -576,7 +576,7 @@ public final class TickRegionScheduler {
                  // next start isn't updated until the end of this tick
                  this.tickRegion(tickCount, tickStart, scheduledEnd);
                  // Luminol start - Add a config to enable tick command
@@ -53,7 +53,7 @@ index bb5059a77741bf1d9e73bd8c7f0da6681ec63f67..270ee3c01ad0b351bee068a507b09a9d
          }
          // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 5ebff729bb7e75e1c84449c0e3021b972ad0d936..d35cc60b1f4a59ab1b74da5d8d55d63c94a9055b 100644
+index 3e4d035890b24483aefe664efff92f23b7c537b7..7cb190b61661c31e6fd5c0a6fbec98f55ef94f12 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -2186,7 +2186,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc

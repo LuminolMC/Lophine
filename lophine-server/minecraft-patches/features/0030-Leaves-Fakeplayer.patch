@@ -334,7 +334,7 @@ index 0ff635e6956a9935ad6d11e5c7bac189c51244b6..8bfb2afd7199b2739ccfbab4ad68e030
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f3afab1100a35cc9ab091944de93d1f30ef040a7..423652d0ccef5c6a3b93480401c3d0f672bbf8a5 100644
+index eb461febb88f4135be14397d0d5e96fd3483e4e2..c38c098bf4db3d8fb09ba9f102dbddfb57faca06 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -229,7 +229,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -551,7 +551,7 @@ index 6f7e5d62901733df08c6beafbda2e54bc1c5f917..07c5fed7b0bf3ecefb54ccb0bfb922c2
          final boolean xZero = movement.x == 0.0;
          final boolean yZero = movement.y == 0.0;
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 1e820f34636f415ef78cdfbed06c6952a3cf1c0b..8a8de7f4d62532709805ebde531dc71ad78fa5c9 100644
+index a4f5c0585c2353c39c4c991138d838a724d2eae2..a5b80dec06e906886b1d4fbee64d556a9a0402bd 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -3347,7 +3347,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -597,7 +597,7 @@ index 1e820f34636f415ef78cdfbed06c6952a3cf1c0b..8a8de7f4d62532709805ebde531dc71a
          if (!this.level().isClientSide()) {
              boolean wasUsingItem = this.isUsingItem();
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index f6f6d21f3393a3ab79a84212b0d66d83d0e817f1..38689fa466a20c64f9916ee32a57a9fdb58d9403 100644
+index b45481f781f3556001af89704b718d6291ba1f66..2135ea645131c27b9bec5534431199f9d55134d8 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -167,7 +167,7 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -719,7 +719,7 @@ index fa1f7dd22959632aaa54e72c8caf13ea072e7ca7..ae6056c3b6ae3eebdfb59cf54d7333df
          final Player player, final ClickAction clickAction, final Slot slot, final ItemStack clicked, final ItemStack carried
      ) {
 diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
-index 61466aa6d11af2858fa2898ef5b4b7515f4365df..78dd1f8fbbb1e7633142f7038de29124312878dd 100644
+index b052bc0107d93cd65a6c92914d6b3d02d6cc5ccb..fd2545f33692f964b62415178069e46e9c9d4c02 100644
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
 @@ -453,7 +453,7 @@ public final class ItemStack implements DataComponentHolder, ItemInstance, Chang

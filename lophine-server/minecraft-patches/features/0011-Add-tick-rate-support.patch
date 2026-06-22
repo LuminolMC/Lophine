@@ -24,7 +24,7 @@ index 981f63b75584dbcb4bb0d5672e8c8bb140c52f9d..6e8ee04967afa410ce9dccff34bf9a43
          this.tickConnections();
  
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index f60b3b40c7dc5820abc726abc8d094ed873edf6c..917d6965e91527fc79d545c041765f78a357eac2 100644
+index 86c51506c518ee445d00f7eef36ee2c9adbd9b4c..6fe5107751fe448ab374bf57b1ef6859f481f17e 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -40,8 +40,8 @@ public final class TickRegionScheduler {
@@ -38,7 +38,7 @@ index f60b3b40c7dc5820abc726abc8d094ed873edf6c..917d6965e91527fc79d545c041765f78
      // Folia start - watchdog
      public static final FoliaWatchdogThread WATCHDOG_THREAD = new FoliaWatchdogThread();
      static {
-@@ -528,8 +528,24 @@ public final class TickRegionScheduler {
+@@ -509,8 +509,24 @@ public final class TickRegionScheduler {
              final long cpuStart = MEASURE_CPU_TIME ? THREAD_MX_BEAN.getCurrentThreadCpuTime() : 0L;
              final long tickStart = System.nanoTime();
  

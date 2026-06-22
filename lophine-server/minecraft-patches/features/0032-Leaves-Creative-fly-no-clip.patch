@@ -21,7 +21,7 @@ index e302c6198d71782b524391329aa5c89d2b3e0ccf..2312803297321f66c9057bc54ce56dd1
              } else {
                  this.followingPlayer = null;
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 38689fa466a20c64f9916ee32a57a9fdb58d9403..ea5de9aca4908ed972c4f44bff635f2cc423a04f 100644
+index 2135ea645131c27b9bec5534431199f9d55134d8..5e7e99410c7597ec5330cc82e441fa30c53c9532 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -279,8 +279,8 @@ public abstract class Player extends Avatar implements ContainerUser {
