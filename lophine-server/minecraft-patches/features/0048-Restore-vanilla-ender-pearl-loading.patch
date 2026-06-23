@@ -5,7 +5,7 @@ Subject: [PATCH] Restore vanilla ender pearl loading
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f140600..5227a2a 100644
+index f1406005d442394af1c76af009de026e0992b4bb..5227a2a8cecbc5d7e97a775b46c8cf5321c90bd2 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -14,7 +14,6 @@ import com.mojang.serialization.MapCodec;
@@ -69,7 +69,7 @@ index f140600..5227a2a 100644
  
      public Set<ThrownEnderpearl> getEnderPearls() {
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 1d53766..79c6f7a 100644
+index 1d5376650d0f5eeb23fde8d7116b47cfae37576f..79c6f7ae4e94b14871afce91b66434d0e4aa5c47 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -751,11 +751,13 @@ public abstract class PlayerList {
@@ -92,7 +92,7 @@ index 1d53766..79c6f7a 100644
  
          level.removePlayerImmediately(player, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
 diff --git a/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java b/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java
-index dc135f1..f84b06d 100644
+index dc135f1a5d1ec33195e9ac897aa7acee4cbd13c6..bc9ca4680c18f28b97c4d1afe202cc2fff320daf 100644
 --- a/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java
 +++ b/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEnderpearl.java
 @@ -29,7 +29,11 @@ import net.minecraft.world.phys.Vec3;
@@ -102,7 +102,7 @@ index dc135f1..f84b06d 100644
 +    private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger(); // Lophine - restore vanilla ender pearl loading on Folia
      private long ticketTimer = 0L;
 +    // Lophine start - restore vanilla ender pearl loading on Folia
-+    private volatile @Nullable net.minecraft.nbt.CompoundTag lastSavedEnderPearlTag;
++    private volatile net.minecraft.nbt.@Nullable CompoundTag lastSavedEnderPearlTag;
 +    // Lophine end - restore vanilla ender pearl loading on Folia
  
      public ThrownEnderpearl(final EntityType<? extends ThrownEnderpearl> type, final Level level) {
@@ -148,7 +148,7 @@ index dc135f1..f84b06d 100644
      }
  
 +    // Lophine start - restore vanilla ender pearl loading on Folia
-+    public @Nullable net.minecraft.nbt.CompoundTag getLastSavedEnderPearlTag() {
++    public net.minecraft.nbt.@Nullable CompoundTag getLastSavedEnderPearlTag() {
 +        net.minecraft.nbt.CompoundTag tag = this.lastSavedEnderPearlTag;
 +        return tag == null ? null : tag.copy();
 +    }
@@ -214,7 +214,7 @@ index dc135f1..f84b06d 100644
  
          super.onRemoval(reason);
 diff --git a/net/minecraft/world/item/EnderpearlItem.java b/net/minecraft/world/item/EnderpearlItem.java
-index 17a0053..a270b4c 100644
+index 17a005321601b0fef71604e4468134f1e98cd974..a270b4ca7d65b91ffcf292ff80f3a23124cd595c 100644
 --- a/net/minecraft/world/item/EnderpearlItem.java
 +++ b/net/minecraft/world/item/EnderpearlItem.java
 @@ -27,6 +27,7 @@ public class EnderpearlItem extends Item {
