@@ -1,4 +1,4 @@
-package org.leavesmc.leaves.bot;
+package fun.bm.lophine.bot;
 
 import net.minecraft.world.SimpleContainer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
