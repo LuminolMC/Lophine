@@ -5,18 +5,10 @@ Subject: [PATCH] Restore vanilla ender pearl loading
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f1406005d442394af1c76af009de026e0992b4bb..5227a2a8cecbc5d7e97a775b46c8cf5321c90bd2 100644
+index f1406005d442394af1c76af009de026e0992b4bb..dbf630d29328ef7e479f09580fe8ae0fc6be5bf5 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -14,7 +14,6 @@ import com.mojang.serialization.MapCodec;
- import com.mojang.serialization.codecs.RecordCodecBuilder;
- import java.net.InetSocketAddress;
- import java.util.Collection;
--import java.util.HashSet;
- import java.util.List;
- import java.util.Objects;
- import java.util.Optional;
-@@ -272,7 +271,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -272,7 +272,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      private @Nullable BlockPos raidOmenPosition;
      private Vec3 lastKnownClientMovement = Vec3.ZERO;
      private Input lastClientInput = Input.EMPTY;
@@ -25,7 +17,7 @@ index f1406005d442394af1c76af009de026e0992b4bb..5227a2a8cecbc5d7e97a775b46c8cf53
      private long timeEntitySatOnShoulder;
      private CompoundTag shoulderEntityLeft = new CompoundTag();
      private CompoundTag shoulderEntityRight = new CompoundTag();
-@@ -796,18 +795,20 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -796,18 +796,20 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
  
      private void saveEnderPearls(final ValueOutput playerOutput) {
          if (!this.enderPearls.isEmpty()) {
@@ -54,7 +46,7 @@ index f1406005d442394af1c76af009de026e0992b4bb..5227a2a8cecbc5d7e97a775b46c8cf53
          }
      }
  
-@@ -3595,11 +3596,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -3595,11 +3597,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
  
      public void registerEnderPearl(final ThrownEnderpearl enderPearl) {
