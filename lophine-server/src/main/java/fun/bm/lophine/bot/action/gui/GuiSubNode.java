@@ -1,21 +1,28 @@
 package fun.bm.lophine.bot.action.gui;
 
+import net.minecraft.world.item.ItemStack;
+
 import java.util.Set;
 
 public class GuiSubNode extends GuiRootNode {
     protected final GuiNode parent;
 
-    public GuiSubNode(String name, String description, GuiNode parent, Set<GuiNode> children) {
-        super(name, description, children);
+    public GuiSubNode(String name, String description, ItemStack item, GuiNode parent, Set<GuiNode> children, String commandNode) {
+        super(name, description, item, children, commandNode);
         this.parent = parent;
     }
 
-    public GuiSubNode(String name, String description, GuiNode parent) {
-        super(name, description);
+    public GuiSubNode(String name, String description, ItemStack item, GuiNode parent, String commandNode) {
+        super(name, description, item, commandNode);
         this.parent = parent;
     }
 
     public GuiNode getParent() {
-        return parent;
+        return this.parent;
+    }
+
+    @Override
+    public String buildCommand() {
+        return ((GuiRootNode) parent).buildCommand() + getCommandNode();
     }
 }

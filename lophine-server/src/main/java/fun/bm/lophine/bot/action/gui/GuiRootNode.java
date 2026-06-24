@@ -1,5 +1,7 @@
 package fun.bm.lophine.bot.action.gui;
 
+import net.minecraft.world.item.ItemStack;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,14 +10,16 @@ import java.util.stream.Stream;
 
 public class GuiRootNode extends GuiNode {
     protected final Set<GuiNode> children;
+    protected final String commandNode;
 
-    public GuiRootNode(String name, String description) {
-        this(name, description, new HashSet<>());
+    public GuiRootNode(String name, String description, ItemStack item, String commandNode) {
+        this(name, description, item, new HashSet<>(), commandNode);
     }
 
-    public GuiRootNode(String name, String description, Set<GuiNode> children) {
-        super(name, description);
+    public GuiRootNode(String name, String description, ItemStack item, Set<GuiNode> children, String commandNode) {
+        super(name, description, item);
         this.children = children;
+        this.commandNode = commandNode;
     }
 
     public final void child(GuiNode... node) {
@@ -28,6 +32,14 @@ public class GuiRootNode extends GuiNode {
     }
 
     public Set<GuiNode> getChildren() {
-        return children;
+        return this.children;
+    }
+
+    public String getCommandNode() {
+        return this.commandNode;
+    }
+
+    public String buildCommand() {
+        return "/bot " + getCommandNode();
     }
 }
