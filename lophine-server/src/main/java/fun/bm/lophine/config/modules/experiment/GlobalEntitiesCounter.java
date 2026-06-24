@@ -45,6 +45,20 @@ public class GlobalEntitiesCounter implements IConfigModule {
 
     @Override
     public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
+        try {
+            Boolean enabled0 = configInstance.get("experiment.global_entities_counter.enabled");
+            Boolean async0 = configInstance.get("experiment.global_entities_counter.async");
+            if (enabled0 != null) {
+                if (enabled0) {
+                    if (async0 != null && async0) {
+                        type = GlobalEntitiesCounterType.DEFAULT_ASYNC;
+                    } else {
+                        type = GlobalEntitiesCounterType.DEFAULT_SYNC;
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
         enabled = type != GlobalEntitiesCounterType.DISABLED;
         async = type == GlobalEntitiesCounterType.DEFAULT_ASYNC;
         defaultModule = type == GlobalEntitiesCounterType.DEFAULT_SYNC || type == GlobalEntitiesCounterType.DEFAULT_ASYNC;
