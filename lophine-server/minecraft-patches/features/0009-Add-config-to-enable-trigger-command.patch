@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable trigger command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 01784d3feaa0dce02f0c26b9a635877b735e6abf..bb5059a77741bf1d9e73bd8c7f0da6681ec63f67 100644
+index 87ffca5ff0c2775cb85a6058c9be66e00c94f01f..74ef76058e5a410d12f88aa09450e7d90f63b5e6 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -272,7 +272,11 @@ public class Commands {
+@@ -274,7 +274,11 @@ public class Commands {
          // Luminol end - Add a config to enable tick command
          TimeCommand.register(this.dispatcher, context);
          TitleCommand.register(this.dispatcher, context);

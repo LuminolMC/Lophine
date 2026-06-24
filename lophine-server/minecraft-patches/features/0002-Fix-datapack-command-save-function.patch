@@ -26,7 +26,7 @@ index 83178b9a0b017c8945c0f41981838f40263c9a12..ef898f5b60219be00471f9ea227103df
          final Collection<String> packsToEnable, final io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause cause
      ) {
 diff --git a/net/minecraft/server/commands/DataPackCommand.java b/net/minecraft/server/commands/DataPackCommand.java
-index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..04fa1c5bb1c0b025a56941aae7d2151d1087e257 100644
+index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..991e0362e96488b64d994f1bdfb8ed5d66f98666 100644
 --- a/net/minecraft/server/commands/DataPackCommand.java
 +++ b/net/minecraft/server/commands/DataPackCommand.java
 @@ -98,7 +98,7 @@ public class DataPackCommand {
@@ -34,7 +34,7 @@ index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..04fa1c5bb1c0b025a56941aae7d2151d
              Commands.literal("datapack")
                  .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 -                /*.then( // Luminol - Add back read-only datapack command
-+                .then(
++                .then( // Lophine - Fix datapack command save function
                      Commands.literal("enable")
                          .then(
                              Commands.argument("name", StringArgumentType.string())
@@ -57,7 +57,7 @@ index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..04fa1c5bb1c0b025a56941aae7d2151d
  
      private static int listPacks(final CommandSourceStack source) {
 -        return listEnabledPacks(source) ;// + listAvailablePacks(source); // Luminol - Add back read-only datapack command
-+        return listEnabledPacks(source) + listAvailablePacks(source);
++        return listEnabledPacks(source) + listAvailablePacks(source); // Lophine - Fix datapack command save function
      }
  
      private static int listAvailablePacks(final CommandSourceStack source) {

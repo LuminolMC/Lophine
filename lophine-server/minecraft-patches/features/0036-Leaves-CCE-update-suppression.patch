@@ -8,17 +8,19 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index c0b086fd5084fc0e39b91d3f6bd6904ef19f4157..8259f530ec50554906c254b60f1e964b52c02852 100644
+index f9dacc278200b05acb385e1f1cbf858e43d0d9f4..722ce78461b2303f99493c309345697cfc98fb99 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-@@ -182,7 +182,9 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
-     @Override
+@@ -183,7 +183,11 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
      protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos, final Direction direction) {
+         // Lophine start - catch update suppression crash
          try {
 -            return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
++            // Lophine start - configurable shulker CCE
 +            return fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.shulkerBoxCCEReintroduced
 +                ? AbstractContainerMenu.getRedstoneSignalFromContainer((net.minecraft.world.Container)level.getBlockEntity(pos))
 +                : AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
++            // Lophine end - configurable shulker CCE
          } catch (ClassCastException ex) {
              if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.mergedUpdateSuppressionCrashEnabled()) {
                  throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, null, this, null, ex);

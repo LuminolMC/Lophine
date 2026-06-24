@@ -8,19 +8,22 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/network/PacketProcessor.java b/net/minecraft/network/PacketProcessor.java
-index 24f5b890b0126fc817863f99b676da1a548f7608..78bea975c15130c91c90f48c868ac32e2db7433f 100644
+index 24f5b890b0126fc817863f99b676da1a548f7608..a25bc31c04778bf12e3b6301ffcfb2275fcc2d90 100644
 --- a/net/minecraft/network/PacketProcessor.java
 +++ b/net/minecraft/network/PacketProcessor.java
-@@ -106,7 +106,19 @@ public class PacketProcessor implements AutoCloseable {
+@@ -106,7 +106,23 @@ public class PacketProcessor implements AutoCloseable {
                      final int packetTimerId = profiler.getOrCreateTimerAndStart(() -> "Packet Handler: ".concat(ListenerAndPacket.this.packet.getClass().getName())); try { // Folia - profiler
                      this.packet.handle(this.listener);
                      } finally { profiler.stopTimer(packetTimerId); } // Folia - profiler
++                // Lophine start - catch update suppression crash
 +                } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +                    if (this.listener instanceof net.minecraft.server.network.ServerGamePacketListenerImpl gamePacketListener) {
 +                        exception.providePlayer(gamePacketListener.player);
 +                    }
 +                    exception.consume();
++                // Lophine end - catch update suppression crash
                  } catch (Exception var3) {
++                    // Lophine start - catch update suppression crash
 +                    if (var3.getCause() instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +                        if (this.listener instanceof net.minecraft.server.network.ServerGamePacketListenerImpl gamePacketListener) {
 +                            exception.providePlayer(gamePacketListener.player);
@@ -28,25 +31,29 @@ index 24f5b890b0126fc817863f99b676da1a548f7608..78bea975c15130c91c90f48c868ac32e
 +                        exception.consume();
 +                    }
 +
++                    // Lophine end - catch update suppression crash
                      if (var3 instanceof ReportedException re && re.getCause() instanceof OutOfMemoryError) {
                          throw PacketUtils.makeReportedException(var3, this.packet, this.listener);
                      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 3b9a4f4b5794faa4955018858c94fd5c2d6ada3d..19bef18e606d873308d08987d90e298703efb574 100644
+index 3b9a4f4b5794faa4955018858c94fd5c2d6ada3d..0b7e704210c4bc01797a33a9c0da609a844d8489 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -2019,11 +2019,26 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2019,11 +2019,30 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  foliaProfiler.startTimer(level.tickTimerId); try { // Folia - profiler
                  level.tick(haveTime, region); // Folia - region threading
++                // Lophine start - catch update suppression crash
 +                } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +                    exception.provideLevel(level);
 +                    exception.consume();
++                // Lophine end - catch update suppression crash
                  } finally { foliaProfiler.stopTimer(level.tickTimerId); } // Folia - profiler
              } catch (Throwable var7) {
 -                CrashReport report = CrashReport.forThrowable(var7, "Exception ticking world");
 -                level.fillReportDetails(report);
 -                throw new ReportedException(report);
++                // Lophine start - catch update suppression crash
 +                org.leavesmc.leaves.util.UpdateSuppressionException updateSuppressionException = null;
 +                if (var7 instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +                    updateSuppressionException = exception;
@@ -62,18 +69,20 @@ index 3b9a4f4b5794faa4955018858c94fd5c2d6ada3d..19bef18e606d873308d08987d90e2987
 +                    level.fillReportDetails(report);
 +                    throw new ReportedException(report);
 +                }
++                // Lophine end - catch update suppression crash
              }
  
              profiler.pop();
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 54011666a2f358fe38ca03bc39d68d122011c796..3496696c6b023e7df95027917b3391557dddd8d0 100644
+index 54011666a2f358fe38ca03bc39d68d122011c796..3f7b3a07a6f65b231de16d5bc1e68d5b90f41311 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -967,7 +967,16 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -967,7 +967,18 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                                      // Kaiiju end
  
                                      profiler.push("tick");
 -                                    this.guardEntityTick(this::tickNonPassenger, entity);
++                                    // Lophine start - catch update suppression crash
 +                                    if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.mergedUpdateSuppressionCrashEnabled()) {
 +                                        try {
 +                                            this.guardEntityTick(this::tickNonPassenger, entity);
@@ -84,33 +93,37 @@ index 54011666a2f358fe38ca03bc39d68d122011c796..3496696c6b023e7df95027917b339155
 +                                    } else {
 +                                        this.guardEntityTick(this::tickNonPassenger, entity);
 +                                    }
++                                    // Lophine end - catch update suppression crash
                                      profiler.pop();
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index c38c098bf4db3d8fb09ba9f102dbddfb57faca06..83e14731a591063a38b14a7d7490efb56dda5403 100644
+index c38c098bf4db3d8fb09ba9f102dbddfb57faca06..627af751fcd905c60f2d09eb066ac53dba607d85 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1130,6 +1130,10 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1130,6 +1130,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
  
              // Folia - region threading - move to main tick loop where we can detect duplicates
              // CraftBukkit end
++        // Lophine start - catch update suppression crash
 +        } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +            exception.providePlayer(this);
 +            exception.provideLevel(this.level());
 +            exception.consume();
++        // Lophine end - catch update suppression crash
          } catch (Throwable var4) {
              CrashReport report = CrashReport.forThrowable(var4, "Ticking player");
              CrashReportCategory category = report.addCategory("Player being ticked");
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 07c5fed7b0bf3ecefb54ccb0bfb922c2f11f7939..8a92d1748464ef8d1d33e51163a3e0d74120e5a7 100644
+index 03c155140da7300f6f934aff323e0daed1b63366..ee84484ca5aac03b9f321398c4d85311632b5697 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1459,7 +1459,15 @@ public abstract class Entity
+@@ -1459,7 +1459,17 @@ public abstract class Entity
                  }
  
                  if (shouldVibrate) {
 -                    this.level().gameEvent(GameEvent.STEP, this.position(), GameEvent.Context.of(this, blockState));
++                    // Lophine start - catch update suppression crash
 +                    try {
 +                        this.level().gameEvent(GameEvent.STEP, this.position(), GameEvent.Context.of(this, blockState));
 +                    } catch (org.leavesmc.leaves.util.UpdateSuppressionException exception) {
@@ -120,18 +133,20 @@ index 07c5fed7b0bf3ecefb54ccb0bfb922c2f11f7939..8a92d1748464ef8d1d33e51163a3e0d7
 +                        }
 +                        exception.consume();
 +                    }
++                    // Lophine end - catch update suppression crash
                  }
  
                  return true;
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index 08ad9f418fbe733b788ec27e13b61994c3a5f09d..c0b086fd5084fc0e39b91d3f6bd6904ef19f4157 100644
+index 08ad9f418fbe733b788ec27e13b61994c3a5f09d..f9dacc278200b05acb385e1f1cbf858e43d0d9f4 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-@@ -181,7 +181,14 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+@@ -181,7 +181,16 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
  
      @Override
      protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos, final Direction direction) {
 -        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
++        // Lophine start - catch update suppression crash
 +        try {
 +            return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
 +        } catch (ClassCastException ex) {
@@ -140,18 +155,20 @@ index 08ad9f418fbe733b788ec27e13b61994c3a5f09d..c0b086fd5084fc0e39b91d3f6bd6904e
 +            }
 +            throw ex;
 +        }
++        // Lophine end - catch update suppression crash
      }
  
      public @Nullable DyeColor getColor() {
 diff --git a/net/minecraft/world/level/block/state/StateHolder.java b/net/minecraft/world/level/block/state/StateHolder.java
-index b72861c0164ebb13b6fc3e78cd7ce0a2c484f22d..6d3af2481e81795771ac8f82d984681ec8c9e0b9 100644
+index b72861c0164ebb13b6fc3e78cd7ce0a2c484f22d..5bf43973c8de8c2f33d384f28fdd06864cdf9319 100644
 --- a/net/minecraft/world/level/block/state/StateHolder.java
 +++ b/net/minecraft/world/level/block/state/StateHolder.java
-@@ -118,7 +118,14 @@ public abstract class StateHolder<O, S> implements ca.spottedleaf.moonrise.patch
+@@ -118,7 +118,16 @@ public abstract class StateHolder<O, S> implements ca.spottedleaf.moonrise.patch
          if (ret != null) {
              return ret;
          }
 -        throw new IllegalArgumentException("Cannot get property " + property + " as it does not exist in " + this.owner);
++        // Lophine start - catch update suppression crash
 +        IllegalArgumentException iae = new IllegalArgumentException("Cannot get property " + property + " as it does not exist in " + this.owner);
 +        if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.mergedUpdateSuppressionCrashEnabled()) {
 +            org.leavesmc.leaves.util.UpdateSuppressionException exception = new org.leavesmc.leaves.util.UpdateSuppressionException(null, null, null, null, iae);
@@ -160,22 +177,24 @@ index b72861c0164ebb13b6fc3e78cd7ce0a2c484f22d..6d3af2481e81795771ac8f82d984681e
 +            }
 +        }
 +        throw iae;
++        // Lophine end - catch update suppression crash
          // Paper end - optimise blockstate property access
      }
  
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 3708f9ffc46a5b1c038c0e7b2ce84802e2b22397..7760a711f4c49fc3499bf71fabb59ee8b4c85083 100644
+index 3708f9ffc46a5b1c038c0e7b2ce84802e2b22397..241c43170b5020c1521f43d349813586ba1f69a5 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -400,6 +400,7 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -400,6 +400,8 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
                  return null;
              } else {
                  Block newBlock = state.getBlock();
++                // Lophine start - catch update suppression crash
 +                try {
                  this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING).update(localX, y, localZ, state);
                  this.heightmaps.get(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, state);
                  this.heightmaps.get(Heightmap.Types.OCEAN_FLOOR).update(localX, y, localZ, state);
-@@ -468,6 +469,10 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -468,6 +470,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
                      this.markUnsaved();
                      return oldState;
                  }
@@ -183,23 +202,27 @@ index 3708f9ffc46a5b1c038c0e7b2ce84802e2b22397..7760a711f4c49fc3499bf71fabb59ee8
 +                    exception.provideBlock(this.level, pos, newBlock);
 +                    throw exception;
 +                }
++                // Lophine end - catch update suppression crash
              }
          }
      }
 diff --git a/net/minecraft/world/level/redstone/NeighborUpdater.java b/net/minecraft/world/level/redstone/NeighborUpdater.java
-index 9b8d63f69ed1101f1b7b2728690e35165b9aeb99..6d25139a94df7c0442cc9fea96d5839ce8a23d54 100644
+index 9b8d63f69ed1101f1b7b2728690e35165b9aeb99..6358787f3c7dcfa599b2949613236fa8de025096 100644
 --- a/net/minecraft/world/level/redstone/NeighborUpdater.java
 +++ b/net/minecraft/world/level/redstone/NeighborUpdater.java
-@@ -87,9 +87,20 @@ public interface NeighborUpdater {
+@@ -87,9 +87,24 @@ public interface NeighborUpdater {
              } finally { if (levelChunk != null) levelChunk.getChunkHot().stopTickingAndCount(); } // KioCG
              // Spigot start
          } catch (StackOverflowError ex) {
++            // Lophine start - catch update suppression crash
 +            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.mergedUpdateSuppressionCrashEnabled()) {
 +                throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, level, changedBlock, null, ex);
 +            }
++            // Lophine end - catch update suppression crash
              level.lastPhysicsProblem = pos.immutable();
              // Spigot end
          } catch (Throwable var9) {
++            // Lophine start - catch update suppression crash
 +            if (fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.mergedUpdateSuppressionCrashEnabled()) {
 +                if (var9 instanceof org.leavesmc.leaves.util.UpdateSuppressionException exception) {
 +                    exception.provideBlock(level, pos, changedBlock);
@@ -208,6 +231,7 @@ index 9b8d63f69ed1101f1b7b2728690e35165b9aeb99..6d25139a94df7c0442cc9fea96d5839c
 +                throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, level, changedBlock, null, var9);
 +            }
 +
++            // Lophine end - catch update suppression crash
              CrashReport report = CrashReport.forThrowable(var9, "Exception while updating neighbours");
              CrashReportCategory category = report.addCategory("Block being updated");
              category.setDetail(

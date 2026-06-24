@@ -5,7 +5,7 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..1a426e1aa456a8ea432f62483c3be5c328b97953 100644
+index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..9911c70d89cfb43b803cab9bbe6eedd1142f59d6 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -506,7 +506,7 @@ public final class RegionizedWorldData {
@@ -13,22 +13,24 @@ index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..1a426e1aa456a8ea432f62483c3be5c3
      // From Level
      public boolean populating;
 -    public final CollectingNeighborUpdater neighborUpdater;
-+    public final net.minecraft.world.level.redstone.NeighborUpdater neighborUpdater;
++    public final net.minecraft.world.level.redstone.NeighborUpdater neighborUpdater; // Lophine - Instant Block Updater
      public boolean captureBlockStates = false;
      public boolean captureTreeGeneration = false;
      public final Map<BlockPos, CraftBlockState> capturedBlockStates = new java.util.LinkedHashMap<>(); // Paper
-@@ -567,7 +567,9 @@ public final class RegionizedWorldData {
+@@ -567,7 +567,11 @@ public final class RegionizedWorldData {
          this.world = world;
          this.blockLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, true);
          this.fluidLevelTicks = new LevelTicks<>(world::isPositionTickingWithEntitiesLoaded, world, false);
 -        this.neighborUpdater = new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
++        // Lophine start - Instant Block Updater
 +        this.neighborUpdater = fun.bm.lophine.carpet.config.modules.GeneralCompatConfig.instantBlockUpdaterReintroduced
 +            ? new net.minecraft.world.level.redstone.InstantNeighborUpdater(world)
 +            : new CollectingNeighborUpdater(world, world.neighbourUpdateMax);
++        // Lophine end - Instant Block Updater
          this.nearbyPlayers = new NearbyPlayers(world);
          this.wireHandler = new alternate.current.wire.WireHandler(world);
          this.turbo = new io.papermc.paper.redstone.RedstoneWireTurbo((RedStoneWireBlock)Blocks.REDSTONE_WIRE);
-@@ -896,4 +898,4 @@ public final class RegionizedWorldData {
+@@ -896,4 +900,4 @@ public final class RegionizedWorldData {
      public int getChunkCount() {
          return this.chunks.size();
      }
@@ -36,10 +38,10 @@ index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..1a426e1aa456a8ea432f62483c3be5c3
 \ No newline at end of file
 +}
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 3496696c6b023e7df95027917b3391557dddd8d0..d8718805a965db11dfce8ed7f5ea65a638cc4510 100644
+index 3f7b3a07a6f65b231de16d5bc1e68d5b90f41311..ad36f4bace2bf6eaf28f3ca26bf07369eddbfe38 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -999,11 +999,13 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -1001,11 +1001,15 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
          // Paper - rewrite chunk system
          profiler.pop();
          profiler.push("debugSynchronizers");
@@ -48,6 +50,7 @@ index 3496696c6b023e7df95027917b3391557dddd8d0..d8718805a965db11dfce8ed7f5ea65a6
 -                .setDebugListener(blockPos -> this.debugSynchronizers.broadcastEventToTracking(blockPos, DebugSubscriptions.NEIGHBOR_UPDATES, blockPos));
 -        } else {
 -            regionizedWorldData.neighborUpdater.setDebugListener(null); // Folia - region threading
++        // Lophine start - Instant Block Updater
 +        if (regionizedWorldData.neighborUpdater instanceof net.minecraft.world.level.redstone.CollectingNeighborUpdater neighborUpdater) {
 +            if (this.debugSynchronizers.hasAnySubscriberFor(DebugSubscriptions.NEIGHBOR_UPDATES)) {
 +                neighborUpdater // Folia - region threading
@@ -55,6 +58,7 @@ index 3496696c6b023e7df95027917b3391557dddd8d0..d8718805a965db11dfce8ed7f5ea65a6
 +            } else {
 +                neighborUpdater.setDebugListener(null); // Folia - region threading
 +            }
++        // Lophine end - Instant Block Updater
          }
  
          this.debugSynchronizers.tick(this.server.debugSubscribers());

@@ -18,7 +18,7 @@ index 0c0775bbb0c0ba0c37d1b884bb106b5250e94750..0dfb25ad032429a2aea7aa441dd5fd18
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 552fd994ee30deb6e9f4228b17a2883cf26b164c..6f7e5d62901733df08c6beafbda2e54bc1c5f917 100644
+index 552fd994ee30deb6e9f4228b17a2883cf26b164c..f090b8d77bd2731debfc61c263bd77550f52212b 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -167,7 +167,7 @@ public abstract class Entity
@@ -30,10 +30,11 @@ index 552fd994ee30deb6e9f4228b17a2883cf26b164c..6f7e5d62901733df08c6beafbda2e54b
      // CraftBukkit start
      private static final int CURRENT_LEVEL = 2;
      static boolean isLevelAtLeast(ValueInput input, int level) {
-@@ -6432,4 +6432,46 @@ public abstract class Entity
+@@ -6432,4 +6432,48 @@ public abstract class Entity
      // Paper end - Expose entity id counter
  
      public boolean shouldTickHot() { return this.tickCount > 20 * 10 && this.isAlive(); } // KioCG
++    // Lophine start - Add config to enable raytracing tracker
 +
 +    private long lasttime = 0;
 +    private boolean culled = false;
@@ -76,18 +77,21 @@ index 552fd994ee30deb6e9f4228b17a2883cf26b164c..6f7e5d62901733df08c6beafbda2e54b
 +        return this.outOfCamera;
 +    }
 +
++    // Lophine end - Add config to enable raytracing tracker
  }
 diff --git a/net/minecraft/world/entity/EntityType.java b/net/minecraft/world/entity/EntityType.java
-index cb0a52dc3795e1cf54069bcbe82abf7877a658b8..1440946665f41ebf534d701515f982bbbf4c9686 100644
+index cb0a52dc3795e1cf54069bcbe82abf7877a658b8..0d743a01ae70baa789cd0e0bb9abd4c4f8310b99 100644
 --- a/net/minecraft/world/entity/EntityType.java
 +++ b/net/minecraft/world/entity/EntityType.java
-@@ -1252,6 +1252,9 @@ public class EntityType<T extends Entity> implements EntityTypeTest<Entity, T>,
+@@ -1252,6 +1252,11 @@ public class EntityType<T extends Entity> implements EntityTypeTest<Entity, T>,
      public final int passengerTickTimerId;
      public final int passengerInactiveTickTimerId;
      // Folia end - profiler
++    // Lophine start - Add config to enable raytracing tracker
 +    // Luminol - Raytracing entity tracker
 +    public boolean skipRaytracningCheck = false;
 +    // Luminol end
++    // Lophine end - Add config to enable raytracing tracker
  
      public EntityType(
          final EntityType.EntityFactory<T> factory,
