@@ -68,7 +68,7 @@ public class PreciseMobCapCounter {
         }
 
         return entity.spawnReason == CreatureSpawnEvent.SpawnReason.NATURAL
-            || entity.spawnReason == CreatureSpawnEvent.SpawnReason.CHUNK_GEN;
+                || entity.spawnReason == CreatureSpawnEvent.SpawnReason.CHUNK_GEN;
     }
 
     public static void onEntityTrackingStart(ServerLevel level, Entity entity) {
@@ -100,7 +100,7 @@ public class PreciseMobCapCounter {
 
     public static void registerAreaMap(ServerLevel level, PositionCountingAreaMap<ServerPlayer> map, int uniqueId) {
         Cache<Integer, PositionCountingAreaMap<ServerPlayer>> cache = areaMaps.computeIfAbsent(
-            level, k -> CacheBuilder.newBuilder().concurrencyLevel(16).weakValues().build()
+                level, k -> CacheBuilder.newBuilder().concurrencyLevel(16).weakValues().build()
         );
         cache.put(uniqueId, map);
     }
@@ -132,10 +132,10 @@ public class PreciseMobCapCounter {
     }
 
     public static @Nullable NaturalSpawner.SpawnState createSpawnState(
-        ServerLevel level,
-        Iterable<Entity> localEntities,
-        NaturalSpawner.ChunkGetter chunkGetter,
-        @Nullable LocalMobCapCalculator localMobCapCalculator
+            ServerLevel level,
+            Iterable<Entity> localEntities,
+            NaturalSpawner.ChunkGetter chunkGetter,
+            @Nullable LocalMobCapCalculator localMobCapCalculator
     ) {
         int chunkCount = getSpawnableChunkCount(level);
         if (chunkCount == 0) return null;

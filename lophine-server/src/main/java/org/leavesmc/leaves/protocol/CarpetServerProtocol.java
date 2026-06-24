@@ -10,11 +10,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.leavesmc.leaves.protocol.core.LeavesCustomPayload;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
-import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.slf4j.Logger;
 
 import java.util.Locale;

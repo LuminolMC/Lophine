@@ -114,7 +114,7 @@ public class EntitiesCounterUtil {
 
                 for (ReferenceList<Entity> data : snapshot) {
                     if (data == null) continue;
-                    for (Entity entity : GlobalEntitiesCounter.async ? data.copy() : data) {
+                    for (Entity entity : GlobalEntitiesCounter.isAsync() ? data.copy() : data) {
                         if (entity == null || entity.isRemoved() || !entity.isAlive()) continue;
                         // Lophine start - Copy from net/minecraft/world/level/NaturalSpawner
                         MobCategory category = entity.getType().getCategory();
@@ -147,7 +147,7 @@ public class EntitiesCounterUtil {
                 LogUtils.getClassLogger().error("Failed to run task", e);
             }
         };
-        if (GlobalEntitiesCounter.async) {
+        if (GlobalEntitiesCounter.isAsync()) {
             tasks.put(level, CompletableFuture.runAsync(task).exceptionally(ex -> {
                 LogUtils.getClassLogger().error("Failed to run task", ex);
                 return null;

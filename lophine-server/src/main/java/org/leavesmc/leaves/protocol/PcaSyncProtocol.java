@@ -427,7 +427,8 @@ public class PcaSyncProtocol implements LeavesProtocol {
         return PcaSyncProtocolConfig.enabled;
     }
 
-    public record UpdateEntityPayload(Identifier dimension, int entityId, CompoundTag tag) implements LeavesCustomPayload {
+    public record UpdateEntityPayload(Identifier dimension, int entityId,
+                                      CompoundTag tag) implements LeavesCustomPayload {
         @ID
         public static final Identifier UPDATE_ENTITY = PcaSyncProtocol.id("update_entity");
 
@@ -443,7 +444,8 @@ public class PcaSyncProtocol implements LeavesProtocol {
         );
     }
 
-    public record UpdateBlockEntityPayload(Identifier dimension, BlockPos blockPos, CompoundTag tag) implements LeavesCustomPayload {
+    public record UpdateBlockEntityPayload(Identifier dimension, BlockPos blockPos,
+                                           CompoundTag tag) implements LeavesCustomPayload {
         @ID
         private static final Identifier UPDATE_BLOCK_ENTITY = PcaSyncProtocol.id("update_block_entity");
 
