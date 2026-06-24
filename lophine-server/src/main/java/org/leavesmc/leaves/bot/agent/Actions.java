@@ -23,13 +23,15 @@ import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.bot.agent.actions.*;
 import org.leavesmc.leaves.entity.bot.action.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Actions {
 
     private static final Map<String, AbstractBotAction<?>> actionsByName = new HashMap<>();
     private static final Map<Class<?>, AbstractBotAction<?>> actionsByClass = new HashMap<>();
-    private static final Set<String> guiRegistered = new HashSet<>();
 
     static {
         register(new ServerAttackAction(), AttackAction.class);
@@ -38,14 +40,14 @@ public class Actions {
         register(new ServerJumpAction(), JumpAction.class);
         register(new ServerSneakAction(), SneakAction.class);
         register(new ServerUseItemAutoAction(), UseItemAutoAction.class);
-        register(new ServerUseItemAction(), UseItemAction.class, false);
-        register(new ServerUseItemOnAction(), UseItemOnAction.class, false);
-        register(new ServerUseItemToAction(), UseItemToAction.class, false);
-        register(new ServerUseItemOffhandAction(), UseItemOffhandAction.class, false);
-        register(new ServerUseItemOnOffhandAction(), UseItemOnOffhandAction.class, false);
-        register(new ServerUseItemToOffhandAction(), UseItemToOffhandAction.class, false);
+        register(new ServerUseItemAction(), UseItemAction.class);
+        register(new ServerUseItemOnAction(), UseItemOnAction.class);
+        register(new ServerUseItemToAction(), UseItemToAction.class);
+        register(new ServerUseItemOffhandAction(), UseItemOffhandAction.class);
+        register(new ServerUseItemOnOffhandAction(), UseItemOnOffhandAction.class);
+        register(new ServerUseItemToOffhandAction(), UseItemToOffhandAction.class);
         register(new ServerLookAction(), LookAction.class);
-        register(new ServerFishAction(), FishAction.class, false);
+        register(new ServerFishAction(), FishAction.class);
         register(new ServerSwimAction(), SwimAction.class);
         register(new ServerRotationAction(), RotationAction.class);
         register(new ServerMoveAction(), MoveAction.class);
@@ -54,13 +56,6 @@ public class Actions {
     }
 
     public static boolean register(@NotNull AbstractBotAction<?> action, Class<?> type) {
-        return register(action, type, true);
-    }
-
-    public static boolean register(@NotNull AbstractBotAction<?> action, Class<?> type, boolean registerToGui) {
-        if (registerToGui) {
-            guiRegistered.add(action.getName());
-        }
         if (!actionsByName.containsKey(action.getName())) {
             actionsByName.put(action.getName(), action);
             actionsByClass.put(type, action);
