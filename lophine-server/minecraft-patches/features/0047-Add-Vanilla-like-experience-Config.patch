@@ -28,7 +28,7 @@ index b97d65b81ec4b86e00b7c06341b40dc5c02b9044..d997e4f7ae6ee4e81f5fffe874f2895d
 \ No newline at end of file
 +}
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index d3b24d2f94b1edeb02a4bd4fb2271093c7597a09..f1406005d442394af1c76af009de026e0992b4bb 100644
+index fb200adb544a9cc5eb7d9d0051a6c70da017b858..11e21f06ad0caa243cb7118839367c029f2b124f 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -2387,7 +2387,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -41,7 +41,7 @@ index d3b24d2f94b1edeb02a4bd4fb2271093c7597a09..f1406005d442394af1c76af009de026e
      }
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index cabf724eb0a2521bda329d8cfc042dcee3da81f3..02f10246441d7f9a9101e6b42318e20b9b682174 100644
+index 0bd4d786c8e957a31811f52514a992543a0cee92..31212878ac31a8d9849b471b103b95553b274501 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -3993,7 +3993,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

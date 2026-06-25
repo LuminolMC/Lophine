@@ -99,7 +99,7 @@ index 27389ff98942e27c2a877ea5b671caa31353d18c..76fa17ce0afc7ff1c0b2b84aa2baddd2
                  NaturalSpawner.spawnForChunk(this.level, chunk, spawnCookie, spawningCategories);
              }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 8d6a5d2ab4589f81abdd4ae939f197051e9523fc..9d075aa440522d64f13ab9012f2a019090f77a0b 100644
+index a7cebb797973cde399dc30c696b064efd40874f2..1d60c20649b2a6469bfceb5b44c38bfd133e21eb 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -808,6 +808,11 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
