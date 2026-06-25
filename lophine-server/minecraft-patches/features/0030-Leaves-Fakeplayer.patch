@@ -33,7 +33,7 @@ index efbbc1a40d203a2818eeda2a4e938b9a6117f1c3..6b85a5ad9af0c57a0d4d5b55f62b82c5
      private boolean encrypted;
      private final java.util.concurrent.atomic.AtomicBoolean disconnectionHandled = new java.util.concurrent.atomic.AtomicBoolean(false); // Folia - region threading - may be called concurrently during configuration stage
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 9e290fa626caffac148920c54479a75ad0919e70..75d93d7d8bc6077dd80e499cd43327a4afe58f51 100644
+index 54ba8a2bc70f3a7f9754a872f6b9c22b40887d8e..c4685bb540e95d889dfbc107923876045be29848 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -297,6 +297,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -277,7 +277,7 @@ index 0dfb25ad032429a2aea7aa441dd5fd1848a6c617..215f2a40921cc8e6b181c0a34aa1bbaf
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 0ff635e6956a9935ad6d11e5c7bac189c51244b6..8bfb2afd7199b2739ccfbab4ad68e030e722db7e 100644
+index 0befa4fc81e10a23c6ba824e559f2fb4886e68ee..2ddcf6ae90aaaf98e2fcd8ab9995b6f0d7791856 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -240,6 +240,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
@@ -334,7 +334,7 @@ index 0ff635e6956a9935ad6d11e5c7bac189c51244b6..8bfb2afd7199b2739ccfbab4ad68e030
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index eb461febb88f4135be14397d0d5e96fd3483e4e2..c38c098bf4db3d8fb09ba9f102dbddfb57faca06 100644
+index baab2435bac22aacff30ad52bde629b4093bfaba..cdb4a52cbd34322903144364c3686a4e1bf0fbb8 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -229,7 +229,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -551,7 +551,7 @@ index f090b8d77bd2731debfc61c263bd77550f52212b..03c155140da7300f6f934aff323e0dae
          final boolean xZero = movement.x == 0.0;
          final boolean yZero = movement.y == 0.0;
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index a4f5c0585c2353c39c4c991138d838a724d2eae2..a5b80dec06e906886b1d4fbee64d556a9a0402bd 100644
+index 2bce20202b7c539bee3685741663a8ed225919ff..a2f44e4354f6aa1c0502cba40cadaad59193b169 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -3347,7 +3347,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

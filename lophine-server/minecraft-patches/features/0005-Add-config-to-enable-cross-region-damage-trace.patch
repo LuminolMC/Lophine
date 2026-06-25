@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable cross region damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 1d17ab4775916bcd820666259e840e98eb9aa792..37956ca0f114657347ba53cfde50f8e8591b2571 100644
+index fecab5bfbc35fbecef8c559369de70c198bfe1e7..338e0c7c09120c6e9617893dd074cbd5da40a093 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1464,6 +1464,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -48,7 +48,7 @@ index 1d17ab4775916bcd820666259e840e98eb9aa792..37956ca0f114657347ba53cfde50f8e8
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 0a403e859169e0dcc4b0fd6fde7bd8bd7037e8b3..ad25bd7ce12ceedae38d1db5008be52efa807b14 100644
+index cd2fb9e2110d0dba1358daa283af767db3f4e80a..cc7b2ea7fda1326e3f9ed46373190a05f60c4d34 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -1961,6 +1961,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

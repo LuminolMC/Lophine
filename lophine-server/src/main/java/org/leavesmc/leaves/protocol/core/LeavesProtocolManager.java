@@ -295,7 +295,8 @@ public class LeavesProtocolManager {
     }
 
     public static void handleTick() {
-        long currentTime = System.currentTimeMillis() / MinecraftServer.getServer().tickRateManager().nanosecondsPerTick();
+        float interval = MinecraftServer.getServer().tickRateManager().millisecondsPerTick();
+        long currentTime = interval >= 1 ? System.currentTimeMillis() / (long) MinecraftServer.getServer().tickRateManager().millisecondsPerTick() : (long) (System.currentTimeMillis() / MinecraftServer.getServer().tickRateManager().millisecondsPerTick());
         if (currentTime == lastAcceptTime) return;
         lastAcceptTime = currentTime;
         for (var tickerInfo : TICKERS) {

@@ -53,7 +53,7 @@ index 74ef76058e5a410d12f88aa09450e7d90f63b5e6..1761167da363cd074a26499caadeaeb9
          }
          // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index be948a57431dcd4bb3b23a742e71957be58cee2d..d3b24d2f94b1edeb02a4bd4fb2271093c7597a09 100644
+index 8ed9aa981883458d11f8cddce56e04b021026cc2..fb200adb544a9cc5eb7d9d0051a6c70da017b858 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -2188,7 +2188,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc

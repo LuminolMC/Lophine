@@ -84,7 +84,7 @@ index 7e3912b8b29e40eb3347f1451b0fd3ebee2af4f1..0834e402e6af7028e08851378e15390e
                              result.add(player);
                              if (result.size() >= limit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 75d93d7d8bc6077dd80e499cd43327a4afe58f51..3b9a4f4b5794faa4955018858c94fd5c2d6ada3d 100644
+index c4685bb540e95d889dfbc107923876045be29848..f99c02b4d88cea924e20ca8dced67873c83c093f 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -1930,7 +1930,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -285,7 +285,7 @@ index 37c9f983ae89c497f44a1b7967d741abf909e0a0..d7fb2505f2a86ca0d81f144624ef2e1a
  
              this.setListData(players);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 8bfb2afd7199b2739ccfbab4ad68e030e722db7e..8d6a5d2ab4589f81abdd4ae939f197051e9523fc 100644
+index 2ddcf6ae90aaaf98e2fcd8ab9995b6f0d7791856..a7cebb797973cde399dc30c696b064efd40874f2 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -3100,7 +3100,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
@@ -546,7 +546,7 @@ index 14be3d21cc1a613b1d9164ecc699073f0da2047c..baa295f3dd8cf10bf7347ee4d1c249b1
          // Leaves end - fakeplayer support
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index a5b80dec06e906886b1d4fbee64d556a9a0402bd..5389f974eb688021f131f73d6d74f989906ef3d4 100644
+index a2f44e4354f6aa1c0502cba40cadaad59193b169..a3c19d725e03c07de6708f3c2d092e0b9aea69c2 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -261,7 +261,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

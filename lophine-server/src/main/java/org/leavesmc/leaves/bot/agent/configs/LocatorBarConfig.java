@@ -21,9 +21,9 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import fun.bm.lophine.LophineLogger;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import me.earthme.luminol.config.modules.experiment.CommandConfig;
-import me.earthme.luminol.utils.FoliaServerWaypointManager;
 import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.waypoints.ServerWaypointManager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.command.CommandContext;
@@ -53,7 +53,7 @@ public class LocatorBarConfig extends AbstractBotConfig<Boolean, LocatorBarConfi
         }
         if (this.bot != null) {
             this.value = value;
-            FoliaServerWaypointManager manager = this.bot.level().getWaypointManager(); // Lophine - waypoint for adapt of luminol ver
+            ServerWaypointManager manager = this.bot.level().getWaypointManager(); // Lophine - waypoint for adapt of luminol ver
             if (value) {
                 manager.trackWaypoint(this.bot);
             } else {
