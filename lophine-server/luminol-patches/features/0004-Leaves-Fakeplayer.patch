@@ -5,10 +5,10 @@ Subject: [PATCH] Leaves: Fakeplayer
 
 
 diff --git a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-index 0a20c6f03625391201e5ced167707e54ed27daa1..dc983bcb8d2e90ad27a693dfcd6debb4b2c2b86b 100644
+index 389a31b14912a2dfc8e8b20c104505d211d7f8ad..04b9e3a432181c9698e1a4c147b420c230b66a36 100644
 --- a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
 +++ b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-@@ -46,6 +46,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+@@ -55,6 +55,12 @@ public class FoliaServerWaypointManager extends ServerWaypointManager {
              return;
          }
  
@@ -21,7 +21,7 @@ index 0a20c6f03625391201e5ced167707e54ed27daa1..dc983bcb8d2e90ad27a693dfcd6debb4
          this.waypoints.add(waypoint);
  
          for (ServerPlayer toCreateFor : this.trackingPlayers) {
-@@ -101,6 +107,12 @@ public class FoliaServerWaypointManager implements WaypointManager<@NotNull Wayp
+@@ -111,6 +117,12 @@ public class FoliaServerWaypointManager extends ServerWaypointManager {
          scheduleIfOffTarget(player, () -> {
              this.trackingPlayers.add(player);
  

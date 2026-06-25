@@ -128,7 +128,7 @@ index 1a2b57a100c997b39f8f25ad3da121e04700d5d2..6b0d0a2c0067065b4a995a9f12791066
          // Paper start - fix converting txt to json file; moved from constructor
      }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 627af751fcd905c60f2d09eb066ac53dba607d85..be948a57431dcd4bb3b23a742e71957be58cee2d 100644
+index 3a3a335a7659ebe946221186b56150df4a89c004..8ed9aa981883458d11f8cddce56e04b021026cc2 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -257,6 +257,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -384,7 +384,7 @@ index 2312803297321f66c9057bc54ce56dd17ecb6f1f..27163558d967eed2035fd167fa515420
          return this.entityData.get(DATA_VALUE);
      }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 5389f974eb688021f131f73d6d74f989906ef3d4..cabf724eb0a2521bda329d8cfc042dcee3da81f3 100644
+index a3c19d725e03c07de6708f3c2d092e0b9aea69c2..0bd4d786c8e957a31811f52514a992543a0cee92 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -601,7 +601,10 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

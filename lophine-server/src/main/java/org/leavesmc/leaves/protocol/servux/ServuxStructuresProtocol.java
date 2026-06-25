@@ -345,7 +345,8 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
         PACKET_C2S_STRUCTURES_UNREGISTER(4),
         PACKET_S2C_STRUCTURE_DATA_START(5),
         PACKET_S2C_SPAWN_METADATA(10),
-        PACKET_C2S_REQUEST_SPAWN_METADATA(11);
+        PACKET_C2S_REQUEST_SPAWN_METADATA(11),
+        PACKET_S2C_WEATHER_DATA(12);
 
         public final int type;
 

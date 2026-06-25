@@ -36,7 +36,7 @@ index 24f5b890b0126fc817863f99b676da1a548f7608..a25bc31c04778bf12e3b6301ffcfb227
                          throw PacketUtils.makeReportedException(var3, this.packet, this.listener);
                      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 3b9a4f4b5794faa4955018858c94fd5c2d6ada3d..0b7e704210c4bc01797a33a9c0da609a844d8489 100644
+index f99c02b4d88cea924e20ca8dced67873c83c093f..0c042c4af5d52c08e9fbc03a04c4b696d8a0a7ed 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -2019,11 +2019,30 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -74,7 +74,7 @@ index 3b9a4f4b5794faa4955018858c94fd5c2d6ada3d..0b7e704210c4bc01797a33a9c0da609a
  
              profiler.pop();
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 54011666a2f358fe38ca03bc39d68d122011c796..3f7b3a07a6f65b231de16d5bc1e68d5b90f41311 100644
+index c0e62a69bb5c9e777265b5474d76ba8d06ccec4b..3e7420cd98504732db17cb6b0fcfdfbb8deeb552 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -967,7 +967,18 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
@@ -98,7 +98,7 @@ index 54011666a2f358fe38ca03bc39d68d122011c796..3f7b3a07a6f65b231de16d5bc1e68d5b
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index c38c098bf4db3d8fb09ba9f102dbddfb57faca06..627af751fcd905c60f2d09eb066ac53dba607d85 100644
+index cdb4a52cbd34322903144364c3686a4e1bf0fbb8..3a3a335a7659ebe946221186b56150df4a89c004 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1130,6 +1130,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
