@@ -173,7 +173,7 @@ public class EntitiesCounterUtil {
                 }
             }
 
-            spawnableChunkCount.putIfAbsent(level, total);
+            spawnableChunkCount.put(level, total);
         }
     }
 

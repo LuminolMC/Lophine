@@ -1,16 +1,14 @@
 package fun.bm.lophine.config.modules.experiment;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import fun.bm.lophine.enums.GlobalEntitiesCounterType;
+import me.earthme.luminol.config.ConfigManager;
+import me.earthme.luminol.config.ConfigsInstance;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.DoNotLoad;
 import me.earthme.luminol.config.flags.HotReloadUnsupported;
 import me.earthme.luminol.enums.EnumConfigCategory;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 @ConfigClassInfo(name = "global_entities_counter", category = EnumConfigCategory.EXPERIMENT)
 public class GlobalEntitiesCounter implements IConfigModule {
@@ -44,10 +42,11 @@ public class GlobalEntitiesCounter implements IConfigModule {
     }
 
     @Override
-    public void onLoaded(CommentedFileConfig configInstance, @Nullable Set<Exception> e) {
+    public void beforeFinalLoad() {
+        ConfigsInstance configsInstance = ConfigManager.getConfigs("lophine");
         try {
-            Boolean enabled0 = configInstance.get("experiment.global_entities_counter.enabled");
-            Boolean async0 = configInstance.get("experiment.global_entities_counter.async");
+            Boolean enabled0 = configsInstance.getConfigOrigin("experiment.global_entities_counter.enabled");
+            Boolean async0 = configsInstance.getConfigOrigin("experiment.global_entities_counter.async");
             if (enabled0 != null) {
                 if (enabled0) {
                     if (async0 != null && async0) {
@@ -57,6 +56,8 @@ public class GlobalEntitiesCounter implements IConfigModule {
                     }
                 }
             }
+            configsInstance.removeConfig("experiment.global_entities_counter.enabled");
+            configsInstance.removeConfig("experiment.global_entities_counter.async");
         } catch (Exception ignored) {
         }
         enabled = type != GlobalEntitiesCounterType.DISABLED;
