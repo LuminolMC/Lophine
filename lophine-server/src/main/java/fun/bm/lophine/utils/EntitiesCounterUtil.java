@@ -27,8 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static net.minecraft.world.level.NaturalSpawner.getRoughBiome;
-
 public class EntitiesCounterUtil {
     // global entities counter
     private static final Map<ServerLevel, Cache<Integer, ReferenceList<Entity>>> globalLoadedEntities = new ConcurrentHashMap<>();
@@ -196,7 +194,7 @@ public class EntitiesCounterUtil {
                 // Paper end - Only count natural spawns
                 BlockPos blockPos = entity.blockPosition();
                 chunkGetter.query(ChunkPos.pack(blockPos), chunk -> {
-                    MobSpawnSettings.MobSpawnCost mobSpawnCost = getRoughBiome(blockPos, chunk).getMobSettings().getMobSpawnCost(entity.getType());
+                    MobSpawnSettings.MobSpawnCost mobSpawnCost = NaturalSpawner.getRoughBiome(blockPos, chunk).getMobSettings().getMobSpawnCost(entity.getType());
                     if (mobSpawnCost != null) {
                         potentialCalculator.addCharge(entity.blockPosition(), mobSpawnCost.charge());
                     }
@@ -227,7 +225,7 @@ public class EntitiesCounterUtil {
 
                 BlockPos pos = entity.blockPosition();
                 chunkGetter.query(ChunkPos.pack(pos), chunk -> {
-                    MobSpawnSettings.MobSpawnCost mobSpawnCost = getRoughBiome(pos, chunk).getMobSettings().getMobSpawnCost(entity.getType());
+                    MobSpawnSettings.MobSpawnCost mobSpawnCost = NaturalSpawner.getRoughBiome(pos, chunk).getMobSettings().getMobSpawnCost(entity.getType());
                     if (mobSpawnCost != null) {
                         potentialCalculator.addCharge(entity.blockPosition(), mobSpawnCost.charge());
                     }
