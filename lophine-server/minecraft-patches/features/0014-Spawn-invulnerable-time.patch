@@ -5,7 +5,7 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 338e0c7c09120c6e9617893dd074cbd5da40a093..baab2435bac22aacff30ad52bde629b4093bfaba 100644
+index f7869f06ab29e4bbd003c807176345dec9e9e5ab..295be200cb0696bd2ae2b655f89d96dd7723a541 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -242,6 +242,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -16,7 +16,7 @@ index 338e0c7c09120c6e9617893dd074cbd5da40a093..baab2435bac22aacff30ad52bde629b4
      private ChatVisiblity chatVisibility = ChatVisiblity.FULL;
      public ParticleStatus particleStatus = ParticleStatus.ALL;
      private boolean canChatColor = true;
-@@ -920,6 +921,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -923,6 +924,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.connection.tickClientLoadTimeout();
          this.gameMode.tick();
          this.wardenSpawnTracker.tick();
@@ -24,7 +24,7 @@ index 338e0c7c09120c6e9617893dd074cbd5da40a093..baab2435bac22aacff30ad52bde629b4
          if (this.invulnerableTime > 0) {
              this.invulnerableTime--;
          }
-@@ -1556,6 +1558,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1559,6 +1561,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          if (this.isInvulnerableTo(level, source)) {
              return false;
          } else {

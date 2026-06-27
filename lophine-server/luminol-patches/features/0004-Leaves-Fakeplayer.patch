@@ -5,10 +5,10 @@ Subject: [PATCH] Leaves: Fakeplayer
 
 
 diff --git a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-index 389a31b14912a2dfc8e8b20c104505d211d7f8ad..04b9e3a432181c9698e1a4c147b420c230b66a36 100644
+index a4c188f71564fc77a9fa22b4cae032e1919d06f2..019266803f1452cb1e76350da8edae10a77020ac 100644
 --- a/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
 +++ b/src/main/java/me/earthme/luminol/utils/FoliaServerWaypointManager.java
-@@ -55,6 +55,12 @@ public class FoliaServerWaypointManager extends ServerWaypointManager {
+@@ -54,6 +54,12 @@ public class FoliaServerWaypointManager extends ServerWaypointManager {
              return;
          }
  
@@ -21,16 +21,15 @@ index 389a31b14912a2dfc8e8b20c104505d211d7f8ad..04b9e3a432181c9698e1a4c147b420c2
          this.waypoints.add(waypoint);
  
          for (ServerPlayer toCreateFor : this.trackingPlayers) {
-@@ -111,6 +117,12 @@ public class FoliaServerWaypointManager extends ServerWaypointManager {
-         scheduleIfOffTarget(player, () -> {
-             this.trackingPlayers.add(player);
+@@ -110,6 +116,11 @@ public class FoliaServerWaypointManager extends ServerWaypointManager {
+         this.trackingPlayers.add(player);
  
+         scheduleIfOffTarget(player, () -> {
 +            // Leaves start - fakeplayer
 +            if (player instanceof org.leavesmc.leaves.bot.ServerBot) {
 +                return;
 +            }
 +            // Leaves end - fakeplayer
-+
              for (WaypointTransmitter transmitter : this.waypoints) {
                  this.createConnection(player, transmitter);
              }
