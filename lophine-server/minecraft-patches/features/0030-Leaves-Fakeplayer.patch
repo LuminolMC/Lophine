@@ -239,7 +239,7 @@ index e9c9a468f046832e8eaa999bb57da261b4633604..2efe24c0378a80dd2750b10a54c18878
      }
  }
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 1bc1e9a77dca7acfe5f989f6439f185d0d2e20a6..1790e8c141a8d3f7ccf4b11f9a28b3582325e317 100644
+index fcd4b4785f0d09f87fe214202468c75395157e14..09e92f20f97b374582e057b0dc7d2edc82d6f431 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -274,6 +274,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -334,7 +334,7 @@ index 0befa4fc81e10a23c6ba824e559f2fb4886e68ee..2ddcf6ae90aaaf98e2fcd8ab9995b6f0
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index baab2435bac22aacff30ad52bde629b4093bfaba..cdb4a52cbd34322903144364c3686a4e1bf0fbb8 100644
+index 295be200cb0696bd2ae2b655f89d96dd7723a541..4f6010285a5ff9cf939248c4d93043133680d383 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -229,7 +229,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -355,7 +355,7 @@ index baab2435bac22aacff30ad52bde629b4093bfaba..cdb4a52cbd34322903144364c3686a4e
      private @Nullable Vec3 levitationStartPos;
      private int levitationStartTime;
      private boolean disconnected;
-@@ -1514,7 +1514,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1517,7 +1517,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
      // Luminol End - Cross Region Damage trace
  
@@ -364,7 +364,7 @@ index baab2435bac22aacff30ad52bde629b4093bfaba..cdb4a52cbd34322903144364c3686a4e
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
              .getEntitiesOfClass(Mob.class, aabb, EntitySelector.NO_SPECTATORS)
-@@ -2180,6 +2180,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2183,6 +2183,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  this.lastSentHealth = -1.0F;
                  this.lastSentFood = -1;
                  this.teleportSpectators(transition, oldLevel);
@@ -377,7 +377,7 @@ index baab2435bac22aacff30ad52bde629b4093bfaba..cdb4a52cbd34322903144364c3686a4e
                  org.bukkit.event.player.PlayerChangedWorldEvent changeEvent = new org.bukkit.event.player.PlayerChangedWorldEvent(this.getBukkitEntity(), oldLevel.getWorld());
                  this.level().getCraftServer().getPluginManager().callEvent(changeEvent);
 diff --git a/net/minecraft/server/players/CachedUserNameToIdResolver.java b/net/minecraft/server/players/CachedUserNameToIdResolver.java
-index 50c64f4be138f08e8a57fb10888dbfbc364c91af..382fc20df48d7d554833715a9c9f62ea7464a25d 100644
+index d2da9f3c5e53ceaeb85c6d3d7443e124a4d93bb8..8a96c07e6d5fd0826efc50e3fd585a42b2c9028c 100644
 --- a/net/minecraft/server/players/CachedUserNameToIdResolver.java
 +++ b/net/minecraft/server/players/CachedUserNameToIdResolver.java
 @@ -122,6 +122,12 @@ public class CachedUserNameToIdResolver implements UserNameToIdResolver {
@@ -442,10 +442,10 @@ index 484714beb5f7cdf8178834c5edd4f847fb06ebb8..ba7a280aad07f36366c15cd158b36ca9
  
      // Paper start - utility method for common conversion back to the game profile
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index ebd2f2887780d9c6c3c44983bac23eab732cf43f..14be3d21cc1a613b1d9164ecc699073f0da2047c 100644
+index 16d01fcb97aa3dbd7554bd64b3608c6e80ce3dbd..b77968e195d1f87c825c09b2a1622b3a3ed5f772 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -319,6 +319,19 @@ public abstract class PlayerList {
+@@ -320,6 +320,19 @@ public abstract class PlayerList {
  
          org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
  
@@ -465,7 +465,7 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..14be3d21cc1a613b1d9164ecc699073f
          final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
          if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -791,6 +804,11 @@ public abstract class PlayerList {
+@@ -793,6 +806,11 @@ public abstract class PlayerList {
              respawnReason
          ).callEvent();
          // Paper end
@@ -477,7 +477,7 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..14be3d21cc1a613b1d9164ecc699073f
  
          return player;
      }
-@@ -893,11 +911,16 @@ public abstract class PlayerList {
+@@ -895,11 +913,16 @@ public abstract class PlayerList {
  
      public String[] getPlayerNamesArray() {
          List<ServerPlayer> players = new java.util.ArrayList<>(this.players); // Folia - region threading
@@ -495,7 +495,7 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..14be3d21cc1a613b1d9164ecc699073f
  
          return names;
      }
-@@ -1016,8 +1039,15 @@ public abstract class PlayerList {
+@@ -1018,8 +1041,15 @@ public abstract class PlayerList {
              || this.allowCommandsForAllPlayers;
      }
  
@@ -513,7 +513,7 @@ index ebd2f2887780d9c6c3c44983bac23eab732cf43f..14be3d21cc1a613b1d9164ecc699073f
      }
  
      public void broadcast(
-@@ -1360,7 +1390,13 @@ public abstract class PlayerList {
+@@ -1362,7 +1392,13 @@ public abstract class PlayerList {
      }
  
      public @Nullable ServerPlayer getPlayer(final UUID uuid) {
@@ -597,7 +597,7 @@ index 2bce20202b7c539bee3685741663a8ed225919ff..a2f44e4354f6aa1c0502cba40cadaad5
          if (!this.level().isClientSide()) {
              boolean wasUsingItem = this.isUsingItem();
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index b45481f781f3556001af89704b718d6291ba1f66..2135ea645131c27b9bec5534431199f9d55134d8 100644
+index 06c6d30f3aef605bc25c42db8a6d26bbde57f40b..20a76138a8625663cf608e4ef97cc8ca4085b844 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -167,7 +167,7 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -608,8 +608,8 @@ index b45481f781f3556001af89704b718d6291ba1f66..2135ea645131c27b9bec5534431199f9
 +    protected ItemStack lastItemInMainHand = ItemStack.EMPTY; // Leaves - fakeplayer
      private final ItemCooldowns cooldowns = this.createItemCooldowns();
      private Optional<GlobalPos> lastDeathLocation = Optional.empty();
-     public @Nullable FishingHook fishing;
-@@ -340,6 +340,12 @@ public abstract class Player extends Avatar implements ContainerUser {
+     public me.earthme.luminol.functions.bars.TickableStatusBarList statusBarList = new me.earthme.luminol.functions.bars.TickableStatusBarList(this); // Luminol status bars
+@@ -341,6 +341,12 @@ public abstract class Player extends Avatar implements ContainerUser {
          this.updatePlayerPose();
      }
  
@@ -622,7 +622,7 @@ index b45481f781f3556001af89704b718d6291ba1f66..2135ea645131c27b9bec5534431199f9
      @Override
      protected float getMaxHeadRotationRelativeToBody() {
          return this.isBlocking() ? 15.0F : super.getMaxHeadRotationRelativeToBody();
-@@ -565,7 +571,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -566,7 +572,7 @@ public abstract class Player extends Avatar implements ContainerUser {
      public void removeEntitiesOnShoulder() {
      }
  
@@ -631,7 +631,7 @@ index b45481f781f3556001af89704b718d6291ba1f66..2135ea645131c27b9bec5534431199f9
          entity.playerTouch(this);
      }
  
-@@ -1247,7 +1253,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -1250,7 +1256,7 @@ public abstract class Player extends Avatar implements ContainerUser {
              // Paper end - Configurable sprint interruption on attack
          }
  

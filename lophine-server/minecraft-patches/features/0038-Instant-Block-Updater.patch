@@ -5,7 +5,7 @@ Subject: [PATCH] Instant Block Updater
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index 64d407c5a6140a7e5dc47a8e304b4c00602e2bdd..9911c70d89cfb43b803cab9bbe6eedd1142f59d6 100644
+index 5817f087187e9d3479c752129a1a9d853623a3f7..1d50a626c15fba4947c966e46f38e7684511e9fe 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -506,7 +506,7 @@ public final class RegionizedWorldData {

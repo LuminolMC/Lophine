@@ -53,10 +53,10 @@ index 74ef76058e5a410d12f88aa09450e7d90f63b5e6..1761167da363cd074a26499caadeaeb9
          }
          // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 8ed9aa981883458d11f8cddce56e04b021026cc2..fb200adb544a9cc5eb7d9d0051a6c70da017b858 100644
+index 5e70e4e8a67e50a067dff1e592d617ca6a0426a9..63300acdcb1cdab2bf080c4939abb256fe05efa1 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -2188,7 +2188,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2191,7 +2191,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
                  this.lastSentFood = -1;
                  this.teleportSpectators(transition, oldLevel);
                  // Leaves start - bot support
@@ -66,10 +66,10 @@ index 8ed9aa981883458d11f8cddce56e04b021026cc2..fb200adb544a9cc5eb7d9d0051a6c70d
                  }
                  // Leaves end - bot support
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index baa295f3dd8cf10bf7347ee4d1c249b1f82c9279..1d5376650d0f5eeb23fde8d7116b47cfae37576f 100644
+index c95c7b9a3968fc34a900a613b65b5d3e1abb24bf..64779d7b28e61c91897db5226158d65c32bfc835 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -280,7 +280,7 @@ public abstract class PlayerList {
+@@ -281,7 +281,7 @@ public abstract class PlayerList {
          // org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
  
          // Leaves start - bot support
@@ -78,7 +78,7 @@ index baa295f3dd8cf10bf7347ee4d1c249b1f82c9279..1d5376650d0f5eeb23fde8d7116b47cf
              org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
              if (bot != null) {
                  this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
-@@ -441,7 +441,7 @@ public abstract class PlayerList {
+@@ -442,7 +442,7 @@ public abstract class PlayerList {
          org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
  
          // Leaves start - bot support
@@ -87,7 +87,7 @@ index baa295f3dd8cf10bf7347ee4d1c249b1f82c9279..1d5376650d0f5eeb23fde8d7116b47cf
              org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
              if (bot != null) {
                  this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
-@@ -969,7 +969,7 @@ public abstract class PlayerList {
+@@ -971,7 +971,7 @@ public abstract class PlayerList {
          ).callEvent();
          // Paper end
          // Leaves start - bot support

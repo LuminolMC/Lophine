@@ -128,7 +128,7 @@ index 1a2b57a100c997b39f8f25ad3da121e04700d5d2..6b0d0a2c0067065b4a995a9f12791066
          // Paper start - fix converting txt to json file; moved from constructor
      }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 3a3a335a7659ebe946221186b56150df4a89c004..8ed9aa981883458d11f8cddce56e04b021026cc2 100644
+index 020b2fcb5213a618b557f0578a7d44db5a8dc109..5e70e4e8a67e50a067dff1e592d617ca6a0426a9 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -257,6 +257,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -139,7 +139,7 @@ index 3a3a335a7659ebe946221186b56150df4a89c004..8ed9aa981883458d11f8cddce56e04b0
      private @Nullable Vec3 startingToFallPosition;
      private @Nullable Vec3 enteredNetherPosition;
      private @Nullable Vec3 enteredLavaOnVehiclePosition;
-@@ -2828,6 +2829,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2831,6 +2832,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.setShoulderEntityRight(oldPlayer.getShoulderEntityRight());
          this.setLastDeathLocation(oldPlayer.getLastDeathLocation());
          this.waypointIcon().copyFrom(oldPlayer.waypointIcon());
@@ -151,7 +151,7 @@ index 3a3a335a7659ebe946221186b56150df4a89c004..8ed9aa981883458d11f8cddce56e04b0
      }
  
      private void transferInventoryXpAndScore(final Player oldPlayer) {
-@@ -3111,6 +3117,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -3114,6 +3120,11 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.particleStatus = information.particleStatus();
          this.getEntityData().set(DATA_PLAYER_MODE_CUSTOMISATION, (byte)information.modelCustomisation());
          this.getEntityData().set(DATA_PLAYER_MAIN_HAND, information.mainHand());
@@ -481,10 +481,10 @@ index 459a05ca83583538f995f45c4d2c977c6d6fcd00..35a275ff953a271a2769a18af8163e81
      }
  }
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 5e7e99410c7597ec5330cc82e441fa30c53c9532..f34631cd7d5d1c76f2b1522200e5c9f6bf5406f5 100644
+index 97057675369875ed71c228a87f5a4d3c3489dded..79bc1c2320ffd7b7017b664b5fe376566968c265 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -555,7 +555,15 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -556,7 +556,15 @@ public abstract class Player extends Avatar implements ContainerUser {
              }
  
              if (!orbs.isEmpty()) {
@@ -501,7 +501,7 @@ index 5e7e99410c7597ec5330cc82e441fa30c53c9532..f34631cd7d5d1c76f2b1522200e5c9f6
              }
          }
  
-@@ -1066,6 +1074,28 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -1069,6 +1077,28 @@ public abstract class Player extends Avatar implements ContainerUser {
  
          if (playerAttackEntityEvent.callEvent() && willAttack) { // Logic moved to willAttack local variable.
          // Paper end - PlayerAttackEntityEvent
@@ -530,7 +530,7 @@ index 5e7e99410c7597ec5330cc82e441fa30c53c9532..f34631cd7d5d1c76f2b1522200e5c9f6
              float baseDamage = this.isAutoSpinAttack() ? this.autoSpinAttackDmg : (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
              ItemStack attackingItemStack = this.getWeaponItem();
              DamageSource damageSource = this.createAttackSource(attackingItemStack); final DamageSource dmgSourceFinal = damageSource; // Paper - damage events
-@@ -1123,6 +1153,18 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -1126,6 +1156,18 @@ public abstract class Player extends Avatar implements ContainerUser {
          }
      }
  
@@ -676,10 +676,10 @@ index 298908003d5422b8b58de631145fad381e8294c1..2e5519813260033daff127fef2598cd1
      public void addRecipe(RecipeHolder<?> holder) {
          org.spigotmc.AsyncCatcher.catchOp("Recipe Add"); // Spigot
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index f0ae87545bd38c38cffbc2217acb9008a4183531..95ec0e3b78a8740dd593c80d5dd8f1bf693c35af 100644
+index 8c051d7322d8efc1ae2e151964fd0124740fd04d..d419d9e3c8f7af424a1b4783f7e7a015bbf541b0 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -1176,6 +1176,12 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -1175,6 +1175,12 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
          BlockState state = newState;
          BlockState blockState = oldState;
          BlockState blockState1 = currentState;
@@ -692,7 +692,7 @@ index f0ae87545bd38c38cffbc2217acb9008a4183531..95ec0e3b78a8740dd593c80d5dd8f1bf
          if (blockState1 == state) {
              if (blockState != blockState1) {
                  this.setBlocksDirty(pos, blockState, blockState1);
-@@ -1192,7 +1198,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -1191,7 +1197,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
                  }
              }
  

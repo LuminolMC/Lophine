@@ -98,10 +98,10 @@ index c0e62a69bb5c9e777265b5474d76ba8d06ccec4b..3e7420cd98504732db17cb6b0fcfdfbb
                                  }
                              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index cdb4a52cbd34322903144364c3686a4e1bf0fbb8..3a3a335a7659ebe946221186b56150df4a89c004 100644
+index 4f6010285a5ff9cf939248c4d93043133680d383..020b2fcb5213a618b557f0578a7d44db5a8dc109 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1130,6 +1130,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1133,6 +1133,12 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
  
              // Folia - region threading - move to main tick loop where we can detect duplicates
              // CraftBukkit end

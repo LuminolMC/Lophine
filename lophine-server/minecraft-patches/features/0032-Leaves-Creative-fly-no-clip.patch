@@ -21,10 +21,10 @@ index e302c6198d71782b524391329aa5c89d2b3e0ccf..2312803297321f66c9057bc54ce56dd1
              } else {
                  this.followingPlayer = null;
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 2135ea645131c27b9bec5534431199f9d55134d8..5e7e99410c7597ec5330cc82e441fa30c53c9532 100644
+index 20a76138a8625663cf608e4ef97cc8ca4085b844..97057675369875ed71c228a87f5a4d3c3489dded 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -279,8 +279,8 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -280,8 +280,8 @@ public abstract class Player extends Avatar implements ContainerUser {
          if (this.cullTask != null) this.cullTask.requestCullSignal(); // Luminol - Ray tracing entity tracker
          // Luminol end
  
@@ -35,7 +35,7 @@ index 2135ea645131c27b9bec5534431199f9d55134d8..5e7e99410c7597ec5330cc82e441fa30
              this.setOnGround(false);
          }
  
-@@ -406,7 +406,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -407,7 +407,7 @@ public abstract class Player extends Avatar implements ContainerUser {
          if (this.canPlayerFitWithinBlocksAndEntitiesWhen(Pose.SWIMMING)) {
              Pose desiredPose = this.getDesiredPose();
              Pose actualPose;
@@ -44,7 +44,7 @@ index 2135ea645131c27b9bec5534431199f9d55134d8..5e7e99410c7597ec5330cc82e441fa30
                  actualPose = desiredPose;
              } else if (this.canPlayerFitWithinBlocksAndEntitiesWhen(Pose.CROUCHING)) {
                  actualPose = Pose.CROUCHING;
-@@ -535,7 +535,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -536,7 +536,7 @@ public abstract class Player extends Avatar implements ContainerUser {
          this.updateSwingTime();
          this.yHeadRot = this.getYRot();
          this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
@@ -53,7 +53,7 @@ index 2135ea645131c27b9bec5534431199f9d55134d8..5e7e99410c7597ec5330cc82e441fa30
              AABB pickupArea;
              if (this.isPassenger() && !this.getVehicle().isRemoved()) {
                  pickupArea = this.getBoundingBox().minmax(this.getVehicle().getBoundingBox()).inflate(1.0, 0.0, 1.0);
-@@ -1846,6 +1846,26 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -1849,6 +1849,26 @@ public abstract class Player extends Avatar implements ContainerUser {
          return this.gameMode() == GameType.SPECTATOR;
      }
  

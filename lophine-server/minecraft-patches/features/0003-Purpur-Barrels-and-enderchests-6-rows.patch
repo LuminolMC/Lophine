@@ -8,10 +8,10 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/dc46f46d28dcdcaf33bb
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/dc46f46d28dcdcaf33bb533f9571a107db98c1d7/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 63b81f30b8d813a7986ae72842fdc2d3097fa103..527c495bb4f6007aee760b99cc0e9aa589931f4b 100644
+index c9d3b000a328fe3583a7053a94c72dc003c1e10c..45e5ac1e8e2ec30935e96fa20d18e77bbd0e20bd 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -961,6 +961,10 @@ public abstract class PlayerList {
+@@ -963,6 +963,10 @@ public abstract class PlayerList {
          player.getBukkitEntity().recalculatePermissions(); // CraftBukkit
          this.server.getCommands().sendCommands(player);
          } // Paper - Add sendOpLevel API
@@ -23,10 +23,10 @@ index 63b81f30b8d813a7986ae72842fdc2d3097fa103..527c495bb4f6007aee760b99cc0e9aa5
  
      // Paper start - whitelist verify event / login event
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 1413286ddc63c5978e745eb26f6012230e4b1cd6..234124cc64e5175c20f9e9f0f482c9c677bca563 100644
+index 592ce8beb28ebe8aaac2ed167abb24148afb0bc3..ce8ab4b7eee5e0715e780d189d2f6554c5a9dc3c 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -174,6 +174,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -175,6 +175,7 @@ public abstract class Player extends Avatar implements ContainerUser {
      public float hurtDir;
      public boolean affectsSpawning = true; // Paper - Affects Spawning API
      public net.kyori.adventure.util.TriState flyingFallDamage = net.kyori.adventure.util.TriState.NOT_SET; // Paper - flying fall damage

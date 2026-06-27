@@ -96,10 +96,10 @@ index cf4b5e436b8d81657d1deaa5b06645016d9dc3cc..f3af5660a377e2eb823f79ec274feaf3
              bridge.removeChannel(channel);
          }
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 527c495bb4f6007aee760b99cc0e9aa589931f4b..e6987eaf6e4d36d43cee4ece3ce22d31052a2a2a 100644
+index 45e5ac1e8e2ec30935e96fa20d18e77bbd0e20bd..deb029c5621f793f63447d351526c31fab5ec12c 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -317,6 +317,8 @@ public abstract class PlayerList {
+@@ -318,6 +318,8 @@ public abstract class PlayerList {
              //return; // Folia - region threading - must still allow the player to connect, as we must add to chunk map before handling disconnect
          }
  
@@ -108,7 +108,7 @@ index 527c495bb4f6007aee760b99cc0e9aa589931f4b..e6987eaf6e4d36d43cee4ece3ce22d31
          final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
          if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -517,6 +519,7 @@ public abstract class PlayerList {
+@@ -518,6 +520,7 @@ public abstract class PlayerList {
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
      }
      public net.kyori.adventure.text.@Nullable Component remove(final ServerPlayer player, final net.kyori.adventure.text.Component leaveMessage) {
@@ -116,7 +116,7 @@ index 527c495bb4f6007aee760b99cc0e9aa589931f4b..e6987eaf6e4d36d43cee4ece3ce22d31
          // Paper end - Fix kick event leave message not being sent
          ServerLevel level = player.level();
          player.awardStat(Stats.LEAVE_GAME);
-@@ -1411,6 +1414,7 @@ public abstract class PlayerList {
+@@ -1413,6 +1416,7 @@ public abstract class PlayerList {
              player.connection.send(recipes);
              player.getRecipeBook().sendInitialRecipeBook(player);
          }
