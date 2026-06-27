@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable cross region damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index fecab5bfbc35fbecef8c559369de70c198bfe1e7..338e0c7c09120c6e9617893dd074cbd5da40a093 100644
+index ad50feba5cbc5fe904850e6da06a866eeb23b519..f7869f06ab29e4bbd003c807176345dec9e9e5ab 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1464,6 +1464,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1467,6 +1467,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
              this.awardStat(Stats.ENTITY_KILLED_BY.get(killer.getType()));
              killer.awardKillScore(this, source);
              this.createWitherRose(killer);
@@ -22,7 +22,7 @@ index fecab5bfbc35fbecef8c559369de70c198bfe1e7..338e0c7c09120c6e9617893dd074cbd5
          }
  
          this.level().broadcastEntityEvent(this, EntityEvent.DEATH);
-@@ -1487,6 +1494,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1490,6 +1497,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
      // Leaves end - exp fix
  
