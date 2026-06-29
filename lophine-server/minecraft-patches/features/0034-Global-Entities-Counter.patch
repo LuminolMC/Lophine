@@ -5,7 +5,7 @@ Subject: [PATCH] Global Entities Counter
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedWorldData.java b/io/papermc/paper/threadedregions/RegionizedWorldData.java
-index eedbeb005d3c8090333c36b9857c837dfb75dbd4..5817f087187e9d3479c752129a1a9d853623a3f7 100644
+index 6a90942f4fc3c0b366aadf7a4cead6f684eba1cd..fd9a69e3ca28923d6fd75f6fc819c7952a0474ea 100644
 --- a/io/papermc/paper/threadedregions/RegionizedWorldData.java
 +++ b/io/papermc/paper/threadedregions/RegionizedWorldData.java
 @@ -558,6 +558,9 @@ public final class RegionizedWorldData {
@@ -35,10 +35,10 @@ index eedbeb005d3c8090333c36b9857c837dfb75dbd4..5817f087187e9d3479c752129a1a9d85
          this.updateTickData();
      }
 diff --git a/net/minecraft/server/level/ServerChunkCache.java b/net/minecraft/server/level/ServerChunkCache.java
-index 27389ff98942e27c2a877ea5b671caa31353d18c..e9e5f929d638d3ddf279423d3e23b3f824ad7df2 100644
+index c3b14503e1bd9025730febc883bead942beb61f7..591576938f2916125781c94fb1027270c77d8e38 100644
 --- a/net/minecraft/server/level/ServerChunkCache.java
 +++ b/net/minecraft/server/level/ServerChunkCache.java
-@@ -513,6 +513,25 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -511,6 +511,25 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
          this.chunkMap.tick(haveTime);
          profiler.pop();
          this.clearCache();
@@ -64,7 +64,7 @@ index 27389ff98942e27c2a877ea5b671caa31353d18c..e9e5f929d638d3ddf279423d3e23b3f8
      }
  
      private void tickChunks() {
-@@ -577,7 +596,13 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -575,7 +594,13 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              }
              spawnCookie = NaturalSpawner.createState(chunkCount, regionizedWorldData.getLoadedEntities(), this::getFullChunk, null, true); // Folia - region threading - note: function only cares about loaded entities, doesn't need all
          } else {
@@ -79,7 +79,7 @@ index 27389ff98942e27c2a877ea5b671caa31353d18c..e9e5f929d638d3ddf279423d3e23b3f8
          }
          } finally { foliaProfiler.stopTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.MOB_SPAWN_ENTITY_COUNT); } // Folia - profiler
          // Paper end - Optional per player mob spawns
-@@ -585,7 +610,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -583,7 +608,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
          boolean doMobSpawning = this.level.getGameRules().get(GameRules.SPAWN_MOBS) && !this.level.getLocalPlayers().isEmpty(); // CraftBukkit // Folia - region threading
          int tickSpeed = this.level.getGameRules().get(GameRules.RANDOM_TICK_SPEED);
          List<MobCategory> spawningCategories;
@@ -88,7 +88,7 @@ index 27389ff98942e27c2a877ea5b671caa31353d18c..e9e5f929d638d3ddf279423d3e23b3f8
              // Paper start - PlayerNaturallySpawnCreaturesEvent
              for (ServerPlayer player : this.level.getLocalPlayers()) { // Folia - region threading
                  int chunkRange = Math.min(level.spigotConfig.mobSpawnRange, player.getBukkitEntity().getViewDistance());
-@@ -645,7 +670,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+@@ -643,7 +668,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
              this.level.tickThunder(chunk);
          }
  
@@ -98,10 +98,10 @@ index 27389ff98942e27c2a877ea5b671caa31353d18c..e9e5f929d638d3ddf279423d3e23b3f8
                  NaturalSpawner.spawnForChunk(this.level, chunk, spawnCookie, spawningCategories);
              }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index a7cebb797973cde399dc30c696b064efd40874f2..c0e62a69bb5c9e777265b5474d76ba8d06ccec4b 100644
+index f75249ba1b02efec0f4fc381b02803228e3e1d7c..93d2d2bef01b312ee11c3cdd673ee23b56e2157b 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -808,6 +808,11 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -822,6 +822,11 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
      }
  
      public void tick(BooleanSupplier haveTime, final io.papermc.paper.threadedregions.TickRegions.TickRegionData region) { // Folia - regionised ticking
@@ -114,10 +114,10 @@ index a7cebb797973cde399dc30c696b064efd40874f2..c0e62a69bb5c9e777265b5474d76ba8d
          final ca.spottedleaf.leafprofiler.RegionizedProfiler.Handle foliaProfiler = io.papermc.paper.threadedregions.TickRegionScheduler.getProfiler(); // Folia - profiler
          ProfilerFiller profiler = Profiler.get();
 diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
-index fc29654dd7ee3329edf1ccf705f45631d0ecc079..9b8ee2df5a0b6d76d9bfc747187f6cd51bb4a520 100644
+index e7ebdbb8d77f841551c5ebb0f8e7b4402f6a4751..5edd1a3806b7eb1f767395e9eaa134e24921b842 100644
 --- a/net/minecraft/world/entity/Mob.java
 +++ b/net/minecraft/world/entity/Mob.java
-@@ -813,6 +813,44 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
+@@ -826,6 +826,44 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
                  }
              }
          } else {
@@ -163,7 +163,7 @@ index fc29654dd7ee3329edf1ccf705f45631d0ecc079..9b8ee2df5a0b6d76d9bfc747187f6cd5
          }
      }
 diff --git a/net/minecraft/world/level/NaturalSpawner.java b/net/minecraft/world/level/NaturalSpawner.java
-index b3b8160927147468c1dd4a30fac51f96a9d60c9a..cd20d10ee4cd2fe98131c9a93367ae133f96b8d4 100644
+index 500dcbe924fca160bd673592e1aba384f6eb9ed2..0d8d2459457167d78a9a9ea43765980240416947 100644
 --- a/net/minecraft/world/level/NaturalSpawner.java
 +++ b/net/minecraft/world/level/NaturalSpawner.java
 @@ -121,7 +121,7 @@ public final class NaturalSpawner {
@@ -175,7 +175,7 @@ index b3b8160927147468c1dd4a30fac51f96a9d60c9a..cd20d10ee4cd2fe98131c9a93367ae13
          return chunk.getNoiseBiome(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getY()), QuartPos.fromBlock(pos.getZ())).value();
      }
  
-@@ -628,7 +628,7 @@ public final class NaturalSpawner {
+@@ -625,7 +625,7 @@ public final class NaturalSpawner {
          private @Nullable EntityType<?> lastCheckedType;
          private double lastCharge;
  

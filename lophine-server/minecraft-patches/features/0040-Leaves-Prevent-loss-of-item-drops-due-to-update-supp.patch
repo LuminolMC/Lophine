@@ -9,14 +9,14 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/level/ServerPlayerGameMode.java b/net/minecraft/server/level/ServerPlayerGameMode.java
-index e1de10e1a0ec221a1109a03d86fddf47b1c06a5f..71cc37515c268abd698896d514b66cb49859691c 100644
+index 13e981bfd070d9351d8880478b5a86e39bcd73ad..d0ac2d15388e842ed56ec39ecdbc99994e0617bc 100644
 --- a/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/net/minecraft/server/level/ServerPlayerGameMode.java
-@@ -392,7 +392,18 @@ public class ServerPlayerGameMode {
-                 this.level.getCurrentWorldData().captureDrops = new java.util.ArrayList<>(); // Folia - region threading
-                 // CraftBukkit end
-                 BlockState adjustedState = block.playerWillDestroy(this.level, pos, state, this.player);
--                boolean changed = this.level.removeBlock(pos, false);
+@@ -394,7 +394,18 @@ public class ServerPlayerGameMode {
+         this.level.getCurrentWorldData().captureDrops = new java.util.ArrayList<>(); // Folia - region threading
+         // CraftBukkit end
+         BlockState adjustedState = block.playerWillDestroy(this.level, pos, state, this.player);
+-        boolean changed = this.level.removeBlock(pos, false);
 +                // Lophine start - preserve drops before update suppression
 +                boolean changed;
 +                org.leavesmc.leaves.util.UpdateSuppressionException updateSuppressionException = null;
@@ -29,18 +29,18 @@ index e1de10e1a0ec221a1109a03d86fddf47b1c06a5f..71cc37515c268abd698896d514b66cb4
 +                    changed = false;
 +                }
 +                // Lophine end - preserve drops before update suppression
-                 if (SharedConstants.DEBUG_BLOCK_BREAK) {
-                     LOGGER.info("server broke {} {} -> {}", pos, adjustedState, this.level.getBlockState(pos));
-                 }
-@@ -424,6 +435,11 @@ public class ServerPlayerGameMode {
-                 if (event.isDropItems()) {
-                     org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, bState, this.player, itemsToDrop); // Paper - capture all item additions to the world
-                 }
+         if (SharedConstants.DEBUG_BLOCK_BREAK) {
+             LOGGER.info("server broke {} {} -> {}", pos, adjustedState, this.level.getBlockState(pos));
+         }
+@@ -422,6 +433,11 @@ public class ServerPlayerGameMode {
+         if (event.isDropItems()) {
+             org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, bState, this.player, itemsToDrop); // Paper - capture all item additions to the world
+         }
 +                // Lophine start - preserve drops before update suppression
 +                if (updateSuppressionException != null) {
 +                    throw updateSuppressionException;
 +                }
 +                // Lophine end - preserve drops before update suppression
  
-                 // Drop event experience
-                 if (changed) {
+         // Drop event experience
+         if (changed) {

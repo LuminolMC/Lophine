@@ -20,10 +20,7 @@ package org.leavesmc.leaves.protocol.servux.litematics.utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import org.leavesmc.leaves.util.TagFactory;
 
@@ -36,7 +33,7 @@ public class EntityUtils {
     @Nullable
     private static Entity createEntityFromNBTSingle(CompoundTag nbt, Level world) {
         try {
-            Optional<Entity> optional = EntityType.create(TagFactory.input(nbt), world, EntitySpawnReason.LOAD);
+            Optional<Entity> optional = EntityType.create(TagFactory.input(nbt), world, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
 
             if (optional.isPresent()) {
                 Entity entity = optional.get();

@@ -10,7 +10,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/block/ComparatorBlock.java b/net/minecraft/world/level/block/ComparatorBlock.java
-index 45e11737bc2558a4ebfffe133d43111f45dd7d16..db80f0b400c7356c5524ea799354e6c44de14700 100644
+index 499311de746f868c092e34ff5fffeb37ec8e338a..eac6501e9242bb5b550bab1aeab4868602eb097b 100644
 --- a/net/minecraft/world/level/block/ComparatorBlock.java
 +++ b/net/minecraft/world/level/block/ComparatorBlock.java
 @@ -59,6 +59,11 @@ public class ComparatorBlock extends DiodeBlock implements EntityBlock {
@@ -26,7 +26,7 @@ index 45e11737bc2558a4ebfffe133d43111f45dd7d16..db80f0b400c7356c5524ea799354e6c4
              ? Blocks.AIR.defaultBlockState()
              : super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
 diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
-index 759eb347299813c20226cc2fc5dc7718d12b7f56..30a7208a698a8bd3ba8a08ace6f23b206d90f6a3 100644
+index 957c45b39e9d6f74fb9791ecd121b0e2bd6bc732..973d423a9ab5a6a3338f43c27f6d99d7b7d94301 100644
 --- a/net/minecraft/world/level/block/RedStoneWireBlock.java
 +++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
 @@ -179,7 +179,11 @@ public class RedStoneWireBlock extends Block {
@@ -39,9 +39,9 @@ index 759eb347299813c20226cc2fc5dc7718d12b7f56..30a7208a698a8bd3ba8a08ace6f23b20
 +                ? state
 +                : !this.canSurviveOn(level, neighbourPos, neighbourState) ? Blocks.AIR.defaultBlockState() : state;
 +            // Lophine end - redstone ignore upwards update
-         } else if (directionToNeighbour == Direction.UP) {
-             return this.getConnectionState(level, state, pos);
-         } else {
+         }
+ 
+         if (directionToNeighbour == Direction.UP) {
 @@ -243,7 +247,10 @@ public class RedStoneWireBlock extends Block {
          BlockPos relativePos = pos.relative(direction);
          BlockState relativeState = level.getBlockState(relativePos);
@@ -55,7 +55,7 @@ index 759eb347299813c20226cc2fc5dc7718d12b7f56..30a7208a698a8bd3ba8a08ace6f23b20
                  if (relativeState.isFaceSturdy(level, relativePos, direction.getOpposite())) {
                      return RedstoneSide.UP;
 diff --git a/net/minecraft/world/level/block/RepeaterBlock.java b/net/minecraft/world/level/block/RepeaterBlock.java
-index d301ca4c91e75d715998aa7ed155fd44ccd64785..1985602b11a584fc70b1bb9ca4c643757d4c0ed3 100644
+index 407d1025dbc7c57114c07e41789f12a36d39952d..800539bae071c845864a390f0346707abb899657 100644
 --- a/net/minecraft/world/level/block/RepeaterBlock.java
 +++ b/net/minecraft/world/level/block/RepeaterBlock.java
 @@ -70,6 +70,11 @@ public class RepeaterBlock extends DiodeBlock {

@@ -30,22 +30,22 @@ import static java.util.Map.entry;
 
 public class WoolUtils {
     private static final Map<Block, DyeColor> WOOL_BLOCK_TO_DYE = Map.ofEntries(
-            entry(Blocks.WHITE_WOOL, DyeColor.WHITE),
-            entry(Blocks.ORANGE_WOOL, DyeColor.ORANGE),
-            entry(Blocks.MAGENTA_WOOL, DyeColor.MAGENTA),
-            entry(Blocks.LIGHT_BLUE_WOOL, DyeColor.LIGHT_BLUE),
-            entry(Blocks.YELLOW_WOOL, DyeColor.YELLOW),
-            entry(Blocks.LIME_WOOL, DyeColor.LIME),
-            entry(Blocks.PINK_WOOL, DyeColor.PINK),
-            entry(Blocks.GRAY_WOOL, DyeColor.GRAY),
-            entry(Blocks.LIGHT_GRAY_WOOL, DyeColor.LIGHT_GRAY),
-            entry(Blocks.CYAN_WOOL, DyeColor.CYAN),
-            entry(Blocks.PURPLE_WOOL, DyeColor.PURPLE),
-            entry(Blocks.BLUE_WOOL, DyeColor.BLUE),
-            entry(Blocks.BROWN_WOOL, DyeColor.BROWN),
-            entry(Blocks.GREEN_WOOL, DyeColor.GREEN),
-            entry(Blocks.RED_WOOL, DyeColor.RED),
-            entry(Blocks.BLACK_WOOL, DyeColor.BLACK)
+            entry(Blocks.WOOL.white(), DyeColor.WHITE),
+            entry(Blocks.WOOL.orange(), DyeColor.ORANGE),
+            entry(Blocks.WOOL.magenta(), DyeColor.MAGENTA),
+            entry(Blocks.WOOL.lightBlue(), DyeColor.LIGHT_BLUE),
+            entry(Blocks.WOOL.yellow(), DyeColor.YELLOW),
+            entry(Blocks.WOOL.lime(), DyeColor.LIME),
+            entry(Blocks.WOOL.pink(), DyeColor.PINK),
+            entry(Blocks.WOOL.gray(), DyeColor.GRAY),
+            entry(Blocks.WOOL.lightGray(), DyeColor.LIGHT_GRAY),
+            entry(Blocks.WOOL.cyan(), DyeColor.CYAN),
+            entry(Blocks.WOOL.purple(), DyeColor.PURPLE),
+            entry(Blocks.WOOL.blue(), DyeColor.BLUE),
+            entry(Blocks.WOOL.brown(), DyeColor.BROWN),
+            entry(Blocks.WOOL.green(), DyeColor.GREEN),
+            entry(Blocks.WOOL.red(), DyeColor.RED),
+            entry(Blocks.WOOL.black(), DyeColor.BLACK)
     );
 
     public static DyeColor getWoolColorAtPosition(Level worldIn, BlockPos pos) {

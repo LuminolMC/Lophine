@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable save-all command
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 11cacb26ce260373476dad764014ba1852477831..981f63b75584dbcb4bb0d5672e8c8bb140c52f9d 100644
+index dbd713226f45b8b9992aa349ddbbc1c69ed47c04..cbfb4bdde0f32ec3996e5baa7e7ed5749e2d12a0 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -364,6 +364,8 @@ public final class RegionizedServer {
@@ -18,7 +18,7 @@ index 11cacb26ce260373476dad764014ba1852477831..981f63b75584dbcb4bb0d5672e8c8bb1
          for (final ServerLevel world : this.worlds) {
              this.globalTick(world, tickCount);
 diff --git a/io/papermc/paper/threadedregions/TickRegions.java b/io/papermc/paper/threadedregions/TickRegions.java
-index 02c004bc7f9a0203523ce4b27cd766d6bdc478c0..3d86e21198f2888422330b6f7c27712f40a6aabc 100644
+index b03d47746879e57ad106bc1b736358d9a5ea1a9d..25951b9858a8d141e2cde7c442ac830e6921e716 100644
 --- a/io/papermc/paper/threadedregions/TickRegions.java
 +++ b/io/papermc/paper/threadedregions/TickRegions.java
 @@ -190,6 +190,8 @@ public final class TickRegions implements ThreadedRegionizer.RegionCallbacks<Tic
@@ -31,7 +31,7 @@ index 02c004bc7f9a0203523ce4b27cd766d6bdc478c0..3d86e21198f2888422330b6f7c27712f
          private final Reference2ReferenceOpenHashMap<RegionizedData<?>, Object> regionizedData = new Reference2ReferenceOpenHashMap<>();
  
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 89f61f5715942d2b521e04b9fdc8b1b379c0c957..2c2487e1c1c65438119a13bd705a9e44697955ed 100644
+index 9800ae1d3c49800b0c7342d43d696109b5b72cf4..f9a8c79640ed6ca381e4482eaeab6b23db59419f 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -299,7 +299,11 @@ public class Commands {
@@ -48,10 +48,10 @@ index 89f61f5715942d2b521e04b9fdc8b1b379c0c957..2c2487e1c1c65438119a13bd705a9e44
              SaveOnCommand.register(this.dispatcher);
              SetPlayerIdleTimeoutCommand.register(this.dispatcher);
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index d1cc2f956213add0e04d51db7b9da7076b521d8b..82013a8f7cf07b6f0645ca6b51ee75fcb0a56298 100644
+index 03e50cf36bad1e2f377cdebe6dc333e0d4c185c4..fb9b0cb1b8b1fd6c5666a3990a4e74824d4bef7e 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1683,6 +1683,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1647,6 +1647,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      // Folia start - region threading
      public void tickServer(final long startTime, final long scheduledEnd, final long targetBuffer,
                             final io.papermc.paper.threadedregions.TickRegions.TickRegionData region) {
@@ -64,10 +64,10 @@ index d1cc2f956213add0e04d51db7b9da7076b521d8b..82013a8f7cf07b6f0645ca6b51ee75fc
          // Folia end - region threading
          org.spigotmc.WatchdogThread.tick(); // Spigot
 diff --git a/net/minecraft/server/commands/SaveAllCommand.java b/net/minecraft/server/commands/SaveAllCommand.java
-index bc6d01996dde0870f6ebbda14176352777938a0c..8314d239435debf7aff947b7dd3bab83e3c80dc6 100644
+index 299991905c24a7018f8ac60d0c16e56fa43cd710..39c1b67e457c26a7e8d87be21658bbe6e802440c 100644
 --- a/net/minecraft/server/commands/SaveAllCommand.java
 +++ b/net/minecraft/server/commands/SaveAllCommand.java
-@@ -21,7 +21,9 @@ public class SaveAllCommand {
+@@ -22,14 +22,21 @@ public class SaveAllCommand {
      }
  
      private static int saveAll(final CommandSourceStack source, final boolean flush) throws CommandSyntaxException {
@@ -78,13 +78,12 @@ index bc6d01996dde0870f6ebbda14176352777938a0c..8314d239435debf7aff947b7dd3bab83
          MinecraftServer server = source.getServer();
          boolean success = server.saveEverything(true, flush, true);
          if (!success) {
-@@ -29,6 +31,12 @@ public class SaveAllCommand {
-         } else {
-             source.sendSuccess(() -> Component.translatable("commands.save.success"), true);
-             return 1;
--        }
-+        }*/
-+        return 1;
+             throw ERROR_FAILED.create();
+         }
+ 
+-        source.sendSuccess(() -> Component.translatable("commands.save.success"), true);
++        source.sendSuccess(() -> Component.translatable("commands.save.success"), true);*/
+         return Command.SINGLE_SUCCESS;
      }
 +
 +    public static SimpleCommandExceptionType getErrorFailed() {

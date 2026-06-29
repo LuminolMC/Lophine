@@ -25,7 +25,7 @@ index 33f9870a4f966a887023b1debd4ab9ef9d24378f..89983e7da244434a5346b23b49c74834
      @Override
      public org.bukkit.inventory.Recipe toBukkitRecipe(org.bukkit.NamespacedKey id) {
 diff --git a/net/minecraft/world/item/crafting/SmithingTrimRecipe.java b/net/minecraft/world/item/crafting/SmithingTrimRecipe.java
-index f9fa7d0eaf9f32959a4bd12b82e5a49ea808a44c..2f3241563ad7e5ed5663b913671d2af056df97bb 100644
+index 93347bd9fbab41888c5d63eb40e7928e74a1f9af..4f9e700ed621cdb556162174bbb9b219403fc05a 100644
 --- a/net/minecraft/world/item/crafting/SmithingTrimRecipe.java
 +++ b/net/minecraft/world/item/crafting/SmithingTrimRecipe.java
 @@ -109,6 +109,12 @@ public class SmithingTrimRecipe extends SimpleSmithingRecipe {

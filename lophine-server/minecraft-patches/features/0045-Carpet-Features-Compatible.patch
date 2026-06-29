@@ -5,7 +5,7 @@ Subject: [PATCH] Carpet Features Compatible
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 4bd923b42d1c98ce7178e05f9324f46d99ffc933..55bd9581c8c4bd3b1b7ba75cc80c94cf7548638a 100644
+index cb68671e513fc812723b2abbdd21e8d6e18cf808..fb8dc7e4e6652222ed901b77a7bc263f671123bb 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -340,7 +340,7 @@ public final class RegionizedServer {
@@ -27,7 +27,7 @@ index 4bd923b42d1c98ce7178e05f9324f46d99ffc933..55bd9581c8c4bd3b1b7ba75cc80c94cf
          }
      }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index a37f392146ccc0319cf56ee0058ae8782b598fe3..2223f0b38e8f628af64d1c916fb2310c4704a407 100644
+index 57a35d7a801621fc461e896eb2bba533d9d5bc1b..ae424c8931a2f82c6c8d4ddd8422a2c142a77a95 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -576,7 +576,7 @@ public final class TickRegionScheduler {
@@ -40,7 +40,7 @@ index a37f392146ccc0319cf56ee0058ae8782b598fe3..2223f0b38e8f628af64d1c916fb2310c
                  }
                  // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 74ef76058e5a410d12f88aa09450e7d90f63b5e6..1761167da363cd074a26499caadeaeb916461706 100644
+index 03f3fe221b14f0317947d74e25049bcce2ebeb66..6882e85fb6413e5c346c189a82b69f3e408aafba 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -268,7 +268,7 @@ public class Commands {
@@ -53,23 +53,23 @@ index 74ef76058e5a410d12f88aa09450e7d90f63b5e6..1761167da363cd074a26499caadeaeb9
          }
          // Luminol end - Add a config to enable tick command
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 5e70e4e8a67e50a067dff1e592d617ca6a0426a9..63300acdcb1cdab2bf080c4939abb256fe05efa1 100644
+index 82a9143d43425943d6b730c8a43446881061ac2c..e764440aed35868c6c8617505ee84dc9e61aa9f3 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -2191,7 +2191,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
-                 this.lastSentFood = -1;
-                 this.teleportSpectators(transition, oldLevel);
-                 // Leaves start - bot support
--                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
-+                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
-                     this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(this, true)); // Leaves - render bot
-                 }
-                 // Leaves end - bot support
+@@ -2169,7 +2169,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+         this.lastSentFood = -1;
+         this.teleportSpectators(transition, oldLevel);
+         // Leaves start - bot support
+-        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.checkEnabled()) {
+             this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(this, true)); // Leaves - render bot
+         }
+         // Leaves end - bot support
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index c95c7b9a3968fc34a900a613b65b5d3e1abb24bf..64779d7b28e61c91897db5226158d65c32bfc835 100644
+index 049648756f9053895e773efdca33fe65b3555b10..36b8cf8c466c9cd4369ceab49e3ac84f224142b8 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -281,7 +281,7 @@ public abstract class PlayerList {
+@@ -308,7 +308,7 @@ public abstract class PlayerList {
          // org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
  
          // Leaves start - bot support
@@ -78,7 +78,7 @@ index c95c7b9a3968fc34a900a613b65b5d3e1abb24bf..64779d7b28e61c91897db5226158d65c
              org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
              if (bot != null) {
                  this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
-@@ -442,7 +442,7 @@ public abstract class PlayerList {
+@@ -491,7 +491,7 @@ public abstract class PlayerList {
          org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player); // Leaves - protocol
  
          // Leaves start - bot support
@@ -87,7 +87,7 @@ index c95c7b9a3968fc34a900a613b65b5d3e1abb24bf..64779d7b28e61c91897db5226158d65c
              org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
              if (bot != null) {
                  this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, false);
-@@ -971,7 +971,7 @@ public abstract class PlayerList {
+@@ -1019,7 +1019,7 @@ public abstract class PlayerList {
          ).callEvent();
          // Paper end
          // Leaves start - bot support
@@ -97,27 +97,27 @@ index c95c7b9a3968fc34a900a613b65b5d3e1abb24bf..64779d7b28e61c91897db5226158d65c
          }
          // Leaves end - bot support
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index ac5b419169f8574f92ff7195bfa76c9978bc8a63..8066cdcaba8d2fcfa2e9ba3b040a2867dbbc6978 100644
+index c23976cd72d7556ef96e04a7009031fc07b7a4fd..df57ae93f91daf8daed2fef48b685c72f0615763 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -240,7 +240,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
-                 }
+@@ -241,7 +241,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+             }
  
+             // Leaves start - Wool hopper counter
+-            if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
++            if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
+                 net.minecraft.world.item.DyeColor woolColor = org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, entity.getBlockPos().relative(state.getValue(HopperBlock.FACING)));
+                 if (woolColor != null) {
+                     for (int i = 0; i < Short.MAX_VALUE; i++) {
+@@ -259,7 +259,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+             if (changed) {
+                 entity.setCooldown(level.spigotConfig.hopperTransfer); // Spigot
                  // Leaves start - Wool hopper counter
--                if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
-+                if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled()) {
-                     net.minecraft.world.item.DyeColor woolColor = org.leavesmc.leaves.util.WoolUtils.getWoolColorAtPosition(level, entity.getBlockPos().relative(state.getValue(HopperBlock.FACING)));
-                     if (woolColor != null) {
-                         for (int i = 0; i < Short.MAX_VALUE; i++) {
-@@ -258,7 +258,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
-                 if (changed) {
-                     entity.setCooldown(level.spigotConfig.hopperTransfer); // Spigot
-                     // Leaves start - Wool hopper counter
--                    if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
-+                    if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
-                         entity.setCooldown(0);
-                         return true;
-                     }
+-                if (fun.bm.lophine.config.modules.function.WoolHopperCounterConfig.unlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
++                if (fun.bm.lophine.carpet.config.modules.WoolHopperCounterConfig.hopperCountersUnlimitedSpeed && org.leavesmc.leaves.util.HopperCounter.isEnabled() && woolHopperCounter(level, pos, state, HopperBlockEntity.getContainerAt(level, pos))) {
+                     entity.setCooldown(0);
+                     return true;
+                 }
 @@ -668,7 +668,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      }
  
@@ -128,7 +128,7 @@ index ac5b419169f8574f92ff7195bfa76c9978bc8a63..8066cdcaba8d2fcfa2e9ba3b040a2867
          // CraftBukkit start
          if (org.bukkit.event.inventory.InventoryPickupItemEvent.getHandlerList().getRegisteredListeners().length > 0) { // Paper - optimize hoppers
 diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
-index 5ca008b3dca83c00f2ae86a608d726972a8d9f9d..125d5f59bdfdee5aa4bae2aa4756db363ee17f4b 100644
+index 8ff7320973dc4fd6ccc4ef7c1742686e0ed0e29a..373de7d03492ce907dba39a12749442116705d90 100644
 --- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 +++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 @@ -323,7 +323,7 @@ public class EnderDragonFight extends SavedData {

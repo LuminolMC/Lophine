@@ -5,7 +5,7 @@ Subject: [PATCH] MiniTweaks mob fire and explosion rules
 
 
 diff --git a/net/minecraft/world/entity/monster/Creeper.java b/net/minecraft/world/entity/monster/Creeper.java
-index 5005f2b923aa94dbc38fb75d5b6f58344888c895..0d4ba81c82b683c32addf6441de3843abf462c3c 100644
+index 4a90294f8d8447bb2f2cef7572119274a1a2c62e..054bfdac44a2bf1d568f2d56b4ae0cb0057862a8 100644
 --- a/net/minecraft/world/entity/monster/Creeper.java
 +++ b/net/minecraft/world/entity/monster/Creeper.java
 @@ -250,7 +250,8 @@ public class Creeper extends Monster {
@@ -19,10 +19,10 @@ index 5005f2b923aa94dbc38fb75d5b6f58344888c895..0d4ba81c82b683c32addf6441de3843a
              this.triggerOnDeathMobEffects(level, Entity.RemovalReason.KILLED);
              this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.EXPLODE); // CraftBukkit - add Bukkit remove cause
 diff --git a/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java b/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java
-index 711b97aa9e49b7edee34c91d77b1005be4fa96bd..1d9232c9061bde9c545e3ee25bc9c6b0417b9ece 100644
+index 8195ab561d12abb33f4359a68b3c1579ce284242..5f79999db6e3ca296a6d018af821fec213bed18a 100644
 --- a/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java
 +++ b/net/minecraft/world/entity/projectile/hurtingprojectile/LargeFireball.java
-@@ -37,7 +37,9 @@ public class LargeFireball extends Fireball {
+@@ -38,7 +38,9 @@ public class LargeFireball extends Fireball {
              // CraftBukkit start - fire ExplosionPrimeEvent
              org.bukkit.event.entity.ExplosionPrimeEvent event = new org.bukkit.event.entity.ExplosionPrimeEvent((org.bukkit.entity.Explosive) this.getBukkitEntity());
              if (event.callEvent()) {
@@ -34,10 +34,10 @@ index 711b97aa9e49b7edee34c91d77b1005be4fa96bd..1d9232c9061bde9c545e3ee25bc9c6b0
              // CraftBukkit end - fire ExplosionPrimeEvent
              this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.HIT); // CraftBukkit - add Bukkit remove cause
 diff --git a/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java b/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java
-index 1a72ee1559f75660796a9cbc1a9d9cdd6883dc90..480042d9401b6d7618fc2f36f16145606414d475 100644
+index ea2ed37063a5f62ad2ade39e9f39f2c2ba6f1772..aae519caab1162af8c7308b81ee33286475b87e6 100644
 --- a/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java
 +++ b/net/minecraft/world/entity/projectile/hurtingprojectile/SmallFireball.java
-@@ -63,7 +63,7 @@ public class SmallFireball extends Fireball {
+@@ -64,7 +64,7 @@ public class SmallFireball extends Fireball {
          super.onHitBlock(hitResult);
          if (this.level() instanceof ServerLevel serverLevel) {
              Entity owner = this.getOwner();

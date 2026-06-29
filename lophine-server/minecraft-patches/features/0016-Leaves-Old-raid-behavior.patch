@@ -24,10 +24,10 @@ index f58b10c7dec0d2b7dc2b3d1198539b74d13038f3..0a838a2015526dde2cb8d9006a71610e
              if (raid == null || raid.getRaidOmenLevel() < raid.getMaxRaidOmenLevel()) {
                  player.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplification));
 diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
-index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5028e2ca9 100644
+index 32e20979b9343efa6b5903c7b6baf351205654a0..4ddc34822e88b011f58c70ca4f14e7a17912b714 100644
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
-@@ -268,7 +268,7 @@ public class Raid {
+@@ -269,7 +269,7 @@ public class Raid {
      }
  
      public boolean absorbRaidOmen(final ServerPlayer player) {
@@ -35,8 +35,8 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
 +        MobEffectInstance effect = player.getEffect(fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior ? MobEffects.BAD_OMEN : MobEffects.RAID_OMEN); // Leaves - old Raid Behavior
          if (effect == null) {
              return false;
-         } else {
-@@ -345,7 +345,13 @@ public class Raid {
+         }
+@@ -346,7 +346,13 @@ public class Raid {
                          }
  
                          if (shouldTryToFindSpawnPos) {
@@ -51,7 +51,7 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
                          }
  
                          if (this.raidCooldownTicks == 300 || this.raidCooldownTicks % 20 == 0) {
-@@ -400,7 +406,14 @@ public class Raid {
+@@ -401,7 +407,14 @@ public class Raid {
                  int attempt = 0;
  
                  while (this.shouldSpawnGroup()) {
@@ -67,7 +67,7 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
                      if (spawnPos != null) {
                          this.started = true;
                          this.spawnGroup(level, spawnPos);
-@@ -412,7 +425,7 @@ public class Raid {
+@@ -413,7 +426,7 @@ public class Raid {
                          attempt++;
                      }
  
@@ -76,7 +76,7 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
                          org.bukkit.craftbukkit.event.CraftEventFactory.callRaidStopEvent(level, this, org.bukkit.event.raid.RaidStopEvent.Reason.UNSPAWNABLE); // CraftBukkit
                          this.stop();
                          break;
-@@ -716,7 +729,7 @@ public class Raid {
+@@ -717,7 +730,7 @@ public class Raid {
              int spawnX = this.center.getX() + Mth.floor(Mth.cos(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
              int spawnZ = this.center.getZ() + Mth.floor(Mth.sin(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
              int spawnY = level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnX, spawnZ);
@@ -85,7 +85,7 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
                  spawnPos.set(spawnX, spawnY, spawnZ);
                  if (!level.isVillage(spawnPos) || secondsRemaining <= 7) {
                      int delta = 10;
-@@ -899,4 +912,42 @@ public class Raid {
+@@ -900,4 +913,42 @@ public class Raid {
              this.spawnsPerWaveBeforeBonus = spawnsPerWaveBeforeBonus;
          }
      }
@@ -95,7 +95,7 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
 +    private BlockPos getRavagerSpawnLocation(final ServerLevel serverWorld, final int proximity, final int tries) {
 +        int i = proximity == 0 ? 2 : 2 - proximity;
 +        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-+        net.minecraft.world.entity.SpawnPlacementType spawnLocation = net.minecraft.world.entity.SpawnPlacements.getPlacementType(EntityType.RAVAGER);
++        net.minecraft.world.entity.SpawnPlacementType spawnLocation = net.minecraft.world.entity.SpawnPlacements.getPlacementType(EntityTypes.RAVAGER);
 +        for (int j = 0; j < tries; j++) {
 +            float f = serverWorld.getRandom().nextFloat() * (float) (Math.PI * 2);
 +            int k = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0F * (float) i + serverWorld.getRandom().nextInt(5));
@@ -107,7 +107,7 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
 +            }
 +            if (serverWorld.hasChunksAt(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)
 +                && serverWorld.isPositionEntityTicking(mutable)
-+                && (spawnLocation.isSpawnPositionOk(serverWorld, mutable, EntityType.RAVAGER)
++                && (spawnLocation.isSpawnPositionOk(serverWorld, mutable, EntityTypes.RAVAGER)
 +                    || serverWorld.getBlockState(mutable.below()).is(net.minecraft.world.level.block.Blocks.SNOW)
 +                    && serverWorld.getBlockState(mutable).isAir())
 +            ) {
@@ -129,10 +129,10 @@ index 24cc4a15731edcb701596fe7051e188637457e37..5440dc0fb8bccabb65fd9681ab368ef5
 +    // Leaves end - old FindSpawnPosition
  }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index bc2edc48ddefaab9022029f1a913a40b72e06024..1a51da9171c13711e106731c360051d183a40893 100644
+index 7e969cd81d2ac788515f4d9ad7584ade4c684a42..7555f0c5edf6a5419018203487cf8941e8095cb5 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
-@@ -128,6 +128,42 @@ public abstract class Raider extends PatrollingMonster {
+@@ -129,6 +129,42 @@ public abstract class Raider extends PatrollingMonster {
  
                  raidWhenKilled.removeFromRaid(serverLevel, this, false);
              }

@@ -5,7 +5,7 @@ Subject: [PATCH] Add tick rate support
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 981f63b75584dbcb4bb0d5672e8c8bb140c52f9d..6e8ee04967afa410ce9dccff34bf9a43201694fd 100644
+index cbfb4bdde0f32ec3996e5baa7e7ed5749e2d12a0..64c9f1d36ac9f02f0dd574ffb995e56a08631bfc 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -371,6 +371,14 @@ public final class RegionizedServer {
@@ -24,7 +24,7 @@ index 981f63b75584dbcb4bb0d5672e8c8bb140c52f9d..6e8ee04967afa410ce9dccff34bf9a43
          this.tickConnections();
  
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index 86c51506c518ee445d00f7eef36ee2c9adbd9b4c..a37f392146ccc0319cf56ee0058ae8782b598fe3 100644
+index 5f4f80c1d4003254fd840f71d86908603b57bfa2..57a35d7a801621fc461e896eb2bba533d9d5bc1b 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -40,8 +40,8 @@ public final class TickRegionScheduler {
@@ -66,7 +66,7 @@ index 86c51506c518ee445d00f7eef36ee2c9adbd9b4c..a37f392146ccc0319cf56ee0058ae878
              if (!this.tryMarkTicking()) {
                  if (!this.cancelled.get()) {
 diff --git a/net/minecraft/server/ServerTickRateManager.java b/net/minecraft/server/ServerTickRateManager.java
-index 8d0f810100a4eac65831913feeb9a9eeb0e6006a..ca35415e152dc63cb9f4ae8da8b06766600922fd 100644
+index eeb2f88723b37bb3cada04bf3098dd46f0ed7316..8432d0ce22ddc9c9bfa98901e403697f40e53c99 100644
 --- a/net/minecraft/server/ServerTickRateManager.java
 +++ b/net/minecraft/server/ServerTickRateManager.java
 @@ -110,7 +110,7 @@ public class ServerTickRateManager extends TickRateManager {
@@ -92,10 +92,10 @@ index 8d0f810100a4eac65831913feeb9a9eeb0e6006a..ca35415e152dc63cb9f4ae8da8b06766
          this.sprintTimeSpend = this.sprintTimeSpend + (System.nanoTime() - this.sprintTickStartTime);
      }
 diff --git a/net/minecraft/server/commands/TickCommand.java b/net/minecraft/server/commands/TickCommand.java
-index cae943bae4701f74b46a49d68da83ae797841590..9f43eff6160ac6855c2e5dd9c23c384b03b7e96c 100644
+index 64b685b219b930a1bb7f85db9947f4d1ca9df093..4421658e4061299dea2ff72a77506214cc9045d8 100644
 --- a/net/minecraft/server/commands/TickCommand.java
 +++ b/net/minecraft/server/commands/TickCommand.java
-@@ -14,7 +14,7 @@ import net.minecraft.server.ServerTickRateManager;
+@@ -15,7 +15,7 @@ import net.minecraft.server.ServerTickRateManager;
  import net.minecraft.util.TimeUtil;
  
  public class TickCommand {
@@ -104,7 +104,7 @@ index cae943bae4701f74b46a49d68da83ae797841590..9f43eff6160ac6855c2e5dd9c23c384b
      private static final String DEFAULT_TICKRATE = String.valueOf(20);
  
      public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
-@@ -22,14 +22,14 @@ public class TickCommand {
+@@ -23,14 +23,14 @@ public class TickCommand {
              Commands.literal("tick")
                  .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                  .then(Commands.literal("query").executes(c -> tickQuery(c.getSource())))

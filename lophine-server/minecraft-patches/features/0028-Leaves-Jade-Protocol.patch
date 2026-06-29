@@ -9,10 +9,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 0eae303f8959345571a906906ef60c6a28bba348..1af966cadec3dd51aae842824e432e20b700d9c9 100644
+index a095cd480e6e86806defb17f11e4758bd96c21f9..5d779fd6febf51fa5c7d92e1410dc95008819c58 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3902,7 +3902,7 @@ public class ServerGamePacketListenerImpl
+@@ -3888,7 +3888,7 @@ public class ServerGamePacketListenerImpl
      }
  
      @Deprecated @io.papermc.paper.annotation.DoNotUse // Paper - Add PlayerLoadedWorldEvent
@@ -22,10 +22,10 @@ index 0eae303f8959345571a906906ef60c6a28bba348..1af966cadec3dd51aae842824e432e20
          this.markClientLoaded(false);
      }
 diff --git a/net/minecraft/world/entity/animal/armadillo/Armadillo.java b/net/minecraft/world/entity/animal/armadillo/Armadillo.java
-index 03ec05a860781f85e58055d6f58893963781bd97..c15f0a3d419fea50d4349fa864e83bf7fee78b9f 100644
+index c8c50683597a2314a3c0e72888d5d75dc73fb94a..3663aa490106b05772574ae7c4ac9d4d84574e79 100644
 --- a/net/minecraft/world/entity/animal/armadillo/Armadillo.java
 +++ b/net/minecraft/world/entity/animal/armadillo/Armadillo.java
-@@ -72,7 +72,7 @@ public class Armadillo extends Animal {
+@@ -75,7 +75,7 @@ public class Armadillo extends Animal {
      public final AnimationState rollOutAnimationState = new AnimationState();
      public final AnimationState rollUpAnimationState = new AnimationState();
      public final AnimationState peekAnimationState = new AnimationState();
@@ -35,10 +35,10 @@ index 03ec05a860781f85e58055d6f58893963781bd97..c15f0a3d419fea50d4349fa864e83bf7
  
      public Armadillo(final EntityType<? extends Animal> type, final Level level) {
 diff --git a/net/minecraft/world/entity/animal/frog/Tadpole.java b/net/minecraft/world/entity/animal/frog/Tadpole.java
-index 3d4bfeae2fddb9ace26e7dea8870704d8309862b..d2862d2e6f599265bc319000bba05609e0bea2c3 100644
+index 296cae1d5f5a3a054949ee03e2a2552bfeae4682..97c49875269dd52c6a4692940b122f1d1f3fd2fb 100644
 --- a/net/minecraft/world/entity/animal/frog/Tadpole.java
 +++ b/net/minecraft/world/entity/animal/frog/Tadpole.java
-@@ -255,7 +255,7 @@ public class Tadpole extends AbstractFish {
+@@ -256,7 +256,7 @@ public class Tadpole extends AbstractFish {
          }
      }
  
@@ -48,10 +48,10 @@ index 3d4bfeae2fddb9ace26e7dea8870704d8309862b..d2862d2e6f599265bc319000bba05609
      }
  
 diff --git a/net/minecraft/world/level/storage/loot/LootPool.java b/net/minecraft/world/level/storage/loot/LootPool.java
-index f08a25b76e689c2242e8ef8226c3d8c2dcec1c70..6e76e472bd1e7242f6cd7986c23ebc38d16fd46a 100644
+index dde475b92375a484cb10a7de5a1256b0741ae5c6..c216b1e047a515a69a0974586a4cd0b536544c66 100644
 --- a/net/minecraft/world/level/storage/loot/LootPool.java
 +++ b/net/minecraft/world/level/storage/loot/LootPool.java
-@@ -36,7 +36,7 @@ public class LootPool implements Validatable {
+@@ -37,7 +37,7 @@ public class LootPool implements Validatable {
              )
              .apply(i, LootPool::new)
      );

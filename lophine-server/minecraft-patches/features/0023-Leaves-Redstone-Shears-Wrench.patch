@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/79d9ef74c2684eb49
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/item/ShearsItem.java b/net/minecraft/world/item/ShearsItem.java
-index 837f8c56bf5d68dd8bfbeca8ae1b66be8316ddea..1098695e646c20f47bc4739034fcb69b96909667 100644
+index 9750a2a7f6d13f93119d0c6fba0bf11064d46e55..1913b30f1bfe013261b340fdf9917db90c98c695 100644
 --- a/net/minecraft/world/item/ShearsItem.java
 +++ b/net/minecraft/world/item/ShearsItem.java
 @@ -80,7 +80,10 @@ public class ShearsItem extends Item {

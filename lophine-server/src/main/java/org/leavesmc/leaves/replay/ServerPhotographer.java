@@ -102,7 +102,7 @@ public class ServerPhotographer extends ServerPlayer {
 
     private static void placePhotographer(MinecraftServer server, ServerPhotographer photographer, ServerLevel world, @NotNull PhotographerCreateState state) {
         server.getPlayerList().placeNewPhotographer(photographer.recorder, photographer, world);
-        photographer.level().chunkSource.move(photographer);
+        photographer.level().getChunkSource().move(photographer);
         photographer.setInvisible(true);
 
         LOGGER.info("Photographer {} created", state.id);
@@ -115,7 +115,7 @@ public class ServerPhotographer extends ServerPlayer {
 
         if (this.tickCount % 10 == 0) {
             connection.resetPosition();
-            this.level().chunkSource.move(this);
+            this.level().getChunkSource().move(this);
         }
 
         if (this.followPlayer != null) {

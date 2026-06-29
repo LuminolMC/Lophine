@@ -6,11 +6,11 @@ Subject: [PATCH] Compatibility fix for Raid Revert and Cross Region Damage
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index cc7b2ea7fda1326e3f9ed46373190a05f60c4d34..2bce20202b7c539bee3685741663a8ed225919ff 100644
+index 5762eed9e99d918bee02d77c0ddd70be0aa0e2ec..cb1589e3aa663ca058fb5c3a24da700d4482cf35 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1234,6 +1234,30 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-         }
+@@ -1231,6 +1231,30 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+         return changed;
      }
  
 +    // Lophine Start - raid revert adapt Cross Region Damage trace
@@ -41,10 +41,10 @@ index cc7b2ea7fda1326e3f9ed46373190a05f60c4d34..2bce20202b7c539bee3685741663a8ed
          if (this.is(EntityTypeTags.IMMUNE_TO_INFESTED)) {
              return !newEffect.is(MobEffects.INFESTED);
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 1a51da9171c13711e106731c360051d183a40893..7094a67959e9747b2dfa55a5f5a3e90552d35466 100644
+index 7555f0c5edf6a5419018203487cf8941e8095cb5..44f8302a8c3fb867f122a97dc29f24a311f0ad91 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
-@@ -158,7 +158,7 @@ public abstract class Raider extends PatrollingMonster {
+@@ -159,7 +159,7 @@ public abstract class Raider extends PatrollingMonster {
                      net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, 120000, amp, false, false, true);
  
                      if (serverLevel.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.RAIDS)) {

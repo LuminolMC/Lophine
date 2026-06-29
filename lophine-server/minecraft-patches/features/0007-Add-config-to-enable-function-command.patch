@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable function command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 2c2487e1c1c65438119a13bd705a9e44697955ed..4e0428948d618b0a072679762dc3cb39d6e12c2f 100644
+index f9a8c79640ed6ca381e4482eaeab6b23db59419f..1b2d3e2c23e8e03ae25e85a60b6ef0528e627f61 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -217,7 +217,11 @@ public class Commands {

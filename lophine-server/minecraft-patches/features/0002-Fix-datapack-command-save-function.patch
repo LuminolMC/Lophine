@@ -5,10 +5,10 @@ Subject: [PATCH] Fix datapack command save function
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 28384f9ebfcdbfbd07fc7fe3c929786eb9e2ccd3..d1cc2f956213add0e04d51db7b9da7076b521d8b 100644
+index 00c42fa41e7f002b078ec4f50154477da872d9eb..03e50cf36bad1e2f377cdebe6dc333e0d4c185c4 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -2472,6 +2472,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2445,6 +2445,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.reloadResources(packsToEnable, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause.PLUGIN);
      }
  
@@ -26,10 +26,10 @@ index 28384f9ebfcdbfbd07fc7fe3c929786eb9e2ccd3..d1cc2f956213add0e04d51db7b9da707
          final Collection<String> packsToEnable, final io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause cause
      ) {
 diff --git a/net/minecraft/server/commands/DataPackCommand.java b/net/minecraft/server/commands/DataPackCommand.java
-index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..991e0362e96488b64d994f1bdfb8ed5d66f98666 100644
+index 80d9bc3d680c30dae15064e0e8c3d1379ccd52e6..2bc9cf924d40d5d11935f73cf6d35442b0b0ba06 100644
 --- a/net/minecraft/server/commands/DataPackCommand.java
 +++ b/net/minecraft/server/commands/DataPackCommand.java
-@@ -98,7 +98,7 @@ public class DataPackCommand {
+@@ -99,7 +99,7 @@ public class DataPackCommand {
          dispatcher.register(
              Commands.literal("datapack")
                  .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
@@ -38,7 +38,7 @@ index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..991e0362e96488b64d994f1bdfb8ed5d
                      Commands.literal("enable")
                          .then(
                              Commands.argument("name", StringArgumentType.string())
-@@ -145,11 +145,11 @@ public class DataPackCommand {
+@@ -146,11 +146,11 @@ public class DataPackCommand {
                                  .suggests(SELECTED_PACKS)
                                  .executes(c -> disablePack(c.getSource(), getPack(c, "name", false)))
                          )
@@ -52,7 +52,7 @@ index 0c7c829270d3cd3dd05a3dc7dfe82ee01d5c6bd8..991e0362e96488b64d994f1bdfb8ed5d
                          .then(Commands.literal("enabled").executes(c -> listEnabledPacks(c.getSource())))
                  )
                  .then(
-@@ -235,7 +235,7 @@ public class DataPackCommand {
+@@ -238,7 +238,7 @@ public class DataPackCommand {
      }
  
      private static int listPacks(final CommandSourceStack source) {

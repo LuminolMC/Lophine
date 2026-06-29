@@ -5,10 +5,10 @@ Subject: [PATCH] Revert TrapDoorBlock changes form Paper
 
 
 diff --git a/net/minecraft/world/level/block/TrapDoorBlock.java b/net/minecraft/world/level/block/TrapDoorBlock.java
-index cfc8b668980e0cba74b3f0d42c4902eb6aa8b01e..f01894c230b1ae4add3e20329e8dc87571d2c793 100644
+index 614f70a520d13f6fe422ac7e42808c813fb3506d..eb36bea7d3dd593539cdbc6938f1fe29df58dadf 100644
 --- a/net/minecraft/world/level/block/TrapDoorBlock.java
 +++ b/net/minecraft/world/level/block/TrapDoorBlock.java
-@@ -133,31 +133,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
+@@ -129,31 +129,7 @@ public class TrapDoorBlock extends HorizontalDirectionalBlock implements SimpleW
          if (!level.isClientSide()) {
              boolean signal = level.hasNeighborSignal(pos);
              if (signal != state.getValue(POWERED)) {

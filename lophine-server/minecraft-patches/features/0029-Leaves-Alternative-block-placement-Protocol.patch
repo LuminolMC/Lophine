@@ -13,10 +13,10 @@ MasaGadget(https://github.com/plusls/MasaGadget)
 litematica(https://github.com/maruohon/litematica)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 1af966cadec3dd51aae842824e432e20b700d9c9..83c9418ea45b8d7f639c6bf5e134bad90d9ac039 100644
+index 5d779fd6febf51fa5c7d92e1410dc95008819c58..b5e19220cd137c91ee992aa011593d625f741222 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -2183,7 +2183,7 @@ public class ServerGamePacketListenerImpl
+@@ -2157,7 +2157,7 @@ public class ServerGamePacketListenerImpl
                  if (ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(this.player.level(), pos.getX() >> 4, pos.getZ() >> 4, 8) &&  this.player.isWithinBlockInteractionRange(pos, 1.0)) { // Folia - do not allow players to interact with blocks outside the current region
                      Vec3 distance = location.subtract(Vec3.atCenterOf(pos));
                      double limit = 1.0000001;
@@ -26,10 +26,10 @@ index 1af966cadec3dd51aae842824e432e20b700d9c9..83c9418ea45b8d7f639c6bf5e134bad9
                          this.player.resetLastActionTime();
                          int maxY = level.getMaxY();
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
-index 3167be4b7c2c61ef725af4a832d759ab6e061af0..2e2a8af12f249ec5bd0935fd13f5acbd0a777b5f 100644
+index 2da4fd153b3de6e97ef264062b40855aa620ec14..f4b68c02c2beea4438cb4cd212ad70c78cfc68d3 100644
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
-@@ -136,7 +136,7 @@ public class BlockItem extends Item {
+@@ -138,7 +138,7 @@ public class BlockItem extends Item {
      }
  
      protected @Nullable BlockState getPlacementState(final BlockPlaceContext context) {
@@ -39,7 +39,7 @@ index 3167be4b7c2c61ef725af4a832d759ab6e061af0..2e2a8af12f249ec5bd0935fd13f5acbd
      }
  
 diff --git a/net/minecraft/world/item/StandingAndWallBlockItem.java b/net/minecraft/world/item/StandingAndWallBlockItem.java
-index d5d499226d0b2c2adfae7bbb4c28c96c80411c44..cb0a4a9865df69e5504a86de6c144bc4450bd19a 100644
+index bb352c44fa951367907ebe403c59f03f3c21786f..1f17f966882320b3a2ced50b3f73925cd0dfa14c 100644
 --- a/net/minecraft/world/item/StandingAndWallBlockItem.java
 +++ b/net/minecraft/world/item/StandingAndWallBlockItem.java
 @@ -26,14 +26,14 @@ public class StandingAndWallBlockItem extends BlockItem {
@@ -60,10 +60,10 @@ index d5d499226d0b2c2adfae7bbb4c28c96c80411c44..cb0a4a9865df69e5504a86de6c144bc4
                      stateForPlacement = possibleState;
                      break;
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index c5f4e0570a82dfcc2ba88023f3301f69afa41cc5..30f7e8f5e3e9440713e36ee25c90150b6b93c6ff 100644
+index 1af396a051cc47dccb973ca864cf1ec2e8b756ed..64066a091628ad00d914043ae7ecd8bd29d85e5e 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
-@@ -516,6 +516,32 @@ public class Block extends BlockBehaviour implements ItemLike {
+@@ -517,6 +517,32 @@ public class Block extends BlockBehaviour implements ItemLike {
      public void stepOn(final Level level, final BlockPos pos, final BlockState onState, final Entity entity) {
      }
  

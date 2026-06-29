@@ -1,11 +1,9 @@
 package fun.bm.lophine.carpet.config.modules;
 
 import fun.bm.lophine.carpet.CarpetCompatSync;
-import fun.bm.lophine.carpet.RedirectedConfigs;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
-import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
 import java.util.List;
@@ -19,7 +17,6 @@ import java.util.List;
                 Only rules that already have a working server-side implementation are exposed here."""
 )
 public class GeneralCompatConfig implements IConfigModule {
-    @TransformedConfig(name = "language", directory = {"carpet", "general"}, transformComments = false)
     @ConfigInfo(name = "language", comments = """
             Carpet language value.
             ATTENTION: This config will not update in Lophine global now!""")
@@ -269,10 +266,7 @@ public class GeneralCompatConfig implements IConfigModule {
 
     @Override
     public void beforeFinalLoad() {
-        // Should remove in next Minecraft version update
-        RedirectedConfigs.redirect();
-
-        // after all config updated, send changes to client
+        // send changes to client
         CarpetCompatSync.apply();
     }
 }

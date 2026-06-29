@@ -119,7 +119,7 @@ public abstract class DataLogger<T extends Tag> {
                 ServerTickRateManager tickManager = server.tickRateManager();
                 boolean frozen = tickManager.isFrozen();
                 boolean sprinting = tickManager.isSprinting();
-                ca.spottedleaf.moonrise.common.time.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
+                ca.spottedleaf.common.time.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
                 final double tps = tickData.tpsData().segmentAll().average();
                 final double mspt = tickData.timePerTickData().segmentAll().average() / 1.0E6;
 

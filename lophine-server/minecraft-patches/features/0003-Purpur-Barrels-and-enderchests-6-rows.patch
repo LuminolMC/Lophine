@@ -8,10 +8,10 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/dc46f46d28dcdcaf33bb
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/dc46f46d28dcdcaf33bb533f9571a107db98c1d7/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index c9d3b000a328fe3583a7053a94c72dc003c1e10c..45e5ac1e8e2ec30935e96fa20d18e77bbd0e20bd 100644
+index 454fab8ec956268870dec8fd495434c01d5d870d..56f50ef14b0fa32a1586135fbd221e9f34aef17e 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -963,6 +963,10 @@ public abstract class PlayerList {
+@@ -961,6 +961,10 @@ public abstract class PlayerList {
          player.getBukkitEntity().recalculatePermissions(); // CraftBukkit
          this.server.getCommands().sendCommands(player);
          } // Paper - Add sendOpLevel API
@@ -23,7 +23,7 @@ index c9d3b000a328fe3583a7053a94c72dc003c1e10c..45e5ac1e8e2ec30935e96fa20d18e77b
  
      // Paper start - whitelist verify event / login event
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 592ce8beb28ebe8aaac2ed167abb24148afb0bc3..ce8ab4b7eee5e0715e780d189d2f6554c5a9dc3c 100644
+index a447b9fbb579591c62b3d8f8e2527796feefc4a0..9fdc8134fdde2cdd7724a459a29e51f4ad943403 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -175,6 +175,7 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -94,15 +94,15 @@ index 4df3a32faf85595372f4b250482d852c985ea3ab..101b3711bfb98888837ebed323561cac
          this.activeChest = activeChest;
      }
 diff --git a/net/minecraft/world/level/block/EnderChestBlock.java b/net/minecraft/world/level/block/EnderChestBlock.java
-index 24a2c411da0ebbb7f97d621bb76ff686621f9aae..a9f511a549681a76a962855c26b9af5980f36df7 100644
+index f1a5b9670dd04b800a8d755f32364458a16d924a..bfc34508937befc0f7610176ebe625563f7a4fe0 100644
 --- a/net/minecraft/world/level/block/EnderChestBlock.java
 +++ b/net/minecraft/world/level/block/EnderChestBlock.java
-@@ -88,7 +88,15 @@ public class EnderChestBlock extends AbstractChestBlock<EnderChestBlockEntity> i
-                 // Paper start - Fix InventoryOpenEvent cancellation - moved up;
-                 container.setActiveChest(enderChest); // Needs to happen before ChestMenu.threeRows as it is required for opening animations
-                 if (level instanceof ServerLevel serverLevel && player.openMenu(
--                    new SimpleMenuProvider((containerId, inventory, p) -> ChestMenu.threeRows(containerId, inventory, container), CONTAINER_TITLE)
-+                    new SimpleMenuProvider(
+@@ -90,7 +90,15 @@ public class EnderChestBlock extends AbstractChestBlock<EnderChestBlockEntity> i
+             // Paper start - Fix InventoryOpenEvent cancellation - moved up;
+             container.setActiveChest(enderChest); // Needs to happen before ChestMenu.threeRows as it is required for opening animations
+             if (level instanceof ServerLevel serverLevel && player.openMenu(
+-                new SimpleMenuProvider((containerId, inventory, p) -> ChestMenu.threeRows(containerId, inventory, container), CONTAINER_TITLE)
++                new SimpleMenuProvider(
 +                            (containerId, inventory, p) -> switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows) {
 +                    case 6 -> ChestMenu.sixRows(containerId, inventory, container);
 +                    case 5 -> ChestMenu.fiveRows(containerId, inventory, container);
@@ -111,14 +111,14 @@ index 24a2c411da0ebbb7f97d621bb76ff686621f9aae..a9f511a549681a76a962855c26b9af59
 +                    case 1 -> ChestMenu.oneRow(containerId, inventory, container);
 +                    default -> ChestMenu.threeRows(containerId, inventory, container);
 +                }, CONTAINER_TITLE) // Purpur - Barrels and enderchests 6 rows
-                 ).isPresent()) {
-                 // Paper end - Fix InventoryOpenEvent cancellation - moved up;
-                     player.awardStat(Stats.OPEN_ENDERCHEST);
+             ).isPresent()) {
+             // Paper end - Fix InventoryOpenEvent cancellation - moved up;
+                 player.awardStat(Stats.OPEN_ENDERCHEST);
 diff --git a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
-index 61e39a18c0fba22699750e5c0187d19a0433b9a2..98c48426fcbb4aeba479e87ab27b03e17b50d7f5 100644
+index 00aa2d0269f636f6e4c12c1be98cf901e9be8558..e8c83037700a179a43b0dc3882a67622a2e95640 100644
 --- a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
-@@ -60,7 +60,17 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -59,7 +59,17 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
      }
      // CraftBukkit end
      private static final Component DEFAULT_NAME = Component.translatable("container.barrel");
@@ -135,9 +135,9 @@ index 61e39a18c0fba22699750e5c0187d19a0433b9a2..98c48426fcbb4aeba479e87ab27b03e1
 +    // Purpur end - Barrels and enderchests 6 rows
 +
      public final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
-         {
-             Objects.requireNonNull(BarrelBlockEntity.this);
-@@ -123,7 +133,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
+         // Paper start - delay open/close callbacks
+         @Override
+@@ -118,7 +128,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
  
      @Override
      public int getContainerSize() {
@@ -155,7 +155,7 @@ index 61e39a18c0fba22699750e5c0187d19a0433b9a2..98c48426fcbb4aeba479e87ab27b03e1
      }
  
      @Override
-@@ -144,7 +163,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -139,7 +158,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
  
      @Override
      protected AbstractContainerMenu createMenu(final int containerId, final Inventory inventory) {

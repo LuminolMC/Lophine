@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 8e96326c55510642df01ef15e1a3edb1e81176cb..592a3c59bf5edbc65c7c0472e2382593b7b22086 100644
+index 0ac1e049fad85de8365380b03e60d915ee643f16..a747fbe107dcc134558ca8ecfbe30e81245a5742 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3048,4 +3048,15 @@ public final class Bukkit {
+@@ -3052,4 +3052,15 @@ public final class Bukkit {
          return server.getFeatureManager();
      }
      // Leaves end - Feature API
@@ -28,10 +28,10 @@ index 8e96326c55510642df01ef15e1a3edb1e81176cb..592a3c59bf5edbc65c7c0472e2382593
 +    // Leaves end - Bot API
  }
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 473b0e02c003d5317ef798c320e5c845124f4e12..978e015e91408503b4ec84ec5b3c5193255ba7db 100644
+index 48e53223ba7edeca5256244480441a56a6657075..f4f64538d13f3dba5a1cd8f0d24d1fd2e8b75749 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2813,4 +2813,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2826,4 +2826,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      double @Nullable [] getRegionTPS(@NotNull World world, int chunkX, int chunkZ);
      // Folia end - region TPS API

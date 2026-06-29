@@ -21,10 +21,10 @@ index d0b763f07aee56f69a67c87d7dd15a44b6f44db7..bd301425f4c3cdf2b2bd22c1775b7ca9
          }
          // Leaves end - skip bot
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 0eb89fc127738e02e8d4d49418b83baaffe00cbd..53e49df883ec0fab984f2329d044d12ed6b1edff 100644
+index 3a95cdcb5c507ae61d32b64502b556b5d6f2dc9d..ff7afd6bda0cd7be176881c8b7924bf1b5329bbd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -304,6 +304,7 @@ public final class CraftServer implements Server {
+@@ -305,6 +305,7 @@ public final class CraftServer implements Server {
      public io.papermc.paper.SparksFly spark; // Paper - spark // Luminol - Force disable builtin spark
      private final ServerConfiguration serverConfig = new PaperServerConfiguration();
      private final org.leavesmc.leaves.entity.bot.CraftBotManager botManager; // Leaves
@@ -32,16 +32,16 @@ index 0eb89fc127738e02e8d4d49418b83baaffe00cbd..53e49df883ec0fab984f2329d044d12e
  
      // Paper start - Folia region threading API
      private final io.papermc.paper.threadedregions.scheduler.FoliaRegionScheduler regionizedScheduler = new io.papermc.paper.threadedregions.scheduler.FoliaRegionScheduler(); // Folia - region threading
-@@ -398,7 +399,7 @@ public final class CraftServer implements Server {
+@@ -399,7 +400,7 @@ public final class CraftServer implements Server {
      public CraftServer(DedicatedServer console, PlayerList playerList) {
          this.console = console;
          this.playerList = (DedicatedPlayerList) playerList;
--        this.playerView = Collections.unmodifiableList(Lists.transform(playerList.players, new Function<ServerPlayer, CraftPlayer>() {
-+        this.playerView = Collections.unmodifiableList(Lists.transform(playerList.realPlayers, new Function<ServerPlayer, CraftPlayer>() { // Leaves - replay api
-             @Override
-             public CraftPlayer apply(ServerPlayer player) {
-                 return player.getBukkitEntity();
-@@ -3186,4 +3187,11 @@ public final class CraftServer implements Server {
+-        this.playerView = MCUtil.transformUnmodifiable(playerList.getPlayers(), ServerPlayer::getBukkitEntity);
++        this.playerView = MCUtil.transformUnmodifiable(playerList.realPlayers, ServerPlayer::getBukkitEntity);
+         this.serverVersion = io.papermc.paper.ServerBuildInfo.buildInfo().asString(io.papermc.paper.ServerBuildInfo.StringRepresentation.VERSION_SIMPLE); // Paper - improve version
+         this.structureManager = new CraftStructureManager(console.getStructureManager(), console.registryAccess());
+         this.serverTickManager = new CraftServerTickManager(console.tickRateManager());
+@@ -3188,4 +3189,11 @@ public final class CraftServer implements Server {
          }
      }
      // Folia end - region TPS API
@@ -54,10 +54,10 @@ index 0eb89fc127738e02e8d4d49418b83baaffe00cbd..53e49df883ec0fab984f2329d044d12e
 +    // Leaves end - replay mod api
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-index 42c2c6a05645e5aef26e9d3a91ad93563a297ca3..759d54f1f012461fc322d452bb26f7fd6e601039 100644
+index 7b14ffd2c68db673a08d9693062e97eac39827be..62bbd17b4f0109ed78f24caf7666edd69c04831b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-@@ -128,6 +128,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
+@@ -129,6 +129,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
          }
  
          if (entity instanceof org.leavesmc.leaves.bot.ServerBot bot) { return new org.leavesmc.leaves.entity.bot.CraftBot(server, bot); }
@@ -66,10 +66,10 @@ index 42c2c6a05645e5aef26e9d3a91ad93563a297ca3..759d54f1f012461fc322d452bb26f7fd
          // Special case complex part, since there is no extra entity type for them
          if (entity instanceof EnderDragonPart complexPart) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 59e3a15cce0ed34aa3b75b92db9e349c9fe481fa..044f3168583b23542e18fe14853d3b98bad3fa4d 100644
+index e655c6b817b1ef2b3186c4b16a1039081139e97f..96d8ed40eae0765d5d48b1397de525581b8bf2fb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -2086,7 +2086,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+@@ -2085,7 +2085,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
  
      @Override
      public boolean canSee(Player player) {
@@ -79,10 +79,10 @@ index 59e3a15cce0ed34aa3b75b92db9e349c9fe481fa..044f3168583b23542e18fe14853d3b98
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index fa3e2bf2b31ca5173d71082e93eb7eaa4faa2816..bd3c4eb10489f13562b31f4b809e80b19717bc25 100644
+index c189f583598f94fc7944afcabe130c5ee9504c0d..2e56d20d50d8a5d5630816b822b10a43ce3fa6c7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -347,7 +347,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -294,7 +294,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
                      Bukkit.getLogger().log(Level.SEVERE, "Error saving advancement " + key, ex);
                  }
  
@@ -92,14 +92,14 @@ index fa3e2bf2b31ca5173d71082e93eb7eaa4faa2816..bd3c4eb10489f13562b31f4b809e80b1
                      player.getAdvancements().flushDirty(player, false);
                  });
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/LazyPlayerSet.java b/src/main/java/org/bukkit/craftbukkit/util/LazyPlayerSet.java
-index 25aae550dcdcef2df268d0dd99bdcc9bbd49fcf8..83af50de50a03e164d572f3c3466b6d0b42ed138 100644
+index 15261d2e96347584e4baf65f12b336b73a68cd37..83af50de50a03e164d572f3c3466b6d0b42ed138 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/LazyPlayerSet.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/LazyPlayerSet.java
 @@ -23,7 +23,7 @@ public class LazyPlayerSet extends LazyHashSet<Player> {
      }
  
      public static Set<Player> makePlayerSet(final MinecraftServer server) {
--        List<ServerPlayer> players = server.getPlayerList().players;
+-        List<ServerPlayer> players = server.getPlayerList().getPlayers();
 +        List<ServerPlayer> players = server.getPlayerList().realPlayers; // Leaves - only real players
          Set<Player> reference = new HashSet<>(players.size());
          for (ServerPlayer player : players) {
