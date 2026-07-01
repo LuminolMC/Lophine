@@ -36,10 +36,10 @@ index 10fa576838c726d026df078eef6c693d14c2cbda..03c4fab3f9be4f69d8c418e6fdd88211
                          throw PacketUtils.makeReportedException(e, this.packet, this.listener);
                      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index d7a7f7e7daf45bc0912aae008f3fed35201925fe..8bbb30c16d14981a21731e090b5aa2e4a48528a7 100644
+index 31702272280b853d8a0a688eb162859412f5a646..156bbc6b959ba4902e683ec0c75d9308ed6742f8 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1983,11 +1983,30 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1985,11 +1985,30 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              try {
                  foliaProfiler.startTimer(level.tickTimerId); try { // Folia - profiler
                  level.tick(haveTime, region); // Folia - region threading

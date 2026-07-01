@@ -9,10 +9,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index a095cd480e6e86806defb17f11e4758bd96c21f9..5d779fd6febf51fa5c7d92e1410dc95008819c58 100644
+index df246c52f85df3d6daeaf5519e68b22e54913971..d50ed9e165ed68144c4f71bb39f91fc61c61f179 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3888,7 +3888,7 @@ public class ServerGamePacketListenerImpl
+@@ -3893,7 +3893,7 @@ public class ServerGamePacketListenerImpl
      }
  
      @Deprecated @io.papermc.paper.annotation.DoNotUse // Paper - Add PlayerLoadedWorldEvent
